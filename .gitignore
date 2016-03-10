@@ -1,0 +1,13 @@
+/.dev/
+/.dist/
+/jspm_packages/
+/node_modules/
+/typings/
+
+/aws.json
+/npm-debug.log
+
+*.js.map
+
+/src/**/*.js
+/src/index.html
