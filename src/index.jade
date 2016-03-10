@@ -1,0 +1,22 @@
+html(lang='en')
+  head
+    title Publish
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    base(href='/')
+    link(rel='icon' href='/images/favicon.png')
+
+    style.
+      body {margin: 0; border: 0; padding: 0;}
+
+    if locals.dist
+      script(src='/scripts/angular2-polyfills.js')
+      script(src='/scripts/backsaw.min.js')
+    else
+      script(src='node_modules/angular2/bundles/angular2-polyfills.js')
+      script(src='/jspm_packages/system.js')
+      script(src='/config/systemjs.config.js')
+      script.
+        System.import('src/main').then(null, console.error.bind(console));
+
+  body
+    publish-app
