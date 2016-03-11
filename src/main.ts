@@ -11,4 +11,4 @@ if (window.location.host !== 'localhost') {
 
 import {AppComponent} from './app/app.component';
 
-bootstrap(AppComponent);
+bootstrap(AppComponent, [ROUTER_PROVIDERS, HTTP_BINDINGS]);
