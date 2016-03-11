@@ -32,8 +32,10 @@
     "gulp-jade": "^1.1.0",
     "gulp-sequence": "^0.4.5",
     "gulp-shell": "^0.5.2",
+    "gulp-stylus": "^2.3.1",
     "jspm": "^0.16.31",
     "lite-server": "^2.1.0",
+    "nib": "^1.1.0",
     "rxjs": "^5.0.0-beta.2",
     "typings": "^0.7.7"
   },
