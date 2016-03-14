@@ -7,7 +7,12 @@ import {FooterComponent} from './footer/footer.component';
 @Component({
   directives: [ROUTER_DIRECTIVES, HeaderComponent, FooterComponent],
   selector: 'publish-app',
-  styleUrls: ['stylesheets/common.css'],
+  styleUrls: [
+    'app/app.css',
+    'app/app.forms.css',
+    'app/app.layout.css',
+    'app/app.loading.css'
+  ],
   template: `
     <publish-header></publish-header>
     <main>
