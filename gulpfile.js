@@ -2,7 +2,6 @@
 
 const gulp   = require('gulp');
 const jade   = require('gulp-jade');
-const nib    = require('nib');
 const seq    = require('gulp-sequence');
 const shell  = require('gulp-shell');
 
