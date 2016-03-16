@@ -1,0 +1,39 @@
+import {Component, Input, OnDestroy} from 'angular2/core';
+
+@Component({
+  selector: 'spinner',
+  styleUrls: ['app/shared/spinner/spinner.css'],
+  template: `<div [hidden]="!isSpinning" class="spinner"></div>`
+})
+
+export class Spinner implements OnDestroy {
+
+  private currentTimeout: number;
+  private isSpinning: boolean = false;
+
+  @Input() public delay: number = 300;
+
+  @Input() public set spinning(value: boolean) {
+    if (!value) {
+      this.cancelTimeout();
+      this.isSpinning = false;
+    }
+    if (this.currentTimeout) {
+      return;
+    }
+    this.currentTimeout = setTimeout(() => {
+      this.isSpinning = value;
+      this.cancelTimeout();
+    }, this.delay);
+  }
+
+  private cancelTimeout(): void {
+    clearTimeout(this.currentTimeout);
+    this.currentTimeout = undefined;
+  }
+
+  ngOnDestroy(): any {
+    this.cancelTimeout();
+  }
+
+}

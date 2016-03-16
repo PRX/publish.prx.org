@@ -43,7 +43,7 @@ import {Location} from 'angular2/router';
     `
 })
 
-export class FooterComponent {
+export class Footer {
 
   constructor(
     private location: Location

@@ -1,11 +1,14 @@
 import {Component, ViewEncapsulation} from 'angular2/core';
-import {RouteConfig, ROUTER_DIRECTIVES} from 'angular2/router';
+import {RouteConfig, RouterOutlet} from 'angular2/router';
 
-import {HeaderComponent} from './header/header';
-import {FooterComponent} from './footer/footer';
+import {Header}  from './header/header';
+import {NavItem} from './header/directives/navitem';
+import {Footer}  from './footer/footer';
+
+import {Home} from './home/home';
 
 @Component({
-  directives: [ROUTER_DIRECTIVES, HeaderComponent, FooterComponent],
+  directives: [RouterOutlet, Header, NavItem, Footer],
   selector: 'publish-app',
   encapsulation: ViewEncapsulation.None, // important!
   styleUrls: [
@@ -16,9 +19,11 @@ import {FooterComponent} from './footer/footer';
     'app/app.loading.css'
   ],
   template: `
-    <publish-header></publish-header>
+    <publish-header>
+      <nav-item route="Home" text="Home"></nav-item>
+      <nav-item href="//www.prx.org/search/all" text="Search"></nav-item>
+    </publish-header>
     <main>
-      <prx-loading-bar></prx-loading-bar>
       <router-outlet></router-outlet>
     </main>
     <publish-footer></publish-footer>
@@ -26,6 +31,8 @@ import {FooterComponent} from './footer/footer';
 })
 
 @RouteConfig([
+  { path: '/',      name: 'Index', component: Home, useAsDefault: true },
+  { path: '/home',  name: 'Home',  component: Home }
 ])
 
-export class AppComponent { }
+export class App {}
