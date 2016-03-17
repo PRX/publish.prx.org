@@ -3,7 +3,7 @@ import {Location} from 'angular2/router';
 
 @Component({
   selector: 'publish-footer',
-  styleUrls: ['app/footer/footer.css'],
+  styleUrls: ['app/footer/footer.component.css'],
   template: `
     <footer>
       <div class="columns">
@@ -43,7 +43,7 @@ import {Location} from 'angular2/router';
     `
 })
 
-export class Footer {
+export class FooterComponent {
 
   constructor(
     private location: Location

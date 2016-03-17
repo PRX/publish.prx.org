@@ -4,7 +4,7 @@ import {RouterLink} from 'angular2/router';
 @Component({
   directives: [RouterLink],
   selector: 'publish-header',
-  styleUrls: ['app/header/header.css'],
+  styleUrls: ['app/header/header.component.css'],
   template: `
     <header>
       <div class="contents">
@@ -18,6 +18,4 @@ import {RouterLink} from 'angular2/router';
     `
 })
 
-export class Header {
-
-}
+export class HeaderComponent {}

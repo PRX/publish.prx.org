@@ -4,7 +4,7 @@ import {RouterLink} from 'angular2/router';
 @Component({
   directives: [RouterLink],
   selector: 'nav-item',
-  styleUrls: ['app/header/directives/navitem.css'],
+  styleUrls: ['app/header/navitem.component.css'],
   template: `
     <div class="nav-holder">
       <a *ngIf="route"  [routerLink]="[route]">{{text}}</a>
@@ -13,7 +13,7 @@ import {RouterLink} from 'angular2/router';
     `
 })
 
-export class NavItem {
+export class NavItemComponent {
   @Input() route: string;
   @Input() href:  string;
   @Input() text:  string;

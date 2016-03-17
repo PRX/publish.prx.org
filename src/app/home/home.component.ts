@@ -1,10 +1,10 @@
 import {Component} from 'angular2/core';
-import {Spinner} from './../shared/spinner/spinner';
+import {SpinnerComponent} from './../shared/spinner/spinner.component';
 
 @Component({
-  directives: [Spinner],
+  directives: [SpinnerComponent],
   selector: 'publish-home',
-  styleUrls: ['app/home/home.css'],
+  styleUrls: ['app/home/home.component.css'],
   template: `
     <spinner [spinning]="isLoading"></spinner>
     <div *ngIf="!isLoading">
@@ -14,7 +14,7 @@ import {Spinner} from './../shared/spinner/spinner';
     `
 })
 
-export class Home {
+export class HomeComponent {
 
   private isLoading: boolean = true;
 

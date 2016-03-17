@@ -2,11 +2,11 @@ import {Component, Input, OnDestroy} from 'angular2/core';
 
 @Component({
   selector: 'spinner',
-  styleUrls: ['app/shared/spinner/spinner.css'],
+  styleUrls: ['app/shared/spinner/spinner.component.css'],
   template: `<div [hidden]="!isSpinning" class="spinner"></div>`
 })
 
-export class Spinner implements OnDestroy {
+export class SpinnerComponent implements OnDestroy {
 
   private currentTimeout: number;
   private isSpinning: boolean = false;

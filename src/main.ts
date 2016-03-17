@@ -9,6 +9,6 @@ if (window.location.host !== 'localhost') {
   enableProdMode();
 }
 
-import {App} from './app/app';
+import {AppComponent} from './app/app.component';
 
-bootstrap(App, [ROUTER_PROVIDERS, HTTP_BINDINGS]);
+bootstrap(AppComponent, [ROUTER_PROVIDERS, HTTP_BINDINGS]);
