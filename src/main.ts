@@ -5,10 +5,17 @@ import {HTTP_BINDINGS} from 'angular2/http';
 
 import 'rxjs/Rx';
 
+import {AuthService} from './app/auth/auth.service';
+
 if (window.location.host !== 'localhost') {
   enableProdMode();
 }
 
 import {AppComponent} from './app/app.component';
 
-bootstrap(AppComponent, [ROUTER_PROVIDERS, HTTP_BINDINGS]);
+bootstrap(AppComponent,
+  [
+    ROUTER_PROVIDERS,
+    HTTP_BINDINGS,
+    AuthService
+  ]);

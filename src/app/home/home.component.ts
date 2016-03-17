@@ -1,5 +1,6 @@
 import {Component} from 'angular2/core';
-import {SpinnerComponent} from './../shared/spinner/spinner.component';
+import {SpinnerComponent} from '../shared/spinner/spinner.component';
+import {AuthService, PrxAuthUser} from '../auth/auth.service';
 
 @Component({
   directives: [SpinnerComponent],
@@ -9,7 +10,12 @@ import {SpinnerComponent} from './../shared/spinner/spinner.component';
     <spinner [spinning]="isLoading"></spinner>
     <div *ngIf="!isLoading">
       <h1>Home Page</h1>
-      <p>You are viewing the home page</p>
+      <template [ngIf]="authUser">
+        <p>You are logged in as {{authUser.name}}</p>
+      </template>
+      <template [ngIf]="!authUser">
+        <p>You are not logged in</p>
+      </template>
     </div>
     `
 })
@@ -17,11 +23,15 @@ import {SpinnerComponent} from './../shared/spinner/spinner.component';
 export class HomeComponent {
 
   private isLoading: boolean = true;
+  private authUser: PrxAuthUser;
 
-  constructor() {
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 1000);
+  constructor(private authService: AuthService) {
+    this.authService.user.subscribe(this.authChanged);
+  }
+
+  authChanged = (user:PrxAuthUser) => {
+    this.isLoading = false;
+    this.authUser = user;
   }
 
 }

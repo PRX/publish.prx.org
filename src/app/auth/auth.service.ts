@@ -1,6 +1,5 @@
 import {Injectable} from 'angular2/core';
-import {Observable} from 'rxjs/Observable';
-import {Observer} from 'rxjs/Observer';
+import {ReplaySubject} from 'rxjs';
 
 export interface PrxAuthUser {
   id: number;
@@ -9,18 +8,24 @@ export interface PrxAuthUser {
 
 @Injectable()
 export class AuthService {
-  public user: Observable<PrxAuthUser>;
+  public user: ReplaySubject<PrxAuthUser>;
 
   constructor() {
-    this.user = Observable.create(/* hmmm.... */);
+    this.user = new ReplaySubject(1);
   }
 
   public setToken(token: string): void {
-    if (token) {
-      // TODO: hal-get user info and user.onNext() it
-    }
-    else {
-      // TODO: not logged in, so user.onNext(null)
-    }
+    // TODO: temporary
+    setTimeout(() => {
+      if (token) {
+        this.user.next(<PrxAuthUser>{
+          id: 999,
+          name: 'foobar'
+        });
+      }
+      else {
+        this.user.next(null);
+      }
+    }, 1000);
   }
 }

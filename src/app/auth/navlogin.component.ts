@@ -1,9 +1,10 @@
 import {Component, ElementRef} from 'angular2/core';
 import {RouterLink} from 'angular2/router';
-import {AuthService} from './auth.service';
+import {AuthService, PrxAuthUser} from './auth.service';
+import {SpinnerComponent} from '../shared/spinner/spinner.component';
 
 @Component({
-  directives: [RouterLink],
+  directives: [RouterLink, SpinnerComponent],
   selector: 'nav-login',
   styleUrls: [
     'app/header/navitem.component.css',
@@ -11,25 +12,44 @@ import {AuthService} from './auth.service';
   ],
   template: `
     <div class="nav-holder">
-      <a [routerLink]="['Login']">Login</a>
+      <div *ngIf="isLoading" class="spin-holder">
+        <spinner [spinning]="isLoading" inverse=true></spinner>
+      </div>
+      <template [ngIf]="!isLoading">
+        <a *ngIf="!authUser" [routerLink]="['Login']">Login</a>
+        <a *ngIf="authUser">
+          <span class="name">{{authUser.name}}</span>
+          <img src="//placehold.it/150x150"/>
+        </a>
+      </template>
     </div>
     <iframe src="{{authUrl}}" (load)="checkAuthIframe()"></iframe>
     `
+    //
 })
 
 export class NavLoginComponent {
 
   private authUrl: string;
   private iframe: Element;
+  private isLoading: boolean = true;
+  private authUser: PrxAuthUser;
 
-  constructor(private element: ElementRef) {
+  constructor(private element: ElementRef, private authService: AuthService) {
+    this.authService.user.subscribe(this.authChanged);
+
     var host = 'https://id.prx.org';
     var id = 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D'; // localhost:3000/callback
     var nonce = this.getNonce();
     this.authUrl = `${host}/authorize?client_id=${id}&nonce=${nonce}&response_type=token&prompt=none`;
   }
 
-  public checkAuthIframe(authService: AuthService): void {
+  authChanged = (user:PrxAuthUser) => {
+    this.isLoading = false;
+    this.authUser = user;
+  }
+
+  public checkAuthIframe(): void {
     var iframe = this.element.nativeElement.getElementsByTagName('iframe')[0];
     var query = iframe.contentDocument.location.hash.replace(/^#/, '');
 
@@ -37,11 +57,10 @@ export class NavLoginComponent {
     if (query) {
       var token = this.parseQuery(query)['access_token'];
       if (token) {
-        console.log("YOU ARE logged in", token);
-        authService.setToken(token);
+        this.authService.setToken(token);
       }
       else {
-        console.log('You are logged OUT', query);
+        this.authService.setToken(null);
       }
     }
   }

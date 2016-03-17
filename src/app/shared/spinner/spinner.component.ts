@@ -3,7 +3,9 @@ import {Component, Input, OnDestroy} from 'angular2/core';
 @Component({
   selector: 'spinner',
   styleUrls: ['app/shared/spinner/spinner.component.css'],
-  template: `<div [hidden]="!isSpinning" class="spinner"></div>`
+  template: `
+    <div *ngIf="isSpinning" class="spinner" [class.inverse]="inverse"></div>
+    `
 })
 
 export class SpinnerComponent implements OnDestroy {
@@ -11,6 +13,7 @@ export class SpinnerComponent implements OnDestroy {
   private currentTimeout: number;
   private isSpinning: boolean = false;
 
+  @Input() public inverse: boolean = false;
   @Input() public delay: number = 300;
 
   @Input() public set spinning(value: boolean) {

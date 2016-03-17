@@ -21,6 +21,20 @@
     animation-timing-function: linear;
   }
 }
+.inverse {
+  background-color: rgb(230, 230, 230);
+  border-radius: 50%;
+  width: 31px;
+  height: 31px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  margin-left: 25px;
+  margin-right: 25px;
+}
 .spinner::before {
   content: '';
   position: absolute;
