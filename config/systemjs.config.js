@@ -23,6 +23,8 @@ System.config({
 
   map: {
     "angular2": "npm:angular2@2.0.0-beta.9",
+    "angular2-uuid": "npm:angular2-uuid@1.0.7",
+    "evaporate": "github:TTLabs/EvaporateJS@1.0.2",
     "plugin-typescript": "github:frankwallis/plugin-typescript@4.0.2",
     "reflect-metadata": "npm:reflect-metadata@0.1.3",
     "rxjs": "npm:rxjs@5.0.0-beta.2",
