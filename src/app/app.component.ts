@@ -3,12 +3,14 @@ import {RouteConfig, RouterOutlet} from 'angular2/router';
 
 import {HeaderComponent}  from './header/header.component';
 import {NavItemComponent} from './header/navitem.component';
+import {NavLoginComponent} from './auth/navlogin.component';
 import {FooterComponent}  from './footer/footer.component';
 
-import {HomeComponent} from './home/home.component';
+import {HomeComponent}  from './home/home.component';
+import {LoginComponent} from './auth/login.component';
 
 @Component({
-  directives: [RouterOutlet, HeaderComponent, NavItemComponent, FooterComponent],
+  directives: [RouterOutlet, HeaderComponent, NavItemComponent, NavLoginComponent, FooterComponent],
   selector: 'publish-app',
   encapsulation: ViewEncapsulation.None, // important!
   styleUrls: [
@@ -22,6 +24,7 @@ import {HomeComponent} from './home/home.component';
     <publish-header>
       <nav-item route="Home" text="Home"></nav-item>
       <nav-item href="//www.prx.org/search/all" text="Search"></nav-item>
+      <nav-login></nav-login>
     </publish-header>
     <main>
       <router-outlet></router-outlet>
@@ -32,7 +35,8 @@ import {HomeComponent} from './home/home.component';
 
 @RouteConfig([
   { path: '/',      name: 'Index', component: HomeComponent, useAsDefault: true },
-  { path: '/home',  name: 'Home',  component: HomeComponent }
+  { path: '/home',  name: 'Home',  component: HomeComponent },
+  { path: '/login', name: 'Login', component: LoginComponent }
 ])
 
 export class AppComponent {}
