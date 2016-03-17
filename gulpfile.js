@@ -41,12 +41,10 @@ gulp.task('typings:install', shell.task('typings install'));
 const fs = require('fs');
 const dotenv = require('dotenv');
 gulp.task('env:write', function(cb) {
-  var parsedObj = dotenv.parse(fs.readFileSync('.env', { encoding: 'utf8' }));
-  var envStr = '// GENERATED FILE, DO NOT EDIT OR CHECK IN\n';
-  envStr = envStr + 'export class Env {\n';
-  envStr = Object.keys(parsedObj).reduce(function (out, key) {
-    return out + '  public static ' + key + ' = \'' + parsedObj[key] + '\';\n';
-  }, envStr);
-  envStr = envStr + '}\n';
-  fs.writeFile('src/util/env.ts', envStr, cb);
+  var env = dotenv.parse(fs.readFileSync('.env', { encoding: 'utf8' }));
+  var s = '// GENERATED FILE, DO NOT EDIT OR CHECK IN\n';
+  s += 'export class Env {\n';
+  s += Object.keys(env).reduce((o, k)=>{return o+'  public static '+k+' = \''+env[k]+'\';\n';}, '');
+  s += '}\n';
+  fs.writeFile('src/util/env.ts', s, cb);
 });
