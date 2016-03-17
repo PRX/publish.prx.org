@@ -1,9 +1,9 @@
 'use strict';
 
-const gulp  = require('gulp');
-const jade  = require('gulp-jade');
-const seq   = require('gulp-sequence');
-const shell = require('gulp-shell');
+const gulp   = require('gulp');
+const jade   = require('gulp-jade');
+const seq    = require('gulp-sequence');
+const shell  = require('gulp-shell');
 
 // Public tasks (serial)
 gulp.task('git:hooks:pre-commit', seq('jspm:unbundle'));
@@ -21,7 +21,7 @@ gulp.task('jspm:bundle:dev', shell.task('jspm bundle src/main - [src/app/**/*] .
 gulp.task('jspm:install',    shell.task('jspm install'));
 gulp.task('jspm:unbundle',   shell.task('jspm unbundle'));
 
-// Jade compile tasks
+// Compile tasks
 gulp.task('jade:index:dev', () => {
   return gulp
     .src('./src/index.jade')

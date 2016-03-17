@@ -1,0 +1,11 @@
+/*
+ * Home page
+ */
+div {
+  padding: 100px 0;
+  text-align: center;
+}
+h1 {
+  font-size: 40px;
+  line-height: 40px;
+}

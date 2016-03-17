@@ -5,12 +5,9 @@ html(lang='en')
     base(href='/')
     link(rel='icon' href='/images/favicon.png')
 
-    style.
-      body {margin: 0; border: 0; padding: 0;}
-
     if locals.dist
       script(src='/scripts/angular2-polyfills.js')
-      script(src='/scripts/backsaw.min.js')
+      script(src='/scripts/publish.min.js')
     else
       script(src='node_modules/angular2/bundles/angular2-polyfills.js')
       script(src='/jspm_packages/system.js')
