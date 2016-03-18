@@ -1,6 +1,6 @@
 import {Component, ElementRef} from 'angular2/core';
 import {RouterLink} from 'angular2/router';
-import {AuthService, PrxAuthUser} from './auth.service';
+import {AuthService} from './auth.service';
 import {SpinnerComponent} from '../shared/spinner/spinner.component';
 
 @Component({
@@ -16,10 +16,10 @@ import {SpinnerComponent} from '../shared/spinner/spinner.component';
         <spinner [spinning]="isLoading" inverse=true></spinner>
       </div>
       <template [ngIf]="!isLoading">
-        <a *ngIf="!authUser" [routerLink]="['Login']">Login</a>
-        <a *ngIf="authUser">
-          <span class="name">{{authUser.name}}</span>
-          <img src="//placehold.it/150x150"/>
+        <a *ngIf="!userAccount" [routerLink]="['Login']">Login</a>
+        <a *ngIf="userAccount">
+          <span class="name">{{userAccount.name}}</span>
+          <img [src]="userImageHref"/>
         </a>
       </template>
     </div>
@@ -33,7 +33,8 @@ export class NavLoginComponent {
   private authUrl: string;
   private iframe: Element;
   private isLoading: boolean = true;
-  private authUser: PrxAuthUser;
+  private userAccount: any;
+  private userImageHref: string = '//placehold.it/150x150';
 
   constructor(private element: ElementRef, private authService: AuthService) {
     this.authService.user.subscribe(this.authChanged);
@@ -44,9 +45,14 @@ export class NavLoginComponent {
     this.authUrl = `${host}/authorize?client_id=${id}&nonce=${nonce}&response_type=token&prompt=none`;
   }
 
-  authChanged = (user:PrxAuthUser) => {
+  authChanged = (user: any) => {
     this.isLoading = false;
-    this.authUser = user;
+    this.userAccount = user;
+    this.userAccount.follow('prx:image').subscribe((image: any) => {
+      if (image && image.link('enclosure')) {
+        this.userImageHref = image.link('enclosure');
+      }
+    });
   }
 
   public checkAuthIframe(): void {

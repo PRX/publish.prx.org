@@ -1,31 +1,26 @@
 import {Injectable} from 'angular2/core';
 import {ReplaySubject} from 'rxjs';
-
-export interface PrxAuthUser {
-  id: number;
-  name: string;
-}
+import {PrxApiService, HalDoc} from '../shared/api/prx-api.service';
 
 @Injectable()
 export class AuthService {
-  public user: ReplaySubject<PrxAuthUser>;
+  public user: ReplaySubject<HalDoc>;
 
-  constructor() {
+  constructor(private apiService: PrxApiService) {
     this.user = new ReplaySubject(1);
   }
 
   public setToken(token: string): void {
-    // TODO: temporary
-    setTimeout(() => {
-      if (token) {
-        this.user.next(<PrxAuthUser>{
-          id: 999,
-          name: 'foobar'
+    this.apiService.token = token;
+    if (token) {
+      this.apiService.follow('prx:authorization').subscribe((doc) => {
+        doc.follow('prx:default-account').subscribe((accountDoc) => {
+          this.user.next(accountDoc);
         });
-      }
-      else {
-        this.user.next(null);
-      }
-    }, 1000);
+      });
+    }
+    else {
+      this.user.next(null);
+    }
   }
 }
