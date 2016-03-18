@@ -11,3 +11,9 @@
 
 /src/**/*.js
 /src/index.html
+
+.DS_Store
+
+/src/util/env.ts
+/.env*
+/.nvmrc
