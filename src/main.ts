@@ -5,8 +5,7 @@ import {HTTP_BINDINGS} from 'angular2/http';
 
 import 'rxjs/Rx';
 
-import {AuthService} from './app/auth/auth.service';
-import {PrxApiService} from './app/shared/api/prx-api.service';
+import {CmsService} from './app/shared/cms/cms.service';
 
 if (window.location.host !== 'localhost') {
   enableProdMode();
@@ -18,6 +17,5 @@ bootstrap(AppComponent,
   [
     ROUTER_PROVIDERS,
     HTTP_BINDINGS,
-    AuthService,
-    PrxApiService
+    CmsService
   ]);

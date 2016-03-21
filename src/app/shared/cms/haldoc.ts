@@ -1,16 +1,18 @@
-import {Injectable} from 'angular2/core';
 import {Http, Headers, RequestOptions, Response} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
 
-const API_HOST = 'https://cms.prx.org';
-
+/*
+ * Generic class for interacting with HAL api
+ */
 export class HalDoc {
   private _http: Http;
+  private _host: string;
   private _token: string;
 
-  constructor(data: any = {}, http: Http, authToken: string) {
+  constructor(data: any = {}, http: Http, host: string, authToken: string) {
     Object.keys(data).forEach((key) => { this[key] = data[key]; });
     this._http = http;
+    this._host = host;
     this._token = authToken;
   }
 
@@ -39,9 +41,20 @@ export class HalDoc {
       if (this._token) {
         headers.append('Authorization', `Bearer ${this._token}`);
       }
-      return this._http.get(API_HOST + path, {headers: headers}).map((res) => {
-        return new HalDoc(res.json(), this._http, this._token);
+      return this._http.get(this._host + path, {headers: headers}).map((res) => {
+        return new HalDoc(res.json(), this._http, this._host, this._token);
       });
+    }
+  }
+
+  follows(...rels: string[]): Observable<HalDoc> {
+    if (rels.length) {
+      return this.follow(rels.shift()).flatMap((doc) => {
+        return doc.follows.apply(doc, rels);
+      });
+    }
+    else {
+      return Observable.of(this);
     }
   }
 
@@ -65,11 +78,9 @@ export class HalDoc {
       if (link.templated) {
         throw new Error(`TODO - I can't deal with templated links in ${rel}`);
       }
-      console.log("GOT LINK _> ", link.href);
-      return API_HOST + <string>link.href;
+      return this._host + <string>link.href;
     }
     else {
-      console.log(`no link "rel"`, this);
       return null;
     }
   }
@@ -81,38 +92,6 @@ export class HalDoc {
     else {
       return null;
     }
-  }
-
-}
-
-@Injectable()
-export class PrxApiService {
-  private _token: string;
-  private _root: HalDoc;
-  private _rootObservable: Observable<HalDoc>;
-
-  constructor(private http: Http) {
-    this._rootObservable = this.http.get(`${API_HOST}/api/v1`).map((res) => {
-      this._root = new HalDoc(res.json(), this.http, this._token);
-      return this._root;
-    });
-  }
-
-  get root(): Observable<HalDoc> {
-    return this._rootObservable;
-  }
-
-  set token(token: string) {
-    this._token = token;
-    if (this._root) {
-      this._root.token = token;
-    }
-  }
-
-  follow(rel: string, params: any = {}): Observable<HalDoc> {
-    return this.root.flatMap((rootDoc) => {
-      return rootDoc.follow(rel, params);
-    });
   }
 
 }

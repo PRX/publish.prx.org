@@ -1,6 +1,7 @@
-import {Component, ElementRef} from 'angular2/core';
+import {Component} from 'angular2/core';
 import {RouterLink} from 'angular2/router';
-import {AuthService} from './auth.service';
+
+import {CmsService} from '../shared/cms/cms.service';
 import {SpinnerComponent} from '../shared/spinner/spinner.component';
 import {ImageLoaderComponent} from '../shared/image/image-loader.component';
 
@@ -17,79 +18,35 @@ import {ImageLoaderComponent} from '../shared/image/image-loader.component';
         <spinner [spinning]="isLoading" inverse=true></spinner>
       </div>
       <template [ngIf]="!isLoading">
-        <a *ngIf="!userAccount" [routerLink]="['Login']">Login</a>
-        <a *ngIf="userAccount">
-          <span class="name">{{userAccount.name}}</span>
-          <image-loader [src]="userImageHref"></image-loader>
+        <a *ngIf="!userName" [routerLink]="['Login']">Login</a>
+        <a *ngIf="userName">
+          <span class="name">{{userName}}</span>
+          <image-loader [src]="userImage"></image-loader>
         </a>
       </template>
     </div>
-    <iframe src="{{authUrl}}" (load)="checkAuthIframe()"></iframe>
     `
 })
 
 export class NavLoginComponent {
 
-  private authUrl: string;
-  private iframe: Element;
   private isLoading: boolean = true;
-  private userAccount: any;
-  private userImageHref: string = '//placehold.it/150x150';
+  private userName: string;
+  private userImage: string;
 
-  constructor(private element: ElementRef, private authService: AuthService) {
-    this.authService.user.subscribe(this.authChanged);
-
-    var host = 'https://id.prx.org';
-    var id = 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D'; // localhost:3000/callback
-    var nonce = this.getNonce();
-    this.authUrl = `${host}/authorize?client_id=${id}&nonce=${nonce}&response_type=token&prompt=none`;
-  }
-
-  authChanged = (user: any) => {
-    this.isLoading = false;
-    this.userAccount = user;
-    this.userAccount.follow('prx:image').subscribe((image: any) => {
-      if (image && image.link('enclosure')) {
-        this.userImageHref = image.link('enclosure');
-      }
+  constructor(private cmsService: CmsService) {
+    this.cmsService.follows('prx:authorization', 'prx:default-account').subscribe((doc) => {
+      this.userName = doc['name'];
+      this.isLoading = false;
+    }, (err) => {
+      this.userName = null;
+      this.isLoading = false;
     });
-  }
-
-  public checkAuthIframe(): void {
-    var iframe = this.element.nativeElement.getElementsByTagName('iframe')[0];
-    var query = iframe.contentDocument.location.hash.replace(/^#/, '');
-
-    // 1st load has no query, 2nd redirect-load does
-    if (query) {
-      var token = this.parseQuery(query)['access_token'];
-      if (token) {
-        this.authService.setToken(token);
-      }
-      else {
-        this.authService.setToken(null);
-      }
-    }
-  }
-
-  private getNonce(): string {
-    var nonce:string[] = [];
-    for (var i = 0; i < 8; i++) {
-      nonce.push(this.randomInt(0, 15).toString(16));
-    }
-    return nonce.join('');
-  }
-
-  private randomInt(low: number, high: number): number {
-    return Math.floor(Math.random() * (high - low + 1) + low);
-  }
-
-  private parseQuery(query: string = ''): Object {
-    var data = {};
-    for (var pair of query.split('&')) {
-      var parts = pair.split('=');
-      data[parts[0]] = parts[1];
-    }
-    return data;
+    this.cmsService.follows('prx:authorization', 'prx:default-account', 'prx:image').subscribe((doc) => {
+      this.userImage = doc ? doc.link('enclosure') : null;
+    }, (err) => {
+      this.userImage = null;
+    });
   }
 
 }
