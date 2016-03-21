@@ -2,9 +2,10 @@ import {Component, ElementRef} from 'angular2/core';
 import {RouterLink} from 'angular2/router';
 import {AuthService} from './auth.service';
 import {SpinnerComponent} from '../shared/spinner/spinner.component';
+import {ImageLoaderComponent} from '../shared/image/image-loader.component';
 
 @Component({
-  directives: [RouterLink, SpinnerComponent],
+  directives: [RouterLink, SpinnerComponent, ImageLoaderComponent],
   selector: 'nav-login',
   styleUrls: [
     'app/header/navitem.component.css',
@@ -19,13 +20,12 @@ import {SpinnerComponent} from '../shared/spinner/spinner.component';
         <a *ngIf="!userAccount" [routerLink]="['Login']">Login</a>
         <a *ngIf="userAccount">
           <span class="name">{{userAccount.name}}</span>
-          <img [src]="userImageHref"/>
+          <image-loader [src]="userImageHref"></image-loader>
         </a>
       </template>
     </div>
     <iframe src="{{authUrl}}" (load)="checkAuthIframe()"></iframe>
     `
-    //
 })
 
 export class NavLoginComponent {
