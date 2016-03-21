@@ -4,11 +4,11 @@ import {RouteConfig, RouterOutlet} from 'angular2/router';
 import {AuthComponent} from './shared/auth/auth.component';
 import {HeaderComponent}  from './header/header.component';
 import {NavItemComponent} from './header/navitem.component';
-import {NavLoginComponent} from './auth/navlogin.component';
+import {NavUserComponent} from './header/navuser.component';
 import {FooterComponent}  from './footer/footer.component';
+import {LoginComponent} from './login/login.component';
 
 import {HomeComponent}  from './home/home.component';
-import {LoginComponent} from './auth/login.component';
 
 @Component({
   directives: [
@@ -16,8 +16,9 @@ import {LoginComponent} from './auth/login.component';
     AuthComponent,
     HeaderComponent,
     NavItemComponent,
-    NavLoginComponent,
-    FooterComponent
+    NavUserComponent,
+    FooterComponent,
+    LoginComponent
   ],
   selector: 'publish-app',
   encapsulation: ViewEncapsulation.None, // important!
@@ -29,23 +30,30 @@ import {LoginComponent} from './auth/login.component';
     'app/app.component.loading.css'
   ],
   template: `
-    <prx-auth></prx-auth>
-    <publish-header>
-      <nav-item route="Home" text="Home"></nav-item>
-      <nav-item href="//www.prx.org/search/all" text="Search"></nav-item>
-      <nav-login></nav-login>
-    </publish-header>
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-    <publish-footer></publish-footer>
+    <prx-auth>
+      <logged-in>
+        <publish-header>
+          <nav-item route="Home" text="Home"></nav-item>
+          <nav-item href="//www.prx.org/search/all" text="Search"></nav-item>
+          <nav-user></nav-user>
+        </publish-header>
+        <main>
+          <router-outlet></router-outlet>
+        </main>
+        <publish-footer></publish-footer>
+      </logged-in>
+      <logged-out>
+        <publish-header></publish-header>
+        <main><publish-login></publish-login></main>
+        <publish-footer></publish-footer>
+      </logged-out>
+    </prx-auth>
     `
 })
 
 @RouteConfig([
   { path: '/',      name: 'Index', component: HomeComponent, useAsDefault: true },
-  { path: '/home',  name: 'Home',  component: HomeComponent },
-  { path: '/login', name: 'Login', component: LoginComponent }
+  { path: '/home',  name: 'Home',  component: HomeComponent }
 ])
 
 export class AppComponent {}

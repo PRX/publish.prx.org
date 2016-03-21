@@ -9,7 +9,7 @@ const API_HOST = 'https://cms.prx.org';
 @Injectable()
 export class CmsService {
 
-  private authToken: ReplaySubject<string>;
+  public authToken: ReplaySubject<string>;
   private rootDoc: ReplaySubject<any>;
 
   constructor(private http: Http) {

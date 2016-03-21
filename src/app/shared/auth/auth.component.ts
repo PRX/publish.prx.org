@@ -1,59 +1,48 @@
 import {Component, ElementRef} from 'angular2/core';
+import {AuthService} from './auth.service';
 import {CmsService} from '../cms/cms.service';
 
 @Component({
   selector: 'prx-auth',
-  styles: [':host { display: none; }'],
-  template: `<iframe [src]="authUrl" (load)="checkAuth()"></iframe>`
+  styles: ['iframe { display: none; }'],
+  template: `
+    <iframe [src]="authUrl" (load)="checkAuth()"></iframe>
+    <ng-content *ngIf="isAuthorized" select="logged-in"></ng-content>
+    <ng-content *ngIf="!isAuthorized" select="logged-out"></ng-content>
+    `
 })
 
 export class AuthComponent {
 
   private authUrl: string;
-  private iframe: Element;
 
-  constructor(private element: ElementRef, private cmsService: CmsService) {
-    let host = 'https://id.prx.org';
-    let id = 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D'; // localhost:3000/callback
-    let nonce = this.getNonce();
-    this.authUrl = `${host}/authorize?client_id=${id}&nonce=${nonce}&response_type=token&prompt=none`;
+  // assume user is logged in, to start
+  private isAuthorized: boolean = true;
+
+  constructor(private element: ElementRef, private authService: AuthService, private cmsService: CmsService) {
+    this.authUrl = this.authService.authUrl('none');
+    cmsService.authToken.subscribe((token) => {
+      this.isAuthorized = (token ? true : false);
+    });
   }
 
   checkAuth() {
-    var iframe = this.element.nativeElement.getElementsByTagName('iframe')[0];
-    var query = iframe.contentDocument.location.hash.replace(/^#/, '');
+    let iframe = this.element.nativeElement.getElementsByTagName('iframe')[0];
+    let query = iframe.contentDocument.location.hash.replace(/^#/, '');
 
     // 1st load has no query, 2nd redirect-load does
     if (query) {
-      var token = this.parseQuery(query)['access_token'];
+      let token = this.authService.parseToken(query);
+
+      // only alert cms service if logged in - otherwise it can wait forever
       if (token) {
         this.cmsService.token = token;
+        this.isAuthorized = true;
       }
       else {
-        this.cmsService.token = null;
+        this.isAuthorized = false;
       }
     }
-  }
-
-  private getNonce(): string {
-    var nonce:string[] = [];
-    for (var i = 0; i < 8; i++) {
-      nonce.push(this.randomInt(0, 15).toString(16));
-    }
-    return nonce.join('');
-  }
-
-  private randomInt(low: number, high: number): number {
-    return Math.floor(Math.random() * (high - low + 1) + low);
-  }
-
-  private parseQuery(query: string = ''): Object {
-    var data = {};
-    for (var pair of query.split('&')) {
-      var parts = pair.split('=');
-      data[parts[0]] = parts[1];
-    }
-    return data;
   }
 
 }
