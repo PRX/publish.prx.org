@@ -16,7 +16,7 @@ export class MimeTypeService {
   }
 }
 
-class MimeDefinition {
+export class MimeDefinition {
   constructor(public type:string) { }
   major() { return this.type.split('/')[0]; }
   minor() { return this.type.split('/')[1]; }
