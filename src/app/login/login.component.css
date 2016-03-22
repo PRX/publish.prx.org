@@ -1,10 +1,6 @@
 /*
  * Login page (mostly an iframe)
  */
-/*:host {
-  padding: 100px 0;
-  text-align: center;
-}*/
 .login {
   width: 100%;
   max-width: 300px;
