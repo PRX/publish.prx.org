@@ -4,11 +4,13 @@ const gulp   = require('gulp');
 const jade   = require('gulp-jade');
 const seq    = require('gulp-sequence');
 const shell  = require('gulp-shell');
+const dotenv = require('dotenv');
+const fs     = require('fs');
 
 // Public tasks (serial)
 gulp.task('git:hooks:pre-commit', seq('jspm:unbundle'));
 gulp.task('postinstall',          seq('jspm:install', 'typings:install', 'git:hooks:install'));
-gulp.task('start',                seq('build:dev', 'server:dev'));
+gulp.task('start',                seq('build:dev', 'env:watch', 'server:dev'));
 
 // Build tasks (parallel)
 gulp.task('build:dev', ['env:write', 'jade:index:dev', 'jspm:bundle:dev']);
@@ -38,13 +40,27 @@ gulp.task('git:hooks:install', shell.task([
 gulp.task('typings:install', shell.task('typings install'));
 
 // write constants for Env to src file
-const fs = require('fs');
-const dotenv = require('dotenv');
+function parseDotFile(path, mustExist) {
+  try { return dotenv.parse(fs.readFileSync(path, {encoding: 'utf8'})); }
+  catch (e) { if (e.code != 'ENOENT' || mustExist) throw e; }
+  return {};
+}
+function encodeDotValue(val) {
+  if (['true', 'false', 'null', 'undefined'].indexOf(val) > -1) return val;
+  if (isNaN(val) || val == '') return "'" + val + "'";
+  return val;
+}
 gulp.task('env:write', function(cb) {
-  var env = dotenv.parse(fs.readFileSync('.env', { encoding: 'utf8' }));
+  var defaults = parseDotFile('env-defaults', true);
+  var overrides = parseDotFile('.env', false);
   var s = '// GENERATED FILE, DO NOT EDIT OR CHECK IN\n';
   s += 'export class Env {\n';
-  s += Object.keys(env).reduce((o, k)=>{return o+'  public static '+k+' = \''+env[k]+'\';\n';}, '');
+  for (var k in defaults) {
+    s += '  public static '+k+' = '+encodeDotValue(overrides[k]||defaults[k]) + ';\n';
+  }
   s += '}\n';
   fs.writeFile('src/util/env.ts', s, cb);
+});
+gulp.task('env:watch', function() {
+  gulp.watch(['env-defaults', '.env'], ['env:write']);
 });
