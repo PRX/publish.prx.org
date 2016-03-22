@@ -1,14 +1,14 @@
 import {Injectable} from 'angular2/core';
+import {Env} from '../../../util/env';
 
 @Injectable()
 export class AuthService {
 
-  public host: string = 'https://id.prx.org';
-  public clientId: string = 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D'; // publish.prx.dev/callback
-
   public authUrl(prompt: string = 'none') {
     let nonce = this.getNonce();
-    return `${this.host}/authorize?client_id=${this.clientId}&nonce=${nonce}&response_type=token&prompt=${prompt}`;
+    let host = Env.AUTH_HOST;
+    let client = Env.AUTH_CLIENT_ID;
+    return `${host}/authorize?client_id=${client}&nonce=${nonce}&response_type=token&prompt=${prompt}`;
   }
 
   public parseToken(query: string = ''): string {
