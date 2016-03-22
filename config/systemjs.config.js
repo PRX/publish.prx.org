@@ -21,6 +21,16 @@ System.config({
     }
   },
 
+  meta: {
+    "npm:angular2@2.0.0-beta.9/*": {
+      "deps": [
+        "es6-shim",
+        "reflect-metadata",
+        "zone.js/dist/zone.js"
+      ]
+    }
+  },
+
   map: {
     "angular2": "npm:angular2@2.0.0-beta.9",
     "plugin-typescript": "github:frankwallis/plugin-typescript@4.0.2",

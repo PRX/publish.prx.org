@@ -6,11 +6,25 @@ const seq    = require('gulp-sequence');
 const shell  = require('gulp-shell');
 const dotenv = require('dotenv');
 const fs     = require('fs');
+const KarmaServer  = require('karma').Server
 
 // Public tasks (serial)
 gulp.task('git:hooks:pre-commit', seq('jspm:unbundle'));
 gulp.task('postinstall',          seq('jspm:install', 'typings:install', 'git:hooks:install'));
 gulp.task('start',                seq('build:dev', 'env:watch', 'server:dev'));
+
+gulp.task('test', function (done) {
+  new KarmaServer({
+    configFile: __dirname + '/config/karma.conf.js',
+    singleRun: true
+  }, done).start();
+});
+
+gulp.task('tdd', function (done) {
+  new KarmaServer({
+    configFile: __dirname + '/config/karma.conf.js'
+  }, done).start();
+});
 
 // Build tasks (parallel)
 gulp.task('build:dev', ['env:write', 'jade:index:dev', 'jspm:bundle:dev']);
