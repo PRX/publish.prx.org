@@ -21,7 +21,11 @@ export class LoginComponent {
   private errorMsg: string;
   private firstLoad: boolean = false;
 
-  constructor(private element: ElementRef, private authService: AuthService, private cmsService: CmsService) {
+  constructor(
+    private element: ElementRef,
+    private authService: AuthService,
+    private cmsService: CmsService
+  ) {
     this.iframeUrl = this.authService.authUrl('login');
   }
 

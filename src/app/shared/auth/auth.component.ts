@@ -19,7 +19,11 @@ export class AuthComponent {
   // assume user is logged in, to start
   private isAuthorized: boolean = true;
 
-  constructor(private element: ElementRef, private authService: AuthService, private cmsService: CmsService) {
+  constructor(
+    private element: ElementRef,
+    private authService: AuthService,
+    private cmsService: CmsService
+  ) {
     this.authUrl = this.authService.authUrl('none');
     cmsService.authToken.subscribe((token) => {
       this.isAuthorized = (token ? true : false);

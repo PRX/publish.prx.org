@@ -5,19 +5,15 @@ import {Observable} from 'rxjs/Observable';
  * Generic class for interacting with HAL api
  */
 export class HalDoc {
-  private _http: Http;
-  private _host: string;
-  private _token: string;
+  private http: Http;
+  private host: string;
+  private token: string;
 
   constructor(data: any = {}, http: Http, host: string, authToken: string) {
     Object.keys(data).forEach((key) => { this[key] = data[key]; });
-    this._http = http;
-    this._host = host;
-    this._token = authToken;
-  }
-
-  set token(token: string) {
-    this._token = token;
+    this.http = http;
+    this.host = host;
+    this.token = authToken;
   }
 
   follow(rel: string, params: any = {}): Observable<HalDoc> {
@@ -38,11 +34,11 @@ export class HalDoc {
       let path = links[0].href;
       let headers = new Headers();
       headers.append('Accept', 'application/json');
-      if (this._token) {
-        headers.append('Authorization', `Bearer ${this._token}`);
+      if (this.token) {
+        headers.append('Authorization', `Bearer ${this.token}`);
       }
-      return this._http.get(this._host + path, {headers: headers}).map((res) => {
-        return new HalDoc(res.json(), this._http, this._host, this._token);
+      return this.http.get(this.host + path, {headers: headers}).map((res) => {
+        return new HalDoc(res.json(), this.http, this.host, this.token);
       });
     }
   }
@@ -78,7 +74,7 @@ export class HalDoc {
       if (link.templated) {
         throw new Error(`TODO - I can't deal with templated links in ${rel}`);
       }
-      return this._host + <string>link.href;
+      return this.host + <string>link.href;
     }
     else {
       return null;
