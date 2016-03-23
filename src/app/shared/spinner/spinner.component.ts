@@ -31,8 +31,10 @@ export class SpinnerComponent implements OnDestroy {
   }
 
   private cancelTimeout(): void {
-    clearTimeout(this.currentTimeout);
-    this.currentTimeout = undefined;
+    if (this.currentTimeout) {
+      clearTimeout(this.currentTimeout);
+      this.currentTimeout = undefined;
+    }
   }
 
   ngOnDestroy(): any {
