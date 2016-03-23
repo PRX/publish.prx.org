@@ -2,7 +2,7 @@ import { Injectable } from 'angular2/core';
 import { UUID } from 'angular2-uuid';
 import { MimeTypeService } from '../../util/mime-type.service';
 import { Env } from '../../util/env';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Subscriber } from 'rxjs';
 import Evaporate from 'evaporate';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class UploadService {
   public signUrl:string = Env.SIGN_URL;
   public awsKey:string = Env.AWS_KEY;
   public awsUrl:string = Env.AWS_URL;
-  public useCloudfront:boolean = (Env.USE_CLOUDFRONT == 'true');
+  public useCloudfront:boolean = Env.USE_CLOUDFRONT;
 
   public uploads:FileUpload[] = [];
   public evaporate:Evaporate;
@@ -40,6 +40,7 @@ export class FileUpload {
   public status:string;
   public name:string;
   public progress:Observable<number>;
+  public uploadId:string;
 
   constructor(
     public file:File,
@@ -49,25 +50,34 @@ export class FileUpload {
     this.name = file.name.replace(/[^a-z0-9\.]+/gi,'_');
   }
 
-  upload():void {
-    let progressCallback:(progress:number) => void;
+  cancel():boolean {
+    if (this.uploadId) {
+      return this.evaporate.cancel(this.uploadId);
+    }
+    return false;
+  }
 
-    this.progress = Observable.create((observer:Observer<number>) => {
-      observer.next(0);
-      progressCallback = (pct) => observer.next(pct);
-    });
-
-    let uploadId = this.evaporate.add({
+  upload():Observable<number> {
+    let uploadOptions = {
       file: this.file,
-      name: name,
+      name: this.name,
       contentType: this.contentType,
       xAmzHeadersAtInitiate: {
         'x-amz-acl': 'private'
       },
       notSignedHeadersAtInitiate: {
         'Content-Disposition': 'attachment; filename=' + name
-      },
-      progress: progressCallback
+      }
+    };
+
+    this.progress = Observable.create((subscriber:Subscriber<number>) => {
+      subscriber.next(0);
+      uploadOptions['progress'] = (pct:number) => subscriber.next(pct);
+      uploadOptions['complete'] = () => { subscriber.next(1.0); subscriber.complete(); }
+      uploadOptions['error']    = (msg:string) => subscriber.error(msg);
     });
+
+    this.uploadId = this.evaporate.add(uploadOptions);
+    return this.progress;
   }
 }
