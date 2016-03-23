@@ -27,7 +27,6 @@
     "postinstall": "gulp postinstall"
   },
   "devDependencies": {
-    "angular2": "^2.0.0-beta.9",
     "dotenv": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-jade": "^1.1.0",
