@@ -62,7 +62,7 @@ a.router-link-active {
   border-left: 1px solid #e6e6e6;
   line-height: 14px;
 }
-:host:first-of-type {
+:host:first-child {
   border-left: none;
 }
 :host.alert .nav-holder {
