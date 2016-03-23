@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import 'angular2/bundles/angular2-polyfills';
 import {enableProdMode} from 'angular2/core';
 import {bootstrap} from 'angular2/platform/browser';
 import {ROUTER_PROVIDERS} from 'angular2/router';
