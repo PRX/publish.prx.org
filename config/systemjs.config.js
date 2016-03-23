@@ -38,6 +38,7 @@ System.config({
     "rxjs": "npm:rxjs@5.0.0-beta.2",
     "ts": "github:frankwallis/plugin-typescript@4.0.2",
     "typescript": "npm:typescript@1.8.7",
+    "zone.js": "npm:zone.js@0.6.6",
     "github:frankwallis/plugin-typescript@4.0.2": {
       "typescript": "npm:typescript@1.8.7"
     },
@@ -81,7 +82,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "reflect-metadata": "npm:reflect-metadata@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.2",
-      "zone.js": "npm:zone.js@0.6.5"
+      "zone.js": "npm:zone.js@0.6.6"
     },
     "npm:asn1.js@4.5.2": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
@@ -326,7 +327,7 @@ System.config({
     "npm:vm-browserify@0.0.4": {
       "indexof": "npm:indexof@0.0.1"
     },
-    "npm:zone.js@0.6.5": {
+    "npm:zone.js@0.6.6": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     }
   }
