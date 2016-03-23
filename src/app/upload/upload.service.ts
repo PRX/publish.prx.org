@@ -2,6 +2,7 @@ import { Injectable } from 'angular2/core';
 import { UUID } from 'angular2-uuid';
 import { MimeTypeService } from '../../util/mime-type.service';
 import { Env } from '../../util/env';
+import { Observable, Observer } from 'rxjs';
 import Evaporate from 'evaporate';
 
 @Injectable()
@@ -12,7 +13,7 @@ export class UploadService {
   public awsUrl:string = Env.AWS_URL;
   public useCloudfront:boolean = (Env.USE_CLOUDFRONT == 'true');
 
-  public uploads:Array<string> = [];
+  public uploads:FileUpload[] = [];
   public evaporate:Evaporate;
 
   constructor(public mimeTypeService:MimeTypeService) {
@@ -26,21 +27,47 @@ export class UploadService {
     });
   }
 
-  addFile(file:File, contentType?:string) : void {
+  addFile(file:File, contentType?:string) : FileUpload {
     let ct = contentType || this.mimeTypeService.lookupFileMimetype(file).full();
-    let name = file.name.replace(/[^a-z0-9\.]+/gi,'_');
+    let upload = new FileUpload(file, ct, this.evaporate);
+    this.uploads.push(upload);
+    upload.upload();
+    return upload;
+  }
+}
+
+export class FileUpload {
+  public status:string;
+  public name:string;
+  public progress:Observable<number>;
+
+  constructor(
+    public file:File,
+    public contentType:string,
+    private evaporate:Evaporate
+  ) {
+    this.name = file.name.replace(/[^a-z0-9\.]+/gi,'_');
+  }
+
+  upload():void {
+    let progressCallback:(progress:number) => void;
+
+    this.progress = Observable.create((observer:Observer<number>) => {
+      observer.next(0);
+      progressCallback = (pct) => observer.next(pct);
+    });
 
     let uploadId = this.evaporate.add({
-      file: file,
+      file: this.file,
       name: name,
-      contentType: ct,
+      contentType: this.contentType,
       xAmzHeadersAtInitiate: {
         'x-amz-acl': 'private'
       },
       notSignedHeadersAtInitiate: {
         'Content-Disposition': 'attachment; filename=' + name
-      }
+      },
+      progress: progressCallback
     });
-    this.uploads.push(uploadId);
   }
 }
