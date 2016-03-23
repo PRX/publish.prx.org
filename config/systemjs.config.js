@@ -22,7 +22,7 @@ System.config({
   },
 
   meta: {
-    "npm:angular2@2.0.0-beta.9/*": {
+    "npm:angular2@2.0.0-beta.11/*": {
       "deps": [
         "es6-shim",
         "reflect-metadata",
