@@ -43,7 +43,7 @@
   width: 25px;
   height: 25px;
   margin: -12.5px -12.5px 0;
-  background-image: url('/images/bt_loading_inner.svg');
+  background-image: url('/assets/images/bt_loading_inner.svg');
   background-size: 25px 25px;
   animation-name: spinner-outside;
   animation-duration: 3s;
@@ -58,7 +58,7 @@
   width: 17px;
   height: 17px;
   margin: -8.5px -8.5px 0;
-  background-image: url('/images/bt_loading_inner.svg');
+  background-image: url('/assets/images/bt_loading_inner.svg');
   animation-name: spinner-inside;
   animation-duration: 3s;
   animation-direction: reverse;
