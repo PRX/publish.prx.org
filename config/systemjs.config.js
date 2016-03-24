@@ -22,7 +22,7 @@ System.config({
   },
 
   meta: {
-    "npm:angular2@2.0.0-beta.11/*": {
+    "npm:angular2@2.0.0-beta.12/*": {
       "deps": [
         "es6-shim",
         "reflect-metadata",
@@ -32,12 +32,13 @@ System.config({
   },
 
   map: {
-    "angular2": "npm:angular2@2.0.0-beta.11",
+    "angular2": "npm:angular2@2.0.0-beta.12",
     "plugin-typescript": "github:frankwallis/plugin-typescript@4.0.2",
     "reflect-metadata": "npm:reflect-metadata@0.1.3",
     "rxjs": "npm:rxjs@5.0.0-beta.2",
     "ts": "github:frankwallis/plugin-typescript@4.0.2",
     "typescript": "npm:typescript@1.8.7",
+    "zone.js": "npm:zone.js@0.6.6",
     "github:frankwallis/plugin-typescript@4.0.2": {
       "typescript": "npm:typescript@1.8.7"
     },
@@ -74,14 +75,13 @@ System.config({
     "github:jspm/nodelibs-vm@0.1.0": {
       "vm-browserify": "npm:vm-browserify@0.0.4"
     },
-    "npm:angular2@2.0.0-beta.11": {
+    "npm:angular2@2.0.0-beta.12": {
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
-      "es6-promise": "npm:es6-promise@3.1.2",
       "es6-shim": "npm:es6-shim@0.35.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "reflect-metadata": "npm:reflect-metadata@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.2",
-      "zone.js": "npm:zone.js@0.6.5"
+      "zone.js": "npm:zone.js@0.6.6"
     },
     "npm:asn1.js@4.5.2": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
@@ -220,9 +220,6 @@ System.config({
       "inherits": "npm:inherits@2.0.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
-    "npm:es6-promise@3.1.2": {
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
     "npm:es6-shim@0.35.0": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
@@ -326,7 +323,7 @@ System.config({
     "npm:vm-browserify@0.0.4": {
       "indexof": "npm:indexof@0.0.1"
     },
-    "npm:zone.js@0.6.5": {
+    "npm:zone.js@0.6.6": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     }
   }
