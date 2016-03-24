@@ -1,0 +1,26 @@
+html(lang='en')
+  head
+    title Publish
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    base(href='/')
+    link(rel='icon' href='/assets/images/favicon.png')
+
+    if locals.dist
+      script(src='/scripts/publish.min.js')
+    else
+      script(src='/jspm_packages/system.js')
+      script(src='/config/systemjs.config.js')
+      script.
+        var readyForMainLoad;
+        if (location.origin.match(/localhost|\.dev/)) {
+         System.trace = true;
+         readyForMainLoad = System.import('capaj/systemjs-hot-reloader').then((HotReloader) => {
+           hr = new HotReloader.default('http://localhost:3000');
+         });
+        }
+        Promise.resolve(readyForMainLoad).then(() => {
+          System.import('main').then(null, console.error.bind(console));
+        });
+
+  body
+    publish-app
