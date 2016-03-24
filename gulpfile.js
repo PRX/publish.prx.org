@@ -35,8 +35,8 @@ gulp.task('build:dev', ['env:write', 'jade:index:dev', 'jspm:bundle:dev']);
 gulp.task('server:dev', shell.task(['node server.js']));
 
 // JSPM bundle tasks
-const nonbundle = ['- [main]', '- [app/**/*]', '- [util/**/*]'].join(' ');
-gulp.task('jspm:bundle:dev', shell.task('jspm bundle ./main '+nonbundle+' ./.dev/vendor.js --inject'));
+const nonbundle = ['- [app/**/*]', '- [util/**/*]'].join(' ');
+gulp.task('jspm:bundle:dev', shell.task('jspm bundle ./app/main '+nonbundle+' ./.dev/vendor.js --inject'));
 gulp.task('jspm:install',    shell.task('jspm install'));
 gulp.task('jspm:unbundle',   shell.task('jspm unbundle'));
 

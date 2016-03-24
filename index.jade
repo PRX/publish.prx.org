@@ -19,7 +19,7 @@ html(lang='en')
          });
         }
         Promise.resolve(readyForMainLoad).then(() => {
-          System.import('main').then(null, console.error.bind(console));
+          System.import('app/main').then(null, console.error.bind(console));
         });
 
   body
