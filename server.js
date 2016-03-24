@@ -1,5 +1,6 @@
 'use strict'
 const httpServer = require('http-server');
+const open = require('open');
 
 let cache = 3600;
 if (process.env.NODE_ENV === 'production') {
@@ -22,3 +23,5 @@ const server = httpServer.createServer({
 require('chokidar-socket-emitter')({app: server.server});
 
 server.listen(3000);
+
+open('http://publish.prx.dev');
