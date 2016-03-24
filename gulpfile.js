@@ -81,8 +81,8 @@ function encodeDotValue(val) {
   return val;
 }
 gulp.task('env:write', function(cb) {
-  var defaults = parseDotFile('env-defaults', true);
-  var overrides = parseDotFile('.env', false);
+  var defaults = parseDotFile('config/env-defaults', true);
+  var overrides = parseDotFile('config/env', false);
   var s = '// GENERATED FILE, DO NOT EDIT OR CHECK IN\n';
   s += 'export class Env {\n';
   for (var k in defaults) {

@@ -14,5 +14,5 @@
 .DS_Store
 
 /util/env.ts
-/.env*
+/config/env
 /.nvmrc

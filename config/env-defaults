@@ -1,3 +1,4 @@
+# default environment configurations
 BUCKET_NAME=
 SIGN_URL=
 AWS_KEY=
@@ -5,5 +6,5 @@ AWS_URL=
 USE_CLOUDFRONT=
 CMS_HOST=https://cms.prx.org
 AUTH_HOST=https://id.prx.org
-// redirects to http://publish.prx.dev/callback
+// redirects to http://publish.prx.dev/assets/callback
 AUTH_CLIENT_ID=rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D
