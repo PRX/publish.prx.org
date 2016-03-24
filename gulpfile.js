@@ -41,7 +41,7 @@ gulp.task('jspm:unbundle',   shell.task('jspm unbundle'));
 
 // Compile tasks
 gulp.task('jade:index:dev', () => {
-  return gulp.forEach
+  return gulp
     .src('./src/index.jade')
     .pipe(jade({ locals: { dist: false } }))
     .pipe(gulp.dest('./src/'));
