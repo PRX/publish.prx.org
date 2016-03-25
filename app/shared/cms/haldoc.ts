@@ -1,5 +1,6 @@
 import {Http, Headers, RequestOptions, Response} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
+import TemplateParser from 'url-template';
 
 /*
  * Generic class for interacting with HAL api
@@ -16,30 +17,34 @@ export class HalDoc {
     this.token = authToken;
   }
 
+  followLink(linkObj: any, params: any = {}): Observable<HalDoc> {
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+    if (this.token) {
+      headers.append('Authorization', `Bearer ${this.token}`);
+    }
+    let href = this.host + linkObj.href;
+    if (linkObj.templated) {
+      href = TemplateParser.parse(href).expand(params);
+    }
+    return this.http.get(href, {headers: headers}).map((res) => {
+      return new HalDoc(res.json(), this.http, this.host, this.token);
+    });
+  }
+
   follow(rel: string, params: any = {}): Observable<HalDoc> {
-    let links = this.links(rel);
-    if (links.length == 0) {
-      return <Observable<HalDoc>>Observable.empty();
+    let links = this.links(rel), embeds = this.embeds(rel);
+    if (embeds) {
+      return Observable.fromArray(embeds);
     }
-    else if (links.length > 1) {
-      return Observable.throw(new Error(`TODO - I can't deal with > 1 links in ${rel}`));
-    }
-    else if (!params && this.embedded(rel)) {
-      return Observable.of(this.embedded(rel));
-    }
-    else if (links[0].templated) {
-      return Observable.throw(new Error(`TODO - I can't deal with templated links in ${rel}`));
+    else if (links) {
+      let allLinks = links.map((link) => {
+        return this.followLink(link, params);
+      });
+      return Observable.concat.apply(this, allLinks);
     }
     else {
-      let path = links[0].href;
-      let headers = new Headers();
-      headers.append('Accept', 'application/json');
-      if (this.token) {
-        headers.append('Authorization', `Bearer ${this.token}`);
-      }
-      return this.http.get(this.host + path, {headers: headers}).map((res) => {
-        return new HalDoc(res.json(), this.http, this.host, this.token);
-      });
+      return <Observable<HalDoc>>Observable.empty();
     }
   }
 
@@ -70,20 +75,29 @@ export class HalDoc {
 
   link(rel: string, params: any = {}): string {
     let link = this.links(rel)[0];
-    if (link) {
-      if (link.templated) {
-        throw new Error(`TODO - I can't deal with templated links in ${rel}`);
-      }
-      return this.host + <string>link.href;
+    if (link && link.templated) {
+      return TemplateParser.parse(this.host + link.href).expand(params);
+    }
+    else if (link) {
+      return this.host + link.href;
     }
     else {
       return null;
     }
   }
 
-  embedded(rel: string): HalDoc {
+  embeds(rel: string): HalDoc[] {
     if (this['_embedded'] && this['_embedded'][rel]) {
-      return this['_embedded'][rel];
+      let rawEmbeds: any = [];
+      if (this['_embedded'][rel] instanceof Array) {
+        rawEmbeds = this['_embedded'][rel];
+      }
+      else {
+        rawEmbeds.push(this['_embedded'][rel]);
+      }
+      return rawEmbeds.map((data: any) => {
+        return new HalDoc(data, this.http, this.host, this.token);
+      });
     }
     else {
       return null;

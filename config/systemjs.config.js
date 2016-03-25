@@ -38,6 +38,7 @@ System.config({
     "ts": "github:frankwallis/plugin-typescript@4.0.2",
     "ts-runtime": "npm:babel-runtime@5.8.38",
     "typescript": "npm:typescript@1.8.9",
+    "url-template": "npm:url-template@2.0.6",
     "zone.js": "npm:zone.js@0.6.6",
     "github:capaj/systemjs-hot-reloader@0.5.6": {
       "debug": "npm:debug@2.2.0",
