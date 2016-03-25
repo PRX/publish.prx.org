@@ -1,0 +1,5 @@
+# (1) cp config/env-example config/env
+# (2) add your ENV overrides here
+CMS_HOST=http://cms.prx.dev
+AUTH_HOST=http://id.prx.dev
+AUTH_CLIENT_ID=foobar

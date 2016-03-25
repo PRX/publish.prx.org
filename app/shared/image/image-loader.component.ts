@@ -4,7 +4,7 @@ import {Component, Input, ElementRef} from 'angular2/core';
   selector: 'image-loader',
   styleUrls: ['app/shared/image/image-loader.component.css'],
   template: `
-    <img [src]="src" class="loading" (load)="onLoad()"/>
+    <img *ngIf="src" [src]="src" class="loading" (load)="onLoad()"/>
     `
 })
 

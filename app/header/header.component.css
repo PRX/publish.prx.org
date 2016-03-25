@@ -34,7 +34,7 @@ a.drawer {
   width: 20px;
   margin: 0 14px;
   line-height: 50px;
-  background-image: url("/images/ic_header_menu.png");
+  background-image: url("/assets/images/ic_header_menu.png");
   background-position: center;
   background-repeat: no-repeat;
   text-indent: 100%;
@@ -44,7 +44,7 @@ a.drawer {
 }
 @media all and (-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 1.5/1), (min-device-pixel-ratio: 1.5), (min-resolution: 138dpi), (min-resolution: 1.5dppx) {
   a.drawer {
-    background-image: url("/images/ic_header_menu@2x.png");
+    background-image: url("/assets/images/ic_header_menu@2x.png");
     -webkit-background-size: auto 15px;
     -moz-background-size: auto 15px;
     background-size: auto 15px;
@@ -62,7 +62,7 @@ h1 {
 h1 a {
   line-height: 50px;
   display: block;
-  background-image: url("/images/ic_header_logo.svg");
+  background-image: url("/assets/images/ic_header_logo.svg");
   -webkit-background-size: auto 22px;
   -moz-background-size: auto 22px;
   background-size: auto 22px;

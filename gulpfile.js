@@ -32,19 +32,20 @@ gulp.task('tdd', function (done) {
 gulp.task('build:dev', ['env:write', 'jade:index:dev', 'jspm:bundle:dev']);
 
 // Server tasks
-gulp.task('server:dev', shell.task(['lite-server --config=config/dev.bs.config.json']));
+gulp.task('server:dev', shell.task(['node server.js']));
 
 // JSPM bundle tasks
-gulp.task('jspm:bundle:dev', shell.task('jspm bundle src/main - [src/app/**/*] ./.dev/vendor.js --inject'));
+const nonbundle = ['- [app/**/*]', '- [util/**/*]'].join(' ');
+gulp.task('jspm:bundle:dev', shell.task('jspm bundle ./app/main '+nonbundle+' ./.dev/vendor.js --inject'));
 gulp.task('jspm:install',    shell.task('jspm install'));
 gulp.task('jspm:unbundle',   shell.task('jspm unbundle'));
 
 // Compile tasks
 gulp.task('jade:index:dev', () => {
   return gulp
-    .src('./src/index.jade')
+    .src('./index.jade')
     .pipe(jade({ locals: { dist: false } }))
-    .pipe(gulp.dest('./src/'));
+    .pipe(gulp.dest('./'));
 });
 
 // Utility tasks
@@ -80,15 +81,15 @@ function encodeDotValue(val) {
   return val;
 }
 gulp.task('env:write', function(cb) {
-  var defaults = parseDotFile('env-defaults', true);
-  var overrides = parseDotFile('.env', false);
+  var defaults = parseDotFile('config/env-defaults', true);
+  var overrides = parseDotFile('config/env', false);
   var s = '// GENERATED FILE, DO NOT EDIT OR CHECK IN\n';
   s += 'export class Env {\n';
   for (var k in defaults) {
     s += '  public static '+k+' = '+encodeDotValue(overrides[k]||defaults[k]) + ';\n';
   }
   s += '}\n';
-  fs.writeFile('src/util/env.ts', s, cb);
+  fs.writeFile('util/env.ts', s, cb);
 });
 gulp.task('env:watch', function() {
   gulp.watch(['env-defaults', '.env'], ['env:write']);
