@@ -16,17 +16,20 @@ module.exports = function(config) {
 
     jspm: {
       loadFiles: [
-        'src/**/*.spec.ts'
+        'app/**/*.spec.ts',
+        'util/**/*.spec.ts'
       ],
       serveFiles: [
-        'src/**/*!(*.spec).ts',
+        'app/**/*!(*.spec).ts',
+        'util/**/*.ts',
         'tsconfig.json'
       ]
     },
 
 
     proxies: {
-      '/src/': '/base/src/',
+      '/app/': '/base/app/',
+      '/util/': '/base/util/',
       '/jspm_packages/': '/base/jspm_packages/',
       '/tsconfig.json': '/base/tsconfig.json'
     },

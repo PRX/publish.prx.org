@@ -12,7 +12,7 @@ export class CmsService {
   private rootDoc: ReplaySubject<any>;
 
   constructor(private http: Http) {
-    this.authToken = new ReplaySubject(1);
+    this.authToken = new ReplaySubject<string>(1);
     this.rootDoc = new ReplaySubject(1);
     this.http.get(`${Env.CMS_HOST}/api/v1`).subscribe((res) => {
       this.rootDoc.next(res.json());
@@ -47,7 +47,7 @@ export class CmsService {
 
   follows(...rels: string[]): Observable<HalDoc> {
     return this.root.flatMap((rootDoc) => {
-      return rootDoc.follows.apply(rootDoc, rels);
+      return <Observable<HalDoc>>rootDoc.follows.apply(rootDoc, rels);
     });
   }
 

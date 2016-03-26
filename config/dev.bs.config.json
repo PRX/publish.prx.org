@@ -1,9 +1,0 @@
-{
-  "files": [ "./**/*.{html,htm,css,js,ts}" ],
-  "server": {
-    "baseDir": "./src",
-    "routes": {
-      "/": "./"
-    }
-  }
-}

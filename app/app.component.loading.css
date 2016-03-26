@@ -6,7 +6,7 @@
   width: 25px;
   height: 25px;
   margin: -12.5px -12.5px 0;
-  background-image: url("/images/bt_loading_inner.svg");
+  background-image: url("/assets/images/bt_loading_inner.svg");
   -webkit-background-size: 25px 25px;
   -moz-background-size: 25px 25px;
   background-size: 25px 25px;
@@ -39,7 +39,7 @@
   width: 17px;
   height: 17px;
   margin: -8.5px -8.5px 0;
-  background-image: url("/images/bt_loading_inner.svg");
+  background-image: url("/assets/images/bt_loading_inner.svg");
   -webkit-animation-name: spinner-inside;
   -moz-animation-name: spinner-inside;
   -o-animation-name: spinner-inside;

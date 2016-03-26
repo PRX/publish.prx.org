@@ -19,7 +19,7 @@ export class HalDoc {
   follow(rel: string, params: any = {}): Observable<HalDoc> {
     let links = this.links(rel);
     if (links.length == 0) {
-      return Observable.empty();
+      return <Observable<HalDoc>>Observable.empty();
     }
     else if (links.length > 1) {
       return Observable.throw(new Error(`TODO - I can't deal with > 1 links in ${rel}`));
@@ -46,7 +46,7 @@ export class HalDoc {
   follows(...rels: string[]): Observable<HalDoc> {
     if (rels.length) {
       return this.follow(rels.shift()).flatMap((doc) => {
-        return doc.follows.apply(doc, rels);
+        return <Observable<HalDoc>>doc.follows.apply(doc, rels);
       });
     }
     else {
