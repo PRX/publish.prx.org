@@ -64,9 +64,9 @@ gulp.task('clean:deps', () => {
 });
 
 gulp.task('copy:deps', ['clean:deps'], () => {
-    return gulp.src(`jspm_packages/npm/{${npm_deps.join(',')}}@*/**/*`)
-      .pipe(rename((path) => { path.dirname = path.dirname.replace(/^(\w+)@[^/]+/, '$1'); }))
-      .pipe(gulp.dest('node_modules'));
+  return gulp.src(`jspm_packages/npm/{${npm_deps.join(',')}}@*/**/*`)
+    .pipe(rename((path) => { path.dirname = path.dirname.replace(/^([\w-]+)@[^/]+/, '$1'); }))
+    .pipe(gulp.dest('node_modules'));
 });
 
 // write constants for Env to src file
