@@ -35,6 +35,7 @@ import {UploadComponent} from './upload/upload.component';
       <logged-in>
         <publish-header>
           <nav-item route="Home" text="Home"></nav-item>
+          <nav-item route="Upload" text="Upload"></nav-item>
           <nav-item href="//www.prx.org/search/all" text="Search"></nav-item>
           <nav-user></nav-user>
         </publish-header>
