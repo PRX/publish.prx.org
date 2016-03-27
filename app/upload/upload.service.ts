@@ -1,8 +1,8 @@
-import { Injectable } from 'angular2/core';
-import { UUID } from 'angular2-uuid';
-import { MimeTypeService } from '../../util/mime-type.service';
-import { Env } from '../../util/env';
-import { Observable, Subscriber } from 'rxjs';
+import {Injectable} from 'angular2/core';
+import {Observable, Subscriber} from 'rxjs';
+import {UUID} from 'angular2-uuid';
+import {MimeTypeService} from '../../util/mime-type.service';
+import {Env} from '../../util/env';
 import Evaporate from 'evaporate';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class UploadService {
   public awsUrl:string = Env.AWS_URL;
   public useCloudfront:boolean = Env.USE_CLOUDFRONT;
 
-  public uploads:FileUpload[] = [];
+  public uploads:Upload[] = [];
   public evaporate:Evaporate;
 
   constructor(public mimeTypeService:MimeTypeService) {
@@ -27,16 +27,16 @@ export class UploadService {
     });
   }
 
-  addFile(file:File, contentType?:string) : FileUpload {
+  addFile(file:File, contentType?:string) : Upload {
     let ct = contentType || this.mimeTypeService.lookupFileMimetype(file).full();
-    let upload = new FileUpload(file, ct, this.evaporate);
+    let upload = new Upload(file, ct, this.evaporate);
     this.uploads.push(upload);
-    upload.upload();
+    // upload.upload();
     return upload;
   }
 }
 
-export class FileUpload {
+export class Upload {
   public status:string;
   public name:string;
   public progress:Observable<number>;
@@ -48,16 +48,18 @@ export class FileUpload {
     private evaporate:Evaporate
   ) {
     this.name = file.name.replace(/[^a-z0-9\.]+/gi,'_');
+    this.upload();
   }
 
-  cancel():boolean {
-    if (this.uploadId) {
+  cancel(): boolean {
+    if (this.uploadId !== null) {
+      console.log("cancelling:", this.uploadId);
       return this.evaporate.cancel(this.uploadId);
     }
     return false;
   }
 
-  upload():Observable<number> {
+  upload(): Observable<number> {
     let uploadOptions = {
       file: this.file,
       name: this.name,
@@ -70,14 +72,15 @@ export class FileUpload {
       }
     };
 
-    this.progress = Observable.create((subscriber:Subscriber<number>) => {
-      subscriber.next(0);
-      uploadOptions['progress'] = (pct:number) => subscriber.next(pct);
-      uploadOptions['complete'] = () => { subscriber.next(1.0); subscriber.complete(); }
-      uploadOptions['error']    = (msg:string) => subscriber.error(msg);
+    this.progress = Observable.create((sub:Subscriber<number>) => {
+      sub.next(0);
+      uploadOptions['progress'] = (pct:number) => sub.next(pct);
+      uploadOptions['complete'] = () => { sub.next(1.0); sub.complete(); }
+      uploadOptions['error']    = (msg:string) => sub.error(msg);
+      this.uploadId = this.evaporate.add(uploadOptions);
+      console.log("*** this.uploadId", this.uploadId);
     });
 
-    this.uploadId = this.evaporate.add(uploadOptions);
     return this.progress;
   }
 }
