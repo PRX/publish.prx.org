@@ -69,17 +69,17 @@ export class HalDoc {
       }
     }
     else {
-      return [];
+      return null;
     }
   }
 
   link(rel: string, params: any = {}): string {
-    let link = this.links(rel)[0];
-    if (link && link.templated) {
-      return TemplateParser.parse(this.host + link.href).expand(params);
+    let links = this.links(rel);
+    if (links && links[0] && links[0].templated) {
+      return TemplateParser.parse(this.host + links[0].href).expand(params);
     }
-    else if (link) {
-      return this.host + link.href;
+    else if (links && links[0]) {
+      return this.host + links[0].href;
     }
     else {
       return null;
@@ -93,7 +93,7 @@ export class HalDoc {
         rawEmbeds = this['_embedded'][rel];
       }
       else {
-        rawEmbeds.push(this['_embedded'][rel]);
+        rawEmbeds = [this['_embedded'][rel]];
       }
       return rawEmbeds.map((data: any) => {
         return new HalDoc(data, this.http, this.host, this.token);

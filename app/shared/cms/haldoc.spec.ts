@@ -1,28 +1,25 @@
-import { HalDoc } from './haldoc';
-import { it, describe, expect, beforeEach, beforeEachProviders, inject, injectAsync } from 'angular2/testing';
-import {provide} from 'angular2/core';
-import {Http, HTTP_PROVIDERS, XHRBackend, Response, ResponseOptions, RequestOptions, ConnectionBackend} from 'angular2/http';
-import {MockBackend, MockConnection} from 'angular2/http/testing';
+import {it, describe, expect, beforeEach, beforeEachProviders, inject, injectAsync} from 'angular2/testing';
+import {Http, Response, ResponseOptions, RequestOptions} from 'angular2/http';
+import {MockBackend} from 'angular2/http/testing';
 import {Observable} from 'rxjs/Observable';
-
-let mockBackend = new MockBackend();
-const mockResponse = (data = {}) => {
-  mockBackend.connections.subscribe((conn: MockConnection) => {
-    conn.mockRespond(new Response(new ResponseOptions({body: data})));
-  });
-}
-const makeDoc = (data = {}) => {
-  let http = new Http(mockBackend, new RequestOptions());
-  return new HalDoc(data, http, 'http://thehost', 'thetoken');
-}
-const makeLinks = (links = {}) => {
-  return makeDoc({_links: links});
-}
-const makeEmbedded = (embed = {}) => {
-  return makeDoc({_embedded: embed});
-}
+import {HalDoc} from './haldoc';
 
 describe('HalDoc', () => {
+
+  const mockHttp = new Http(new MockBackend(), new RequestOptions());
+  const mockResponse = (data = {}) => {
+    let res = new Response(new ResponseOptions({body: data}));
+    return Observable.of(res);
+  }
+  const makeDoc = (data = {}) => {
+    return new HalDoc(data, mockHttp, 'http://thehost', 'thetoken');
+  }
+  const makeLinks = (links = {}) => {
+    return makeDoc({_links: links});
+  }
+  const makeEmbedded = (embed = {}) => {
+    return makeDoc({_embedded: embed});
+  }
 
   describe('constructor', () => {
 
@@ -37,24 +34,88 @@ describe('HalDoc', () => {
   describe('followLink', () => {
 
     it('http follows links', () => {
-      let http = new Http(mockBackend, new RequestOptions());
-      http.get = (url: any, options: any): any => {
+      spyOn(mockHttp, 'get').and.callFake((url: any, options: any) => {
         expect(url).toEqual('http://thehost/somewhere');
         expect(options.headers.get('Accept')).toEqual('application/json');
         expect(options.headers.get('Authorization')).toEqual('Bearer thetoken');
         return Observable.empty();
-      };
-      let doc = new HalDoc({foo: 'bar'}, http, 'http://thehost', 'thetoken');
+      });
+      let doc = makeDoc();
       doc.followLink({href: '/{foo}', templated: true}, {foo: 'somewhere'});
+      expect(mockHttp.get).toHaveBeenCalled();
     });
 
   });
 
   describe('follow', () => {
 
+    it('picks embedded content over following a link', () => {
+      spyOn(mockHttp, 'get').and.returnValue(Observable.empty());
+      let doc = makeDoc({
+        _links: {name: {href: '/nowhere'}},
+        _embedded: {name: {foo: 'bar'}}
+      });
+      doc.follow('name').subscribe((nextDoc) => {
+        expect(nextDoc['foo']).toEqual('bar');
+      });
+      expect(mockHttp.get).not.toHaveBeenCalled();
+    });
+
+    it('observes multiple links', () => {
+      spyOn(mockHttp, 'get').and.returnValue(mockResponse({foo: 'bar'}));
+      let doc = makeLinks({name: [{href: '/one'}, {href: '/two'}]});
+      doc.follow('name').subscribe((nextDoc) => {
+        expect(nextDoc['foo']).toEqual('bar');
+      });
+      expect(mockHttp.get).toHaveBeenCalledTimes(2);
+    });
+
+    it('returns empty for non-existing links', () => {
+      let doc = makeLinks({name: {href: '/one'}});
+      let completed = false;
+      doc.follow('notname').subscribe(
+        (successDoc) => { fail('should not have gotten a doc'); },
+        (err) => { fail('should not have gotten an error'); },
+        () => { completed = true }
+      );
+      expect(completed).toBeTruthy();
+    });
+
   });
 
   describe('follows', () => {
+
+    beforeEach(() => {
+      spyOn(mockHttp, 'get').and.returnValue(mockResponse({
+        _embedded: {rel2: [
+          {_embedded: {rel3: [{hello: 'world'}]}},
+          {_embedded: {rel3: [{hello: 'foobar'}]}},
+          {_embedded: {relnot3: [{foo: 'bar'}]}},
+        ]}
+      }));
+    });
+
+    it('follows nested links/embeds', () => {
+      let doc = makeLinks({rel1: {href: '/somewhere'}});
+      let count = 0;
+      doc.follows('rel1', 'rel2', 'rel3').subscribe((lastDoc) => {
+        expect(lastDoc['hello']).toMatch(/world|foobar/);
+        count++;
+      });
+      expect(mockHttp.get).toHaveBeenCalledTimes(1);
+      expect(count).toEqual(2);
+    });
+
+    it('returns empty if one rel in the chain does not exist', () => {
+      let doc = makeLinks({rel1: {href: '/somewhere'}});
+      let completed = false;
+      doc.follows('rel1', 'relnothing', 'rel3').subscribe(
+        (successDoc) => { fail('should not have gotten a doc'); },
+        (err) => { fail('should not have gotten an error'); },
+        () => { completed = true }
+      );
+      expect(completed).toBeTruthy();
+    });
 
   });
 
@@ -66,8 +127,8 @@ describe('HalDoc', () => {
       expect(links).toEqual(['foo', 'bar']);
     });
 
-    it('returns empty for undefined rels', () => {
-      expect(makeLinks().links('name')).toEqual([]);
+    it('returns null for undefined rels', () => {
+      expect(makeLinks().links('name')).toBeNull();
     });
 
     it('returns arrays for singular links', () => {
