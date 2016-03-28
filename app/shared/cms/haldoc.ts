@@ -1,4 +1,4 @@
-import {Http, Headers, RequestOptions, Response} from 'angular2/http';
+import {Http, Headers} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
 import TemplateParser from 'url-template';
 
@@ -36,25 +36,22 @@ export class HalDoc {
     let links = this.links(rel), embeds = this.embeds(rel);
     if (embeds) {
       return Observable.fromArray(embeds);
-    }
-    else if (links) {
+    } else if (links) {
       let allLinks = links.map((link) => {
         return this.followLink(link, params);
       });
       return Observable.concat.apply(this, allLinks);
-    }
-    else {
-      return <Observable<HalDoc>>Observable.empty();
+    } else {
+      return <Observable<HalDoc>> Observable.empty();
     }
   }
 
   follows(...rels: string[]): Observable<HalDoc> {
     if (rels.length) {
       return this.follow(rels.shift()).flatMap((doc) => {
-        return <Observable<HalDoc>>doc.follows.apply(doc, rels);
+        return <Observable<HalDoc>> doc.follows.apply(doc, rels);
       });
-    }
-    else {
+    } else {
       return Observable.of(this);
     }
   }
@@ -63,12 +60,10 @@ export class HalDoc {
     if (this['_links'] && this['_links'][rel]) {
       if (this['_links'][rel] instanceof Array) {
         return this['_links'][rel];
-      }
-      else {
+      } else {
         return [this['_links'][rel]];
       }
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -77,11 +72,9 @@ export class HalDoc {
     let links = this.links(rel);
     if (links && links[0] && links[0].templated) {
       return TemplateParser.parse(this.host + links[0].href).expand(params);
-    }
-    else if (links && links[0]) {
+    } else if (links && links[0]) {
       return this.host + links[0].href;
-    }
-    else {
+    } else {
       return null;
     }
   }
@@ -91,15 +84,13 @@ export class HalDoc {
       let rawEmbeds: any = [];
       if (this['_embedded'][rel] instanceof Array) {
         rawEmbeds = this['_embedded'][rel];
-      }
-      else {
+      } else {
         rawEmbeds = [this['_embedded'][rel]];
       }
       return rawEmbeds.map((data: any) => {
         return new HalDoc(data, this.http, this.host, this.token);
       });
-    }
-    else {
+    } else {
       return null;
     }
   }

@@ -1,4 +1,4 @@
-import {it, describe, expect, beforeEach, beforeEachProviders, inject, injectAsync} from 'angular2/testing';
+import {it, describe, expect, beforeEach} from 'angular2/testing';
 import {Http, Response, ResponseOptions, RequestOptions} from 'angular2/http';
 import {MockBackend} from 'angular2/http/testing';
 import {Observable} from 'rxjs/Observable';
@@ -10,21 +10,21 @@ describe('HalDoc', () => {
   const mockResponse = (data = {}) => {
     let res = new Response(new ResponseOptions({body: data}));
     return Observable.of(res);
-  }
+  };
   const makeDoc = (data = {}) => {
     return new HalDoc(data, mockHttp, 'http://thehost', 'thetoken');
-  }
+  };
   const makeLinks = (links = {}) => {
     return makeDoc({_links: links});
-  }
+  };
   const makeEmbedded = (embed = {}) => {
     return makeDoc({_embedded: embed});
-  }
+  };
 
   describe('constructor', () => {
 
     it('assigns attributes to new docs', () => {
-      let doc = makeDoc({foo: 'bar', something: {nested: {here: 'okay'}}})
+      let doc = makeDoc({foo: 'bar', something: {nested: {here: 'okay'}}});
       expect(doc['foo']).toEqual('bar');
       expect(doc['something']['nested']['here']).toEqual('okay');
     });
@@ -52,8 +52,8 @@ describe('HalDoc', () => {
     it('picks embedded content over following a link', () => {
       spyOn(mockHttp, 'get').and.returnValue(Observable.empty());
       let doc = makeDoc({
-        _links: {name: {href: '/nowhere'}},
-        _embedded: {name: {foo: 'bar'}}
+        _embedded: {name: {foo: 'bar'}},
+        _links: {name: {href: '/nowhere'}}
       });
       doc.follow('name').subscribe((nextDoc) => {
         expect(nextDoc['foo']).toEqual('bar');
@@ -76,7 +76,7 @@ describe('HalDoc', () => {
       doc.follow('notname').subscribe(
         (successDoc) => { fail('should not have gotten a doc'); },
         (err) => { fail('should not have gotten an error'); },
-        () => { completed = true }
+        () => { completed = true; }
       );
       expect(completed).toBeTruthy();
     });
@@ -90,7 +90,7 @@ describe('HalDoc', () => {
         _embedded: {rel2: [
           {_embedded: {rel3: [{hello: 'world'}]}},
           {_embedded: {rel3: [{hello: 'foobar'}]}},
-          {_embedded: {relnot3: [{foo: 'bar'}]}},
+          {_embedded: {relnot3: [{foo: 'bar'}]}}
         ]}
       }));
     });
@@ -112,7 +112,7 @@ describe('HalDoc', () => {
       doc.follows('rel1', 'relnothing', 'rel3').subscribe(
         (successDoc) => { fail('should not have gotten a doc'); },
         (err) => { fail('should not have gotten an error'); },
-        () => { completed = true }
+        () => { completed = true; }
       );
       expect(completed).toBeTruthy();
     });
@@ -144,14 +144,14 @@ describe('HalDoc', () => {
     it('returns the first link by rel', () => {
       let doc = makeLinks({name: [
         { href: '/link1href' },
-        { href: '/link2href' },
+        { href: '/link2href' }
       ]});
       expect(doc.link('name')).toEqual('http://thehost/link1href');
     });
 
     it('expands url templates', () => {
       let doc = makeLinks({name: [{href: '/link/{foo}{?bar}', templated: true}]});
-      let href = doc.link('name', {foo: 'one', bar: 'two', test: 'three'});
+      let href = doc.link('name', {bar: 'two', foo: 'one', test: 'three'});
       expect(href).toEqual('http://thehost/link/one?bar=two');
     });
 
