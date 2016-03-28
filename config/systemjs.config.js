@@ -112,7 +112,7 @@ System.config({
       "vm-browserify": "npm:vm-browserify@0.0.4"
     },
     "npm:angular2@2.0.0-beta.12": {
-      "reflect-metadata": "npm:reflect-metadata@0.1.3",
+      "reflect-metadata": "npm:reflect-metadata@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.2",
       "zone.js": "npm:zone.js@0.5.15"
     },
