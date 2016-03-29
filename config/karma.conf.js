@@ -21,6 +21,7 @@ module.exports = function(config) {
       ],
       serveFiles: [
         'app/**/*!(*.spec).ts',
+        'app/**/*.css',
         'util/**/*.ts',
         'tsconfig.json'
       ]
@@ -84,7 +85,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true,
+    // singleRun: true,
 
 
     // Concurrency level

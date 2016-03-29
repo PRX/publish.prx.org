@@ -25,10 +25,6 @@ export class HomeComponent {
     this.cmsService.follows('prx:authorization', 'prx:default-account').subscribe((doc) => {
       this.userName = doc['name'];
       this.isLoading = false;
-    }, (err) => {
-      console.log("GOT that error");
-      this.userName = null;
-      this.isLoading = false;
     });
   }
 
