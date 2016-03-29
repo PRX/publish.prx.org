@@ -37,7 +37,11 @@ const nonbundle = ['- [app/**/*]', '- [util/**/*]'].join(' ');
 gulp.task('jspm:bundle:dev', function() {
   return gulp.src('config/systemjs.config.js')
     .pipe(newer('.dev/vendor.js'))
-    .pipe(shell(['jspm bundle ./app/main '+nonbundle+' ./.dev/vendor.js --inject']));
+    .pipe(shell([
+      'echo "" > util/env.ts',
+      'jspm bundle ./app/main '+nonbundle+' ./.dev/vendor.js --inject',
+      'rm -f util/env.ts'
+    ]));
 });
 gulp.task('jspm:install',    shell.task('jspm install'));
 gulp.task('jspm:unbundle',   shell.task('jspm unbundle'));
