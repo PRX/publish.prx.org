@@ -9,10 +9,7 @@
 
 *.js.map
 
-/index.html
-
 .DS_Store
 
-/util/env.ts
 /config/env
 /.nvmrc
