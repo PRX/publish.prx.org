@@ -10,7 +10,7 @@ export class CmsService {
   public authToken: ReplaySubject<string>;
   private rootDoc: ReplaySubject<any>;
 
-  constructor(private http: Http, token?: string) {
+  constructor(private http: Http) {
     this.authToken = new ReplaySubject<string>(1);
     this.rootDoc = new ReplaySubject<any>(1);
     this.http.get(`${Env.CMS_HOST}/api/v1`).subscribe((res) => {
@@ -20,9 +20,6 @@ export class CmsService {
         this.rootDoc.error(`Got ${res.status} from ${Env.CMS_HOST}/api/v1`);
       }
     });
-    if (token) {
-      this.token = token;
-    }
   }
 
   set token(token: string) {

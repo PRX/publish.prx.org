@@ -88,7 +88,8 @@ describe('CmsService', () => {
           rel1: {hello: 'world'}
         }
       }));
-      let cms = new CmsService(mockHttp, 'thetoken');
+      let cms = new CmsService(mockHttp);
+      cms.token = 'thetoken';
       let count = 0;
       cms.follow('rel1').subscribe((doc) => {
         expect(doc['hello']).toEqual('world');
@@ -114,7 +115,8 @@ describe('CmsService', () => {
           }
         }
       }));
-      let cms = new CmsService(mockHttp, 'thetoken');
+      let cms = new CmsService(mockHttp);
+      cms.token = 'thetoken';
       let count = 0;
       cms.follows('rel1', 'rel2').subscribe((doc) => {
         expect(doc['hello']).toEqual('thereworld');
