@@ -1,0 +1,83 @@
+/**
+ * Hero
+ */
+.banner {
+  height: 200px;
+  background: #818181 url('/assets/images/towers.png') repeat;
+}
+.banner h1 {
+  font-size: 40px;
+  line-height: 200px;
+  font-weight: 400;
+  color: #fff;
+}
+
+/**
+ * Toolbar
+ */
+.toolbar {
+  background: #fff;
+}
+.toolbar section {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  position: relative;
+}
+.toolbar spinner {
+  flex-grow: 1;
+  height: 48px;
+}
+.toolbar .info {
+  flex-grow: 1;
+}
+.toolbar h2 {
+  font-size: 26px;
+  line-height: 30px;
+  font-weight: 200;
+}
+.toolbar button {
+  display: inline-block;
+  margin-left: 10px;
+}
+.toolbar button.publish {
+  background-color: #f59f51;
+}
+.toolbar button.publish:hover {
+  background-color: #e28b42;
+}
+
+/**
+ * Main content
+ */
+.main section {
+  display: flex;
+  padding: 10px 0;
+}
+.main nav {
+  width: 260px;
+  margin-right: 20px;
+}
+.main nav a {
+  display: block;
+  background-color: #fff;
+  padding: 14px 20px;
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.main nav a:hover {
+  text-decoration: underline;
+}
+.main nav a.router-link-active {
+  background-color: #368aa2;
+  color: #fff;
+}
+.main nav a.router-link-active:hover {
+  background-color: #2b7187;
+  text-decoration: none;
+}
+.main section .content {
+  flex-grow: 1;
+  border: 1px solid blue;
+  min-height: 100px;
+}

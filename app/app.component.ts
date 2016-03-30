@@ -8,7 +8,8 @@ import {NavUserComponent} from './header/navuser.component';
 import {FooterComponent}  from './footer/footer.component';
 import {LoginComponent} from './login/login.component';
 
-import {HomeComponent}  from './home/home.component';
+import {HomeComponent}     from './home/home.component';
+import {StoryEditComponent} from './storyedit/storyedit.component';
 
 @Component({
   directives: [
@@ -21,7 +22,7 @@ import {HomeComponent}  from './home/home.component';
     LoginComponent
   ],
   selector: 'publish-app',
-  encapsulation: ViewEncapsulation.None, // important!
+  encapsulation: ViewEncapsulation.None, // Important!
   styleUrls: [
     'app/app.component.reset.css',
     'app/app.component.css',
@@ -34,11 +35,14 @@ import {HomeComponent}  from './home/home.component';
       <logged-in>
         <publish-header>
           <nav-item route="Home" text="Home"></nav-item>
+          <nav-item route="Create" text="Create"></nav-item>
           <nav-item href="//www.prx.org/search/all" text="Search"></nav-item>
           <nav-user></nav-user>
         </publish-header>
         <main>
-          <router-outlet></router-outlet>
+          <article>
+            <router-outlet></router-outlet>
+          </article>
         </main>
         <publish-footer></publish-footer>
       </logged-in>
@@ -52,8 +56,10 @@ import {HomeComponent}  from './home/home.component';
 })
 
 @RouteConfig([
-  { path: '/',      name: 'Index', component: HomeComponent, useAsDefault: true },
-  { path: '/home',  name: 'Home',  component: HomeComponent }
+  { path: '/',             name: 'Index',   component: HomeComponent, useAsDefault: true },
+  { path: '/home',         name: 'Home',    component: HomeComponent },
+  { path: '/create/...',   name: 'Create',  component: StoryEditComponent },
+  { path: '/edit/:id/...', name: 'Edit',    component: StoryEditComponent }
 ])
 
 export class AppComponent {}
