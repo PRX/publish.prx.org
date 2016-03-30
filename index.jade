@@ -13,10 +13,19 @@ html(lang='en')
       script.
         var readyForMainLoad;
         if (location.origin.match(/localhost|\.dev/)) {
-         System.trace = true;
-         readyForMainLoad = System.import('capaj/systemjs-hot-reloader').then((HotReloader) => {
-           hr = new HotReloader.default('http://localhost:3000');
-         });
+          System.trace = true;
+          readyForMainLoad = System.import('capaj/systemjs-hot-reloader').then((HotReloader) => {
+            hr = new HotReloader.default('http://localhost:3000');
+
+            // reload same-named components when css changes
+            hr.on('change', (fileName) => {
+              if (fileName.match(/app\.component/)) {
+                hr.hotReload('app/app.component.ts');
+              } else if (fileName.match(/\.css$/)) {
+                hr.hotReload(fileName.replace(/\.css$/, '.ts'));
+              }
+            });
+          });
         }
         Promise.resolve(readyForMainLoad).then(() => {
           System.import('app/main').then(null, console.error.bind(console));
