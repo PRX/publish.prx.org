@@ -32,6 +32,8 @@ System.config({
   map: {
     "angular2": "npm:angular2@2.0.0-beta.12",
     "capaj/systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@0.5.6",
+    "crypto": "github:jspm/nodelibs-crypto@0.1.0",
+    "es6-shim": "npm:es6-shim@0.35.0",
     "plugin-typescript": "github:frankwallis/plugin-typescript@4.0.2",
     "reflect-metadata": "npm:reflect-metadata@0.1.3",
     "rxjs": "npm:rxjs@5.0.0-beta.2",
@@ -109,9 +111,6 @@ System.config({
       "vm-browserify": "npm:vm-browserify@0.0.4"
     },
     "npm:angular2@2.0.0-beta.12": {
-      "crypto": "github:jspm/nodelibs-crypto@0.1.0",
-      "es6-shim": "npm:es6-shim@0.35.0",
-      "process": "github:jspm/nodelibs-process@0.1.2",
       "reflect-metadata": "npm:reflect-metadata@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.2",
       "zone.js": "npm:zone.js@0.6.6"
