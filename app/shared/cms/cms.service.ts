@@ -2,7 +2,7 @@ import {Injectable} from 'angular2/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {Http} from 'angular2/http';
 import {HalDoc} from './haldoc';
-import {Env} from '../../../util/env';
+import {Env} from '../../../config/env';
 
 @Injectable()
 export class CmsService {

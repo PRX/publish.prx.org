@@ -10,7 +10,7 @@ const KarmaServer  = require('karma').Server
 
 // Public tasks (serial)
 gulp.task('git:hooks:pre-commit', seq('jspm:unbundle'));
-gulp.task('postinstall',          seq('jspm:install', 'typings:install', 'git:hooks:install', 'copy:deps'));
+gulp.task('postinstall',          seq('jspm:install', 'typings:install', 'git:hooks:install', 'copy:deps', 'jspm:bundle:dev'));
 gulp.task('start',                seq('build:dev', 'copy:deps', 'server:dev'));
 
 gulp.task('test', function (done) {
@@ -30,18 +30,14 @@ gulp.task('tdd', function (done) {
 gulp.task('build:dev', ['jspm:bundle:dev']);
 
 // Server tasks
-gulp.task('server:dev', shell.task(['node server.js']));
+gulp.task('server:dev', shell.task(['node lib/server.js']));
 
 // JSPM bundle tasks
-const nonbundle = ['- [app/**/*]', '- [util/**/*]'].join(' ');
+const nonbundle = ['- [app/**/*]', '- [config/**/*]', '- [util/**/*]'].join(' ');
 gulp.task('jspm:bundle:dev', function() {
   return gulp.src('config/systemjs.config.js')
     .pipe(newer('.dev/vendor.js'))
-    .pipe(shell([
-      'echo "" > util/env.ts',
-      'jspm bundle ./app/main '+nonbundle+' ./.dev/vendor.js --inject',
-      'rm -f util/env.ts'
-    ]));
+    .pipe(shell(['jspm bundle ./app/main '+nonbundle+' ./.dev/vendor.js --inject']));
 });
 gulp.task('jspm:install',    shell.task('jspm install'));
 gulp.task('jspm:unbundle',   shell.task('jspm unbundle'));
@@ -55,14 +51,14 @@ gulp.task('git:hooks:install', shell.task([
 
 gulp.task('typings:install', shell.task('typings install'));
 
-var npm_deps = ['angular2', 'rxjs'];
+var npm_deps = ['angular2', 'rxjs', 'angular2-uuid'];
 
 gulp.task('clean:deps', () => {
   return gulp.src(`node_modules/{${npm_deps.join(',')}}`, {read: false}).pipe(clean({force: true}));
 });
 
 gulp.task('copy:deps', ['clean:deps'], () => {
-    return gulp.src(`jspm_packages/npm/{${npm_deps.join(',')}}@*/**/*`)
-      .pipe(rename((path) => { path.dirname = path.dirname.replace(/^(\w+)@[^/]+/, '$1'); }))
-      .pipe(gulp.dest('node_modules'));
+  return gulp.src(`jspm_packages/npm/{${npm_deps.join(',')}}@*/**/*`)
+    .pipe(rename((path) => { path.dirname = path.dirname.replace(/^([\w-]+)@[^/]+/, '$1'); }))
+    .pipe(gulp.dest('node_modules'));
 });

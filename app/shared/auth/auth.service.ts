@@ -1,5 +1,5 @@
 import {Injectable} from 'angular2/core';
-import {Env} from '../../../util/env';
+import {Env} from '../../../config/env';
 
 @Injectable()
 export class AuthService {
