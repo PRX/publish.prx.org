@@ -44,8 +44,10 @@
     "karma-jspm": "2.1.0",
     "karma-phantomjs-launcher": "1.0.0",
     "open": "0.0.5",
-    "phantomjs-prebuilt": "2.1.6",
     "typings": "^0.7.7"
+  },
+  "optionalDependencies": {
+    "phantomjs-prebuilt": "2.1.6"
   },
   "engines": {
     "node": "^5.7.0"
