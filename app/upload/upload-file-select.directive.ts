@@ -3,7 +3,6 @@ import {UploadService} from './upload.service';
 
 @Directive({
   selector: '[upload-file]',
-  inputs: ['uploadService'],
   host: { '(change)': 'onChange()' }
 })
 export class UploadFileSelect {
