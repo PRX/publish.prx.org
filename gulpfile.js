@@ -55,14 +55,14 @@ gulp.task('git:hooks:install', shell.task([
 
 gulp.task('typings:install', shell.task('typings install'));
 
-var npm_deps = ['angular2', 'rxjs'];
+var npm_deps = ['angular2', 'rxjs', 'angular2-uuid'];
 
 gulp.task('clean:deps', () => {
   return gulp.src(`node_modules/{${npm_deps.join(',')}}`, {read: false}).pipe(clean({force: true}));
 });
 
 gulp.task('copy:deps', ['clean:deps'], () => {
-    return gulp.src(`jspm_packages/npm/{${npm_deps.join(',')}}@*/**/*`)
-      .pipe(rename((path) => { path.dirname = path.dirname.replace(/^(\w+)@[^/]+/, '$1'); }))
-      .pipe(gulp.dest('node_modules'));
+  return gulp.src(`jspm_packages/npm/{${npm_deps.join(',')}}@*/**/*`)
+    .pipe(rename((path) => { path.dirname = path.dirname.replace(/^([\w-]+)@[^/]+/, '$1'); }))
+    .pipe(gulp.dest('node_modules'));
 });
