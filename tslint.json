@@ -85,8 +85,7 @@
     "class-name": true,
     "comment-format": [
       true,
-      "check-space",
-      "check-uppercase"
+      "check-space"
     ],
     "interface-name": false,
     "jsdoc-format": true,

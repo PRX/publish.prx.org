@@ -14,6 +14,9 @@ System.config({
     "app": {
       "defaultExtension": "ts"
     },
+    "config": {
+      "defaultExtension": "ts"
+    },
     "util": {
       "defaultExtension": "ts"
     }
