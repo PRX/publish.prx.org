@@ -32,6 +32,7 @@ function listen(port) {
   app.use('/jspm_packages', express.static('jspm_packages'));
   app.use('/node_modules',  express.static('node_modules'));
   app.use('/tsconfig.json', express.static('tsconfig.json'));
+  app.use('/util',          express.static('util'));
 
   // Just-in-time compile env files
   app.get('/util/env.ts', function(req, res) {
