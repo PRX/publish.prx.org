@@ -1,9 +1,10 @@
 import {Component} from 'angular2/core';
+import {RouterLink} from 'angular2/router';
 import {SpinnerComponent} from '../shared/spinner/spinner.component';
 import {CmsService} from '../shared/cms/cms.service';
 
 @Component({
-  directives: [SpinnerComponent],
+  directives: [SpinnerComponent, RouterLink],
   selector: 'publish-home',
   styleUrls: ['app/home/home.component.css'],
   template: `
@@ -12,6 +13,7 @@ import {CmsService} from '../shared/cms/cms.service';
       <h1>Home Page</h1>
       <p *ngIf="userName">You are logged in as {{userName}}</p>
       <p *ngIf="!userName">You are not logged in. Shame on you.</p>
+      <a [routerLink]="['Edit', {id: 175235}]">Edit some story</a>
     </div>
     `
 })

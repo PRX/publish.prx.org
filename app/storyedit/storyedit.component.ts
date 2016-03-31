@@ -1,11 +1,12 @@
 import {Component, OnDestroy, ViewChild} from 'angular2/core';
-import {Router, RouteConfig, RouterOutlet, RouterLink} from 'angular2/router';
+import {Router, RouteConfig, RouterOutlet, RouterLink, RouteParams} from 'angular2/router';
 import {Subscription} from 'rxjs';
 
 import {CmsService} from '../shared/cms/cms.service';
+import {StoryModel} from './models/story.model';
 
 import {SpinnerComponent}  from '../shared/spinner/spinner.component';
-import {CreateComponent}   from './directives/create.component';
+import {EditComponent}   from './directives/edit.component';
 import {DecorateComponent} from './directives/decorate.component';
 import {SellComponent}     from './directives/sell.component';
 
@@ -21,27 +22,33 @@ import {SellComponent}     from './directives/sell.component';
     </div>
     <div class="hero toolbar">
       <section>
-        <spinner *ngIf="!storyDoc" inverse=true></spinner>
-        <div class="info" *ngIf="storyDoc">
-          <h2>{{storyDoc.title}}</h2>
-          <p>Last saved at {{storyDoc.publishedAt | date}}</p>
+        <spinner *ngIf="!story.isLoaded" inverse=true></spinner>
+        <div class="info" *ngIf="story.isLoaded">
+          <h2>{{story.title}}</h2>
+          <p *ngIf="story.modifiedAt">Last saved at {{story.modifiedAt | date}}</p>
         </div>
         <div class="actions">
           <button class="preview">Preview</button>
-          <button class="save">Save</button>
-          <button class="publish">Publish</button>
+          <button *ngIf="!story.id" class="create">Create</button>
+          <button *ngIf="story.id" class="save">Save</button>
+          <button *ngIf="story.id" class="publish">Publish</button>
         </div>
       </section>
     </div>
     <div class="main">
       <section>
-        <nav>
-          <a [routerLink]="['Default']">STEP 1: Create your story</a>
+        <nav *ngIf="story.id">
+          <a [routerLink]="['Default']">STEP 1: Edit your story</a>
           <a [routerLink]="['Decorate']">STEP 2: Decorate your story</a>
           <a [routerLink]="['Sell']">STEP 3: Sell your story</a>
         </nav>
+        <nav *ngIf="!story.id">
+          <a [routerLink]="['Default']">STEP 1: Create your story</a>
+          <a disabled>STEP 2: Decorate your story</a>
+          <a disabled>STEP 3: Sell your story</a>
+        </nav>
         <div class="page">
-          <router-outlet></router-outlet>
+          <router-outlet story="story"></router-outlet>
         </div>
       </section>
     </div>
@@ -49,52 +56,41 @@ import {SellComponent}     from './directives/sell.component';
 })
 
 @RouteConfig([
-  { path: '/',         name: 'Default',  component: CreateComponent, useAsDefault: true },
+  { path: '/',         name: 'Default',  component: EditComponent, useAsDefault: true },
   { path: '/decorate', name: 'Decorate', component: DecorateComponent },
   { path: '/sell',     name: 'Sell',     component: SellComponent }
 ])
 
 export class StoryEditComponent implements OnDestroy {
 
-  private storyDoc: Object;
+  private story: StoryModel;
   private stepText: string;
   private routerSub: Subscription;
 
-  @ViewChild(CreateComponent) private creator: CreateComponent;
+  @ViewChild(EditComponent) private creator: EditComponent;
   @ViewChild(DecorateComponent) private decorator: DecorateComponent;
   @ViewChild(SellComponent) private seller: SellComponent;
 
-  constructor(private cms: CmsService, private router: Router) {
-
-    // TODO: this will load a doc for edit-mode
-    this.storyDoc = {
-      id: 9999,
-      title: 'Test story title',
-      shortDescription: 'This is the short description',
-      episodeNumber: 9999,
-      episodeIdentifier: 'episode#1',
-      publishedAt: '2016-01-16T14:25:00.000Z',
-      duration: 999,
-      points: 99,
-      appVersion: 'v3',
-      description: 'This is the long description',
-      tags: [],
-      license: {
-        streamable: true,
-        editable: false
-      }
-    };
-    this.storyDoc['publishedAt'] = new Date(this.storyDoc['publishedAt']);
+  constructor(
+    private cms: CmsService,
+    private router: Router,
+    private params: RouteParams
+  ) {
+    this.story = new StoryModel(cms, params.params['id']);
 
     this.routerSub = <Subscription> this.router.parent.subscribe((path) => {
       if (this.creator) {
-        this.stepText = 'Step 1: Create your Story!';
+        let verb = this.story.id ? 'Edit' : 'Create';
+        this.stepText = `Step 1: ${verb} your Story!`;
+        this.creator.story = this.story;
       }
       if (this.decorator) {
         this.stepText = 'Step 2: Decorate your Story!';
+        this.decorator.story = this.story;
       }
       if (this.seller) {
         this.stepText = 'Step 3: Sell your Story!';
+        this.seller.story = this.story;
       }
     });
   }

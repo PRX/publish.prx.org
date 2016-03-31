@@ -2,26 +2,25 @@ import {Component, Input} from 'angular2/core';
 import {StoryModel} from '../models/story.model';
 
 @Component({
-  selector: 'newstory-sell',
+  selector: 'newstory-edit',
   styleUrls: [],
   template: `
     <div *ngIf="story && story.isLoaded">
-      <h1>Sell your content</h1>
-      <p>Sell</p>
+      <h1>Edit your content</h1>
       <p>{{story.title}}</p>
       <br/><br/>
-      <p>Sell</p>
+      <p>Edit</p>
       <br/><br/>
-      <p>Sell</p>
+      <p>Edit</p>
       <br/><br/>
-      <p>Sell</p>
+      <p>Edit</p>
       <br/><br/>
-      <p>Sell</p>
+      <p>Edit</p>
     </div>
   `
 })
 
-export class SellComponent {
+export class EditComponent {
 
   @Input() public story: StoryModel;
 

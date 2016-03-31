@@ -40,10 +40,10 @@
   display: inline-block;
   margin-left: 10px;
 }
-.toolbar button.publish {
+.toolbar button.publish, .toolbar button.create {
   background-color: #f59f51;
 }
-.toolbar button.publish:hover {
+.toolbar button.publish:hover, .toolbar button.create:hover {
   background-color: #e28b42;
 }
 
@@ -75,6 +75,12 @@
 .main nav a.router-link-active:hover {
   background-color: #2b7187;
   text-decoration: none;
+}
+.main nav a[disabled], .main nav a[disabled]:hover {
+  text-decoration: none;
+  background-color: #f7f7f7;
+  color: #93bdc9;
+  cursor: not-allowed;
 }
 .main section .content {
   flex-grow: 1;
