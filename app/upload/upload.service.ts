@@ -31,7 +31,6 @@ export class UploadService {
     let ct = contentType || this.mimeTypeService.lookupFileMimetype(file).full();
     let upload = new Upload(file, ct, this.evaporate);
     this.uploads.push(upload);
-    // upload.upload();
     return upload;
   }
 }
