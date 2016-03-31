@@ -20,7 +20,7 @@ System.config({
   },
 
   meta: {
-    "npm:angular2@2.0.0-beta.12/*": {
+    "npm:angular2@2.0.0-beta.13/*": {
       "deps": [
         "es6-shim",
         "reflect-metadata",
@@ -30,7 +30,7 @@ System.config({
   },
 
   map: {
-    "angular2": "npm:angular2@2.0.0-beta.12",
+    "angular2": "npm:angular2@2.0.0-beta.13",
     "angular2-uuid": "npm:angular2-uuid@1.0.7",
     "capaj/systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@0.5.6",
     "crypto": "github:jspm/nodelibs-crypto@0.1.0",
@@ -42,7 +42,7 @@ System.config({
     "ts": "github:frankwallis/plugin-typescript@4.0.2",
     "ts-runtime": "npm:babel-runtime@5.8.38",
     "typescript": "npm:typescript@1.8.9",
-    "zone.js": "npm:zone.js@0.6.6",
+    "zone.js": "npm:zone.js@0.6.8",
     "github:capaj/systemjs-hot-reloader@0.5.6": {
       "debug": "npm:debug@2.2.0",
       "socket.io-client": "github:socketio/socket.io-client@1.4.5",
@@ -111,10 +111,10 @@ System.config({
     "github:jspm/nodelibs-vm@0.1.0": {
       "vm-browserify": "npm:vm-browserify@0.0.4"
     },
-    "npm:angular2@2.0.0-beta.12": {
+    "npm:angular2@2.0.0-beta.13": {
       "reflect-metadata": "npm:reflect-metadata@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.2",
-      "zone.js": "npm:zone.js@0.5.15"
+      "zone.js": "npm:zone.js@0.6.8"
     },
     "npm:asn1.js@4.5.2": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
@@ -375,7 +375,7 @@ System.config({
     "npm:vm-browserify@0.0.4": {
       "indexof": "npm:indexof@0.0.1"
     },
-    "npm:zone.js@0.6.6": {
+    "npm:zone.js@0.6.8": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     }
   }
