@@ -10,7 +10,7 @@ const KarmaServer  = require('karma').Server
 
 // Public tasks (serial)
 gulp.task('git:hooks:pre-commit', seq('jspm:unbundle'));
-gulp.task('postinstall',          seq('jspm:install', 'typings:install', 'git:hooks:install', 'copy:deps'));
+gulp.task('postinstall',          seq('jspm:install', 'typings:install', 'git:hooks:install', 'copy:deps', 'jspm:bundle:dev'));
 gulp.task('start',                seq('build:dev', 'copy:deps', 'server:dev'));
 
 gulp.task('test', function (done) {
