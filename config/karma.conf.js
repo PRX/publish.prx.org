@@ -21,7 +21,8 @@ module.exports = function(config) {
       ],
       serveFiles: [
         'app/**/*!(*.spec).ts',
-        'util/**/*.ts',
+        'config/**/*.ts',
+        'util/**/*!(*.spec).ts',
         'tsconfig.json'
       ]
     },
@@ -29,6 +30,7 @@ module.exports = function(config) {
 
     proxies: {
       '/app/': '/base/app/',
+      '/config/': '/base/config/',
       '/util/': '/base/util/',
       '/jspm_packages/': '/base/jspm_packages/',
       '/tsconfig.json': '/base/tsconfig.json'

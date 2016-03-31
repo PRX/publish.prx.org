@@ -11,5 +11,5 @@
 
 .DS_Store
 
-/config/env
+/.env
 /.nvmrc

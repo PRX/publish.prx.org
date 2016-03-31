@@ -3,7 +3,7 @@ import {Observable} from 'rxjs/Observable';
 import {ReplaySubject} from 'rxjs';
 import {Http} from 'angular2/http';
 import {HalDoc} from './haldoc';
-import {Env} from '../../../util/env';
+import {Env} from '../../../config/env';
 
 @Injectable()
 export class CmsService {
