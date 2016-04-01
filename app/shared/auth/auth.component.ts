@@ -16,7 +16,7 @@ export class AuthComponent {
 
   private authUrl: string;
 
-  // assume user is logged in, to start
+  // Assume user is logged in, to start
   private isAuthorized: boolean = true;
 
   constructor(
@@ -38,12 +38,11 @@ export class AuthComponent {
     if (query) {
       let token = this.authService.parseToken(query);
 
-      // only alert cms service if logged in - otherwise it can wait forever
+      // Only alert cms service if logged in - otherwise it can wait forever
       if (token) {
         this.cmsService.token = token;
         this.isAuthorized = true;
-      }
-      else {
+      } else {
         this.isAuthorized = false;
       }
     }

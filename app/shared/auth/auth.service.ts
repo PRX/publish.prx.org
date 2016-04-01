@@ -4,25 +4,24 @@ import {Env} from '../../../config/env';
 @Injectable()
 export class AuthService {
 
-  public authUrl(prompt: string = 'none') {
+  public authUrl(prompt = 'none') {
+    let url = `${Env.AUTH_HOST}/authorize?client_id=${Env.AUTH_CLIENT_ID}`;
     let nonce = this.getNonce();
-    let host = Env.AUTH_HOST;
-    let client = Env.AUTH_CLIENT_ID;
-    return `${host}/authorize?client_id=${client}&nonce=${nonce}&response_type=token&prompt=${prompt}`;
+    return `${url}&nonce=${nonce}&response_type=token&prompt=${prompt}`;
   }
 
-  public parseToken(query: string = ''): string {
-    var data = {};
-    for (var pair of query.split('&')) {
-      var parts = pair.split('=');
+  public parseToken(query = ''): string {
+    let data = {};
+    for (let pair of query.split('&')) {
+      let parts = pair.split('=');
       data[parts[0]] = parts[1];
     }
     return data['access_token'];
   }
 
   private getNonce(): string {
-    var nonce:string[] = [];
-    for (var i = 0; i < 8; i++) {
+    let nonce: string[] = [];
+    for (let i = 0; i < 8; i++) {
       nonce.push(this.randomInt(0, 15).toString(16));
     }
     return nonce.join('');
