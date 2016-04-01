@@ -31,6 +31,9 @@
 .toolbar .info {
   flex-grow: 1;
 }
+.toolbar .actions {
+  white-space: nowrap;
+}
 .toolbar h2 {
   font-size: 26px;
   line-height: 30px;
@@ -52,7 +55,7 @@
  */
 .main section {
   display: flex;
-  padding: 10px 0;
+  padding: 30px 0;
 }
 .main nav {
   width: 260px;
@@ -86,4 +89,8 @@
   flex-grow: 1;
   border: 1px solid blue;
   min-height: 100px;
+}
+
+textarea {
+  background-color: blue:
 }

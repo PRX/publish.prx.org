@@ -1,0 +1,47 @@
+/**
+ * Common form styling
+ */
+legend[hidden] {
+  display: none;
+}
+textarea {
+  width: 100%;
+  max-width: 600px;
+  height: 100px;
+  padding: 6px;
+  color: #939393;
+}
+textarea:focus {
+  color: #000;
+}
+.ng-dirty, .ng-dirty:focus {
+  outline: 5px auto #f09b4c;
+}
+.ng-invalid, .ng-invalid:focus {
+  outline: 5px auto #e32;
+}
+label {
+  display: block;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 30px;
+  margin-top: 30px;
+  margin-bottom: 6px;
+}
+label:first-of-type {
+  margin-top: 0;
+}
+label[required]::after {
+  content: '*';
+  color: #e32;
+  display: inline;
+  vertical-align: middle;
+}
+p {
+  margin-bottom: 6px;
+  max-width: 600px;
+}
+p.error {
+  margin-top: 6px;
+  color: #e32;
+}

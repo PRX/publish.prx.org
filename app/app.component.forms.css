@@ -54,7 +54,6 @@ label {
   -webkit-flex-basis: 100%;
   padding: 0px;
   margin-bottom: 3px;
-  margin-left: 1px;
 }
 label[disabled=disabled] {
   color: #a3a3a3;
