@@ -38,7 +38,7 @@ export class NavUserComponent {
       this.userName = doc['name'];
       doc.follow('prx:image').subscribe(
         (image) => {
-          this.userImage = image.link('enclosure');
+          this.userImage = image.expand('enclosure');
         },
         (err) => {
           this.userImage = null; // no image - leave blank

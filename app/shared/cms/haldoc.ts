@@ -1,6 +1,5 @@
-import {Http, Headers} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
-import TemplateParser from 'url-template';
+import {HalRemote} from './halremote';
 
 // Bring observables up to snuff
 export interface HalObservable<T> extends Observable<T> {
@@ -28,43 +27,48 @@ Observable.prototype['followItems'] = function(rel: string) {
  * Generic class for interacting with HAL api
  */
 export class HalDoc {
-  private http: Http;
-  private host: string;
-  private token: string;
 
-  constructor(data: any = {}, http: Http, host: string, authToken: string) {
+  constructor(data: any = {}, private remote: HalRemote) {
     Object.keys(data).forEach((key) => { this[key] = data[key]; });
-    this.http = http;
-    this.host = host;
-    this.token = authToken;
   }
 
-  link(rel: string, params: any = {}): string {
+  save(data: any): HalObservable<HalDoc> {
+    console.log('TODO put', data);
+    return null;
+  }
+
+  create(rel: string, params: any = {}, data: any): HalObservable<HalDoc> {
+    let link = this['_link'] ? this['_links'][rel] : null;
+    if (!link) {
+      let err = new Error(`Expected create link at _links.${rel} - got null`);
+      console.error(err.message);
+      throw err; // TODO: can't observable.throw because we used halobservable
+    } else if (link instanceof Array) {
+      let err = new Error(`Expected create link at _links.${rel} - got array`);
+      console.error(err.message);
+      throw err; // TODO: can't observable.throw because we used halobservable
+    } else {
+      return <HalObservable<HalDoc>> this.remote.post(link, params, data).map((obj) => {
+        return new HalDoc(obj, this.remote);
+      });
+    }
+  }
+
+  delete(): HalObservable<HalDoc> {
+    return null;
+  }
+
+  expand(rel: string, params: any = {}): string {
     let link = this['_links'] ? this['_links'][rel] : null;
     if (link && link instanceof Array) {
       link = link[0];
     }
-    if (link && link.templated) {
-      return TemplateParser.parse(this.host + link.href).expand(params || {});
-    } else if (link) {
-      return this.host + link.href;
-    } else {
-      return null;
-    }
+    return this.remote.expand(link, params);
   }
 
   followLink(linkObj: any, params: any = {}): HalObservable<HalDoc> {
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this.token) {
-      headers.append('Authorization', `Bearer ${this.token}`);
-    }
-    let href = this.host + linkObj.href;
-    if (linkObj.templated) {
-      href = TemplateParser.parse(href).expand(params || {});
-    }
-    return <HalObservable<HalDoc>> this.http.get(href, {headers: headers}).map((res) => {
-      return new HalDoc(res.json(), this.http, this.host, this.token);
+    return <HalObservable<HalDoc>> this.remote.get(linkObj, params).map((obj) => {
+      return new HalDoc(obj, this.remote);
     });
   }
 
@@ -100,7 +104,7 @@ export class HalDoc {
       console.error(err.message);
       return Observable.throw(err);
     } else {
-      return Observable.of(new HalDoc(this['_embedded'][rel], this.http, this.host, this.token));
+      return Observable.of(new HalDoc(this['_embedded'][rel], this.remote));
     }
   }
 
@@ -117,7 +121,7 @@ export class HalDoc {
   private embedList(rel: string): Observable<HalDoc[]> {
     if (this['_embedded'][rel] instanceof Array) {
       return Observable.of(this['_embedded'][rel].map((data: any) => {
-        return new HalDoc(data, this.http, this.host, this.token);
+        return new HalDoc(data, this.remote);
       }));
     } else {
       let err = new Error(`Expected list at _embedded.${rel} - got object`);

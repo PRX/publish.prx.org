@@ -25,7 +25,7 @@ export class AuthComponent {
     private cmsService: CmsService
   ) {
     this.authUrl = this.authService.authUrl('none');
-    cmsService.authToken.subscribe((token) => {
+    cmsService.token.subscribe((token) => {
       this.isAuthorized = (token ? true : false);
     });
   }

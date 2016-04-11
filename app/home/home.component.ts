@@ -42,7 +42,6 @@ export class HomeComponent {
       for (let i = 0; i < docs.length; i++) {
         docs[i].followItems('prx:stories').subscribe((storyDocs) => {
           this.accountStories[i] = storyDocs;
-          console.log(storyDocs);
         });
       }
     });

@@ -12,6 +12,9 @@ export class Env {
 
   // PRX API
   public static CMS_HOST: string = 'https://cms.prx.org';
+  public static CMS_TTL: number = 1; // 1 second
+  public static CMS_ROOT_TTL: number = 3600; // 1 hour
+  public static CMS_USE_LOCALSTORAGE = true;
 
   // Auth (redirects to http://publish.prx.dev/assets/callback)
   public static AUTH_HOST: string = 'https://id.prx.org';
