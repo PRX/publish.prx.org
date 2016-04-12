@@ -40,7 +40,7 @@ export class AuthComponent {
 
       // Only alert cms service if logged in - otherwise it can wait forever
       if (token) {
-        this.cmsService.token = token;
+        this.cmsService.setToken(token);
         this.isAuthorized = true;
       } else {
         this.isAuthorized = false;

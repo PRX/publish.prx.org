@@ -39,7 +39,7 @@ export class LoginComponent {
       if (query) {
         let token = this.authService.parseToken(query);
         if (token) {
-          this.cmsService.token = token;
+          this.cmsService.setToken(token);
         }
       }
     }
