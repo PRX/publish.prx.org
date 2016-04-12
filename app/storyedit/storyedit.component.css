@@ -49,6 +49,12 @@
 .toolbar button.publish:hover, .toolbar button.create:hover {
   background-color: #e28b42;
 }
+.toolbar button.publish[disabled], .toolbar button.create[disabled] {
+  background-color: #f9c596;
+  color: #fff;
+  cursor: not-allowed;
+}
+
 
 /**
  * Main content
@@ -58,8 +64,8 @@
   padding: 30px 0;
 }
 .main nav {
-  width: 260px;
-  margin-right: 20px;
+  flex: 0 0 260px;
+  margin-right: 30px;
 }
 .main nav a {
   display: block;

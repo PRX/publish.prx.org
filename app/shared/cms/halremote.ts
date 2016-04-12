@@ -43,7 +43,7 @@ export class HalRemote {
           if (res.status === 200) {
             return Observable.of(res.json());
           } else {
-            return Observable.throw(new Error(`Got ${res.status} from ${href}`));
+            return Observable.throw(new Error(`Got ${res.status} from GET ${href}`));
           }
         }));
       }
@@ -52,11 +52,34 @@ export class HalRemote {
     }
   }
 
+  put(link: HalLink, params: {} = null, data: {}): Observable<{}> {
+    let href = this.expand(link, params);
+    let body = JSON.stringify(data);
+    return this.http.put(href, body, this.httpOptions(true)).map((res) => {
+      if (res.status === 204) {
+        return Observable.of(true);
+      } else {
+        return Observable.throw(new Error(`Got ${res.status} from PUT ${href}`));
+      }
+    });
+  }
+
   post(link: HalLink, params: {} = null, data: {}): Observable<{}> {
     let href = this.expand(link, params);
     let body = JSON.stringify(data);
     return this.http.post(href, body, this.httpOptions(true)).map((res) => {
       return res.json();
+    });
+  }
+
+  delete(link: HalLink, params: {} = null): Observable<{}> {
+    let href = this.expand(link, params);
+    return this.http.put(href, body, this.httpOptions(true)).map((res) => {
+      if (res.status === 204) {
+        return Observable.of(true);
+      } else {
+        return Observable.throw(new Error(`Got ${res.status} from DELETE ${href}`));
+      }
     });
   }
 

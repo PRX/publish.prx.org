@@ -9,39 +9,37 @@ import {StoryModel} from '../models/story.model';
   template: `
     <form *ngIf="story && story.isLoaded">
 
-      <fieldset>
-        <legend hidden>Basic Info</legend>
+      <div [class]="fieldClasses('title')">
+        <h3><label for="title" required>Story Title</label></h3>
+        <p class="hint">Write a short, Tweetable title like a newspaper headline.
+          Make viewers want to click on your piece from the title alone.</p>
+        <textarea id="title" [(ngModel)]="story.title"></textarea>
+        <p class="error">Title {{story.invalid.title}}</p>
+      </div>
 
-        <label for="title" required>Story Title</label>
-        <p>
-          Write a short, Tweetable title like a newspaper headline.
-          Make viewers want to click on your piece from the title alone.
-        </p>
-        <textarea id="title" required [(ngModel)]="story.title" #title="ngForm"></textarea>
-        <p *ngIf="!title.valid" class="error">Title is required</p>
+      <div [class]="fieldClasses('shortDescription')">
+        <h3><label for="teaser" required>Teaser</label></h3>
+        <p class="hint">A first impression; think of this as the single-item
+          lead of a piece.</p>
+        <textarea id="teaser" [(ngModel)]="story.shortDescription"></textarea>
+        <p class="error">Teaser {{story.invalid.shortDescription}}</p>
+      </div>
 
-        <label for="teaser" required>Teaser</label>
-        <p>A first impression; think of this as the single-item lead of a piece.</p>
-        <textarea id="teaser" required [(ngModel)]="story.shortDescription"></textarea>
+      <hr/>
 
-        <hr/>
+      <div class="field">
+        <h3><label required>Story Versions</label></h3>
+        <div class="uploads-box">uploads goes heres</div>
+      </div>
 
-        <label required>Story Versions</label>
-        <div class="uploads-box">
-        </div>
+      <hr/>
 
-        <hr/>
+      <div class="field">
+        <h3><label required>Tag your Story</label></h3>
+        <p class="hint">Adding tags that are relevant to your piece helps people
+          find your work on PRX and can help you be licensed and heard.</p>
+      </div>
 
-        <label required>Tag your Story</label>
-        <p>
-          Adding tags that are relevant to your piece helps people find your
-          work on PRX and can help you be licensed and heard.
-        </p>
-
-      </fieldset>
-
-      <br/><br/>
-      <br/><br/>
     </form>
   `
 })
@@ -50,7 +48,15 @@ export class EditComponent {
 
   @Input() public story: StoryModel;
 
-  // TODO: Remove this when we're done
-  get diagnostic() { return JSON.stringify(this.story); }
+  fieldClasses(name: string): string {
+    let classes = ['field'];
+    if (this.story.changed[name]) {
+      classes.push('changed');
+    }
+    if (this.story.invalid[name]) {
+      classes.push('invalid');
+    }
+    return classes.join(' ');
+  }
 
 }

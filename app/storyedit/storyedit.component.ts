@@ -29,8 +29,12 @@ import {SellComponent}     from './directives/sell.component';
         </div>
         <div class="actions">
           <button class="preview">Preview</button>
-          <button *ngIf="!story.id" class="create">Create</button>
-          <button *ngIf="story.id" class="save">Save</button>
+          <button *ngIf="!story.id" class="create"
+            [disabled]="!story.isValid"
+            (click)="save()">Create</button>
+          <button *ngIf="story.id" class="save"
+            [disabled]="!story.isValid || !story.isChanged"
+            (click)="save()">Save</button>
           <button *ngIf="story.id" class="publish">Publish</button>
         </div>
       </section>
@@ -77,20 +81,35 @@ export class StoryEditComponent implements OnDestroy {
     private params: RouteParams
   ) {
     this.story = new StoryModel(cms, params.params['id']);
-
     this.routerSub = <Subscription> this.router.parent.subscribe((path) => {
-      if (this.creator) {
-        let verb = this.story.id ? 'Edit' : 'Create';
-        this.stepText = `Step 1: ${verb} your Story!`;
-        this.creator.story = this.story;
-      }
-      if (this.decorator) {
-        this.stepText = 'Step 2: Decorate your Story!';
-        this.decorator.story = this.story;
-      }
-      if (this.seller) {
-        this.stepText = 'Step 3: Sell your Story!';
-        this.seller.story = this.story;
+      this.setHeroText();
+      this.bindRouteIO();
+    });
+  }
+
+  setHeroText(): void {
+    if (this.creator) {
+      let verb = this.story.id ? 'Edit' : 'Create';
+      this.stepText = `Step 1: ${verb} your Story!`;
+    } else if (this.decorator) {
+      this.stepText = 'Step 2: Decorate your Story!';
+    } else {
+      this.stepText = 'Step 3: Sell your Story!';
+    }
+  }
+
+  // https://github.com/angular/angular/issues/4452
+  bindRouteIO(): void {
+    let active = (this.creator || this.decorator || this.seller);
+    active.story = this.story;
+    // if (this.subs) { this.subs.unsubscribe(); this.subs = null; }
+    // this.subs = active.customEvent1.subscribe(m=>this.processCustomEvent(m));
+  }
+
+  save(): void {
+    this.story.save().subscribe((isNew) => {
+      if (isNew) {
+        this.router.parent.navigate(['Edit', {id: this.story.id}]);
       }
     });
   }

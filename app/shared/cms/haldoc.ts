@@ -3,23 +3,23 @@ import {HalRemote} from './halremote';
 
 // Bring observables up to snuff
 export interface HalObservable<T> extends Observable<T> {
-  follow(rel: string): HalObservable<T>;
-  followList(rel: string): HalObservable<T[]>;
-  followItems(rel: string): HalObservable<T[]>;
+  follow(rel: string, params?: {}): HalObservable<T>;
+  followList(rel: string, params?: {}): HalObservable<T[]>;
+  followItems(rel: string, params?: {}): HalObservable<T[]>;
 }
-Observable.prototype['follow'] = function(rel: string) {
+Observable.prototype['follow'] = function(rel: string, params: {} = null) {
   return this.flatMap((doc: HalDoc) => {
-    return doc.follow(rel);
+    return doc.follow(rel, params);
   });
 };
-Observable.prototype['followList'] = function(rel: string) {
+Observable.prototype['followList'] = function(rel: string, params: {} = null) {
   return this.flatMap((doc: HalDoc) => {
-    return doc.followList(rel);
+    return doc.followList(rel, params);
   });
 };
-Observable.prototype['followItems'] = function(rel: string) {
+Observable.prototype['followItems'] = function(rel: string, params: {} = null) {
   return this.flatMap((doc: HalDoc) => {
-    return doc.followItems(rel);
+    return doc.followItems(rel, params);
   });
 };
 
@@ -29,16 +29,25 @@ Observable.prototype['followItems'] = function(rel: string) {
 export class HalDoc {
 
   constructor(data: any = {}, protected remote: HalRemote) {
-    Object.keys(data).forEach((key) => { this[key] = data[key]; });
+    this.setData(data);
   }
 
-  save(data: any): HalObservable<HalDoc> {
-    console.log('TODO put', data);
-    return null;
+  update(data: any): HalObservable<HalDoc> {
+    let link = this['_links'] ? this['_links']['self'] : null;
+    if (!link) {
+      return <HalObservable<HalDoc>> this.error(`Expected update link at _links.self - got null`);
+    } else if (link instanceof Array) {
+      return <HalObservable<HalDoc>> this.error(`Expected update link at _links.self - got array`);
+    } else {
+      return <HalObservable<HalDoc>> this.remote.put(link, null, data).map(() => {
+        this.setData(data);
+        return this;
+      });
+    }
   }
 
   create(rel: string, params: any = {}, data: any): HalObservable<HalDoc> {
-    let link = this['_link'] ? this['_links'][rel] : null;
+    let link = this['_links'] ? this['_links'][rel] : null;
     if (!link) {
       return <HalObservable<HalDoc>> this.error(`Expected create link at _links.${rel} - got null`);
     } else if (link instanceof Array) {
@@ -51,8 +60,17 @@ export class HalDoc {
     }
   }
 
-  destroy(): HalObservable<HalDoc> {
-    return null;
+  destroy(): HalObservable<boolean> {
+    let link = this['_links'] ? this['_links']['self'] : null;
+    if (!link) {
+      return <HalObservable<HalDoc>> this.error(`Expected destroy link at _links.self - got null`);
+    } else if (link instanceof Array) {
+      return <HalObservable<HalDoc>> this.error(`Expected destroy link at _links.self - got array`);
+    } else {
+      return <HalObservable<HalDoc>> this.remote.delete(link, null, data).map(() => {
+        return true;
+      });
+    }
   }
 
   expand(rel: string, params: any = {}): string {
@@ -134,6 +152,14 @@ export class HalDoc {
     } else {
       return this.error(`Expected array at _links.${rel} - got object`);
     }
+  }
+
+  private setData(data: {}) {
+    Object.keys(data).forEach((key) => {
+      if (data.hasOwnProperty(key)) {
+        this[key] = data[key];
+      }
+    });
   }
 
 }
