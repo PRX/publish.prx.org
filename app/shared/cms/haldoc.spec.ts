@@ -1,185 +1,245 @@
 import {it, describe, expect, beforeEach} from 'angular2/testing';
-import {Http, Response, ResponseOptions, RequestOptions} from 'angular2/http';
-import {MockBackend} from 'angular2/http/testing';
 import {Observable} from 'rxjs/Observable';
 import {HalDoc} from './haldoc';
+import {HalRemote} from './halremote';
+
+class MockRemote extends HalRemote {
+  constructor(private getData = {}) {
+    super(null, 'http://thehost', 'thetoken');
+  }
+  get(link: any, params: {} = null): Observable<{}> {
+    let key = link['href'];
+    return Observable.of(this.getData[key]);
+  }
+}
 
 describe('HalDoc', () => {
 
-  const mockHttp = new Http(new MockBackend(), new RequestOptions());
-  const mockResponse = (data = {}) => {
-    let res = new Response(new ResponseOptions({body: data}));
-    return Observable.of(res);
+  // disable error logging
+  beforeEach(() => {
+    spyOn(HalDoc.prototype, 'error').and.callFake((msg: string) => {
+      return Observable.throw(new Error(msg));
+    });
+  });
+
+  const makeRemote = (data = {}): MockRemote => {
+    return new MockRemote(data);
   };
-  const makeDoc = (data = {}) => {
-    return new HalDoc(data, mockHttp, 'http://thehost', 'thetoken');
-  };
-  const makeLinks = (links = {}) => {
-    return makeDoc({_links: links});
-  };
-  const makeEmbedded = (embed = {}) => {
-    return makeDoc({_embedded: embed});
+  const makeDoc = (data = {}, linkRemotes = {}) => {
+    return new HalDoc(data, makeRemote(linkRemotes));
   };
 
   describe('constructor', () => {
-
     it('assigns attributes to new docs', () => {
       let doc = makeDoc({foo: 'bar', something: {nested: {here: 'okay'}}});
       expect(doc['foo']).toEqual('bar');
       expect(doc['something']['nested']['here']).toEqual('okay');
     });
-
   });
 
-  describe('followLink', () => {
-
-    it('http follows links', () => {
-      spyOn(mockHttp, 'get').and.callFake((url: any, options: any) => {
-        expect(url).toEqual('http://thehost/somewhere');
-        expect(options.headers.get('Accept')).toEqual('application/json');
-        expect(options.headers.get('Authorization')).toEqual('Bearer thetoken');
-        return Observable.empty();
-      });
-      let doc = makeDoc();
-      doc.followLink({href: '/{foo}', templated: true}, {foo: 'somewhere'});
-      expect(mockHttp.get).toHaveBeenCalled();
-    });
-
+  describe('save', () => {
+    xit('todo');
   });
 
-  describe('follow', () => {
-
-    it('picks embedded content over following a link', () => {
-      spyOn(mockHttp, 'get').and.returnValue(Observable.empty());
-      let doc = makeDoc({
-        _embedded: {name: {foo: 'bar'}},
-        _links: {name: {href: '/nowhere'}}
-      });
-      doc.follow('name').subscribe((nextDoc) => {
-        expect(nextDoc['foo']).toEqual('bar');
-      });
-      expect(mockHttp.get).not.toHaveBeenCalled();
-    });
-
-    it('observes multiple links', () => {
-      spyOn(mockHttp, 'get').and.returnValue(mockResponse({foo: 'bar'}));
-      let doc = makeLinks({name: [{href: '/one'}, {href: '/two'}]});
-      doc.follow('name').subscribe((nextDoc) => {
-        expect(nextDoc['foo']).toEqual('bar');
-      });
-      expect(mockHttp.get).toHaveBeenCalledTimes(2);
-    });
-
-    it('returns empty for non-existing links', () => {
-      let doc = makeLinks({name: {href: '/one'}});
-      let completed = false;
-      doc.follow('notname').subscribe(
-        (successDoc) => { fail('should not have gotten a doc'); },
-        (err) => { fail('should not have gotten an error'); },
-        () => { completed = true; }
-      );
-      expect(completed).toBeTruthy();
-    });
-
+  describe('create', () => {
+    xit('todo');
   });
 
-  describe('follows', () => {
-
-    beforeEach(() => {
-      spyOn(mockHttp, 'get').and.returnValue(mockResponse({
-        _embedded: {rel2: [
-          {_embedded: {rel3: [{hello: 'world'}]}},
-          {_embedded: {rel3: [{hello: 'foobar'}]}},
-          {_embedded: {relnot3: [{foo: 'bar'}]}}
-        ]}
-      }));
-    });
-
-    it('follows nested links/embeds', () => {
-      let doc = makeLinks({rel1: {href: '/somewhere'}});
-      let count = 0;
-      doc.follows('rel1', 'rel2', 'rel3').subscribe((lastDoc) => {
-        expect(lastDoc['hello']).toMatch(/world|foobar/);
-        count++;
-      });
-      expect(mockHttp.get).toHaveBeenCalledTimes(1);
-      expect(count).toEqual(2);
-    });
-
-    it('returns empty if one rel in the chain does not exist', () => {
-      let doc = makeLinks({rel1: {href: '/somewhere'}});
-      let completed = false;
-      doc.follows('rel1', 'relnothing', 'rel3').subscribe(
-        (successDoc) => { fail('should not have gotten a doc'); },
-        (err) => { fail('should not have gotten an error'); },
-        () => { completed = true; }
-      );
-      expect(completed).toBeTruthy();
-    });
-
+  describe('destroy', () => {
+    xit('todo');
   });
 
-  describe('links', () => {
-
-    it('returns links array by rel', () => {
-      let links = makeLinks({name: ['foo', 'bar']}).links('name');
-      expect(links.length).toEqual(2);
-      expect(links).toEqual(['foo', 'bar']);
-    });
-
-    it('returns null for undefined rels', () => {
-      expect(makeLinks().links('name')).toBeNull();
-    });
-
-    it('returns arrays for singular links', () => {
-      let links = makeLinks({name: {foo: 'bar'}}).links('name');
-      expect(links.length).toEqual(1);
-      expect(links[0]['foo']).toEqual('bar');
-    });
-
-  });
-
-  describe('link', () => {
-
+  describe('expand', () => {
     it('returns the first link by rel', () => {
-      let doc = makeLinks({name: [
-        { href: '/link1href' },
-        { href: '/link2href' }
-      ]});
-      expect(doc.link('name')).toEqual('http://thehost/link1href');
+      let doc = makeDoc({_links: {
+        somerel: [
+          {href: '/link1href'},
+          {href: '/link2href'}
+        ]
+      }});
+      expect(doc.expand('somerel')).toEqual('http://thehost/link1href');
     });
 
     it('expands url templates', () => {
-      let doc = makeLinks({name: [{href: '/link/{foo}{?bar}', templated: true}]});
-      let href = doc.link('name', {bar: 'two', foo: 'one', test: 'three'});
+      let doc = makeDoc({_links: {
+        somerel: {href: '/link/{foo}{?bar}', templated: true}
+      }});
+      let href = doc.expand('somerel', {bar: 'two', foo: 'one', test: 'three'});
       expect(href).toEqual('http://thehost/link/one?bar=two');
     });
-
   });
 
-  describe('embeds', () => {
+  describe('followLink', () => {
+    it('http follows links', () => {
+      let doc = makeDoc({}, {'/the/link': {foo: 'bar'}});
+      doc.followLink({href: '/the/link'}).subscribe((nextDoc) => {
+        expect(nextDoc['foo']).toEqual('bar');
+      });
+    });
+  });
 
-    it('returns embedded array by rel', () => {
-      let embeds = makeEmbedded({name: [{foo: 1}, {bar: 2}]}).embeds('name');
-      expect(embeds.length).toEqual(2);
-      expect(embeds[0]['foo']).toEqual(1);
-      expect(embeds[1]['bar']).toEqual(2);
+  describe('follow', () => {
+    let data: any, linkData: any;
+    beforeEach(() => {
+      data = {
+        _embedded: {somerel: {foo: 'the-embed'}},
+        _links: {somerel: {href: '/the/link'}}
+      };
+      linkData = {'/the/link': {foo: 'the-link'}};
     });
 
-    it('returns empty for empty rels', () => {
-      expect(makeEmbedded({name: []}).embeds('name')).toEqual([]);
+    it('picks embeds over links', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('somerel').subscribe((nextDoc) => {
+        expect(nextDoc['foo']).toEqual('the-embed');
+      });
     });
 
-    it('returns null for undefined rels', () => {
-      expect(makeEmbedded().embeds('name')).toBeNull;
+    it('wont pick embeds if you pass params', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('somerel', {some: 'params'}).subscribe((nextDoc) => {
+        expect(nextDoc['foo']).toEqual('the-link');
+      });
     });
 
-    it('returns arrays for singular links', () => {
-      let embeds = makeEmbedded({name: {foo: 'bar'}}).embeds('name');
-      expect(embeds.length).toEqual(1);
-      expect(embeds[0]['foo']).toEqual('bar');
+    it('returns error if the link is an array', () => {
+      data._links.somerel = [data._links.somerel];
+      delete data._embedded;
+      let doc = makeDoc(data, linkData);
+      doc.follow('somerel').subscribe(
+        (nextDoc) => { fail('should not have gotten a doc'); },
+        (err) => { expect(err).toMatch('Expected object at _links.somerel'); }
+      );
     });
 
+    it('returns error if the embed is an array', () => {
+      data._embedded.somerel = [data._embedded.somerel];
+      delete data._links;
+      let doc = makeDoc(data, linkData);
+      doc.follow('somerel').subscribe(
+        (nextDoc) => { fail('should not have gotten a doc'); },
+        (err) => { expect(err).toMatch('Expected object at _embedded.somerel'); }
+      );
+    });
+
+    it('returns error for not-found rels', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('otherrel').subscribe(
+        (nextDoc) => { fail('should not have gotten a doc'); },
+        (err) => { expect(err).toMatch('Unable to find rel otherrel'); }
+      );
+    });
+  });
+
+  describe('followList', () => {
+    let data: any, linkData: any;
+    beforeEach(() => {
+      data = {
+        _embedded: {somerel: [{foo: 'the-embed1'}, {bar: 'the-embed2'}]},
+        _links: {somerel: [{href: '/the/link1'}, {href: '/the/link2'}]}
+      };
+      linkData = {
+        '/the/link1': {foo: 'the-link1'},
+        '/the/link2': {bar: 'the-link2'}
+      };
+    });
+
+    it('picks embeds over links', () => {
+      let doc = makeDoc(data, linkData);
+      doc.followList('somerel').subscribe((nextDocs) => {
+        expect(nextDocs).toBeAnInstanceOf(Array);
+        expect(nextDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(nextDocs[0]['foo']).toEqual('the-embed1');
+        expect(nextDocs[1]['bar']).toEqual('the-embed2');
+      });
+    });
+
+    it('wont pick embeds if you pass params', () => {
+      let doc = makeDoc(data, linkData);
+      doc.followList('somerel', {some: 'params'}).subscribe((nextDocs) => {
+        expect(nextDocs).toBeAnInstanceOf(Array);
+        expect(nextDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(nextDocs[0]['foo']).toEqual('the-link1');
+        expect(nextDocs[1]['bar']).toEqual('the-link2');
+      });
+    });
+
+    it('returns error if the link is an object', () => {
+      data._links.somerel = data._links.somerel[0];
+      delete data._embedded;
+      let doc = makeDoc(data, linkData);
+      doc.followList('somerel').subscribe(
+        (nextDocs) => { fail('should not have gotten docs'); },
+        (err) => { expect(err).toMatch('Expected array at _links.somerel'); }
+      );
+    });
+
+    it('returns error if the embed is an array', () => {
+      data._embedded.somerel = data._embedded.somerel[0];
+      delete data._links;
+      let doc = makeDoc(data, linkData);
+      doc.followList('somerel').subscribe(
+        (nextDoc) => { fail('should not have gotten a doc'); },
+        (err) => { expect(err).toMatch('Expected array at _embedded.somerel'); }
+      );
+    });
+
+    it('returns error for not-found rels', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('otherrel').subscribe(
+        (nextDoc) => { fail('should not have gotten a doc'); },
+        (err) => { expect(err).toMatch('Unable to find rel otherrel'); }
+      );
+    });
+  });
+
+  describe('followItems', () => {
+    it('recursively follows the items of a link', () => {
+      let data = {_links: {somerel: {href: '/the/link'}}};
+      let linkData = {'/the/link': {
+        _embedded: {'prx:items': [{foo: 'bar1'}, {foo: 'bar2'}]}
+      }};
+      let doc = makeDoc(data, linkData);
+      doc.followItems('somerel').subscribe((itemDocs) => {
+        expect(itemDocs).toBeAnInstanceOf(Array);
+        expect(itemDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(itemDocs[0]['foo']).toEqual('bar1');
+        expect(itemDocs[1]['foo']).toEqual('bar2');
+      });
+    });
+  });
+
+  describe('HalObservable', () => {
+    let data: any, linkData: any;
+    beforeEach(() => {
+      data = {_links: {rel1: {href: '/the/link1'}}};
+      linkData = {
+        '/the/link1': {
+          _embedded: {'rel2': {_links: {rel3: {href: '/the/link2'}}}}
+        },
+        '/the/link2': {
+          _embedded: {'prx:items': [{foo: 'bar1'}, {foo: 'bar2'}]}
+        }
+      };
+    });
+
+    it('nests HalDoc methods', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('rel1').follow('rel2').followItems('rel3').subscribe((itemDocs) => {
+        expect(itemDocs).toBeAnInstanceOf(Array);
+        expect(itemDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(itemDocs[0]['foo']).toEqual('bar1');
+        expect(itemDocs[1]['foo']).toEqual('bar2');
+      });
+    });
+
+    it('returns error if part of the chain fails', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('rel1').follow('foo').followItems('rel3').subscribe(
+        (itemDocs) => { fail('should not have gotten docs'); },
+        (err) => { expect(err).toMatch('Unable to find rel foo'); }
+      );
+    });
   });
 
 });

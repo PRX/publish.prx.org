@@ -23,7 +23,7 @@ export class HalRemote {
   ) {}
 
   expand(link: HalLink, params: {} = null): string {
-    if (!link) {
+    if (!link || !link.href) {
       return null;
     } else if (link.templated) {
       return TemplateParser.parse(this.host + link.href).expand(params || {});
@@ -34,13 +34,21 @@ export class HalRemote {
 
   get(link: HalLink, params: {} = null): Observable<{}> {
     let href = this.expand(link, params);
-    let cachedResponse = HalRemoteCache.get(href);
-    if (cachedResponse) {
-      return cachedResponse;
+    if (href) {
+      let cachedResponse = HalRemoteCache.get(href);
+      if (cachedResponse) {
+        return cachedResponse;
+      } else {
+        return HalRemoteCache.set(href, this.http.get(href, this.httpOptions()).flatMap((res) => {
+          if (res.status === 200) {
+            return Observable.of(res.json());
+          } else {
+            return Observable.throw(new Error(`Got ${res.status} from ${href}`));
+          }
+        }));
+      }
     } else {
-      return HalRemoteCache.set(href, this.http.get(href, this.httpOptions()).map((res) => {
-        return res.json();
-      }));
+      return Observable.throw(new Error('No link object specified!'));
     }
   }
 

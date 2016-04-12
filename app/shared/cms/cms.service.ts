@@ -2,7 +2,7 @@ import {Injectable} from 'angular2/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {Http} from 'angular2/http';
 import {HalDoc, HalObservable} from './haldoc';
-import {HalRemote} from './halremote';
+import {HalRemote, HalLink} from './halremote';
 import {Env} from '../../../config/env';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class CmsService {
     return this.replayToken;
   }
 
-  set token(token: string) {
+  setToken(token: string) {
     this.replayToken.next(token);
   }
 
@@ -31,24 +31,39 @@ export class CmsService {
         if (!token) {
           return Observable.throw(new Error(`Unauthorized`));
         } else {
-          let remote = new HalRemote(this.http, Env.CMS_HOST, token);
-          return Observable.of(new HalDoc(obj, remote));
+          return Observable.of(new HalDoc(obj, this.getRemote(token)));
         }
       });
     });
   }
 
-  follow(rel: string, params: Object = {}): HalObservable<HalDoc> {
+  follow(rel: string, params: {} = null): HalObservable<HalDoc> {
     return <HalObservable<HalDoc>> this.root.flatMap((rootDoc) => {
       return rootDoc.follow(rel, params);
     });
   }
 
-  private getCmsRoot(): void {
-    let unauthRemote = new HalRemote(this.http, Env.CMS_HOST, null);
-    unauthRemote.get({href: '/api/v1'}).subscribe((obj) => {
-      this.replayRoot.next(obj);
+  followList(rel: string, params: {} = null): HalObservable<HalDoc[]> {
+    return <HalObservable<HalDoc[]>> this.root.flatMap((rootDoc) => {
+      return rootDoc.followList(rel, params);
     });
+  }
+
+  followItems(rel: string, params: {} = null): HalObservable<HalDoc[]> {
+    return <HalObservable<HalDoc[]>> this.root.flatMap((rootDoc) => {
+      return rootDoc.followItems(rel, params);
+    });
+  }
+
+  protected getCmsRoot(): void {
+    this.getRemote().get(<HalLink> {href: '/api/v1'}).subscribe(
+      (obj) => { this.replayRoot.next(obj); },
+      (err) => { this.replayRoot.error(err); }
+    );
+  }
+
+  protected getRemote(token: string = null): HalRemote {
+    return new HalRemote(this.http, Env.CMS_HOST, token);
   }
 
 }
