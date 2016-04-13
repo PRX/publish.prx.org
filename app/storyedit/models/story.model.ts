@@ -66,7 +66,7 @@ export class StoryModel {
   }
 
   destroy(): Observable<boolean> {
-    return this.doc.destroy();
+    return this.doc.destroy().map(() => { return true; });
   }
 
   get isValid(): boolean {
