@@ -66,7 +66,7 @@ describe('CmsService', () => {
       let cms = new CmsService(mockHttp);
       cms.root.subscribe(
         (doc) => { fail('should not have gotten a doc'); },
-        (err) => { expect(err).toMatch(/Got 500 from http/); }
+        (err) => { expect(err).toMatch('Got 500 from GET http'); }
       );
       cms.setToken('thetoken');
       expect(mockHttp.get).toHaveBeenCalled();
