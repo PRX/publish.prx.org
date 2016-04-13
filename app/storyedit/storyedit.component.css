@@ -49,12 +49,30 @@
 .toolbar button.publish:hover, .toolbar button.create:hover {
   background-color: #e28b42;
 }
-.toolbar button.publish[disabled], .toolbar button.create[disabled] {
-  background-color: #f9c596;
-  color: #fff;
-  cursor: not-allowed;
+.toolbar button[disabled] {
+  color: #adc8d1;
+  background-color: #7FA9B7;
+  cursor: default;
 }
-
+.toolbar button.publish[disabled], .toolbar button.create[disabled] {
+  color: #fce4cf;
+  background-color: #f9c596;
+}
+.toolbar.affix {
+  position: fixed;
+  top: 73px;
+  right: 0;
+  left: 0;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 75px;
+  z-index: 200;
+  border-bottom: 1px solid #e6e6e6;
+}
+.deffix {
+  margin-top: 75px;
+}
 
 /**
  * Main content
@@ -63,7 +81,7 @@
   display: flex;
   padding: 30px 0;
 }
-.main nav {
+.main .subnav {
   flex: 0 0 260px;
   margin-right: 30px;
 }
@@ -97,6 +115,14 @@
   min-height: 100px;
 }
 
-textarea {
-  background-color: blue:
+/**
+ * TODO: restyle this delete button
+ */
+button.delete {
+  color: #fff;
+  background-color: #ee4d3e;
+  margin: 30px 0 0 90px;
+}
+button.delete:hover {
+  background-color: #ff0000;
 }

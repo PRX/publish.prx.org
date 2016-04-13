@@ -20,11 +20,11 @@ import {SellComponent}     from './directives/sell.component';
         <h1>{{stepText}}</h1>
       </section>
     </div>
-    <div class="hero toolbar">
+    <div class="hero toolbar" [class.affix]="affix" (window:scroll)="onScroll()">
       <section>
         <spinner *ngIf="!story.isLoaded" inverse=true></spinner>
         <div class="info" *ngIf="story.isLoaded">
-          <h2>{{story.title}}</h2>
+          <h2>{{story.title || '(Untitled)'}}</h2>
           <p *ngIf="story.modifiedAt">Last saved at {{story.modifiedAt | date}}</p>
         </div>
         <div class="actions">
@@ -35,22 +35,28 @@ import {SellComponent}     from './directives/sell.component';
           <button *ngIf="story.id" class="save"
             [disabled]="!story.isValid || !story.isChanged"
             (click)="save()">Save</button>
-          <button *ngIf="story.id" class="publish">Publish</button>
+          <button *ngIf="story.id" class="publish"
+            [disabled]="!story.isValid || story.isChanged">Publish</button>
         </div>
       </section>
     </div>
-    <div class="main">
+    <div class="main" [class.deffix]="affix">
       <section>
-        <nav *ngIf="story.id">
-          <a [routerLink]="['Default']">STEP 1: Edit your story</a>
-          <a [routerLink]="['Decorate']">STEP 2: Decorate your story</a>
-          <a [routerLink]="['Sell']">STEP 3: Sell your story</a>
-        </nav>
-        <nav *ngIf="!story.id">
-          <a [routerLink]="['Default']">STEP 1: Create your story</a>
-          <a disabled>STEP 2: Decorate your story</a>
-          <a disabled>STEP 3: Sell your story</a>
-        </nav>
+        <div class="subnav">
+          <nav *ngIf="story.id">
+            <a [routerLink]="['Default']">STEP 1: Edit your story</a>
+            <a [routerLink]="['Decorate']">STEP 2: Decorate your story</a>
+            <a [routerLink]="['Sell']">STEP 3: Sell your story</a>
+          </nav>
+          <nav *ngIf="!story.id">
+            <a [routerLink]="['Default']">STEP 1: Create your story</a>
+            <a disabled>STEP 2: Decorate your story</a>
+            <a disabled>STEP 3: Sell your story</a>
+          </nav>
+          <div class="extras">
+            <button *ngIf="story.id" class="delete" (click)="confirmDelete()">Delete</button>
+          </div>
+        </div>
         <div class="page">
           <router-outlet story="story"></router-outlet>
         </div>
@@ -70,6 +76,7 @@ export class StoryEditComponent implements OnDestroy {
   private story: StoryModel;
   private stepText: string;
   private routerSub: Subscription;
+  private affix = false;
 
   @ViewChild(EditComponent) private creator: EditComponent;
   @ViewChild(DecorateComponent) private decorator: DecorateComponent;
@@ -85,6 +92,10 @@ export class StoryEditComponent implements OnDestroy {
       this.setHeroText();
       this.bindRouteIO();
     });
+  }
+
+  onScroll(): void {
+    this.affix = (window.scrollY > 200);
   }
 
   setHeroText(): void {
@@ -112,6 +123,14 @@ export class StoryEditComponent implements OnDestroy {
         this.router.parent.navigate(['Edit', {id: this.story.id}]);
       }
     });
+  }
+
+  confirmDelete(): void {
+    if (confirm('Are you sure you want to delete this story?')) {
+      this.story.destroy().subscribe(() => {
+        this.router.parent.navigate(['Home']);
+      });
+    }
   }
 
   ngOnDestroy(): any {

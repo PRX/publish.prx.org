@@ -74,7 +74,7 @@ export class HalRemote {
 
   delete(link: HalLink, params: {} = null): Observable<{}> {
     let href = this.expand(link, params);
-    return this.http.put(href, body, this.httpOptions(true)).map((res) => {
+    return this.http.delete(href, this.httpOptions()).map((res) => {
       if (res.status === 204) {
         return Observable.of(true);
       } else {

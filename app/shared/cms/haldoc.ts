@@ -60,15 +60,15 @@ export class HalDoc {
     }
   }
 
-  destroy(): HalObservable<boolean> {
+  destroy(): HalObservable<HalDoc> {
     let link = this['_links'] ? this['_links']['self'] : null;
     if (!link) {
       return <HalObservable<HalDoc>> this.error(`Expected destroy link at _links.self - got null`);
     } else if (link instanceof Array) {
       return <HalObservable<HalDoc>> this.error(`Expected destroy link at _links.self - got array`);
     } else {
-      return <HalObservable<HalDoc>> this.remote.delete(link, null, data).map(() => {
-        return true;
+      return <HalObservable<HalDoc>> this.remote.delete(link).map(() => {
+        return this;
       });
     }
   }
