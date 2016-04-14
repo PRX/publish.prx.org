@@ -31,6 +31,7 @@ module.exports = function(config) {
 
     proxies: {
       '/app/': '/base/app/',
+      '/assets/': '/base/assets/',
       '/config/': '/base/config/',
       '/util/': '/base/util/',
       '/jspm_packages/': '/base/jspm_packages/',
@@ -40,6 +41,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      {pattern: 'assets/**/*.*', watched: false, included: false, served: true}
     ],
 
 

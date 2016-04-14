@@ -42,19 +42,38 @@ export function provideCms(): any[] {
 /**
  * Common tasks for building components and creating fixtures
  */
-interface FixtureCallback { (cms: MockCmsService): void; }
+interface FixtureCallback {
+  (cms: MockCmsService): void;
+}
 export function setupComponent(componentType: Type, fixtureBuilder?: FixtureCallback) {
-  this._prxComponent = componentType;
-  this._prxFixtureBuilder = fixtureBuilder;
+  beforeEach(() => {
+    this._prxComponent = componentType;
+    this._prxFixtureBuilder = fixtureBuilder;
+  });
 }
 
 /**
  * Bootstrap a component (configured via setupComponent())
+ *
+ * TODO: dynamically figure out the injectAsync classes, instead of hardcoding
+ *       them to [TestComponentBuilder, CmsService]
  */
-interface BuildComponentCallback { (fixture: ComponentFixture): any; }
+interface BuildComponentCallback {
+  (fix: ComponentFixture, el: Element, comp: any): any;
+}
 export function buildComponent(work: BuildComponentCallback): any {
-  return injectAsync([TestComponentBuilder, CmsService],
-                     (tcb: TestComponentBuilder, cms: MockCmsService) => {
+  return injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+    if (!this._prxComponent) {
+      console.error(`Test has no component defined! Did you forget to setupComponent()?`);
+    }
+    return tcb.createAsync(this._prxComponent).then((fix: ComponentFixture) => {
+      fix.detectChanges();
+      return work(fix, fix.debugElement.nativeElement, fix.debugElement.componentInstance);
+    });
+  });
+}
+export function buildCmsComponent(work: BuildComponentCallback): any {
+  return injectAsync([TestComponentBuilder, CmsService], (tcb: TestComponentBuilder, cms: any) => {
     if (this._prxFixtureBuilder) {
       this._prxFixtureBuilder(cms);
     }
@@ -62,7 +81,8 @@ export function buildComponent(work: BuildComponentCallback): any {
       console.error(`Test has no component defined! Did you forget to setupComponent()?`);
     }
     return tcb.createAsync(this._prxComponent).then((fix: ComponentFixture) => {
-      return work(fix);
+      fix.detectChanges();
+      return work(fix, fix.debugElement.nativeElement, fix.debugElement.componentInstance);
     });
   });
 }
