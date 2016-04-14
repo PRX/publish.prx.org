@@ -28,8 +28,8 @@ gulp.task('tdd', function (done) {
 });
 
 // Build tasks
-gulp.task('build:dev', seq('jspm:unbundle', 'jspm:bundle:dev'));
-gulp.task('build:dist', seq('jspm:unbundle', 'jspm:bundle:dist'));
+gulp.task('build:dev', ['jspm:bundle:dev']);
+gulp.task('build:dist', ['jspm:bundle:dist']);
 
 // Server tasks
 gulp.task('server:dev', shell.task(['node lib/server-dev.js']));
