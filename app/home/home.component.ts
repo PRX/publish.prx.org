@@ -23,7 +23,6 @@ import {CmsService} from '../shared/cms/cms.service';
                 </a>
               </li>
             </ul>
-            <story-list [account]="account"></story-list>
           </div>
         </div>
       </section>
@@ -33,8 +32,8 @@ import {CmsService} from '../shared/cms/cms.service';
 
 export class HomeComponent {
 
-  private accounts: any[];
-  private accountStories: any[] = [];
+  accounts: any[];
+  accountStories: any[] = [];
 
   constructor(private cms: CmsService) {
     cms.follow('prx:authorization').followItems('prx:accounts').subscribe((docs) => {
