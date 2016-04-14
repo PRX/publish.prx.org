@@ -9,7 +9,7 @@ import 'rxjs/Rx';
 import {AuthService} from './shared/auth/auth.service';
 import {CmsService} from './shared/cms/cms.service';
 
-if (!window.location.hostname.match(/localhost|\.dev/)) {
+if (!window.location.hostname.match(/localhost|\.dev|\.docker/)) {
   enableProdMode();
 }
 

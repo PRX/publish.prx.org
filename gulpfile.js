@@ -11,26 +11,29 @@ const KarmaServer  = require('karma').Server
 // Public tasks (serial)
 gulp.task('git:hooks:pre-commit', seq('jspm:unbundle'));
 gulp.task('postinstall',          seq('jspm:install', 'typings:install', 'git:hooks:install', 'copy:deps', 'jspm:bundle:dev'));
-gulp.task('start',                seq('build:dev', 'copy:deps', 'server:dev'));
+gulp.task('start:dev',            seq('build:dev', 'copy:deps', 'server:dev'));
+gulp.task('start:dist',           seq('build:dist', 'server:dist'));
 
+// Testing
 gulp.task('test', function (done) {
   new KarmaServer({
-    configFile: __dirname + '/config/karma.conf.js',
+    configFile: __dirname + '/config/karma.dev.js',
     singleRun: true
   }, done).start();
 });
-
 gulp.task('tdd', function (done) {
   new KarmaServer({
     configFile: __dirname + '/config/karma.conf.js'
   }, done).start();
 });
 
-// Build tasks (parallel)
-gulp.task('build:dev', ['jspm:bundle:dev']);
+// Build tasks
+gulp.task('build:dev', seq('jspm:unbundle', 'jspm:bundle:dev'));
+gulp.task('build:dist', seq('jspm:unbundle', 'jspm:bundle:dist'));
 
 // Server tasks
-gulp.task('server:dev', shell.task(['node lib/server.js']));
+gulp.task('server:dev', shell.task(['node lib/server-dev.js']));
+gulp.task('server:dist', shell.task(['node lib/server-dist.js']));
 
 // JSPM bundle tasks
 const nonbundle = ['- [app/**/*]', '- [config/**/*]', '- [util/**/*]'].join(' ');
@@ -38,6 +41,10 @@ gulp.task('jspm:bundle:dev', function() {
   return gulp.src('config/systemjs.config.js')
     .pipe(newer('.dev/vendor.js'))
     .pipe(shell(['jspm bundle ./app/main '+nonbundle+' ./.dev/vendor.js --inject']));
+});
+gulp.task('jspm:bundle:dist', function() {
+  return gulp.src('config/systemjs.config.js')
+    .pipe(shell(['jspm bundle-sfx ./app/main ./.dist/publish.min.js --minify --no-mangle']));
 });
 gulp.task('jspm:install',    shell.task('jspm install'));
 gulp.task('jspm:unbundle',   shell.task('jspm unbundle'));
