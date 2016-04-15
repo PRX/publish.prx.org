@@ -22,8 +22,11 @@
   },
   "scripts": {
     "git:hooks:pre-commit": "gulp git:hooks:pre-commit",
-    "start": "gulp start",
+    "start": "gulp start:dev",
+    "server": "gulp start:dist",
     "test": "gulp test",
+    "tdd": "gulp tdd",
+    "ci": "gulp test:dist",
     "postinstall": "gulp postinstall"
   },
   "devDependencies": {
