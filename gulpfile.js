@@ -59,10 +59,13 @@ gulp.task('jspm:unbundle',   shell.task('jspm unbundle --log warn'));
 
 // Utility tasks
 const loc = ['#!/bin/sh', 'PATH="/usr/local/bin:$PATH"', 'npm run git:hooks:pre-commit'];
-gulp.task('git:hooks:install', shell.task([
-  `printf '${loc.join('\n')}' > ./.git/hooks/pre-commit`,
-  'chmod +x ./.git/hooks/pre-commit'
-]));
+gulp.task('git:hooks:install', function() {
+  return gulp.src('.git/hooks')
+    .pipe(shell([
+      `printf '${loc.join('\n')}' > ./.git/hooks/pre-commit`,
+      'chmod +x ./.git/hooks/pre-commit'
+    ]));
+});
 
 gulp.task('typings:install', shell.task('typings install'));
 

@@ -23,23 +23,26 @@
   "scripts": {
     "git:hooks:pre-commit": "gulp git:hooks:pre-commit",
     "start": "gulp start:dev",
-    "server": "gulp start:dist",
+    "build": "gulp build:dist",
+    "server": "node lib/server-dist.js",
     "test": "gulp test",
     "tdd": "gulp tdd",
     "ci": "gulp test:dist",
     "postinstall": "gulp postinstall"
   },
-  "devDependencies": {
-    "chokidar-socket-emitter": "^0.3.0",
+  "dependencies": {
     "dotenv": "^2.0.0",
     "express": "^4.13.4",
+    "jade": "^1.11.0"
+  },
+  "devDependencies": {
+    "chokidar-socket-emitter": "^0.3.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-newer": "^1.1.0",
     "gulp-rename": "^1.2.2",
     "gulp-sequence": "^0.4.5",
     "gulp-shell": "^0.5.2",
-    "jade": "^1.11.0",
     "jasmine-core": "2.4.1",
     "jspm": "^0.16.31",
     "karma": "0.13.22",
