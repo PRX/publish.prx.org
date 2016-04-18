@@ -2,13 +2,13 @@ import {Component, ViewEncapsulation} from 'angular2/core';
 import {RouteConfig, RouterOutlet} from 'angular2/router';
 
 import {AuthComponent} from './shared/auth/auth.component';
-import {HeaderComponent}  from './header/header.component';
+import {HeaderComponent} from './header/header.component';
 import {NavItemComponent} from './header/navitem.component';
 import {NavUserComponent} from './header/navuser.component';
-import {FooterComponent}  from './footer/footer.component';
+import {FooterComponent} from './footer/footer.component';
 import {LoginComponent} from './login/login.component';
 
-import {HomeComponent}     from './home/home.component';
+import {HomeComponent} from './home/home.component';
 import {StoryEditComponent} from './storyedit/storyedit.component';
 import {UploadComponent} from './upload/upload.component';
 
@@ -58,11 +58,11 @@ import {UploadComponent} from './upload/upload.component';
 })
 
 @RouteConfig([
-  { path: '/',             name: 'Index',   component: HomeComponent, useAsDefault: true },
-  { path: '/home',         name: 'Home',    component: HomeComponent },
-  { path: '/create/...',   name: 'Create',  component: StoryEditComponent },
-  { path: '/edit/:id/...', name: 'Edit',    component: StoryEditComponent },
-  { path: '/upload', name: 'Upload', component: UploadComponent }
+  { path: '/',             name: 'Index',  component: HomeComponent, useAsDefault: true },
+  { path: '/home',         name: 'Home',   component: HomeComponent },
+  { path: '/create/...',   name: 'Create', component: StoryEditComponent },
+  { path: '/edit/:id/...', name: 'Edit',   component: StoryEditComponent },
+  { path: '/upload',       name: 'Upload', component: UploadComponent }
 ])
 
 export class AppComponent {}
