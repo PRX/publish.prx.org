@@ -1,53 +1,69 @@
 import {Injectable} from 'angular2/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {Http} from 'angular2/http';
-import {HalDoc} from './haldoc';
+import {HalDoc, HalObservable} from './haldoc';
+import {HalRemote, HalLink} from './halremote';
 import {Env} from '../../../config/env';
 
 @Injectable()
 export class CmsService {
 
-  public authToken: ReplaySubject<string>;
-  private rootDoc: ReplaySubject<any>;
+  private replayToken: ReplaySubject<string>;
+  private replayRoot: ReplaySubject<{}>;
 
   constructor(private http: Http) {
-    this.authToken = new ReplaySubject<string>(1);
-    this.rootDoc = new ReplaySubject<any>(1);
-    this.http.get(`${Env.CMS_HOST}/api/v1`).subscribe((res) => {
-      if (res.status === 200) {
-        this.rootDoc.next(res.json());
-      } else {
-        this.rootDoc.error(`Got ${res.status} from ${Env.CMS_HOST}/api/v1`);
-      }
-    });
+    this.replayToken = new ReplaySubject<string>(1);
+    this.replayRoot = new ReplaySubject<{}>(1);
+    this.getCmsRoot();
   }
 
-  set token(token: string) {
-    this.authToken.next(token);
+  get token(): Observable<string> {
+    return this.replayToken;
   }
 
-  get root(): Observable<HalDoc> {
-    return this.rootDoc.flatMap((doc) => {
-      return this.authToken.flatMap((token) => {
+  setToken(token: string) {
+    this.replayToken.next(token);
+  }
+
+  get root(): HalObservable<HalDoc> {
+    return <HalObservable<HalDoc>> this.replayRoot.flatMap((obj) => {
+      return this.replayToken.flatMap((token) => {
         if (!token) {
           return Observable.throw(new Error(`Unauthorized`));
         } else {
-          return Observable.of(new HalDoc(doc, this.http, Env.CMS_HOST, token));
+          return Observable.of(new HalDoc(obj, this.getRemote(token)));
         }
       });
     });
   }
 
-  follow(rel: string, params: Object = {}): Observable<HalDoc> {
-    return this.root.flatMap((rootDoc) => {
+  follow(rel: string, params: {} = null): HalObservable<HalDoc> {
+    return <HalObservable<HalDoc>> this.root.flatMap((rootDoc) => {
       return rootDoc.follow(rel, params);
     });
   }
 
-  follows(...rels: string[]): Observable<HalDoc> {
-    return this.root.flatMap((rootDoc) => {
-      return <Observable<HalDoc>> rootDoc.follows.apply(rootDoc, rels);
+  followList(rel: string, params: {} = null): HalObservable<HalDoc[]> {
+    return <HalObservable<HalDoc[]>> this.root.flatMap((rootDoc) => {
+      return rootDoc.followList(rel, params);
     });
+  }
+
+  followItems(rel: string, params: {} = null): HalObservable<HalDoc[]> {
+    return <HalObservable<HalDoc[]>> this.root.flatMap((rootDoc) => {
+      return rootDoc.followItems(rel, params);
+    });
+  }
+
+  protected getCmsRoot(): void {
+    this.getRemote().get(<HalLink> {href: '/api/v1'}).subscribe(
+      (obj) => { this.replayRoot.next(obj); },
+      (err) => { this.replayRoot.error(err); }
+    );
+  }
+
+  protected getRemote(token: string = null): HalRemote {
+    return new HalRemote(this.http, Env.CMS_HOST, token);
   }
 
 }

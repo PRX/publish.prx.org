@@ -1,0 +1,79 @@
+/**
+ * Banner text
+ */
+.banner {
+  height: 200px;
+  background: #818181 url('/assets/images/towers.png') repeat;
+}
+.banner h1 {
+  font-size: 40px;
+  line-height: 200px;
+  font-weight: 400;
+  color: #fff;
+}
+
+/**
+ * Toolbar
+ */
+.toolbar {
+  background: #fff;
+}
+.toolbar section {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  position: relative;
+}
+.toolbar spinner {
+  flex-grow: 1;
+  height: 48px;
+}
+.toolbar .info {
+  flex-grow: 1;
+}
+.toolbar .actions {
+  white-space: nowrap;
+}
+.toolbar h2 {
+  font-size: 26px;
+  line-height: 30px;
+  font-weight: 200;
+}
+.toolbar button {
+  display: inline-block;
+  margin-left: 10px;
+}
+.toolbar button.publish, .toolbar button.create {
+  background-color: #f59f51;
+}
+.toolbar button.publish:hover, .toolbar button.create:hover {
+  background-color: #e28b42;
+}
+.toolbar button[disabled] {
+  color: #adc8d1;
+  background-color: #7FA9B7;
+  cursor: default;
+}
+.toolbar button.publish[disabled], .toolbar button.create[disabled] {
+  color: #fce4cf;
+  background-color: #f9c596;
+}
+
+/**
+ * Affixing
+ */
+.toolbar.affix {
+  position: fixed;
+  top: 73px;
+  right: 0;
+  left: 0;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 75px;
+  z-index: 200;
+  border-bottom: 1px solid #e6e6e6;
+}
+.spacer.affix {
+  height: 75px;
+}

@@ -43,6 +43,7 @@
     "karma-jasmine": "0.3.8",
     "karma-jspm": "2.1.0",
     "karma-phantomjs-launcher": "1.0.0",
+    "karma-spec-reporter": "0.0.26",
     "open": "0.0.5",
     "typings": "^0.7.7"
   },

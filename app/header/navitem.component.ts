@@ -15,6 +15,6 @@ import {RouterLink} from 'angular2/router';
 
 export class NavItemComponent {
   @Input() route: string;
-  @Input() href:  string;
-  @Input() text:  string;
+  @Input() href: string;
+  @Input() text: string;
 }
