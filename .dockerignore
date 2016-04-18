@@ -1,0 +1,12 @@
+.dev
+.dist
+.env
+.git
+.gitignore
+coverage
+docker-compose.yml
+jspm_packages
+node_modules
+tmp
+typings
+*.log

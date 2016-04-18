@@ -2,14 +2,14 @@ import {it, describe, expect, beforeEach, afterEach} from 'angular2/testing';
 import {Http, Response, ResponseOptions, RequestOptions} from 'angular2/http';
 import {MockBackend} from 'angular2/http/testing';
 import {Observable} from 'rxjs/Observable';
-import {Env} from '../../../config/env';
 import {CmsService} from './cms.service';
+import {HalRemoteCache} from './halremote.cache';
 
 describe('CmsService', () => {
 
-  let ttl: number;
-  beforeEach(() => { ttl = Env.CMS_TTL; Env.CMS_TTL = 0; });
-  afterEach(() => { Env.CMS_TTL = ttl; });
+  beforeEach(() => {
+    HalRemoteCache.clear();
+  });
 
   const mockHttp = new Http(new MockBackend(), new RequestOptions());
   const mockResponse = (data = {}, status = 200) => {
