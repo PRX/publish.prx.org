@@ -42,7 +42,7 @@ describe('HalRemote', () => {
     it('sets the correct headers', () => {
       spyOn(mockHttp, 'get').and.callFake((url: any, options: any) => {
         expect(url).toEqual('http://thehost/somewhere');
-        expect(options.headers.get('Accept')).toEqual('application/json');
+        expect(options.headers.get('Accept')).toEqual('application/hal+json');
         expect(options.headers.get('Authorization')).toEqual('Bearer thetoken');
         return Observable.empty();
       });
@@ -78,9 +78,9 @@ describe('HalRemote', () => {
       spyOn(mockHttp, 'post').and.callFake((url: any, body: string, options: any) => {
         expect(url).toEqual('http://thehost/foobar');
         expect(body).toEqual('{"hello":"world"}');
-        expect(options.headers.get('Accept')).toEqual('application/json');
+        expect(options.headers.get('Accept')).toEqual('application/hal+json');
         expect(options.headers.get('Authorization')).toEqual('Bearer thetoken');
-        expect(options.headers.get('Content-Type')).toEqual('application/json');
+        expect(options.headers.get('Content-Type')).toEqual('application/hal+json');
         return Observable.empty();
       });
       link.href = '/foobar';

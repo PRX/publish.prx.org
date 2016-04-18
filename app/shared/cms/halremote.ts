@@ -85,12 +85,12 @@ export class HalRemote {
 
   private httpOptions(hasContent = false): RequestOptionsArgs {
     let headers = new Headers();
-    headers.append('Accept', 'application/json');
+    headers.append('Accept', 'application/hal+json');
     if (this.token) {
       headers.append('Authorization', `Bearer ${this.token}`);
     }
     if (hasContent) {
-      headers.append('Content-Type', 'application/json');
+      headers.append('Content-Type', 'application/hal+json');
     }
     return {headers: headers};
   }
