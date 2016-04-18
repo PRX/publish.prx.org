@@ -15,7 +15,6 @@ import {ImageLoaderComponent} from '../shared/image/image-loader.component';
   template: `
     <div class="nav-holder">
       <template [ngIf]="userName">
-        <a *ngIf="!userName" [routerLink]="['Login']">Login</a>
         <a *ngIf="userName">
           <span class="name">{{userName}}</span>
           <image-loader [src]="userImage"></image-loader>
@@ -30,17 +29,20 @@ import {ImageLoaderComponent} from '../shared/image/image-loader.component';
 
 export class NavUserComponent {
 
-  private userName: string;
-  private userImage: string;
+  userName: string;
+  userImage: string;
 
-  constructor(private cmsService: CmsService) {
-    this.cmsService.follows('prx:authorization', 'prx:default-account').subscribe((doc) => {
+  constructor(private cms: CmsService) {
+    cms.follow('prx:authorization').follow('prx:default-account').subscribe((doc) => {
       this.userName = doc['name'];
-    });
-    this.cmsService.follows('prx:authorization', 'prx:default-account', 'prx:image').subscribe((doc) => {
-      this.userImage = doc.link('enclosure');
-    }, (err) => {
-      this.userImage = null;
+      doc.follow('prx:image').subscribe(
+        (image) => {
+          this.userImage = image.expand('enclosure');
+        },
+        (err) => {
+          this.userImage = null; // no image - leave blank
+        }
+      );
     });
   }
 

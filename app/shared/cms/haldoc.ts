@@ -1,98 +1,165 @@
-import {Http, Headers} from 'angular2/http';
 import {Observable} from 'rxjs/Observable';
-import TemplateParser from 'url-template';
+import {HalRemote} from './halremote';
+
+// Bring observables up to snuff
+export interface HalObservable<T> extends Observable<T> {
+  follow(rel: string, params?: {}): HalObservable<T>;
+  followList(rel: string, params?: {}): HalObservable<T[]>;
+  followItems(rel: string, params?: {}): HalObservable<T[]>;
+}
+Observable.prototype['follow'] = function(rel: string, params: {} = null) {
+  return this.flatMap((doc: HalDoc) => {
+    return doc.follow(rel, params);
+  });
+};
+Observable.prototype['followList'] = function(rel: string, params: {} = null) {
+  return this.flatMap((doc: HalDoc) => {
+    return doc.followList(rel, params);
+  });
+};
+Observable.prototype['followItems'] = function(rel: string, params: {} = null) {
+  return this.flatMap((doc: HalDoc) => {
+    return doc.followItems(rel, params);
+  });
+};
 
 /*
  * Generic class for interacting with HAL api
  */
 export class HalDoc {
-  private http: Http;
-  private host: string;
-  private token: string;
 
-  constructor(data: any = {}, http: Http, host: string, authToken: string) {
-    Object.keys(data).forEach((key) => { this[key] = data[key]; });
-    this.http = http;
-    this.host = host;
-    this.token = authToken;
+  constructor(data: any = {}, protected remote: HalRemote) {
+    this.setData(data);
   }
 
-  followLink(linkObj: any, params: any = {}): Observable<HalDoc> {
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    if (this.token) {
-      headers.append('Authorization', `Bearer ${this.token}`);
+  update(data: any): HalObservable<HalDoc> {
+    let link = this['_links'] ? this['_links']['self'] : null;
+    if (!link) {
+      return <HalObservable<HalDoc>> this.error(`Expected update link at _links.self - got null`);
+    } else if (link instanceof Array) {
+      return <HalObservable<HalDoc>> this.error(`Expected update link at _links.self - got array`);
+    } else {
+      return <HalObservable<HalDoc>> this.remote.put(link, null, data).map(() => {
+        this.setData(data);
+        return this;
+      });
     }
-    let href = this.host + linkObj.href;
-    if (linkObj.templated) {
-      href = TemplateParser.parse(href).expand(params);
+  }
+
+  create(rel: string, params: any = {}, data: any): HalObservable<HalDoc> {
+    let link = this['_links'] ? this['_links'][rel] : null;
+    if (!link) {
+      return <HalObservable<HalDoc>> this.error(`Expected create link at _links.${rel} - got null`);
+    } else if (link instanceof Array) {
+      return <HalObservable<HalDoc>>
+        this.error(`Expected create link at _links.${rel} - got array`);
+    } else {
+      return <HalObservable<HalDoc>> this.remote.post(link, params, data).map((obj) => {
+        return new HalDoc(obj, this.remote);
+      });
     }
-    return this.http.get(href, {headers: headers}).map((res) => {
-      return new HalDoc(res.json(), this.http, this.host, this.token);
+  }
+
+  destroy(): HalObservable<HalDoc> {
+    let link = this['_links'] ? this['_links']['self'] : null;
+    if (!link) {
+      return <HalObservable<HalDoc>> this.error(`Expected destroy link at _links.self - got null`);
+    } else if (link instanceof Array) {
+      return <HalObservable<HalDoc>> this.error(`Expected destroy link at _links.self - got array`);
+    } else {
+      return <HalObservable<HalDoc>> this.remote.delete(link).map(() => {
+        return this;
+      });
+    }
+  }
+
+  expand(rel: string, params: any = {}): string {
+    let link = this['_links'] ? this['_links'][rel] : null;
+    if (link && link instanceof Array) {
+      link = link[0];
+    }
+    return this.remote.expand(link, params);
+  }
+
+  followLink(linkObj: any, params: any = {}): HalObservable<HalDoc> {
+    return <HalObservable<HalDoc>> this.remote.get(linkObj, params).map((obj) => {
+      return new HalDoc(obj, this.remote);
     });
   }
 
-  follow(rel: string, params: any = {}): Observable<HalDoc> {
-    let links = this.links(rel), embeds = this.embeds(rel);
-    if (embeds) {
-      return Observable.fromArray(embeds);
-    } else if (links) {
-      let allLinks = links.map((link) => {
+  follow(rel: string, params: {} = null): HalObservable<HalDoc> {
+    if (!params && this['_embedded'] && this['_embedded'][rel]) {
+      return <HalObservable<HalDoc>> this.embedOne(rel);
+    } else if (this['_links'] && this['_links'][rel]) {
+      return <HalObservable<HalDoc>> this.linkOne(rel, params);
+    } else {
+      return <HalObservable<HalDoc>> this.error(`Unable to find rel ${rel}`);
+    }
+  }
+
+  followList(rel: string, params: {} = null): HalObservable<HalDoc[]> {
+    if (!params && this['_embedded'] && this['_embedded'][rel]) {
+      return <HalObservable<HalDoc[]>> this.embedList(rel);
+    } else if (this['_links'] && this['_links'][rel]) {
+      return <HalObservable<HalDoc[]>> this.linkList(rel);
+    } else {
+      return <HalObservable<HalDoc[]>> this.error(`Unable to find rel ${rel}`);
+    }
+  }
+
+  followItems(rel: string, params: {} = null): HalObservable<HalDoc[]> {
+    return <HalObservable<HalDoc[]>> this.follow(rel, params).flatMap((doc) => {
+      return doc.followList('prx:items');
+    });
+  }
+
+  protected error(msg: string): Observable<any> {
+    console.error(msg);
+    return Observable.throw(new Error(msg));
+  }
+
+  private embedOne(rel: string): Observable<HalDoc> {
+    if (this['_embedded'][rel] instanceof Array) {
+      return this.error(`Expected object at _embedded.${rel} - got list`);
+    } else {
+      return Observable.of(new HalDoc(this['_embedded'][rel], this.remote));
+    }
+  }
+
+  private linkOne(rel: string, params: {} = null): Observable<HalDoc> {
+    if (this['_links'][rel] instanceof Array) {
+      return this.error(`Expected object at _links.${rel} - got list`);
+    } else {
+      return this.followLink(this['_links'][rel], params);
+    }
+  }
+
+  private embedList(rel: string): Observable<HalDoc[]> {
+    if (this['_embedded'][rel] instanceof Array) {
+      return Observable.of(this['_embedded'][rel].map((data: any) => {
+        return new HalDoc(data, this.remote);
+      }));
+    } else {
+      return this.error(`Expected array at _embedded.${rel} - got object`);
+    }
+  }
+
+  private linkList(rel: string, params: {} = null): Observable<HalDoc[]> {
+    if (this['_links'][rel] instanceof Array) {
+      return Observable.fromArray(this['_links'][rel].map((link: any) => {
         return this.followLink(link, params);
-      });
-      return Observable.concat.apply(this, allLinks);
+      })).concatAll().toArray();
     } else {
-      return <Observable<HalDoc>> Observable.empty();
+      return this.error(`Expected array at _links.${rel} - got object`);
     }
   }
 
-  follows(...rels: string[]): Observable<HalDoc> {
-    if (rels.length) {
-      return this.follow(rels.shift()).flatMap((doc) => {
-        return <Observable<HalDoc>> doc.follows.apply(doc, rels);
-      });
-    } else {
-      return Observable.of(this);
-    }
-  }
-
-  links(rel: string): any[] {
-    if (this['_links'] && this['_links'][rel]) {
-      if (this['_links'][rel] instanceof Array) {
-        return this['_links'][rel];
-      } else {
-        return [this['_links'][rel]];
+  private setData(data: {}) {
+    Object.keys(data).forEach((key) => {
+      if (data.hasOwnProperty(key)) {
+        this[key] = data[key];
       }
-    } else {
-      return null;
-    }
-  }
-
-  link(rel: string, params: any = {}): string {
-    let links = this.links(rel);
-    if (links && links[0] && links[0].templated) {
-      return TemplateParser.parse(this.host + links[0].href).expand(params);
-    } else if (links && links[0]) {
-      return this.host + links[0].href;
-    } else {
-      return null;
-    }
-  }
-
-  embeds(rel: string): HalDoc[] {
-    if (this['_embedded'] && this['_embedded'][rel]) {
-      let rawEmbeds: any = [];
-      if (this['_embedded'][rel] instanceof Array) {
-        rawEmbeds = this['_embedded'][rel];
-      } else {
-        rawEmbeds = [this['_embedded'][rel]];
-      }
-      return rawEmbeds.map((data: any) => {
-        return new HalDoc(data, this.http, this.host, this.token);
-      });
-    } else {
-      return null;
-    }
+    });
   }
 
 }

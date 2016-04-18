@@ -9,11 +9,19 @@ export class Env {
 
   private static DEFAULTS = {
     CMS_HOST: 'https://cms.prx.org',
+    CMS_TTL: 1, // 1 second
+    CMS_ROOT_TTL: 3600, // 1 hour
+    CMS_USE_LOCALSTORAGE: false,
     AUTH_HOST: 'https://id.prx.org',
     AUTH_CLIENT_ID: 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D'
   };
 
   public static get CMS_HOST(): string { return this.getVariable('CMS_HOST'); }
+  public static get CMS_TTL(): string { return this.getVariable('CMS_TTL'); }
+  public static get CMS_ROOT_TTL(): string { return this.getVariable('CMS_ROOT_TTL'); }
+  public static get CMS_USE_LOCALSTORAGE(): string {
+    return this.getVariable('CMS_USE_LOCALSTORAGE');
+  }
   public static get AUTH_HOST(): string { return this.getVariable('AUTH_HOST'); }
   public static get AUTH_CLIENT_ID(): string { return this.getVariable('AUTH_CLIENT_ID'); }
   public static get BUCKET_NAME(): string { return this.getVariable('BUCKET_NAME'); }

@@ -25,6 +25,7 @@ module.exports = function(config) {
         '.dev/main.js.map',
         'tsconfig.json',
         'app/**/*.css',
+        'util/test-helper.ts',
         // TODO: move this elsewhere
         'app/shared/cms/cms.mocks.ts'
       ]

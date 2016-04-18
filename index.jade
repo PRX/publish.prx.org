@@ -19,8 +19,12 @@ html(lang='en')
 
             // reload same-named components when css changes
             hr.on('change', (fileName) => {
+              if (console['clear']) console['clear']();
+              console.log(`---- hot-reloaded ${fileName} ----`);
               if (fileName.match(/app\.component/)) {
                 hr.hotReload('app/app.component.ts');
+              } else if (fileName.match(/storyedit\.forms/)) {
+                hr.hotReload('app/storyedit/directives/edit.component.ts');
               } else if (fileName.match(/\.css$/)) {
                 hr.hotReload(fileName.replace(/\.css$/, '.ts'));
               }

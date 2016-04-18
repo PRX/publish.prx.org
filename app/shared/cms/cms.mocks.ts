@@ -1,74 +1,112 @@
 import {Observable} from 'rxjs';
 import {CmsService} from './cms.service';
-import {HalDoc} from './haldoc';
+import {HalDoc, HalObservable} from './haldoc';
+import {HalRemote} from './halremote';
 
 // Re-export for convenience
-export { HalDoc };
 export { CmsService };
 
 export class MockHalDoc extends HalDoc {
 
-  private cmsService: MockCmsService;
-  private rels: string[];
+  MOCKS = {};
+  ERRORS = {};
 
-  constructor(data: any = {}, cmsService: MockCmsService, rels: string[]) {
-    super(data, null, 'http://mockhal.doc', 'faketoken');
-    this.cmsService = cmsService;
-    this.rels = rels;
+  constructor(data: any = {}) {
+    super(data, new HalRemote(null, 'http://cms.mock/v1', null));
   }
 
-  follow(rel: string, params: Object = {}): Observable<HalDoc> {
-    return this.cmsService.follow(this.rels.concat(rel).join('|'), params);
+  mock(rel: string, data: {}): MockHalDoc {
+    return this.MOCKS[rel] = new MockHalDoc(data);
   }
 
-  follows(...rels: string[]): Observable<HalDoc> {
-    return this.cmsService.follow.apply(this.cmsService, this.rels.concat(rels));
+  mockList(rel: string, datas: {}[]): MockHalDoc[] {
+    return this.MOCKS[rel] = datas.map((data) => {
+      return new MockHalDoc(data);
+    });
+  }
+
+  mockItems(rel: string, datas: {}[]): MockHalDoc[] {
+    return this.mock(rel, {}).mockList('prx:items', datas);
+  }
+
+  mockError(rel: string, msg: string) {
+    this.ERRORS[rel] = msg;
+  }
+
+  follow(rel: string, params: {} = null): HalObservable<MockHalDoc> {
+    if (this.ERRORS[rel]) {
+      return <HalObservable<MockHalDoc>> this.nonLoggingError(this.ERRORS[rel]);
+    } else if (this.MOCKS[rel]) {
+      if (this.MOCKS[rel] instanceof Array) {
+        return <HalObservable<MockHalDoc>>
+          this.error(`Expected mocked object at ${rel} - got array`);
+      } else {
+        return <HalObservable<MockHalDoc>> Observable.of(this.MOCKS[rel]);
+      }
+    } else {
+      return <HalObservable<MockHalDoc>> this.error(`Un-mocked request for rel ${rel}`);
+    }
+  }
+
+  followList(rel: string, params: {} = null): HalObservable<MockHalDoc[]> {
+    if (this.ERRORS[rel]) {
+      return <HalObservable<MockHalDoc[]>> this.nonLoggingError(this.ERRORS[rel]);
+    } else if (this.MOCKS[rel]) {
+      if (!(this.MOCKS[rel] instanceof Array)) {
+        return <HalObservable<MockHalDoc[]>>
+          this.error(`Expected mocked array at ${rel} - got object`);
+      } else {
+        return <HalObservable<MockHalDoc[]>> Observable.of(this.MOCKS[rel]);
+      }
+    } else {
+      return <HalObservable<MockHalDoc[]>> this.error(`Un-mocked request for rel ${rel}`);
+    }
+  }
+
+  private nonLoggingError(msg: string): any {
+    return Observable.throw(new Error(msg));
   }
 
 }
 
 export class MockCmsService {
 
-  private relMocks = {};
+  private mockRoot: MockHalDoc;
 
-  mock(rels: string | string[], data: {}) {
-    let relsArray = [].concat(rels);
-    let key = relsArray.join('|');
-    let doc = new MockHalDoc(data, this, relsArray);
-    if (this.relMocks[key]) {
-      this.relMocks[key].push(doc);
-    } else {
-      this.relMocks[key] = [doc];
-    }
+  constructor() {
+    this.mockRoot = new MockHalDoc({});
   }
 
-  get root(): Observable<HalDoc> {
-    return Observable.of(new MockHalDoc({}, this, []));
+  mock(rel: string, data: {}): MockHalDoc {
+    return this.mockRoot.mock(rel, data);
   }
 
-  get authToken(): Observable<string> {
-    return Observable.of('faketoken');
+  mockList(rel: string, datas: {}[]): MockHalDoc[] {
+    return this.mockRoot.mockList(rel, datas);
   }
 
-  follow(rel: string, params: Object = {}): Observable<HalDoc> {
-    if (this.relMocks[rel]) {
-      return Observable.fromArray(this.relMocks[rel]);
-    } else {
-      let err = new Error(`Got request for unmocked rel: ${rel}`);
-      console.error(err.message);
-      return Observable.throw(err);
-    }
-
+  mockItems(rel: string, datas: {}[]): MockHalDoc[] {
+    return this.mockRoot.mockItems(rel, datas);
   }
 
-  follows(...rels: string[]): Observable<HalDoc> {
-    if (this.relMocks[rels.join('|')]) {
-      return Observable.fromArray(this.relMocks[rels.join('|')]);
-    } else {
-      let err = new Error(`Got request for unmocked rels: ${rels.join('|')}`);
-      console.error(err.message);
-      return Observable.throw(err);
-    }
+  /*
+   * Implement enough of cms.service to make auth'd requests happen
+   */
+
+  get root(): HalObservable<MockHalDoc> {
+    return <HalObservable<MockHalDoc>> Observable.of(this.mockRoot);
+  }
+
+  follow(rel: string, params: {} = null): HalObservable<HalDoc> {
+    return this.mockRoot.follow(rel, params);
+  }
+
+  followList(rel: string, params: {} = null): HalObservable<HalDoc[]> {
+    return this.mockRoot.followList(rel, params);
+  }
+
+  followItems(rel: string, params: {} = null): HalObservable<HalDoc[]> {
+    return this.mockRoot.followItems(rel, params);
   }
 
 }

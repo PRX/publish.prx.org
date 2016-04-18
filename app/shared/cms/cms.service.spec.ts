@@ -1,10 +1,15 @@
-import {it, describe, expect} from 'angular2/testing';
+import {it, describe, expect, beforeEach, afterEach} from 'angular2/testing';
 import {Http, Response, ResponseOptions, RequestOptions} from 'angular2/http';
 import {MockBackend} from 'angular2/http/testing';
 import {Observable} from 'rxjs/Observable';
 import {CmsService} from './cms.service';
+import {HalRemoteCache} from './halremote.cache';
 
 describe('CmsService', () => {
+
+  beforeEach(() => {
+    HalRemoteCache.clear();
+  });
 
   const mockHttp = new Http(new MockBackend(), new RequestOptions());
   const mockResponse = (data = {}, status = 200) => {
@@ -20,7 +25,8 @@ describe('CmsService', () => {
         return mockResponse({foo: 'bar'});
       });
       let cms = new CmsService(mockHttp);
-      expect(cms.authToken).toBeAnInstanceOf(Observable);
+      expect(cms.token).toBeAnInstanceOf(Observable);
+      expect(cms.root).toBeAnInstanceOf(Observable);
       expect(mockHttp.get).toHaveBeenCalledTimes(1);
     });
 
@@ -31,12 +37,12 @@ describe('CmsService', () => {
     it('only sets one token at a time', () => {
       let cms = new CmsService(mockHttp);
       let count = 0;
-      cms.authToken.subscribe((token) => {
+      cms.token.subscribe((token) => {
         count++;
         expect(token).toEqual(`token#${count}`);
       });
-      cms.token = 'token#1';
-      cms.token = 'token#2';
+      cms.setToken('token#1');
+      cms.setToken('token#2');
       expect(count).toEqual(2);
     });
 
@@ -51,7 +57,7 @@ describe('CmsService', () => {
         (doc) => { fail('should not have gotten a doc'); },
         (err) => { expect(err).toMatch(/Unauthorized/); }
       );
-      cms.token = null;
+      cms.setToken(null);
       expect(mockHttp.get).toHaveBeenCalled();
     });
 
@@ -60,9 +66,9 @@ describe('CmsService', () => {
       let cms = new CmsService(mockHttp);
       cms.root.subscribe(
         (doc) => { fail('should not have gotten a doc'); },
-        (err) => { expect(err).toMatch(/Got 500 from http/); }
+        (err) => { expect(err).toMatch('Got 500 from GET http'); }
       );
-      cms.token = 'thetoken';
+      cms.setToken('thetoken');
       expect(mockHttp.get).toHaveBeenCalled();
     });
 
@@ -73,7 +79,7 @@ describe('CmsService', () => {
       cms.root.subscribe(() => { count++; });
       cms.root.subscribe(() => { count++; });
       cms.root.subscribe(() => { count++; });
-      cms.token = 'thetoken';
+      cms.setToken('thetoken');
       expect(mockHttp.get).toHaveBeenCalledTimes(1);
       expect(count).toEqual(3);
     });
@@ -89,37 +95,10 @@ describe('CmsService', () => {
         }
       }));
       let cms = new CmsService(mockHttp);
-      cms.token = 'thetoken';
+      cms.setToken('thetoken');
       let count = 0;
       cms.follow('rel1').subscribe((doc) => {
         expect(doc['hello']).toEqual('world');
-        count++;
-      });
-      expect(mockHttp.get).toHaveBeenCalled();
-      expect(count).toEqual(1);
-    });
-
-  });
-
-  describe('follows', () => {
-
-    it('nested links off the root document', () => {
-      spyOn(mockHttp, 'get').and.returnValue(mockResponse({
-        _embedded: {
-          rel1: {
-            _embedded: {
-              rel2: {
-                hello: 'thereworld'
-              }
-            }
-          }
-        }
-      }));
-      let cms = new CmsService(mockHttp);
-      cms.token = 'thetoken';
-      let count = 0;
-      cms.follows('rel1', 'rel2').subscribe((doc) => {
-        expect(doc['hello']).toEqual('thereworld');
         count++;
       });
       expect(mockHttp.get).toHaveBeenCalled();

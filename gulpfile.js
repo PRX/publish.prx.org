@@ -29,7 +29,7 @@ gulp.task('test:dist', ['jspm:bundle:test'], function (done) {
 });
 gulp.task('tdd', function (done) {
   new KarmaServer({
-    configFile: __dirname + '/config/karma.conf.js'
+    configFile: __dirname + '/config/karma.dev.js'
   }, done).start();
 });
 

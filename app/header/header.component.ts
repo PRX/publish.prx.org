@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from 'angular2/core';
+import {Component} from 'angular2/core';
 import {RouterLink} from 'angular2/router';
 
 @Component({
