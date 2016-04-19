@@ -1,66 +1,124 @@
 import {Observable} from 'rxjs';
 import {CmsService} from '../../shared/cms/cms.service';
 import {HalDoc} from '../../shared/cms/haldoc';
-
-class StoryPayload {
-  id: number = null;
-  title: string = '';
-  shortDescription: string = '';
-  modifiedAt: Date = null;
-  toJSON(): {} {
-    return {
-      title: this.title,
-      shortDescription: this.shortDescription
-    };
-  }
-}
-
-class StoryChanged {
-  title: boolean = false;
-  shortDescription: boolean = false;
-}
-
-class StoryInvalid {
-  title: string;
-  shortDescription: string;
-}
+import {CATEGORIES, SUBCATEGORIES} from './story.categories';
 
 export class StoryModel {
 
-  public isLoaded: boolean = false;
-  public changed: StoryChanged = new StoryChanged();
-  public invalid: StoryInvalid = new StoryInvalid();
+  isLoaded: boolean = false;
+  isNew: boolean;
 
-  private payload: StoryPayload = new StoryPayload();
+  // attributes
+  id: number;
+  title: string;
+  shortDescription: string;
+  genre: string;
+  subGenre: string;
+  extraTags: string;
+  updatedAt: Date;
+  publishedAt: Date;
+
   private doc: HalDoc;
   private defaultAccount: HalDoc;
+  private initialValues = {};
 
   constructor(cms: CmsService, id?: string) {
+    if (this.isLoaded) { return; } // hotreload bug
     if (id) {
-      this.payload.id = parseInt(id, 10);
+      this.isNew = false;
       cms.follow('prx:authorization').follow('prx:story', {id: id}).subscribe((doc) => {
         this.setDoc(doc);
         this.isLoaded = true;
       });
     } else {
+      this.isNew = true;
       cms.follow('prx:authorization').follow('prx:default-account').subscribe((doc) => {
         this.defaultAccount = doc;
-        this.setDoc(null);
         this.isLoaded = true;
       });
     }
   }
 
-  save(): Observable<boolean> {
-    if (this.id) {
-      return this.doc.update(this.payload).map((doc) => {
-        this.setDoc(doc);
-        return false; // is old
+  setDoc(doc: HalDoc): void {
+    this.doc = doc;
+    this.initialValues = {
+      id: doc['id'],
+      title: doc['title'],
+      shortDescription: doc['shortDescription'],
+      genre: this.parseGenre(doc['tags']),
+      subGenre: this.parseSubGenre(doc['tags']),
+      extraTags: this.parseExtraTags(doc['tags']),
+      updatedAt: new Date(doc['updatedAt']),
+      publishedAt: new Date(doc['publishedAt'])
+    };
+    for (let key of Object.keys(this.initialValues)) {
+      if (this.initialValues.hasOwnProperty(key)) {
+        this[key] = this.initialValues[key];
+      }
+    }
+  }
+
+  parseGenre(tags: string[] = []): string {
+    return tags.find((val) => {
+      return CATEGORIES.indexOf(val) > -1;
+    });
+  }
+
+  parseSubGenre(tags: string[] = []): string {
+    let genre = this.parseGenre(tags);
+    if (genre && SUBCATEGORIES[genre]) {
+      return tags.find((val) => {
+        return SUBCATEGORIES[genre].indexOf(val) > -1;
       });
     } else {
-      return this.defaultAccount.create('prx:stories', {}, this.payload).map((doc) => {
+      return null;
+    }
+  }
+
+  parseExtraTags(tags: string[] = []): string {
+    return tags.filter((val) => {
+      for (let cat of CATEGORIES) {
+        if (cat === val) { return false; }
+      }
+      for (let key of Object.keys(SUBCATEGORIES)) {
+        for (let subcat of SUBCATEGORIES[key]) {
+          if (subcat === val) { return false; }
+        }
+      }
+      return true;
+    }).join(', ');
+  }
+
+  toJSON(): {} {
+    let data = {};
+    data['title'] = this.title;
+    data['shortDescription'] = this.shortDescription;
+    data['tags'] = [];
+    if (this.extraTags) {
+      for (let tag of this.extraTags.replace(/\s*,\s*/, ',').split(',')) {
+        data['tags'].push(tag);
+      }
+    }
+    if (this.genre) {
+      data['tags'].push(this.genre);
+    }
+    if (this.subGenre) {
+      data['tags'].push(this.subGenre);
+    }
+    return data;
+  }
+
+  save(): Observable<boolean> {
+    if (this.isNew) {
+      return this.defaultAccount.create('prx:stories', {}, this.toJSON()).map((doc) => {
         this.setDoc(doc);
-        return true; // is new
+        this.isNew = false;
+        return true; // was new
+      });
+    } else {
+      return this.doc.update(this.toJSON()).map((doc) => {
+        this.setDoc(doc);
+        return false; // was old
       });
     }
   }
@@ -69,57 +127,59 @@ export class StoryModel {
     return this.doc.destroy().map(() => { return true; });
   }
 
-  get isValid(): boolean {
-    for (let key in this.invalid) {
-      if (this.invalid[key]) { return false; }
-    }
-    return true;
-  }
-
-  get isChanged(): boolean {
-    for (let key in this.changed) {
-      if (this.changed[key]) { return true; }
-    }
-    return false;
-  }
-
-  // Model attributes
-  get id(): number { return this.payload.id; }
-  get title(): string { return this.payload.title; }
-  get shortDescription(): string { return this.payload.shortDescription; }
-  get modifiedAt(): Date { return new Date(); }
-
-  // Setters with validations
-  set title(val: string) {
-    this.payload.title = val;
-    this.changed.title = val !== (this.doc ? this.doc['title'] : '');
-    this.invalid.title = null;
-    if (!val || val.length < 1) {
-      this.invalid.title = 'is required';
-    } else if (val.length < 10) {
-      this.invalid.title = 'is too short';
-    }
-  }
-  set shortDescription(val: string) {
-    this.payload.shortDescription = val;
-    this.changed.shortDescription = val !== (this.doc ? this.doc['shortDescription'] : '');
-    this.invalid.shortDescription = null;
-    if (!val || val.length < 1) {
-      this.invalid.shortDescription = 'is required';
-    } else if (val.length < 10) {
-      this.invalid.shortDescription = 'is too short';
-    }
-  }
-
-  private setDoc(doc: HalDoc): void {
-    this.doc = doc;
-    for (let key in this.payload) {
-      if (this.payload.toJSON().hasOwnProperty(key)) {
-        this[key] = doc ? doc[key] : this.payload[key]; // trigger validation
-      } else if (this.payload.hasOwnProperty(key)) {
-        this.payload[key] = doc ? doc[key] : this.payload[key];
+  invalid(fieldName?: string): string {
+    if (fieldName === 'title') {
+      if (!this.title || this.title.length < 1) {
+        return 'is required';
+      } else if (this.title.length < 10) {
+        return 'is too short';
       }
+    } else if (fieldName === 'shortDescription') {
+      if (!this.shortDescription || this.shortDescription.length < 1) {
+        return 'is required';
+      } else if (this.shortDescription.length < 10) {
+        return 'is too short';
+      }
+    } else if (fieldName === 'genre') {
+      if (!this.genre || this.genre.length < 1) {
+        return 'is required';
+      }
+    } else if (fieldName === 'subGenre') {
+      if (!this.subGenre || this.subGenre.length < 1) {
+        return 'is required';
+      }
+    } else if (fieldName === 'extraTags') {
+      let tags = (this.extraTags || '').replace(/\s*,\s*/, ',').split(',');
+      for (let tag of tags) {
+        if (tag && tag.length < 3) {
+          return `must contain at least 3 characters per tag (see ${tag})`;
+        }
+      }
+    } else if (fieldName === 'tags') {
+      if (this.invalid('genre')) {
+        return `Genre ${this.invalid('genre')}`;
+      } else if (this.invalid('subGenre')) {
+        return `SubGenre ${this.invalid('subGenre')}`;
+      } else if (this.invalid('extraTags')) {
+        return `Tags ${this.invalid('extraTags')}`;
+      }
+    } else if (!fieldName) {
+      return this.invalid('title') || this.invalid('shortDescription') ||
+             this.invalid('genre') || this.invalid('subGenre');
+    } else {
+      return null;
     }
+  }
+
+  changed(fieldName?: string): boolean {
+    if (fieldName) {
+      return this.initialValues[fieldName] !== this[fieldName];
+    } else {
+      return this.changed('title') || this.changed('shortDescription') ||
+             this.changed('genre') || this.changed('subGenre') ||
+             this.changed('extraTags');
+    }
+
   }
 
 }
