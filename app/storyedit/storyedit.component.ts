@@ -19,18 +19,18 @@ import {SellComponent}     from './directives/sell.component';
     <div class="main">
       <section>
         <div class="subnav">
-          <nav *ngIf="story.id">
+          <nav *ngIf="!story.isNew">
             <a [routerLink]="['Default']">STEP 1: Edit your story</a>
             <a [routerLink]="['Decorate']">STEP 2: Decorate your story</a>
             <a [routerLink]="['Sell']">STEP 3: Sell your story</a>
           </nav>
-          <nav *ngIf="!story.id">
+          <nav *ngIf="story.isNew">
             <a [routerLink]="['Default']">STEP 1: Create your story</a>
             <a disabled>STEP 2: Decorate your story</a>
             <a disabled>STEP 3: Sell your story</a>
           </nav>
           <div class="extras">
-            <button *ngIf="story.id" class="delete" (click)="confirmDelete()">Delete</button>
+            <button *ngIf="!story.isNew" class="delete" (click)="confirmDelete()">Delete</button>
           </div>
         </div>
         <div class="page">

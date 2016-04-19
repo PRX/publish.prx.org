@@ -2,9 +2,11 @@ import {Component, Input} from 'angular2/core';
 import {Router} from 'angular2/router';
 import {StoryModel} from '../models/story.model';
 import {SpinnerComponent}  from '../../shared/spinner/spinner.component';
+import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
 
 @Component({
   directives: [SpinnerComponent],
+  pipes: [TimeAgoPipe],
   selector: 'publish-story-hero',
   styleUrls: ['app/storyedit/directives/hero.component.css'],
   template: `
@@ -18,18 +20,18 @@ import {SpinnerComponent}  from '../../shared/spinner/spinner.component';
         <spinner *ngIf="!story.isLoaded" inverse=true></spinner>
         <div class="info" *ngIf="story.isLoaded">
           <h2>{{story.title || '(Untitled)'}}</h2>
-          <p *ngIf="story.modifiedAt">Last saved at {{story.modifiedAt | date}}</p>
+          <p *ngIf="story.updatedAt">Last saved at {{story.updatedAt | timeago}}</p>
         </div>
         <div class="actions">
           <button class="preview">Preview</button>
-          <button *ngIf="!story.id" class="create"
-            [disabled]="!story.isValid"
+          <button *ngIf="story.isNew" class="create"
+            [disabled]="story.invalid()"
             (click)="save()">Create</button>
-          <button *ngIf="story.id" class="save"
-            [disabled]="!story.isValid || !story.isChanged"
+          <button *ngIf="!story.isNew" class="save"
+            [disabled]="story.invalid() || !story.changed()"
             (click)="save()">Save</button>
-          <button *ngIf="story.id" class="publish"
-            [disabled]="!story.isValid || story.isChanged">Publish</button>
+          <button *ngIf="!story.isNew" class="publish"
+            [disabled]="story.invalid() || story.changed()">Publish</button>
         </div>
       </section>
     </div>
