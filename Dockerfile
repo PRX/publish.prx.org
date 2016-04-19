@@ -14,11 +14,8 @@ CMD [ "server" ]
 
 ADD . ./
 
-ARG JSPM_GITHUB_AUTH_TOKEN
 RUN apk --update add --virtual build-dependencies git && \
     npm set progress=false && \
-    (if [ "$JSPM_GITHUB_AUTH_TOKEN" != "" ]; then npm install --loglevel error jspm && \
-      node_modules/.bin/jspm config registries.github.auth ${JSPM_GITHUB_AUTH_TOKEN}; fi) && \
     npm install --no-optional --unsafe-perm --loglevel error && \
     npm run build && \
     npm prune --production --loglevel error && npm cache clean && \
