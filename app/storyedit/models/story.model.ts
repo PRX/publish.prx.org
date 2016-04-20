@@ -70,8 +70,6 @@ export class StoryModel {
       return tags.find((val) => {
         return SUBCATEGORIES[genre].indexOf(val) > -1;
       });
-    } else {
-      return null;
     }
   }
 
@@ -86,7 +84,7 @@ export class StoryModel {
         }
       }
       return true;
-    }).join(', ');
+    }).join(', ') || undefined;
   }
 
   toJSON(): {} {
@@ -95,8 +93,8 @@ export class StoryModel {
     data['shortDescription'] = this.shortDescription;
     data['tags'] = [];
     if (this.extraTags) {
-      for (let tag of this.extraTags.replace(/\s*,\s*/, ',').split(',')) {
-        data['tags'].push(tag);
+      for (let tag of this.extraTags.split(',')) {
+        data['tags'].push(tag.trim());
       }
     }
     if (this.genre) {

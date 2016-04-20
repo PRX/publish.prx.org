@@ -33,6 +33,23 @@ export class MockHalDoc extends HalDoc {
     this.ERRORS[rel] = msg;
   }
 
+  update(data: any): HalObservable<MockHalDoc> {
+    for (let key of Object.keys(data)) {
+      this[key] = data[key];
+    }
+    return <HalObservable<MockHalDoc>> Observable.of(this);
+  }
+
+  create(rel: string, params: any = {}, data: any): HalObservable<MockHalDoc> {
+    let doc = this.mock(rel, data); // TODO: params?
+    return <HalObservable<MockHalDoc>> Observable.of(doc);
+  }
+
+  destroy(): HalObservable<HalDoc> {
+    this['_destroyed'] = true; // TODO: something better
+    return <HalObservable<MockHalDoc>> Observable.of(this);
+  }
+
   follow(rel: string, params: {} = null): HalObservable<MockHalDoc> {
     if (this.ERRORS[rel]) {
       return <HalObservable<MockHalDoc>> this.nonLoggingError(this.ERRORS[rel]);
