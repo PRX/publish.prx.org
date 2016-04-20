@@ -46,6 +46,7 @@
     "jasmine-core": "2.4.1",
     "jspm": "^0.16.31",
     "karma": "0.13.22",
+    "karma-chrome-launcher": "^0.2.3",
     "karma-jasmine": "0.3.8",
     "karma-jspm": "2.1.0",
     "karma-phantomjs-launcher": "1.0.0",
