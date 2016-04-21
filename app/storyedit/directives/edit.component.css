@@ -1,0 +1,22 @@
+/**
+ * Story basic editing
+ */
+hr {
+  width: 100%;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #ccc;
+  margin: 0 0 30px;
+}
+.uploads-box {
+  border: 4px solid purple;
+  height: 300px;
+  text-align: center;
+  line-height: 300px;
+  color: purple;
+}
+@media screen and (min-width: 768px) {
+  .span-fields > * {
+    display: inline-block;
+    width: 40%;
+  }
+}

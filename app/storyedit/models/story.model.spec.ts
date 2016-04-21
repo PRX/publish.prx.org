@@ -11,8 +11,9 @@ describe('StoryModel', () => {
     auth = cms.mock('prx:authorization', {}); // clears mocks
   });
 
+  let storyMock: any;
   const makeStory = (data = {}) => {
-    auth.mock('prx:story', data);
+    storyMock = auth.mock('prx:story', data);
     return new StoryModel(cms, 'any-story-id');
   };
 
@@ -140,7 +141,7 @@ describe('StoryModel', () => {
       story.destroy().subscribe((deleted) => {
         expect(deleted).toBeTruthy();
       });
-      expect(story.doc['_destroyed']).toEqual(true);
+      expect(storyMock['_destroyed']).toEqual(true);
     });
 
   });

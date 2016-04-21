@@ -15,10 +15,9 @@ module.exports = function(config) {
 
 
     jspm: {
-      loadFiles: [
-        'app/**/*.spec.ts',
-        'util/**/*.spec.ts'
-      ],
+      loadFiles: process.env['TESTONLY'] ?
+        ['**/' + process.env['TESTONLY'] + '.spec.ts'] :
+        ['app/**/*.spec.ts', 'util/**/*.spec.ts'],
       serveFiles: [
         'app/**/*!(*.spec).ts',
         'app/**/*.css',

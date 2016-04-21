@@ -1,9 +1,14 @@
 /**
- * Common form styling
+ * Form fields
  */
-.field {
+:host {
   width: 100%;
+}
+.field {
   margin-bottom: 40px;
+}
+.field.small {
+  margin-bottom: 20px;
 }
 h3 {
   font-size: 24px;
@@ -32,15 +37,6 @@ p.error {
   display: none;
   margin-top: 6px;
   color: #e32;
-}
-p.error.show {
-  display: block;
-}
-hr {
-  width: 100%;
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #ccc;
-  margin: 0 0 30px;
 }
 input, textarea {
   width: 100%;
@@ -72,29 +68,15 @@ select[disabled] {
   background: #efefef;
 }
 
-@media screen and (min-width: 768px) {
-  .field > .field.stack {
-    display: inline-block;
-    width: 40%;
-  }
-}
+/**
+ * Valid/changed indicators
+ */
 .field.changed input, .field.changed textarea, .field.changed select {
   outline: 5px auto #f09b4c;
 }
 .field.changed.invalid input, .field.changed.invalid textarea, .field.changed.invalid select {
   outline: 5px auto #e32;
 }
-.field.changed.invalid p.error {
+.field.changed.invalid p.error, .field.invalid-explicit p.error {
   display: block;
-}
-
-/*.ng-dirty, .ng-dirty:focus {}
-.ng-invalid:not(.ng-pristine), .ng-invalid:focus:not(.ng-pristine) {}*/
-
-.uploads-box {
-  border: 4px solid purple;
-  height: 300px;
-  text-align: center;
-  line-height: 300px;
-  color: purple;
 }
