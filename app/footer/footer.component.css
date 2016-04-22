@@ -149,11 +149,8 @@ ul.social {
 ul.social a {
   display: block;
   text-align: center;
-  font-family: 'fontello';
-  font-size: 18px;
-  width: 3rem;
-  height: 3rem;
-  line-height: 3rem;
+  font-size: 20px;
+  margin: 0 10px;
 }
 ul.social a[href*="newsletters"] {
   color: #777;

@@ -1,5 +1,6 @@
 input,
 button,
+.button,
 label {
   font-size: 100%;
   outline: none;
@@ -70,7 +71,7 @@ input {
   -ms-flex-preferred-size: 215px;
   -webkit-flex-basis: 215px;
 }
-button {
+button, .button {
   border: 1px solid transparent;
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -83,7 +84,7 @@ button {
   -ms-flex-preferred-size: auto;
   -webkit-flex-basis: auto;
 }
-button[disabled] {
+button[disabled], .button[disabled] {
   -webkit-transition: background-color 0.2s, color 0.2s;
   -moz-transition: background-color 0.2s, color 0.2s;
   -o-transition: background-color 0.2s, color 0.2s;
