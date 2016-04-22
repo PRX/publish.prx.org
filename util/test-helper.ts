@@ -50,6 +50,26 @@ export function setupComponent(componentType: Type, fixtureBuilder?: FixtureCall
     this._prxComponent = componentType;
     this._prxFixtureBuilder = fixtureBuilder;
   });
+  afterEach(() => {
+    delete this._prxComponent;
+    delete this._prxFixtureBuilder;
+  });
+}
+
+/**
+ * Mock out a directive (sub-component)
+ */
+export function mockDirective(directive: Type, mockWith: Type) {
+  let key = directive.toString();
+  beforeEach(() => {
+    if (!this._prxOverrideDirective) {
+      this._prxOverrideDirective = {};
+    }
+    this._prxOverrideDirective[key] = [directive, mockWith];
+  });
+  afterEach(() => {
+    delete this._prxOverrideDirective[key];
+  });
 }
 
 /**
@@ -61,28 +81,33 @@ export function setupComponent(componentType: Type, fixtureBuilder?: FixtureCall
 interface BuildComponentCallback {
   (fix: ComponentFixture, el: Element, comp: any): any;
 }
-export function buildComponent(work: BuildComponentCallback): any {
-  return injectAsync([TestComponentBuilder], (tcb: TestComponentBuilder) => {
+export function buildComponent(work: BuildComponentCallback, withCms = false): any {
+  let injects: any[] = [TestComponentBuilder];
+  if (withCms) {
+    injects.push(CmsService);
+  }
+
+  return injectAsync(injects, (tcb: TestComponentBuilder, cms?: any) => {
     if (!this._prxComponent) {
       console.error(`Test has no component defined! Did you forget to setupComponent()?`);
     }
-    return tcb.createAsync(this._prxComponent).then((fix: ComponentFixture) => {
-      fix.detectChanges();
-      return work(fix, fix.debugElement.nativeElement, fix.debugElement.componentInstance);
-    });
-  });
-}
-export function buildCmsComponent(work: BuildComponentCallback): any {
-  return injectAsync([TestComponentBuilder, CmsService], (tcb: TestComponentBuilder, cms: any) => {
     if (this._prxFixtureBuilder) {
       this._prxFixtureBuilder(cms);
     }
-    if (!this._prxComponent) {
-      console.error(`Test has no component defined! Did you forget to setupComponent()?`);
+    if (this._prxOverrideDirective) {
+      for (let key of Object.keys(this._prxOverrideDirective)) {
+        let vals = this._prxOverrideDirective[key];
+        tcb = tcb.overrideDirective(this._prxComponent, vals[0], vals[1]);
+      }
     }
-    return tcb.createAsync(this._prxComponent).then((fix: ComponentFixture) => {
-      fix.detectChanges();
-      return work(fix, fix.debugElement.nativeElement, fix.debugElement.componentInstance);
-    });
+    return tcb
+      .createAsync(this._prxComponent)
+      .then((fix: ComponentFixture) => {
+        fix.detectChanges();
+        return work(fix, fix.debugElement.nativeElement, fix.debugElement.componentInstance);
+      });
   });
+}
+export function buildCmsComponent(work: BuildComponentCallback): any {
+  return buildComponent.call(this, work, true);
 }

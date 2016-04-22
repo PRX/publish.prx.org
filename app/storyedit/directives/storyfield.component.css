@@ -1,0 +1,82 @@
+/**
+ * Form fields
+ */
+:host {
+  width: 100%;
+}
+.field {
+  margin-bottom: 40px;
+}
+.field.small {
+  margin-bottom: 20px;
+}
+h3 {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+h4 {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 400;
+  margin-bottom: 6px;
+  color: #343434;
+}
+label[required]::after {
+  content: '*';
+  color: #e32;
+  display: inline;
+  vertical-align: middle;
+}
+p {
+  margin-bottom: 6px;
+  max-width: 600px;
+}
+p.error {
+  display: none;
+  margin-top: 6px;
+  color: #e32;
+}
+input, textarea {
+  width: 100%;
+  max-width: 600px;
+  padding: 6px;
+  color: #939393;
+  background: #fff;
+}
+input:focus, textarea:focus {
+  color: #000;
+}
+textarea {
+  height: 100px;
+}
+select {
+  width: 100%;
+  max-width: 250px;
+  font-size: 16px;
+  border-color: #939393;
+  color: #343434;
+  background: #fff;
+}
+select:focus {
+  color: #000;
+}
+select[disabled] {
+  border-color: #bebebe;
+  color: #bebebe;
+  background: #efefef;
+}
+
+/**
+ * Valid/changed indicators
+ */
+.field.changed input, .field.changed textarea, .field.changed select {
+  outline: 5px auto #f09b4c;
+}
+.field.changed.invalid input, .field.changed.invalid textarea, .field.changed.invalid select {
+  outline: 5px auto #e32;
+}
+.field.changed.invalid p.error, .field.invalid-explicit p.error {
+  display: block;
+}
