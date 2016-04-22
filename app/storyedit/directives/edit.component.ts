@@ -2,9 +2,10 @@ import {Component, Input} from 'angular2/core';
 import {StoryModel} from '../models/story.model';
 import {CATEGORIES, SUBCATEGORIES} from '../models/story.categories';
 import {StoryFieldComponent} from './storyfield.component';
+import {UploadComponent} from '../../upload/upload.component';
 
 @Component({
-  directives: [StoryFieldComponent],
+  directives: [StoryFieldComponent, UploadComponent],
   selector: 'newstory-edit',
   styleUrls: ['app/storyedit/directives/edit.component.css'],
   template: `
@@ -22,7 +23,7 @@ import {StoryFieldComponent} from './storyfield.component';
       <hr/>
 
       <story-field label="Story Versions" required>
-        <div class="uploads-box">uploads goes heres</div>
+        <audio-uploader [story]="story"></audio-uploader>
       </story-field>
 
       <hr/>
