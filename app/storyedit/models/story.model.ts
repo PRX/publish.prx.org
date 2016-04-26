@@ -18,7 +18,7 @@ export class StoryModel {
   updatedAt: Date;
   publishedAt: Date;
 
-  private doc: HalDoc;
+  public doc: HalDoc;
   private defaultAccount: HalDoc;
   private initialValues = {};
 

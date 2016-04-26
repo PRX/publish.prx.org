@@ -1,39 +1,43 @@
-import {Component, Input} from 'angular2/core';
-import {UploadService} from './services/upload.service';
-import {UploadFileSelect} from './directives/upload-file-select.directive';
-import {FileUpload} from './directives/file-upload.component';
+import {Component, Input, OnInit} from 'angular2/core';
+import {SpinnerComponent} from '../shared/spinner/spinner.component';
+import {HalDoc} from '../shared/cms/haldoc';
 import {StoryModel} from '../storyedit/models/story.model';
-import {ReplaySubject} from 'rxjs';
+import {AudioVersionComponent} from './directives/audio-version.component';
 
 @Component({
-  directives: [UploadFileSelect, FileUpload],
+  directives: [SpinnerComponent, AudioVersionComponent],
   selector: 'audio-uploader',
   styleUrls: ['app/upload/upload.component.css'],
   template: `
-    <header>
-      <strong>{{cutName}}</strong><span>{{cutDesc}}</span>
-    </header>
-    <section>
-      <file-upload *ngFor="#upload of uploadService.uploadsForStory(story.id)" [upload]="upload">
-      </file-upload>
-      <div *ngIf="uploadService.uploadsForStory(story.id)" class="empty">
-        <h4>Upload a file to get started</h4>
-      </div>
-      <div class="uploader">
-        <input type="file" id="file" upload-file [storyId]="story.id" />
-        <label class="button" for="file">Upload Files</label>
-      </div>
-    </section>
+    <div *ngIf="!audioVersions">
+      <spinner></spinner>
+    </div>
+    <div *ngIf="audioVersions && !audioVersions.length">
+      <h2>Your story has no versions! Something is terribly wrong</h2>
+    </div>
+    <audio-version *ngFor="#version of audioVersions" [version]="version" [story]="story.doc">
+    </audio-version>
   `
 })
 
-export class UploadComponent {
+export class UploadComponent implements OnInit {
 
-  cutName = `Producer's Cut`;
-  cutDesc = 'The standard version of your story you would most like people to hear and buy';
+  SHOW_VERSIONS = ['Piece Audio'];
+
+  audioVersions: HalDoc[];
 
   @Input() story: StoryModel;
 
-  constructor(private uploadService: UploadService) {}
+  ngOnInit() {
+    if (this.story.isNew) {
+      this.audioVersions = []; // TODO: how to create upon saving the story?
+    } else {
+      this.story.doc.followItems('prx:audio-versions').subscribe((docs) => {
+        this.audioVersions = docs.filter((doc) => {
+          return this.SHOW_VERSIONS.indexOf(doc['label']) > -1;
+        });
+      });
+    }
+  }
 
 }

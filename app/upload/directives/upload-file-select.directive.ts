@@ -1,5 +1,4 @@
-import {Directive, ElementRef, Input} from 'angular2/core';
-import {UploadService} from '../services/upload.service';
+import {Directive, ElementRef, Output, EventEmitter} from 'angular2/core';
 
 @Directive({
   selector: '[upload-file]',
@@ -7,17 +6,14 @@ import {UploadService} from '../services/upload.service';
 })
 export class UploadFileSelect {
 
-  @Input() storyId: number;
+  @Output() file = new EventEmitter();
 
-  constructor(
-    private element: ElementRef,
-    private uploadService: UploadService
-  ) {}
+  constructor(private element: ElementRef) {}
 
   onChange(): void {
     let files = this.element.nativeElement.files;
     for (let file of files) {
-      this.uploadService.addFile(this.storyId, file);
+      this.file.emit(file);
     }
   }
 }

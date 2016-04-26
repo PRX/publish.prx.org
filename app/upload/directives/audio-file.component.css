@@ -1,7 +1,7 @@
 /**
  * File upload progress/processing/ordering
  */
-.file-upload {
+.audio-file {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -10,12 +10,11 @@
   border-bottom: 1px solid #DDD;
   padding: 18px 22px;
 }
-
 .reorder {order: 1; flex-basis: 100%;}
 .cancel {order: 2; flex-basis: 100%;}
 .main {order: 3; flex-basis: 100%;}
 @media screen and (min-width:600px) {
-  .file-upload {flex-wrap: nowrap;}
+  .audio-file {flex-wrap: nowrap;}
   .reorder {order: 1; flex-basis: 70px;}
   .cancel {order: 3; flex-basis: 50px;}
   .main {order: 2; flex-basis: 1;}
@@ -43,27 +42,27 @@
   justify-content: flex-start;
   align-items: stretch;
 }
-.main .type {
+.type {
   border: 1px solid #DDDDDD;
   padding: 6px 10px;
   min-width: 160px;
   position: relative;
 }
-.main .type i {
+.type i {
   position: absolute;
   right: 5px;
   top: 11px;
 }
-.main .info {
+.info {
   flex-grow: 1;
   border: 1px solid #DDDDDD;
   border-left: 0 none;
   padding: 6px 10px;
 }
-.main .info .time {
+.info .extra {
   margin-left: 6px;
 }
-.main .progress {
+.progress {
   flex-basis: 100%;
   padding-top: 10px;
   display: flex;
@@ -72,24 +71,35 @@
   justify-content: flex-start;
   align-items: center;
 }
-.main .progress p {
-  color: #EF8F1D;
+.progress p {
+  color: #000;
   padding-right: 10px;
   font-size: 14px;
   font-weight: bold;
 }
-.main .progress .meter {
+.meter {
   flex-grow: 1;
   background-color: #DDDDDD;
   height: 10px;
   position: relative;
 }
-.main .progress .meter > span {
+.meter > span {
   display: block;
   height: 100%;
   width: 0%;
   transition: 0.4s linear;
   transition-property: width;
-  background-color: #EF8F1D;
+  background-color: #000;
   overflow: hidden;
 }
+
+/**
+ * State indicators
+ */
+.progress.uploading p { color: #EF8F1D; }
+.progress.uploading .meter > span { background-color: #EF8F1D; }
+.progress.processing p { color: #25B370; }
+.progress.processing .meter > span { background-color: #25B370; }
+.progress.complete p { color: #000; }
+.progress.canceled p { color: #E32E32; }
+.progress.errored p { color: #E32E32; }

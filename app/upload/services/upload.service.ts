@@ -24,34 +24,44 @@ export class UploadService {
       aws_key: this.awsKey,
       aws_url: this.awsUrl,
       bucket: this.bucketName,
-      cloudfront: this.useCloudfront
+      cloudfront: this.useCloudfront,
+      logging: false
     });
   }
 
-  addFile(storyId: number, file: File, contentType?: string): Upload {
+  addFile(versionId: number, file: File, contentType?: string): Upload {
     let ct = contentType || this.mimeTypeService.lookupFileMimetype(file).full();
-    let upload = new Upload(storyId, file, ct, this.evaporate);
+    let upload = new Upload(versionId, file, ct, this.evaporate);
     this.uploads.push(upload);
     return upload;
   }
 
-  uploadsForStory(storyId: number): Upload[] {
+  remove(upload: Upload) {
+    let i = this.uploads.indexOf(upload);
+    if (i < 0) {
+      return false;
+    } else {
+      this.uploads.splice(i, 1);
+      return true;
+    }
+  }
+
+  uploadsForVersion(audioVersionId: number): Upload[] {
     return this.uploads.filter((upload) => {
-      return upload.storyId === storyId;
+      return upload.versionId === audioVersionId;
     });
   }
 
 }
 
 export class Upload {
-  public status: string;
   public name: string;
   public path: string;
   public progress: Observable<number>;
   public uploadId: string;
 
   constructor(
-    public storyId: number,
+    public versionId: number,
     public file: File,
     public contentType: string,
     private evaporate: Evaporate
@@ -59,6 +69,10 @@ export class Upload {
     this.name = file.name;
     this.path = ['test', UUID.UUID(), file.name.replace(/[^a-z0-9\.]+/gi,'_')].join('/');
     this.upload();
+  }
+
+  url(): string {
+    return 's3://' + Env.BUCKET_NAME + '/' + this.path;
   }
 
   cancel(): boolean {
