@@ -10,6 +10,17 @@
   border-bottom: 1px solid #DDD;
   padding: 18px 22px;
 }
+.audio-file.canceled {
+  animation: fade-out 0.5s 1;
+  -webkit-animation: fade-out 0.5s 1;
+  animation-fill-mode: forwards;
+  animation-delay: 0.5s;
+  -webkit-animation-delay: 0.5s;
+  -webkit-animation-fill-mode: forwards;
+}
+@keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+@-webkit-keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+
 .reorder {order: 1; flex-basis: 100%;}
 .cancel {order: 2; flex-basis: 100%;}
 .main {order: 3; flex-basis: 100%;}
@@ -19,22 +30,31 @@
   .cancel {order: 3; flex-basis: 50px;}
   .main {order: 2; flex-basis: 1;}
 }
-.reorder {
+
+.reorder i {
   font-size: 30px;
   color: #368AA2;
   cursor: move;
 }
+.reorder i:hover {
+  color: #2b7187;
+}
+.reorder.disabled i, .reorder.disabled i:hover {
+  color: #AFD0DA;
+  cursor: default;
+}
 .cancel {
-  font-size: 22px;
   text-align: right;
 }
-.reorder i, .cancel i {
+.cancel i {
+  font-size: 22px;
   color: #368AA2;
   cursor: pointer;
 }
-.reorder i:hover, .cancel i:hover {
+.cancel i:hover {
   color: #2b7187;
 }
+
 .main {
   display: flex;
   flex-wrap: wrap;
@@ -52,6 +72,7 @@
   position: absolute;
   right: 5px;
   top: 11px;
+  color: #DDDDDD;
 }
 .info {
   flex-grow: 1;

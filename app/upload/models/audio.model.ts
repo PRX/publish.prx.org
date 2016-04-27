@@ -3,18 +3,34 @@ import {HalDoc} from '../../shared/cms/haldoc';
 
 export class AudioModel {
 
+  static STATS = [
+    // local statuses
+    'uploading',
+    'upload failed',
+    'saving',
+    'save failed',
+    // CMS statuses
+    'uploaded',
+    'validating',
+    'valid',
+    'invalid',
+    'complete',
+    'creating mp3s',
+    'creating mp3s failed',
+    'mp3s created'
+  ];
+
+  static ERR_STATS = ['upload failed', 'invalid', 'creating mp3s failed'];
+
   // remote properties
   id: number;
   filename: string;
   label: string;
   size: number;
   duration: number;
-
-  // state of the upload
   status: string;
 
-  // local only
-  error: string;
+  // state of the upload
   progress: number;
 
   // existing docs
@@ -23,7 +39,6 @@ export class AudioModel {
   // new uploads
   upload: Upload;
   version: HalDoc;
-  story: HalDoc;
 
   constructor(data: any = {}) {
     for (let key of Object.keys(data)) {
@@ -40,60 +55,86 @@ export class AudioModel {
     return audio;
   }
 
-  static fromUpload(upload: Upload, version: HalDoc, story: HalDoc): AudioModel {
+  static fromUpload(upload: Upload, version: HalDoc): AudioModel {
     let audio = new AudioModel({
       filename: upload.name,
       size: upload.file.size
     });
     audio.upload = upload;
     audio.version = version;
-    audio.story = story;
     audio.startUpload();
     return audio;
   }
 
-  isStatus(status: string): boolean {
-    if (this.status && status) {
-      return this.status.toLowerCase() === status.toLowerCase();
-    } else {
-      return false;
-    }
+  get isError(): boolean {
+    return AudioModel.ERR_STATS.indexOf(this.status) > -1;
+  }
+
+  get isUploading(): boolean {
+    let i = AudioModel.STATS.indexOf(this.status);
+    return i > -1 && i < AudioModel.STATS.indexOf('uploaded');
+  }
+
+  get isProcessing(): boolean {
+    return !this.isUploading && !this.isDone;
+  }
+
+  get isDone(): boolean {
+    return this.status === 'mp3s created';
   }
 
   startUpload() {
     this.progress = 0;
-    this.status = 'Uploading';
-    this.error = null;
+    this.status = 'uploading';
     this.upload.progress.subscribe(
       (pct: number) => { this.progress = pct; },
-      (err: string) => { console.error(err); this.error = err; },
+      (err: string) => { console.error(err); this.status = 'upload failed'; },
       () => { setTimeout(() => { this.startSaving(); }, 500); }
     );
   }
 
   startSaving() {
-    this.progress = 0;
-    this.status = 'Saving';
-    this.error = null;
+    this.status = 'saving';
     let data = {
       filename: this.filename,
       label: this.label,
       size: this.size,
       duration: this.duration,
-      upload: this.upload.url(),
-      set_account_uri: this.story.expand('prx:account')
+      upload: this.upload.url()
     };
     this.version.create('prx:audio', {}, data).subscribe(
       (doc: HalDoc) => { this.doc = doc; this.startProcessing(); },
-      (err: string) => { console.error(err); this.error = err; }
+      (err: string) => { console.error(err); this.status = 'save failed'; }
     );
   }
 
   startProcessing() {
     this.progress = 0.1;
-    this.status = 'Processing';
-    this.error = null;
+    this.status = 'processing';
     setTimeout(() => { this.progress = 0.4; }, 1000);
+  }
+
+  destroy() {
+    if (this.upload) {
+      this.upload.cancel();
+    }
+    if (this.doc) {
+      this.doc.destroy().subscribe(() => { /* no-op */ });
+    }
+
+    // TODO: for some reason, evaporate keeps caching these files, preventing
+    // future uploads from working
+    if (this.upload && window.localStorage && window.localStorage.getItem('awsUploads')) {
+      let cache = JSON.parse(window.localStorage.getItem('awsUploads'));
+      let encodedPath = encodeURIComponent(this.upload.path);
+      for (let key of Object.keys(cache)) {
+        if (encodedPath === cache[key].awsKey) {
+          console.log(`TODO: deleting evaporate cache ${key}`);
+          delete cache[key];
+        }
+      }
+      window.localStorage.setItem('awsUploads', JSON.stringify(cache));
+    }
   }
 
 }

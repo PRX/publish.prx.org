@@ -58,7 +58,7 @@ export class Upload {
   public name: string;
   public path: string;
   public progress: Observable<number>;
-  public uploadId: string;
+  public uploadId: string = null;
 
   constructor(
     public versionId: number,
@@ -76,13 +76,18 @@ export class Upload {
   }
 
   cancel(): boolean {
-    if (this.uploadId !== null) {
-      return this.evaporate.cancel(this.uploadId);
+    let formerId = this.uploadId;
+    this.uploadId = null;
+    if (formerId !== null) {
+      return this.evaporate.cancel(formerId);
+    } else {
+      return false;
     }
-    return false;
   }
 
   upload(): Observable<number> {
+    this.cancel();
+
     let uploadOptions = {
       file: this.file,
       name: this.path,
