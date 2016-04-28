@@ -15,7 +15,7 @@ import {AudioVersionComponent} from './directives/audio-version.component';
     <div *ngIf="audioVersions && !audioVersions.length">
       <h2>Your story has no versions! Something is terribly wrong</h2>
     </div>
-    <audio-version *ngFor="#version of audioVersions" [version]="version" [story]="story.doc">
+    <audio-version *ngFor="#version of audioVersions" [version]="version">
     </audio-version>
   `
 })

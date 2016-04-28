@@ -1,3 +1,4 @@
+import {Subscription} from 'rxjs';
 import {Upload} from '../services/upload.service';
 import {HalDoc} from '../../shared/cms/haldoc';
 
@@ -28,10 +29,12 @@ export class AudioModel {
   label: string;
   size: number;
   duration: number;
+  position: number;
   status: string;
 
   // state of the upload
   progress: number;
+  progressSub: Subscription;
 
   // existing docs
   doc: HalDoc;
@@ -41,8 +44,9 @@ export class AudioModel {
   version: HalDoc;
 
   constructor(data: any = {}) {
+    let flds = ['id', 'filename', 'label', 'size', 'duration', 'position', 'status'];
     for (let key of Object.keys(data)) {
-      if (['id', 'filename', 'label', 'size', 'duration'].indexOf(key) > -1) {
+      if (flds.indexOf(key) > -1) {
         this[key] = data[key];
       }
     }
@@ -86,7 +90,7 @@ export class AudioModel {
   startUpload() {
     this.progress = 0;
     this.status = 'uploading';
-    this.upload.progress.subscribe(
+    this.progressSub = this.upload.progress.subscribe(
       (pct: number) => { this.progress = pct; },
       (err: string) => { console.error(err); this.status = 'upload failed'; },
       () => { setTimeout(() => { this.startSaving(); }, 500); }
@@ -114,6 +118,14 @@ export class AudioModel {
     setTimeout(() => { this.progress = 0.4; }, 1000);
   }
 
+  changePosition(newPosition: number) {
+    this.doc.update({position: newPosition}).subscribe((doc) => {
+      console.log(`moved ${this.filename} to position ${doc[`position`]}`);
+      this.doc = doc;
+      this.position = newPosition;
+    });
+  }
+
   destroy() {
     if (this.upload) {
       this.upload.cancel();
@@ -134,6 +146,12 @@ export class AudioModel {
         }
       }
       window.localStorage.setItem('awsUploads', JSON.stringify(cache));
+    }
+  }
+
+  unsubscribe() {
+    if (this.progressSub) {
+      this.progressSub.unsubscribe();
     }
   }
 

@@ -14,9 +14,6 @@ header span {
   font-size: 14px;
   vertical-align: middle;
 }
-section {
-  background-color: #FFF;
-}
 .loading {
   position: relative;
 }
@@ -30,11 +27,12 @@ section {
   font-weight: 600;
   line-height: 108px;
 }
-.uploader {
+footer {
+  background: #FFF;
   padding: 10px 50px;
   text-align: right;
 }
-.uploader input {
+footer input {
 	width: 0.1px;
 	height: 0.1px;
 	opacity: 0;
@@ -42,10 +40,10 @@ section {
 	position: absolute;
 	z-index: -1;
 }
-.uploader label {
+footer label {
   padding: 6px 10px;
   margin-bottom: 0;
 }
-.uploader input:focus + label, .uploader label:hover {
+footer input:focus + label, footer label:hover {
   background-color: #2b7187;
 }

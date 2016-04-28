@@ -1,5 +1,5 @@
 import {Injectable} from 'angular2/core';
-import {Observable, Subscriber} from 'rxjs';
+import {Observable, ConnectableObservable, Subscriber} from 'rxjs';
 import Evaporate from 'evaporate';
 import {UUID} from 'angular2-uuid';
 import {MimeTypeService} from '../../../util/mime-type.service';
@@ -47,9 +47,10 @@ export class UploadService {
   }
 
   uploadsForVersion(audioVersionId: number): Upload[] {
-    return this.uploads.filter((upload) => {
+    let uploads = this.uploads.filter((upload) => {
       return upload.versionId === audioVersionId;
     });
+    return uploads;
   }
 
 }
@@ -57,7 +58,7 @@ export class UploadService {
 export class Upload {
   public name: string;
   public path: string;
-  public progress: Observable<number>;
+  public progress: ConnectableObservable<number>;
   public uploadId: string = null;
 
   constructor(
@@ -100,7 +101,7 @@ export class Upload {
       }
     };
 
-    this.progress = Observable.create((sub: Subscriber<number>) => {
+    let progressObservable: Observable<number> = Observable.create((sub: Subscriber<number>) => {
       sub.next(0);
       uploadOptions['progress'] = (pct: number) => sub.next(pct);
       uploadOptions['complete'] = () => { sub.next(1.0); sub.complete(); };
@@ -108,6 +109,9 @@ export class Upload {
       this.uploadId = this.evaporate.add(uploadOptions);
     });
 
+    // share the underlying observable without creating dups
+    this.progress = progressObservable.publish();
+    this.progress.connect();
     return this.progress;
   }
 }

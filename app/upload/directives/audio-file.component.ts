@@ -3,51 +3,50 @@ import {FileSizePipe} from '../../shared/file/filesize.pipe';
 import {AudioModel} from '../models/audio.model';
 
 @Component({
+  host: {
+    '[class.canceled]': 'canceled'
+  },
   pipes: [FileSizePipe],
   selector: 'audio-file',
   styleUrls: ['app/upload/directives/audio-file.component.css'],
   template: `
-    <div class="audio-file" [class.canceled]="canceled">
+    <div class="reorder">
+      <i *ngIf="!canceled && !audio.isUploading" class="icon-menu drag-handle"></i>
+    </div>
 
-      <div class="reorder" [class.disabled]="audio.isUploading">
-        <i *ngIf="!canceled" class="icon-menu"></i>
+    <div class="main">
+
+      <div class="type">
+        <span>Segment</span>
+        <i class="icon-down-dir"></i>
       </div>
 
-      <div class="main">
-
-        <div class="type">
-          <span>Segment</span>
-          <i class="icon-down-dir"></i>
-        </div>
-
-        <div class="info">
-          <span>{{audio.filename}}</span>
-          <span class="size">({{audio.size | filesize}})</span>
-        </div>
-
-        <div *ngIf="canceled" class="progress canceled">
-          <p *ngIf="audio.isUploading">Upload Canceled</p>
-          <p *ngIf="!audio.isUploading">File Deleted</p>
-        </div>
-
-        <div *ngIf="!canceled && !audio.isDone" [class]="progressClass">
-          <p>{{statusString}}</p>
-          <div *ngIf="audio.isError">
-            <a class="icon-cw" href="#" (click)="onRetry($event)">Try Again</a>
-          </div>
-          <div *ngIf="!audio.isError" class="meter">
-            <span *ngIf="audio.isUploading" [style.width]="audio.progress | percent:'1.0-0'">
-            </span>
-            <span *ngIf="!audio.isUploading" [style.width]="audio.progress | percent:'1.0-0'">
-            </span>
-          </div>
-        </div>
+      <div class="info">
+        <span>{{audio.filename}}</span>
+        <span class="size">({{audio.size | filesize}})</span>
       </div>
 
-      <div class="cancel">
-        <i *ngIf="!canceled" class="icon-cancel" (click)="onCancel($event)"></i>
+      <div *ngIf="canceled" class="progress canceled">
+        <p *ngIf="audio.isUploading">Upload Canceled</p>
+        <p *ngIf="!audio.isUploading">File Deleted</p>
       </div>
 
+      <div *ngIf="!canceled && !audio.isDone" [class]="progressClass">
+        <p>{{statusString}}</p>
+        <div *ngIf="audio.isError">
+          <a class="icon-cw" href="#" (click)="onRetry($event)">Try Again</a>
+        </div>
+        <div *ngIf="!audio.isError && audio.isUploading" class="meter">
+          <span [style.width]="audio.progress | percent:'1.0-0'"></span>
+        </div>
+        <div *ngIf="!audio.isError && !audio.isUploading" class="meter">
+          <span [style.width]="audio.progress | percent:'1.0-0'"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cancel">
+      <i *ngIf="!canceled" class="icon-cancel" (click)="onCancel($event)"></i>
     </div>
   `
 })

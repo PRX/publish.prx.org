@@ -1,16 +1,19 @@
 /**
  * File upload progress/processing/ordering
  */
-.audio-file {
+:host {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  background: #fff;
   border-bottom: 1px solid #DDD;
+  border-top: 1px solid #DDD;
+  margin-top: -1px;
   padding: 18px 22px;
 }
-.audio-file.canceled {
+:host.canceled {
   animation: fade-out 0.5s 1;
   -webkit-animation: fade-out 0.5s 1;
   animation-fill-mode: forwards;
@@ -25,7 +28,7 @@
 .cancel {order: 2; flex-basis: 100%;}
 .main {order: 3; flex-basis: 100%;}
 @media screen and (min-width:600px) {
-  .audio-file {flex-wrap: nowrap;}
+  :host {flex-wrap: nowrap;}
   .reorder {order: 1; flex-basis: 70px;}
   .cancel {order: 3; flex-basis: 50px;}
   .main {order: 2; flex-basis: 1;}
