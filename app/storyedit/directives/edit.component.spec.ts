@@ -2,6 +2,7 @@ import {it, describe, expect} from 'angular2/testing';
 import {setupComponent, buildComponent, mockDirective} from '../../../util/test-helper';
 import {EditComponent} from './edit.component';
 import {StoryFieldComponent} from './storyfield.component';
+import {UploadComponent} from '../../upload/upload.component';
 
 import {Component} from 'angular2/core';
 @Component({selector: 'story-field', template: '<i>nothing</i>'})
@@ -11,6 +12,7 @@ describe('EditComponent', () => {
 
   setupComponent(EditComponent);
   mockDirective(StoryFieldComponent, EmptyComponent);
+  mockDirective(UploadComponent, EmptyComponent);
 
   it('does not render until the story is loaded', buildComponent((fix, el, edit) => {
     expect(el.textContent.trim()).toEqual('');

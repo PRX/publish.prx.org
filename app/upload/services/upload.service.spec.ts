@@ -1,13 +1,19 @@
 import {provide} from 'angular2/core';
-import {it, describe, expect, beforeEach, beforeEachProviders, inject, injectAsync} from 'angular2/testing';
+import {it, describe, expect, beforeEachProviders, inject} from 'angular2/testing';
 import {UploadService} from './upload.service';
-import {MimeTypeService, MimeDefinition} from '../../util/mime-type.service';
+import {MimeTypeService, MimeDefinition} from '../../../util/mime-type.service';
 
 class MockMimeService {
-  lookupFileMimetype(file:File, overrideDefault?:string) {
+  lookupFileMimetype(file: File, overrideDefault?: string) {
     return new MimeDefinition('audio/mpeg');
   }
 }
+interface InjectCallback {
+  (mimeTypeService: MimeTypeService, uploadService: UploadService): any;
+}
+const injectServices = (work: InjectCallback) => {
+  return inject([MimeTypeService, UploadService], work);
+};
 
 describe('UploadService', () => {
 
@@ -16,9 +22,9 @@ describe('UploadService', () => {
     provide(MimeTypeService, {useClass: MockMimeService})
   ]);
 
-  it('should have an empty list of uploads', inject([MimeTypeService, UploadService], (mimeTypeService: MimeTypeService, uploadService: UploadService) => {
-    expect(uploadService.uploads).toBeAnInstanceOf(Array);
-    expect(uploadService.uploads.length).toEqual(0);
+  it('should have an empty list of uploads', injectServices((mimetype, upload) => {
+    expect(upload.uploads).toBeAnInstanceOf(Array);
+    expect(upload.uploads.length).toEqual(0);
   }));
 
 });

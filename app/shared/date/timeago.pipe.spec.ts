@@ -12,6 +12,8 @@ describe('TimeAgoPipe', () => {
 
   beforeEach(() => {
     jasmine.clock().mockDate(baseTime);
+    spyOn(Date.prototype, 'getDate').and.callFake(Date.prototype.getUTCDate);
+    spyOn(Date.prototype, 'getHours').and.callFake(Date.prototype.getUTCHours);
   });
 
   it('returns seconds for things in the past minute', () => {
