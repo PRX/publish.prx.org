@@ -18,7 +18,8 @@ export class AudioModel {
     'complete',
     'creating mp3s',
     'creating mp3s failed',
-    'mp3s created'
+    'mp3s created',
+    'done'
   ];
 
   static ERR_STATS = ['upload failed', 'invalid', 'creating mp3s failed'];
@@ -53,9 +54,11 @@ export class AudioModel {
   }
 
   static fromDoc(doc: HalDoc): AudioModel {
+    // TODO: smoke and mirrors
+    doc['status'] = (doc['status'] === 'uploaded') ? 'done' : doc['status'];
     let audio = new AudioModel(doc);
     audio.doc = doc;
-    audio.startProcessing();
+    // audio.startProcessing();
     return audio;
   }
 
@@ -84,7 +87,7 @@ export class AudioModel {
   }
 
   get isDone(): boolean {
-    return this.status === 'mp3s created';
+    return this.status === 'done';
   }
 
   startUpload() {
@@ -115,7 +118,11 @@ export class AudioModel {
   startProcessing() {
     this.progress = 0.1;
     this.status = 'processing';
-    setTimeout(() => { this.progress = 0.4; }, 1000);
+
+    // TODO: smoke and mirrors
+    setTimeout(() => { this.progress = 0.4; }, 2000);
+    setTimeout(() => { this.progress = 1.0; }, 4000);
+    setTimeout(() => { this.status = 'done'; }, 5000);
   }
 
   changePosition(newPosition: number) {
