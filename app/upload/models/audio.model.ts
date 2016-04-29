@@ -4,25 +4,14 @@ import {HalDoc} from '../../shared/cms/haldoc';
 
 export class AudioModel {
 
-  static STATS = [
-    // local statuses
-    'uploading',
-    'upload failed',
-    'saving',
-    'save failed',
-    // CMS statuses
-    'uploaded',
-    'validating',
-    'valid',
-    'invalid',
-    'complete',
-    'creating mp3s',
-    'creating mp3s failed',
-    'mp3s created',
-    'done'
-  ];
+  static STAT_UPLOADING = ['uploading', 'upload failed', 'saving', 'save failed'];
 
-  static ERR_STATS = ['upload failed', 'invalid', 'creating mp3s failed'];
+  static STAT_PROCESSING = ['uploaded', 'validating', 'valid', 'invalid',
+    'complete', 'creating mp3s', 'creating mp3s failed', 'mp3s created'];
+
+  static STAT_DONE = ['done'];
+
+  static STAT_ERROR = ['upload failed', 'save failed', 'invalid', 'creating mp3s failed'];
 
   // remote properties
   id: number;
@@ -74,20 +63,19 @@ export class AudioModel {
   }
 
   get isError(): boolean {
-    return AudioModel.ERR_STATS.indexOf(this.status) > -1;
+    return AudioModel.STAT_ERROR.indexOf(this.status) > -1;
   }
 
   get isUploading(): boolean {
-    let i = AudioModel.STATS.indexOf(this.status);
-    return i > -1 && i < AudioModel.STATS.indexOf('uploaded');
+    return AudioModel.STAT_UPLOADING.indexOf(this.status) > -1;
   }
 
   get isProcessing(): boolean {
-    return !this.isUploading && !this.isDone;
+    return AudioModel.STAT_PROCESSING.indexOf(this.status) > -1;
   }
 
   get isDone(): boolean {
-    return this.status === 'done';
+    return AudioModel.STAT_DONE.indexOf(this.status) > -1;
   }
 
   startUpload() {

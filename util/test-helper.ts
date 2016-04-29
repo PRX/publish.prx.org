@@ -6,7 +6,7 @@ import {TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_PROVIDERS}
 setBaseTestProviders(TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_PROVIDERS);
 
 // Mock router
-import {provide, Type} from 'angular2/core';
+import {provide, Type, Component} from 'angular2/core';
 import {Router, ROUTER_PRIMARY_COMPONENT, RouteRegistry} from 'angular2/router';
 import {RootRouter} from 'angular2/src/router/router';
 import {SpyLocation} from 'angular2/src/mock/location_mock';
@@ -17,7 +17,7 @@ import {AppComponent} from '../app/app.component';
 import {CmsService, MockCmsService} from '../app/shared/cms/cms.mocks';
 
 // Component setup
-import {injectAsync} from 'angular2/testing';
+import {injectAsync, beforeEachProviders} from 'angular2/testing';
 import {TestComponentBuilder, ComponentFixture} from 'angular2/testing';
 
 /**
@@ -57,15 +57,28 @@ export function setupComponent(componentType: Type, fixtureBuilder?: FixtureCall
 }
 
 /**
- * Mock out a directive (sub-component)
+ * Mock out a service, equivalent to setting a beforeEachProviders
  */
-export function mockDirective(directive: Type, mockWith: Type) {
+export function mockService(service: Type, mockWith: {}) {
+  console.log('mockingService', service);
+  beforeEachProviders(() => [
+    provide(service, {useValue: mockWith})
+  ]);
+}
+
+/**
+ * Mock out a directive (sub-component).  Call with a @Component config.
+ */
+export function mockDirective(directive: Type, mockWith: {}) {
+  @Component(mockWith)
+  class MockComponent {}
+
   let key = directive.toString();
   beforeEach(() => {
     if (!this._prxOverrideDirective) {
       this._prxOverrideDirective = {};
     }
-    this._prxOverrideDirective[key] = [directive, mockWith];
+    this._prxOverrideDirective[key] = [directive, MockComponent];
   });
   afterEach(() => {
     delete this._prxOverrideDirective[key];
@@ -103,7 +116,6 @@ export function buildComponent(work: BuildComponentCallback, withCms = false): a
     return tcb
       .createAsync(this._prxComponent)
       .then((fix: ComponentFixture) => {
-        fix.detectChanges();
         return work(fix, fix.debugElement.nativeElement, fix.debugElement.componentInstance);
       });
   });

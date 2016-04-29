@@ -11,9 +11,13 @@ export class UploadFileSelect {
   constructor(private element: ElementRef) {}
 
   onChange(): void {
-    let files = this.element.nativeElement.files;
-    for (let file of files) {
+    for (let file of this.getFiles()) {
       this.file.emit(file);
     }
   }
+
+  getFiles(): any[] {
+    return this.element.nativeElement.files;
+  }
+
 }

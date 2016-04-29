@@ -33,7 +33,7 @@ import {AudioModel} from '../models/audio.model';
 
       <div *ngIf="!canceled && !audio.isDone" [class]="progressClass">
         <p>{{statusString}}</p>
-        <div *ngIf="audio.isError">
+        <div *ngIf="audio.isError" class="retry">
           <a class="icon-cw" href="#" (click)="onRetry($event)">Try Again</a>
         </div>
         <div *ngIf="!audio.isError && audio.isUploading" class="meter">
