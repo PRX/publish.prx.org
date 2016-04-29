@@ -1,11 +1,8 @@
-import {it, describe, expect, beforeEach, afterEach} from 'angular2/testing';
+import {it, describe, expect} from 'angular2/testing';
 import {setupComponent, buildComponent} from '../../../util/test-helper';
 import {AudioFileComponent} from './audio-file.component';
 
 describe('AudioFileComponent', () => {
-
-  beforeEach(() => { jasmine.clock().uninstall(); jasmine.clock().install(); });
-  afterEach(() => { jasmine.clock().uninstall(); });
 
   setupComponent(AudioFileComponent);
 
@@ -112,6 +109,9 @@ describe('AudioFileComponent', () => {
   }));
 
   it('waits to emit remove event when canceled', buildComponent((fix, el, afile) => {
+    jasmine.clock().uninstall();
+    jasmine.clock().install();
+
     let removed = false;
     afile.remove.subscribe(() => { removed = true; });
     afile.audio = {destroy: () => { return; }};
@@ -122,6 +122,8 @@ describe('AudioFileComponent', () => {
     expect(removed).toBeFalsy();
     jasmine.clock().tick(600);
     expect(removed).toBeTruthy();
+
+    jasmine.clock().uninstall(); // not really needed - angular will nuke it
   }));
 
 });

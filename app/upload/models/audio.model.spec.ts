@@ -5,9 +5,6 @@ import {AudioModel} from './audio.model';
 
 describe('AudioModel', () => {
 
-  beforeEach(() => { jasmine.clock().uninstall(); jasmine.clock().install(); });
-  afterEach(() => { jasmine.clock().uninstall(); });
-
   describe('constructor', () => {
 
     it('copies a whitelist of properties', () => {
@@ -98,6 +95,9 @@ describe('AudioModel', () => {
     });
 
     it('delays starting saving', () => {
+      jasmine.clock().uninstall();
+      jasmine.clock().install();
+
       spyOn(audio, 'startSaving').and.stub();
       audio.startUpload();
       progress.complete();
@@ -106,6 +106,8 @@ describe('AudioModel', () => {
       expect(audio.startSaving).not.toHaveBeenCalled();
       jasmine.clock().tick(600);
       expect(audio.startSaving).toHaveBeenCalled();
+
+      jasmine.clock().uninstall(); // not really needed - angular will nuke it
     });
 
   });
@@ -143,6 +145,9 @@ describe('AudioModel', () => {
   describe('startProcessing', () => {
 
     it('is all just smoke and mirrors', () => {
+      jasmine.clock().uninstall();
+      jasmine.clock().install();
+
       let audio = new AudioModel();
       audio.startProcessing();
       expect(audio.progress).toEqual(0.1);
@@ -150,6 +155,8 @@ describe('AudioModel', () => {
       jasmine.clock().tick(10000);
       expect(audio.progress).toEqual(1.0);
       expect(audio.status).toEqual('done');
+
+      jasmine.clock().uninstall(); // not really needed - angular will nuke it
     });
 
   });
