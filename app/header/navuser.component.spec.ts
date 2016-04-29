@@ -1,13 +1,12 @@
-import {it, fit, describe, expect, beforeEachProviders} from 'angular2/testing';
-import {provideRouter, provideCms, setupComponent, buildCmsComponent} from '../../util/test-helper';
+import {it, describe, expect} from 'angular2/testing';
+import {mockRouter, mockCms, setupComponent, buildCmsComponent} from '../../util/test-helper';
 import {NavUserComponent} from './navuser.component';
 
 describe('NavUserComponent', () => {
 
-  beforeEachProviders(() => [
-    provideRouter(),
-    provideCms()
-  ]);
+  mockRouter();
+
+  mockCms();
 
   describe('with an account image', () => {
 
@@ -18,6 +17,7 @@ describe('NavUserComponent', () => {
     });
 
     it('includes the user image', buildCmsComponent((fix, el, navuser) => {
+      fix.detectChanges();
       expect(el.querySelector('spinner')).toBeNull();
       expect(el.querySelector('.name')).toHaveText('TheAccountName');
       expect(navuser.userName).toEqual('TheAccountName');
@@ -35,6 +35,7 @@ describe('NavUserComponent', () => {
     });
 
     it('leaves the image blank', buildCmsComponent((fix, el, navuser) => {
+      fix.detectChanges();
       expect(el.querySelector('.name')).toHaveText('TheAccountName');
       expect(navuser.userName).toEqual('TheAccountName');
       expect(navuser.userImage).toBeNull();
@@ -51,6 +52,7 @@ describe('NavUserComponent', () => {
     });
 
     it('displays a waiting spinner', buildCmsComponent((fix, el, navuser) => {
+      fix.detectChanges();
       expect(el.querySelector('spinner')).not.toBeNull();
     }));
 

@@ -4,10 +4,10 @@ import {AudioFileComponent} from './audio-file.component';
 
 describe('AudioFileComponent', () => {
 
-  setupComponent(AudioFileComponent);
-
   beforeEach(() => { jasmine.clock().uninstall(); jasmine.clock().install(); });
   afterEach(() => { jasmine.clock().uninstall(); });
+
+  setupComponent(AudioFileComponent);
 
   it('shows the file', buildComponent((fix, el, afile) => {
     afile.audio = {filename: 'My Filename', size: 10};

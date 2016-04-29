@@ -21,25 +21,6 @@ import {injectAsync, beforeEachProviders} from 'angular2/testing';
 import {TestComponentBuilder, ComponentFixture} from 'angular2/testing';
 
 /**
- * Provide a mock router, for components lacking their own
- */
-export function provideRouter(): any[] {
-  return [
-    RouteRegistry,
-    provide(Location, {useClass: SpyLocation}),
-    provide(ROUTER_PRIMARY_COMPONENT, {useValue: AppComponent}),
-    provide(Router, {useClass: RootRouter})
-  ];
-}
-
-/**
- * Mock CMS http requests
- */
-export function provideCms(): any[] {
-  return [provide(CmsService, {useClass: MockCmsService})];
-}
-
-/**
  * Common tasks for building components and creating fixtures
  */
 interface FixtureCallback {
@@ -57,10 +38,30 @@ export function setupComponent(componentType: Type, fixtureBuilder?: FixtureCall
 }
 
 /**
+ * Provide a mock router, for components lacking their own
+ */
+export function mockRouter() {
+  beforeEachProviders(() => [
+    RouteRegistry,
+    provide(Location, {useClass: SpyLocation}),
+    provide(ROUTER_PRIMARY_COMPONENT, {useValue: AppComponent}),
+    provide(Router, {useClass: RootRouter})
+  ]);
+}
+
+/**
+ * Mock CMS http requests
+ */
+export function mockCms() {
+  beforeEachProviders(() => [
+    provide(CmsService, {useClass: MockCmsService})
+  ]);
+}
+
+/**
  * Mock out a service, equivalent to setting a beforeEachProviders
  */
 export function mockService(service: Type, mockWith: {}) {
-  console.log('mockingService', service);
   beforeEachProviders(() => [
     provide(service, {useValue: mockWith})
   ]);

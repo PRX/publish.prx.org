@@ -4,15 +4,13 @@ import {EditComponent} from './edit.component';
 import {StoryFieldComponent} from './storyfield.component';
 import {UploadComponent} from '../../upload/upload.component';
 
-import {Component} from 'angular2/core';
-@Component({selector: 'story-field', template: '<i>nothing</i>'})
-class EmptyComponent {}
-
 describe('EditComponent', () => {
 
   setupComponent(EditComponent);
-  mockDirective(StoryFieldComponent, EmptyComponent);
-  mockDirective(UploadComponent, EmptyComponent);
+
+  mockDirective(StoryFieldComponent, {selector: 'story-field', template: '<i>field</i>'});
+
+  mockDirective(UploadComponent, {selector: 'audio-uploader', template: '<i>upload</i>'});
 
   it('does not render until the story is loaded', buildComponent((fix, el, edit) => {
     expect(el.textContent.trim()).toEqual('');

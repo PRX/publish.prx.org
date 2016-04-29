@@ -1,14 +1,12 @@
-import {it, describe, expect, beforeEachProviders} from 'angular2/testing';
-import {provideRouter, setupComponent, buildComponent} from '../../util/test-helper';
+import {it, describe, expect} from 'angular2/testing';
+import {mockRouter, setupComponent, buildComponent} from '../../util/test-helper';
 import {NavItemComponent} from './navitem.component';
 
 describe('NavItemComponent', () => {
 
-  beforeEachProviders(() => [
-    provideRouter()
-  ]);
-
   setupComponent(NavItemComponent);
+
+  mockRouter();
 
   it('renders a routed nav link', buildComponent((fix, el, navitem) => {
     navitem.text = 'Foobar';
