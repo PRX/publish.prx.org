@@ -37,10 +37,10 @@ import {AudioModel} from '../models/audio.model';
           <a class="icon-cw" href="#" (click)="onRetry($event)">Try Again</a>
         </div>
         <div *ngIf="!audio.isError && audio.isUploading" class="meter">
-          <span [style.width]="audio.progress | percent:'1.0-0'"></span>
+          <span [style.width.%]="audio.progress * 100"></span>
         </div>
-        <div *ngIf="!audio.isError && !audio.isUploading" class="meter">
-          <span [style.width]="audio.progress | percent:'1.0-0'"></span>
+        <div *ngIf="!audio.isError && audio.isProcessing" class="meter">
+          <span [style.width.%]="audio.progress * 100"></span>
         </div>
       </div>
     </div>

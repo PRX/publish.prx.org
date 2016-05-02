@@ -42,11 +42,11 @@ describe('AudioFileComponent', () => {
   }));
 
   it('follows progress', buildComponent((fix, el, afile) => {
-    afile.audio = {progress: 0.0};
+    afile.audio = {progress: 0, isUploading: true};
     fix.detectChanges();
     let meter = el.querySelector('.meter span');
     expect(meter['style']['width']).toEqual('0%');
-    afile.audio = {progress: 0.4};
+    afile.audio.progress = 0.4;
     fix.detectChanges();
     expect(meter['style']['width']).toEqual('40%');
   }));
@@ -108,22 +108,14 @@ describe('AudioFileComponent', () => {
     expect(afile.canceled).toBeTruthy();
   }));
 
-  it('waits to emit remove event when canceled', buildComponent((fix, el, afile) => {
-    jasmine.clock().uninstall();
-    jasmine.clock().install();
-
+  it('emits remove event when canceled', buildComponent((fix, el, afile) => {
+    spyOn(window, 'setTimeout').and.callFake((fn: Function) => fn() );
     let removed = false;
     afile.remove.subscribe(() => { removed = true; });
     afile.audio = {destroy: () => { return; }};
     fix.detectChanges();
     (<HTMLElement> el.querySelector('.cancel i')).click();
-    expect(removed).toBeFalsy();
-    jasmine.clock().tick(500);
-    expect(removed).toBeFalsy();
-    jasmine.clock().tick(600);
     expect(removed).toBeTruthy();
-
-    jasmine.clock().uninstall(); // not really needed - angular will nuke it
   }));
 
 });

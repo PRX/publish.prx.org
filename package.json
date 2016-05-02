@@ -55,7 +55,7 @@
     "typings": "^0.7.7"
   },
   "optionalDependencies": {
-    "phantomjs-prebuilt": "2.1.6"
+    "phantomjs-prebuilt": "2.1.7"
   },
   "engines": {
     "node": "^5.7.0"

@@ -94,20 +94,14 @@ describe('AudioModel', () => {
       expect(audio.status).toEqual('upload failed');
     });
 
-    it('delays starting saving', () => {
-      jasmine.clock().uninstall();
-      jasmine.clock().install();
-
+    it('starts saving', () => {
+      spyOn(window, 'setTimeout').and.callFake((fn: Function) => fn() );
       spyOn(audio, 'startSaving').and.stub();
       audio.startUpload();
       progress.complete();
       expect(audio.progress).toEqual(0);
       expect(audio.status).toEqual('uploading');
-      expect(audio.startSaving).not.toHaveBeenCalled();
-      jasmine.clock().tick(600);
       expect(audio.startSaving).toHaveBeenCalled();
-
-      jasmine.clock().uninstall(); // not really needed - angular will nuke it
     });
 
   });
@@ -145,18 +139,11 @@ describe('AudioModel', () => {
   describe('startProcessing', () => {
 
     it('is all just smoke and mirrors', () => {
-      jasmine.clock().uninstall();
-      jasmine.clock().install();
-
+      spyOn(window, 'setTimeout').and.callFake((fn: Function) => fn() );
       let audio = new AudioModel();
       audio.startProcessing();
-      expect(audio.progress).toEqual(0.1);
-      expect(audio.status).toEqual('processing');
-      jasmine.clock().tick(10000);
       expect(audio.progress).toEqual(1.0);
       expect(audio.status).toEqual('done');
-
-      jasmine.clock().uninstall(); // not really needed - angular will nuke it
     });
 
   });
