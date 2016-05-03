@@ -1,26 +1,30 @@
 import {Observable} from 'rxjs';
 import {CmsService} from '../../shared/cms/cms.service';
 import {HalDoc} from '../../shared/cms/haldoc';
+import {StoryChanged} from './story.changed';
+import {StoryInvalid} from './story.invalid';
 import {CATEGORIES, SUBCATEGORIES} from './story.categories';
 
 export class StoryModel {
 
-  isLoaded: boolean = false;
-  isNew: boolean;
+  public isLoaded: boolean = false;
+  public isNew: boolean;
 
   // attributes
-  id: number;
-  title: string;
-  shortDescription: string;
-  genre: string;
-  subGenre: string;
-  extraTags: string;
-  updatedAt: Date;
-  publishedAt: Date;
+  public id: number;
+  public title: string;
+  public shortDescription: string;
+  public genre: string;
+  public subGenre: string;
+  public extraTags: string;
+  public updatedAt: Date;
+  public publishedAt: Date;
+
+  public changed: StoryChanged = new StoryChanged();
+  public invalid: StoryInvalid = new StoryInvalid();
 
   public doc: HalDoc;
-  private defaultAccount: HalDoc;
-  private initialValues = {};
+  public defaultAccount: HalDoc;
 
   constructor(cms: CmsService, id?: string) {
     if (this.isLoaded) { return; } // hotreload bug
@@ -34,6 +38,7 @@ export class StoryModel {
       this.isNew = true;
       cms.follow('prx:authorization').follow('prx:default-account').subscribe((doc) => {
         this.defaultAccount = doc;
+        this.setDoc(<HalDoc> {});
         this.isLoaded = true;
       });
     }
@@ -41,21 +46,24 @@ export class StoryModel {
 
   setDoc(doc: HalDoc): void {
     this.doc = doc;
-    this.initialValues = {
-      id: doc['id'],
-      title: doc['title'],
-      shortDescription: doc['shortDescription'],
-      genre: this.parseGenre(doc['tags']),
-      subGenre: this.parseSubGenre(doc['tags']),
-      extraTags: this.parseExtraTags(doc['tags']),
-      updatedAt: new Date(doc['updatedAt']),
-      publishedAt: new Date(doc['publishedAt'])
-    };
-    for (let key of Object.keys(this.initialValues)) {
-      if (this.initialValues.hasOwnProperty(key)) {
-        this[key] = this.initialValues[key];
-      }
-    }
+    this.id = doc['id'];
+    this.title = doc['title'] || '';
+    this.shortDescription = doc['shortDescription'] || '';
+    this.genre = this.parseGenre(doc['tags']) || '';
+    this.subGenre = this.parseSubGenre(doc['tags']) || '';
+    this.extraTags = this.parseExtraTags(doc['tags']) || '';
+    this.updatedAt = new Date(doc['updatedAt']);
+    this.publishedAt = new Date(doc['publishedAt']);
+
+    // pass data to changed/invalid modules
+    this.changed = new StoryChanged(this);
+    this.invalid = new StoryInvalid(this);
+  }
+
+  set(key: string, value: any) {
+    this[key] = value;
+    this.changed.set(key, value);
+    this.invalid.set(key, value);
   }
 
   parseGenre(tags: string[] = []): string {
@@ -123,61 +131,6 @@ export class StoryModel {
 
   destroy(): Observable<boolean> {
     return this.doc.destroy().map(() => { return true; });
-  }
-
-  invalid(fieldName?: string): string {
-    if (fieldName === 'title') {
-      if (!this.title || this.title.length < 1) {
-        return 'is required';
-      } else if (this.title.length < 10) {
-        return 'is too short';
-      }
-    } else if (fieldName === 'shortDescription') {
-      if (!this.shortDescription || this.shortDescription.length < 1) {
-        return 'is required';
-      } else if (this.shortDescription.length < 10) {
-        return 'is too short';
-      }
-    } else if (fieldName === 'genre') {
-      if (!this.genre || this.genre.length < 1) {
-        return 'is required';
-      }
-    } else if (fieldName === 'subGenre') {
-      if (!this.subGenre || this.subGenre.length < 1) {
-        return 'is required';
-      }
-    } else if (fieldName === 'extraTags') {
-      let tags = (this.extraTags || '').replace(/\s*,\s*/, ',').split(',');
-      for (let tag of tags) {
-        if (tag && tag.length < 3) {
-          return `must contain at least 3 characters per tag (see ${tag})`;
-        }
-      }
-    } else if (fieldName === 'tags') {
-      if (this.invalid('genre')) {
-        return `Genre ${this.invalid('genre')}`;
-      } else if (this.invalid('subGenre')) {
-        return `SubGenre ${this.invalid('subGenre')}`;
-      } else if (this.invalid('extraTags')) {
-        return `Tags ${this.invalid('extraTags')}`;
-      }
-    } else if (!fieldName) {
-      return this.invalid('title') || this.invalid('shortDescription') ||
-             this.invalid('genre') || this.invalid('subGenre');
-    } else {
-      return null;
-    }
-  }
-
-  changed(fieldName?: string): boolean {
-    if (fieldName) {
-      return this.initialValues[fieldName] !== this[fieldName];
-    } else {
-      return this.changed('title') || this.changed('shortDescription') ||
-             this.changed('genre') || this.changed('subGenre') ||
-             this.changed('extraTags');
-    }
-
   }
 
 }

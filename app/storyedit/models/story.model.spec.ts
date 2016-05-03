@@ -29,7 +29,7 @@ describe('StoryModel', () => {
     it('looks up the default account for new stories', () => {
       auth.mock('prx:default-account', {});
       let story = new StoryModel(cms);
-      expect(story.title).toBeUndefined();
+      expect(story.title).toEqual('');
       expect(story.isLoaded).toBeTruthy();
       expect(story.isNew).toBeTruthy();
     });
@@ -69,16 +69,16 @@ describe('StoryModel', () => {
       let story = makeStory();
       story.setDoc(<any> {tags: ['Business', 'Arts', 'Education']});
       expect(story.genre).toEqual('Business');
-      expect(story.subGenre).toBeUndefined();
-      expect(story.extraTags).toBeUndefined();
+      expect(story.subGenre).toEqual('');
+      expect(story.extraTags).toEqual('');
     });
 
     it('allows only subGenres of the parent', () => {
       let story = makeStory();
       story.setDoc(<any> {tags: ['Arts', 'Business News']});
-      expect(story.subGenre).toBeUndefined();
+      expect(story.subGenre).toEqual('');
       story.setDoc(<any> {tags: ['Business News']});
-      expect(story.subGenre).toBeUndefined();
+      expect(story.subGenre).toEqual('');
       story.setDoc(<any> {tags: ['Business News', 'Business']});
       expect(story.subGenre).toEqual('Business News');
     });
@@ -142,93 +142,6 @@ describe('StoryModel', () => {
         expect(deleted).toBeTruthy();
       });
       expect(storyMock['_destroyed']).toEqual(true);
-    });
-
-  });
-
-  describe('invalid', () => {
-
-    const invalidate = (field: string, value: any): string => {
-      let story = makeStory();
-      story[field] = value;
-      return story.invalid(field);
-    };
-
-    it('validates title', () => {
-      expect(invalidate('title', null)).toMatch('is required');
-      expect(invalidate('title', '')).toMatch('is required');
-      expect(invalidate('title', 'a')).toMatch('is too short');
-      expect(invalidate('title', 'hello world')).toBeUndefined();
-    });
-
-    it('validates short description', () => {
-      expect(invalidate('shortDescription', null)).toMatch('is required');
-      expect(invalidate('shortDescription', '')).toMatch('is required');
-      expect(invalidate('shortDescription', 'a')).toMatch('is too short');
-      expect(invalidate('shortDescription', 'hello world')).toBeUndefined();
-    });
-
-    it('validates genre', () => {
-      expect(invalidate('genre', null)).toMatch('is required');
-      expect(invalidate('genre', '')).toMatch('is required');
-      expect(invalidate('genre', 'hello world')).toBeUndefined();
-    });
-
-    it('validates sub genre', () => {
-      expect(invalidate('subGenre', null)).toMatch('is required');
-      expect(invalidate('subGenre', '')).toMatch('is required');
-      expect(invalidate('subGenre', 'hello world')).toBeUndefined();
-    });
-
-    it('validates extra tags', () => {
-      expect(invalidate('extraTags', null)).toBeUndefined();
-      expect(invalidate('extraTags', '')).toBeUndefined();
-      expect(invalidate('extraTags', 'tag1,  tag2 , andtag4,')).toBeUndefined();
-      expect(invalidate('extraTags', 'tag1,  t2')).toMatch('must contain at least 3 char');
-    });
-
-    it('validates genre/sub/extra tags', () => {
-      let story = makeStory();
-      story.genre = 'hello world';
-      story.subGenre = '';
-      story.extraTags = 'something, e';
-      expect(story.invalid('tags')).toMatch('SubGenre is required');
-      story.subGenre = 'hello world';
-      expect(story.invalid('tags')).toMatch('Tags must contain at least');
-      story.extraTags = 'something, else';
-      expect(story.invalid('tags')).toBeUndefined();
-    });
-
-    it('validates the whole story', () => {
-      let story = makeStory({title: 'hello world', shortDescription: 'hello world'});
-      expect(story.invalid()).toBeTruthy();
-      story.genre = 'foo';
-      story.subGenre = 'bar';
-      expect(story.invalid()).toBeFalsy();
-    });
-
-  });
-
-  describe('changed', () => {
-
-    it('compares fields against their initial values', () => {
-      let story = makeStory({title: 'hello world', tags: ['foo']});
-      expect(story.changed('title')).toBeFalsy();
-      expect(story.changed('genre')).toBeFalsy();
-      expect(story.changed('extraTags')).toBeFalsy();
-      story.title = 'something else';
-      story.genre = 'world';
-      story.extraTags = 'foo';
-      expect(story.changed('title')).toBeTruthy();
-      expect(story.changed('genre')).toBeTruthy();
-      expect(story.changed('extraTags')).toBeFalsy();
-    });
-
-    it('checks the whole story for changes', () => {
-      let story = makeStory({title: 'hello world', tags: ['foo']});
-      expect(story.changed()).toBeFalsy();
-      story.subGenre = 'a';
-      expect(story.changed()).toBeTruthy();
     });
 
   });

@@ -21,16 +21,19 @@ import {StoryModel} from '../models/story.model';
         <ng-content></ng-content>
       </div>
 
-      <input *ngIf="textinput" [id]="name" [(ngModel)]="story[name]" type="text"/>
+      <input *ngIf="textinput" [id]="name" type="text"
+        [(ngModel)]="story[name]" (ngModelChange)="onChange($event)"/>
 
-      <textarea *ngIf="textarea" [id]="name" [(ngModel)]="story[name]"></textarea>
+      <textarea *ngIf="textarea" [id]="name"
+        [(ngModel)]="story[name]" (ngModelChange)="onChange($event)"></textarea>
 
-      <select *ngIf="select" [id]="name" [(ngModel)]="story[name]">
+      <select *ngIf="select" [id]="name"
+        [(ngModel)]="story[name]" (ngModelChange)="onChange($event)">
         <option *ngFor="#opt of select" [value]="opt">{{opt}}</option>
       </select>
 
       <p *ngIf="invalidFieldName" class="error">
-        {{invalidFieldLabel}} {{story.invalid(invalidFieldName)}}
+        {{invalidFieldLabel}} {{story.invalid[invalidFieldName]}}
       </p>
     </div>
   `
@@ -42,8 +45,8 @@ export class StoryFieldComponent {
 
   // Name of story attribute, and optional explicit changed/invalid bindings
   @Input() name: string;
-  @Input() changed: string = null;
-  @Input() invalid: string = null;
+  @Input() changed: string;
+  @Input() invalid: string;
 
   // Form field options
   @Input() textinput: boolean;
@@ -68,8 +71,8 @@ export class StoryFieldComponent {
 
   get fieldClasses(): string {
     let classes = ['field'];
-    let changed = this.changedFieldName && this.story.changed(this.changedFieldName);
-    let invalid = this.invalidFieldName && this.story.invalid(this.invalidFieldName);
+    let changed = this.changedFieldName && this.story.changed[this.changedFieldName];
+    let invalid = this.invalidFieldName && this.story.invalid[this.invalidFieldName];
 
     // explicit changed/invalid inputs get different classes
     if (changed) {
@@ -79,6 +82,12 @@ export class StoryFieldComponent {
       classes.push(this.name ? 'invalid' : 'invalid-explicit');
     }
     return classes.join(' ');
+  }
+
+  onChange(value: any): void {
+    if (this.name) {
+      this.story.set(this.name, value);
+    }
   }
 
 }

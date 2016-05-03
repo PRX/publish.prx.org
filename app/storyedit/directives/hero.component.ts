@@ -25,13 +25,13 @@ import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
         <div class="actions">
           <button class="preview">Preview</button>
           <button *ngIf="story.isNew" class="create"
-            [disabled]="story.invalid()"
+            [disabled]="story.invalid.any"
             (click)="save()">Create</button>
           <button *ngIf="!story.isNew" class="save"
-            [disabled]="story.invalid() || !story.changed()"
+            [disabled]="story.invalid.any || !story.changed.any"
             (click)="save()">Save</button>
           <button *ngIf="!story.isNew" class="publish"
-            [disabled]="story.invalid() || story.changed()">Publish</button>
+            [disabled]="story.invalid.any || story.changed.any">Publish</button>
         </div>
       </section>
     </div>

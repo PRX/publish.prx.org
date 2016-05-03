@@ -16,11 +16,9 @@ import {Component} from 'angular2/core';
   `
 })
 class MiniContainer {
-  _changed: boolean = false;
-  _invalid: boolean = false;
   mockStory: any = {
-    changed: () => { return this._changed; },
-    invalid: () => { return this._invalid; }
+    changed: {},
+    invalid: {}
   };
 }
 
@@ -105,7 +103,7 @@ describe('StoryFieldComponent', () => {
     mini['name'] = 'foobar';
     fix.detectChanges();
     expect(el.querySelector('.field.changed')).toBeNull();
-    mini._changed = true;
+    mini.mockStory.changed.foobar = true;
     fix.detectChanges();
     expect(el.querySelector('.field.changed')).not.toBeNull();
   }));
@@ -114,7 +112,8 @@ describe('StoryFieldComponent', () => {
     mini['changed'] = 'somethingelse';
     fix.detectChanges();
     expect(el.querySelector('.field.changed-explicit')).toBeNull();
-    mini._changed = true;
+    mini.mockStory.changed.foobar = false;
+    mini.mockStory.changed.somethingelse = true;
     fix.detectChanges();
     expect(el.querySelector('.field.changed-explicit')).not.toBeNull();
   }));
@@ -123,7 +122,7 @@ describe('StoryFieldComponent', () => {
     mini['name'] = 'foobar';
     fix.detectChanges();
     expect(el.querySelector('.field.invalid')).toBeNull();
-    mini._invalid = true;
+    mini.mockStory.invalid.foobar = 'error message';
     fix.detectChanges();
     expect(el.querySelector('.field.invalid')).not.toBeNull();
   }));
@@ -132,7 +131,8 @@ describe('StoryFieldComponent', () => {
     mini['invalid'] = 'somethingelse';
     fix.detectChanges();
     expect(el.querySelector('.field.invalid-explicit')).toBeNull();
-    mini._invalid = true;
+    mini.mockStory.invalid.foobar = null;
+    mini.mockStory.invalid.somethingelse = 'error message';
     fix.detectChanges();
     expect(el.querySelector('.field.invalid-explicit')).not.toBeNull();
   }));
