@@ -32,7 +32,7 @@ import {StoryModel} from '../models/story.model';
         <option *ngFor="#opt of select" [value]="opt">{{opt}}</option>
       </select>
 
-      <p *ngIf="invalidFieldName" class="error">
+      <p *ngIf="invalidFieldName && !small" class="error">
         {{invalidFieldLabel}} {{story.invalid[invalidFieldName]}}
       </p>
     </div>

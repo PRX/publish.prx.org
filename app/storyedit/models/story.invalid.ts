@@ -3,11 +3,11 @@
  */
 export class StoryInvalid {
   any: boolean = false;
+  tags: string = null;
 
   // Invalid error strings
   title: string = null;
   shortDescription: string = null;
-  tags: string = null;
   genre: string = null;
   subGenre: string = null;
   extraTags: string = null;
@@ -49,18 +49,21 @@ export class StoryInvalid {
     }
 
     // aggregate fields
-    this.tags = null;
+    let tagInvalids: string[] = [];
     if (this.genre) {
-      this.tags = `Genre ${this.genre}`;
-    } else if (this.subGenre) {
-      this.tags = `SubGenre ${this.subGenre}`;
-    } else if (this.extraTags) {
-      this.tags = `Tags ${this.extraTags}`;
+      tagInvalids.push(`Genre ${this.genre}`);
     }
+    if (this.subGenre) {
+      tagInvalids.push(`SubGenre ${this.subGenre}`);
+    }
+    if (this.extraTags) {
+      tagInvalids.push(`Tags ${this.extraTags}`);
+    }
+    this.tags = tagInvalids.length ? tagInvalids.join('; ') : null;
 
     this.any = false;
     for (let k of this.keys()) {
-      this.any = this.any || this[k];
+      if (this[k]) { this.any = true; }
     }
   }
 

@@ -1,7 +1,7 @@
 import {Component, Input} from 'angular2/core';
 import {Router} from 'angular2/router';
 import {StoryModel} from '../models/story.model';
-import {SpinnerComponent}  from '../../shared/spinner/spinner.component';
+import {SpinnerComponent} from '../../shared/spinner/spinner.component';
 import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
 
 @Component({
@@ -20,18 +20,22 @@ import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
         <spinner *ngIf="!story.isLoaded" inverse=true></spinner>
         <div class="info" *ngIf="story.isLoaded">
           <h2>{{story.title || '(Untitled)'}}</h2>
-          <p *ngIf="story.updatedAt">Last saved at {{story.updatedAt | timeago}}</p>
+          <p *ngIf="story.isNew">Not saved</p>
+          <p *ngIf="!story.isNew">Last saved at {{story.updatedAt | timeago}}</p>
         </div>
         <div class="actions">
-          <button class="preview">Preview</button>
-          <button *ngIf="story.isNew" class="create"
-            [disabled]="story.invalid.any"
-            (click)="save()">Create</button>
-          <button *ngIf="!story.isNew" class="save"
-            [disabled]="story.invalid.any || !story.changed.any"
-            (click)="save()">Save</button>
+          <button class="preview" [disabled]="story.isSaving">Preview</button>
+          <button *ngIf="story.isNew" class="create" [class.saving]="story.isSaving"
+            [disabled]="story.invalid.any || story.isSaving"
+            (click)="save()">Create <spinner *ngIf="story.isSaving"></spinner></button>
+          <button *ngIf="!story.isNew" class="save" [class.saving]="story.isSaving"
+            [disabled]="story.invalid.any || !story.changed.any || story.isSaving"
+            (click)="save()">Save <spinner *ngIf="story.isSaving"></spinner></button>
           <button *ngIf="!story.isNew" class="publish"
-            [disabled]="story.invalid.any || story.changed.any">Publish</button>
+            [disabled]="story.invalid.any || story.changed.any || story.isSaving"
+            (click)="publish()">
+            Publish
+          </button>
         </div>
       </section>
     </div>

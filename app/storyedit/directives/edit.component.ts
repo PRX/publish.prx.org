@@ -54,6 +54,8 @@ export class EditComponent {
   get SUBGENRES(): string[] {
     if (this.story && this.story.genre) {
       return SUBCATEGORIES[this.story.genre];
+    } else {
+      return [];
     }
   }
 

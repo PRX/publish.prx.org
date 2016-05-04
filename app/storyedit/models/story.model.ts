@@ -7,8 +7,9 @@ import {CATEGORIES, SUBCATEGORIES} from './story.categories';
 
 export class StoryModel {
 
+  public isSaving: boolean = false;
   public isLoaded: boolean = false;
-  public isNew: boolean;
+  public isNew: boolean = false;
 
   // attributes
   public id: number;
@@ -115,22 +116,30 @@ export class StoryModel {
   }
 
   save(): Observable<boolean> {
+    this.isSaving = true;
     if (this.isNew) {
       return this.defaultAccount.create('prx:stories', {}, this.toJSON()).map((doc) => {
         this.setDoc(doc);
+        this.isSaving = false;
         this.isNew = false;
         return true; // was new
       });
     } else {
       return this.doc.update(this.toJSON()).map((doc) => {
+        doc['updatedAt'] = new Date(); // Mock-update the timestamp
         this.setDoc(doc);
+        this.isSaving = false;
         return false; // was old
       });
     }
   }
 
   destroy(): Observable<boolean> {
-    return this.doc.destroy().map(() => { return true; });
+    this.isSaving = true;
+    return this.doc.destroy().map(() => {
+      this.isSaving = false;
+      return true;
+    });
   }
 
 }

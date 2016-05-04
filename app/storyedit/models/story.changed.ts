@@ -3,6 +3,7 @@
  */
 export class StoryChanged {
   any: boolean = false;
+  tags: boolean = false;
 
   // Change-able values (must have default = false)
   title: boolean = false;
@@ -33,9 +34,11 @@ export class StoryChanged {
     this[key] = this.initial[key] !== value;
 
     // aggregate fields
+    this.tags = (this.genre || this.subGenre || this.extraTags);
+
     this.any = false;
     for (let k of this.keys()) {
-      this.any = this.any || this[k];
+      if (this[k]) { this.any = true; }
     }
   }
 

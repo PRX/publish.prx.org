@@ -1,8 +1,10 @@
 import {Component, OnDestroy, ViewChild} from 'angular2/core';
-import {Router, RouteConfig, RouterOutlet, RouterLink, RouteParams} from 'angular2/router';
+import {Router, RouteConfig, RouterOutlet, RouterLink, RouteParams, CanDeactivate}
+  from 'angular2/router';
 import {Subscription} from 'rxjs';
 
 import {CmsService} from '../shared/cms/cms.service';
+import {ModalService} from '../shared/modal/modal.service';
 import {StoryModel} from './models/story.model';
 
 import {HeroComponent}     from './directives/hero.component';
@@ -47,7 +49,7 @@ import {SellComponent}     from './directives/sell.component';
   { path: '/sell',     name: 'Sell',     component: SellComponent }
 ])
 
-export class StoryEditComponent implements OnDestroy {
+export class StoryEditComponent implements OnDestroy, CanDeactivate {
 
   private story: StoryModel;
   private stepText: string;
@@ -60,7 +62,8 @@ export class StoryEditComponent implements OnDestroy {
   constructor(
     private cms: CmsService,
     private router: Router,
-    private params: RouteParams
+    private params: RouteParams,
+    private modal: ModalService
   ) {
     this.story = new StoryModel(cms, params.params['id']);
     this.routerSub = <Subscription> this.router.parent.subscribe((path) => {
@@ -88,6 +91,18 @@ export class StoryEditComponent implements OnDestroy {
 
   ngOnDestroy(): any {
     this.routerSub.unsubscribe();
+  }
+
+  routerCanDeactivate(next: any, prev: any): Promise<boolean> {
+    if (this.story.changed.any) {
+      return new Promise<boolean>((resolve, reject) => {
+        this.modal.prompt(
+          'Discard changes?',
+          'Your unsaved changes will be lost if you navigate away from this page',
+          (okay: boolean) => { resolve(okay); }
+        );
+      });
+    }
   }
 
 }

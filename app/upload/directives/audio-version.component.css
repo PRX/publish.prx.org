@@ -18,6 +18,7 @@ header span {
   position: relative;
 }
 .empty {
+  background: #fff;
   text-align: center;
   border-bottom: 1px solid #DDD;
 }
