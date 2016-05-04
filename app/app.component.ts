@@ -2,6 +2,7 @@ import {Component, ViewEncapsulation} from 'angular2/core';
 import {RouteConfig, RouterOutlet} from 'angular2/router';
 
 import {AuthComponent} from './shared/auth/auth.component';
+import {ModalComponent} from './shared/modal/modal.component';
 import {HeaderComponent} from './header/header.component';
 import {NavItemComponent} from './header/navitem.component';
 import {NavUserComponent} from './header/navuser.component';
@@ -17,6 +18,7 @@ import {UploadComponent} from './upload/upload.component';
     RouterOutlet,
     AuthComponent,
     HeaderComponent,
+    ModalComponent,
     NavItemComponent,
     NavUserComponent,
     FooterComponent,
@@ -55,6 +57,7 @@ import {UploadComponent} from './upload/upload.component';
         <publish-footer></publish-footer>
       </logged-out>
     </prx-auth>
+    <modal-box></modal-box>
     `
 })
 
