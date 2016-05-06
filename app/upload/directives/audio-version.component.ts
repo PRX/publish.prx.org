@@ -7,7 +7,7 @@ import {HalDoc} from '../../shared/cms/haldoc';
 import {AudioModel} from '../models/audio.model';
 
 // TODO: why can't atom find this? jspm bundles it just fine
-import {Dragula, DragulaService} from 'ng2-dragula';
+import {Dragula, DragulaService} from 'ng2-dragula/ng2-dragula';
 
 @Component({
   directives: [UploadFileSelect, AudioFileComponent, Dragula],

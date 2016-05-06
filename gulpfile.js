@@ -69,7 +69,7 @@ gulp.task('git:hooks:install', function() {
 
 gulp.task('typings:install', shell.task('typings install'));
 
-var npm_deps = ['angular2', 'rxjs', 'angular2-uuid'];
+var npm_deps = ['angular2', 'rxjs', 'angular2-uuid', 'ng2-dragula'];
 
 gulp.task('clean:deps', () => {
   return gulp.src(`node_modules/{${npm_deps.join(',')}}`, {read: false}).pipe(clean({force: true}));
