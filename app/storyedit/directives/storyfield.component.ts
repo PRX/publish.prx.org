@@ -33,7 +33,7 @@ import {StoryModel} from '../models/story.model';
       </select>
 
       <p *ngIf="invalidFieldName && !small" class="error">
-        {{invalidFieldLabel}} {{story.invalid[invalidFieldName]}}
+        {{invalidFieldLabel}} {{story.invalid(invalidFieldName)}}
       </p>
     </div>
   `
@@ -71,8 +71,8 @@ export class StoryFieldComponent {
 
   get fieldClasses(): string {
     let classes = ['field'];
-    let changed = this.changedFieldName && this.story.changed[this.changedFieldName];
-    let invalid = this.invalidFieldName && this.story.invalid[this.invalidFieldName];
+    let changed = this.changedFieldName && this.story.changed(this.changedFieldName);
+    let invalid = this.invalidFieldName && this.story.invalid(this.invalidFieldName);
 
     // explicit changed/invalid inputs get different classes
     if (changed) {

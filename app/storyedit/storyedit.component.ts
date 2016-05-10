@@ -21,18 +21,18 @@ import {SellComponent}     from './directives/sell.component';
     <div class="main">
       <section>
         <div class="subnav">
-          <nav *ngIf="!story.isNew">
+          <nav *ngIf="storyId">
             <a [routerLink]="['Default']">STEP 1: Edit your story</a>
             <a [routerLink]="['Decorate']">STEP 2: Decorate your story</a>
             <a [routerLink]="['Sell']">STEP 3: Sell your story</a>
           </nav>
-          <nav *ngIf="story.isNew">
+          <nav *ngIf="!storyId">
             <a [routerLink]="['Default']">STEP 1: Create your story</a>
             <a disabled>STEP 2: Decorate your story</a>
             <a disabled>STEP 3: Sell your story</a>
           </nav>
           <div class="extras">
-            <button *ngIf="!story.isNew" class="delete" (click)="confirmDelete()">Delete</button>
+            <button *ngIf="storyId" class="delete" (click)="confirmDelete()">Delete</button>
           </div>
         </div>
         <div class="page">
@@ -51,6 +51,7 @@ import {SellComponent}     from './directives/sell.component';
 
 export class StoryEditComponent implements OnDestroy, CanDeactivate {
 
+  private storyId: string;
   private story: StoryModel;
   private stepText: string;
   private routerSub: Subscription;
@@ -65,7 +66,15 @@ export class StoryEditComponent implements OnDestroy, CanDeactivate {
     private params: RouteParams,
     private modal: ModalService
   ) {
-    this.story = new StoryModel(cms, params.params['id']);
+    this.storyId = params.params['id'];
+    if (this.storyId) {
+      cms.follow('prx:authorization').follow('prx:story', {id: this.storyId}).subscribe((doc) => {
+        this.story = new StoryModel(doc);
+        this.bindRouteIO();
+      });
+    } else {
+      this.story = new StoryModel();
+    }
     this.routerSub = <Subscription> this.router.parent.subscribe((path) => {
       this.setHeroText();
       this.bindRouteIO();
@@ -74,7 +83,7 @@ export class StoryEditComponent implements OnDestroy, CanDeactivate {
 
   setHeroText(): void {
     if (this.creator) {
-      let verb = this.story.id ? 'Edit' : 'Create';
+      let verb = this.storyId ? 'Edit' : 'Create';
       this.stepText = `Step 1: ${verb} your Story!`;
     } else if (this.decorator) {
       this.stepText = 'Step 2: Decorate your Story!';
@@ -94,15 +103,28 @@ export class StoryEditComponent implements OnDestroy, CanDeactivate {
   }
 
   routerCanDeactivate(next: any, prev: any): Promise<boolean> {
-    if (this.story.changed.any) {
+    if (this.story.changed()) {
       return new Promise<boolean>((resolve, reject) => {
         this.modal.prompt(
-          'Discard changes?',
-          'Your unsaved changes will be lost if you navigate away from this page',
+          'Unsaved changes',
+          'This story has unsaved changes - they will be saved locally when you return here',
           (okay: boolean) => { resolve(okay); }
         );
       });
     }
+  }
+
+  confirmDelete(): void {
+    this.modal.prompt(
+      'Really delete?',
+      'Are you sure you want to delete this story?  This action cannot be undone.',
+      (okay: boolean) => {
+        this.story.isDestroy = true;
+        this.story.save().subscribe(() => {
+          this.router.parent.navigate(['Home']);
+        });
+      }
+    );
   }
 
 }

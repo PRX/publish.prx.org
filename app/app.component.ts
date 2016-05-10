@@ -11,7 +11,6 @@ import {LoginComponent} from './login/login.component';
 
 import {HomeComponent} from './home/home.component';
 import {StoryEditComponent} from './storyedit/storyedit.component';
-import {UploadComponent} from './upload/upload.component';
 
 @Component({
   directives: [
@@ -40,7 +39,6 @@ import {UploadComponent} from './upload/upload.component';
         <publish-header>
           <nav-item route="Home" text="Home"></nav-item>
           <nav-item route="Create" text="Create"></nav-item>
-          <nav-item route="Upload" text="Upload"></nav-item>
           <nav-item href="//www.prx.org/search/all" text="Search"></nav-item>
           <nav-user></nav-user>
         </publish-header>
@@ -65,8 +63,7 @@ import {UploadComponent} from './upload/upload.component';
   { path: '/',             name: 'Index',  component: HomeComponent, useAsDefault: true },
   { path: '/home',         name: 'Home',   component: HomeComponent },
   { path: '/create/...',   name: 'Create', component: StoryEditComponent },
-  { path: '/edit/:id/...', name: 'Edit',   component: StoryEditComponent },
-  { path: '/upload',       name: 'Upload', component: UploadComponent }
+  { path: '/edit/:id/...', name: 'Edit',   component: StoryEditComponent }
 ])
 
 export class AppComponent {}
