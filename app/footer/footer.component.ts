@@ -40,9 +40,11 @@ import {Location} from 'angular2/router';
         </section>
       </div>
       <ul class="social">
-        <li><a href="//www.prx.org/newsletters"></a></li>
-        <li><a href="https://www.twitter.com/prx"></a></li>
-        <li><a href="https://www.facebook.com/publicradioexchange"></a></li>
+        <li><a href="//www.prx.org/newsletters" class="icon-mail-alt"></a></li>
+        <li><a href="https://www.twitter.com/prx" class="icon-twitter"></a></li>
+        <li>
+          <a href="https://www.facebook.com/publicradioexchange" class="icon-facebook-official"></a>
+        </li>
       </ul>
     </footer>
     `

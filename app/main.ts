@@ -8,6 +8,8 @@ import 'rxjs/Rx';
 
 import {AuthService} from './shared/auth/auth.service';
 import {CmsService} from './shared/cms/cms.service';
+import {MimeTypeService} from '../util/mime-type.service';
+import {UploadService} from './upload/services/upload.service';
 
 if (!window.location.hostname.match(/localhost|\.dev|\.docker/)) {
   enableProdMode();
@@ -15,10 +17,11 @@ if (!window.location.hostname.match(/localhost|\.dev|\.docker/)) {
 
 import {AppComponent} from './app.component';
 
-bootstrap(AppComponent,
-  [
-    ROUTER_PROVIDERS,
-    HTTP_BINDINGS,
-    AuthService,
-    CmsService
-  ]);
+bootstrap(AppComponent, [
+  ROUTER_PROVIDERS,
+  HTTP_BINDINGS,
+  AuthService,
+  CmsService,
+  MimeTypeService,
+  UploadService
+]);

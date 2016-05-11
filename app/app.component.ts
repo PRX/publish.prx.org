@@ -29,7 +29,8 @@ import {UploadComponent} from './upload/upload.component';
     'app/app.component.css',
     'app/app.component.forms.css',
     'app/app.component.layout.css',
-    'app/app.component.loading.css'
+    'app/app.component.loading.css',
+    'assets/fontello/css/fontello.css'
   ],
   template: `
     <prx-auth>

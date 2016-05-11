@@ -1,0 +1,129 @@
+/**
+ * File upload progress/processing/ordering
+ */
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #DDD;
+  border-top: 1px solid #DDD;
+  margin-top: -1px;
+  padding: 18px 22px;
+}
+:host.canceled {
+  animation: fade-out 0.5s 1;
+  -webkit-animation: fade-out 0.5s 1;
+  animation-fill-mode: forwards;
+  animation-delay: 0.5s;
+  -webkit-animation-delay: 0.5s;
+  -webkit-animation-fill-mode: forwards;
+}
+@keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+@-webkit-keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+
+.reorder {order: 1; flex-basis: 100%;}
+.cancel {order: 2; flex-basis: 100%;}
+.main {order: 3; flex-basis: 100%;}
+@media screen and (min-width:600px) {
+  :host {flex-wrap: nowrap;}
+  .reorder {order: 1; flex-basis: 70px;}
+  .cancel {order: 3; flex-basis: 50px;}
+  .main {order: 2; flex-basis: 1;}
+}
+
+.reorder i {
+  font-size: 30px;
+  color: #368AA2;
+  cursor: move;
+}
+.reorder i:hover {
+  color: #2b7187;
+}
+.reorder.disabled i, .reorder.disabled i:hover {
+  color: #AFD0DA;
+  cursor: default;
+}
+.cancel {
+  text-align: right;
+}
+.cancel i {
+  font-size: 22px;
+  color: #368AA2;
+  cursor: pointer;
+}
+.cancel i:hover {
+  color: #2b7187;
+}
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+.type {
+  border: 1px solid #DDDDDD;
+  padding: 6px 10px;
+  min-width: 160px;
+  position: relative;
+}
+.type i {
+  position: absolute;
+  right: 5px;
+  top: 11px;
+  color: #DDDDDD;
+}
+.info {
+  flex-grow: 1;
+  border: 1px solid #DDDDDD;
+  border-left: 0 none;
+  padding: 6px 10px;
+}
+.info .extra {
+  margin-left: 6px;
+}
+.progress {
+  flex-basis: 100%;
+  padding-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.progress p {
+  color: #000;
+  padding-right: 10px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.meter {
+  flex-grow: 1;
+  background-color: #DDDDDD;
+  height: 10px;
+  position: relative;
+}
+.meter > span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  transition: 0.4s linear;
+  transition-property: width;
+  background-color: #000;
+  overflow: hidden;
+}
+
+/**
+ * State indicators
+ */
+.progress.uploading p { color: #EF8F1D; }
+.progress.uploading .meter > span { background-color: #EF8F1D; }
+.progress.processing p { color: #25B370; }
+.progress.processing .meter > span { background-color: #25B370; }
+.progress.complete p { color: #000; }
+.progress.canceled p { color: #E32E32; }
+.progress.errored p { color: #E32E32; }

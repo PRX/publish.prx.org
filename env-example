@@ -1,5 +1,19 @@
 # (1) cp env-example .env
 # (2) add your ENV overrides here
+# (3) profit
+
+# prx api
 CMS_HOST=http://cms.prx.dev
+CMS_TTL=30
+CMS_USE_LOCALSTORAGE=true
+
+# prx auth
 AUTH_HOST=http://id.prx.dev
 AUTH_CLIENT_ID=foobar
+
+# aws uploading
+BUCKET_NAME=
+SIGN_URL=
+AWS_KEY=
+AWS_URL=
+USE_CLOUDFRONT=

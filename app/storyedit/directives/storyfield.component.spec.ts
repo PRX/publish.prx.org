@@ -29,6 +29,7 @@ describe('StoryFieldComponent', () => {
   setupComponent(MiniContainer);
 
   it('renders a blank story field', buildComponent((fix, el, mini) => {
+    fix.detectChanges();
     expect(el.querySelector('.field')).not.toBeNull();;
     expect(el.querySelector('h1')).toBeNull();
     expect(el.querySelector('h3')).toBeNull();

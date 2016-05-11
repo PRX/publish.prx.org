@@ -55,7 +55,7 @@
     "typings": "^0.7.7"
   },
   "optionalDependencies": {
-    "phantomjs-prebuilt": "2.1.6"
+    "phantomjs-prebuilt": "2.1.7"
   },
   "engines": {
     "node": "^5.7.0"
@@ -67,8 +67,10 @@
       "angular2-uuid": "npm:angular2-uuid@^1.0.7",
       "capaj/systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@^0.5.6",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
+      "dragula": "npm:dragula@^3.6.8",
       "es6-shim": "npm:es6-shim@0.35.0",
       "evaporate": "github:TTLabs/EvaporateJS@^1.0.2",
+      "ng2-dragula": "npm:ng2-dragula@^1.1.6",
       "plugin-typescript": "github:frankwallis/plugin-typescript@^4.0.2",
       "reflect-metadata": "npm:reflect-metadata@0.1.2",
       "rxjs": "npm:rxjs@5.0.0-beta.2",

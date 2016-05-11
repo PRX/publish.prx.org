@@ -55,6 +55,7 @@ export class HalRemote {
   put(link: HalLink, params: {} = null, data: {}): Observable<{}> {
     let href = this.expand(link, params);
     let body = JSON.stringify(data);
+    HalRemoteCache.del(href);
     return this.http.put(href, body, this.httpOptions(true)).map((res) => {
       if (res.status === 204) {
         return Observable.of(true);
@@ -74,6 +75,7 @@ export class HalRemote {
 
   delete(link: HalLink, params: {} = null): Observable<{}> {
     let href = this.expand(link, params);
+    HalRemoteCache.del(href);
     return this.http.delete(href, this.httpOptions()).map((res) => {
       if (res.status === 204) {
         return Observable.of(true);
