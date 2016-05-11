@@ -9,9 +9,6 @@ RUN chmod +x /tini
 WORKDIR /app
 EXPOSE 3000
 
-ENTRYPOINT ["/tini", "--", "npm", "run-script"]
-CMD [ "server" ]
-
 ADD . ./
 
 RUN apk --update add --virtual build-dependencies git && \
@@ -26,3 +23,6 @@ RUN apk --update add --virtual build-dependencies git && \
     find /usr/lib/node_modules/npm -name test -o -name .bin -type d | xargs rm -rf ; \
     rm -rf /usr/share/man /tmp/* /root/.npm /root/.node-gyp \
     /usr/lib/node_modules/npm/man /usr/lib/node_modules/npm/doc /usr/lib/node_modules/npm/html)
+
+ENTRYPOINT ["/tini", "--", "./bin/application"]
+CMD [ "server" ]
