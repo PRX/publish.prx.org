@@ -26,7 +26,7 @@ export class StoryModel extends BaseModel {
     subGenre:         [REQUIRED()]
   };
 
-  constructor(story: HalDoc) {
+  constructor(story?: HalDoc) {
     super();
     this.init(story);
   }
@@ -82,6 +82,7 @@ export class StoryModel extends BaseModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
+    alert('saveNew story');
     return null;
   }
 

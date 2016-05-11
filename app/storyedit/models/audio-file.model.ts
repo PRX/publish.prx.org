@@ -1,6 +1,7 @@
 import {Observable, Subscription} from 'rxjs';
 import {HalDoc} from '../../shared/cms/haldoc';
 import {BaseModel} from '../../shared/model/base.model';
+import {FALSEY} from '../../shared/model/base.invalid';
 import {Upload} from '../../upload/services/upload.service';
 
 export class AudioFileModel extends BaseModel {
@@ -24,6 +25,11 @@ export class AudioFileModel extends BaseModel {
 
   SETABLE = ['filename', 'label', 'size', 'duration', 'position', 'enclosureHref',
     'uuid', 'isUploading', 'isError', 'isDestroy'];
+
+  VALIDATORS = {
+    isUploading: [FALSEY('Wait for upload to complete')],
+    isError:     [FALSEY('Resolve upload errors first')]
+  };
 
   private version: HalDoc;
   private upload: Upload;
@@ -89,7 +95,7 @@ export class AudioFileModel extends BaseModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    return null;
+    return this.version.create('prx:audio', {}, data);
   }
 
   watchUpload(upload: Upload, startFromBeginning = true) {
@@ -100,7 +106,7 @@ export class AudioFileModel extends BaseModel {
       this.set('isError', null);
     }
     this.progressSub = upload.progress.subscribe(
-      (pct: number) => { this.progress = pct; console.log('progress', pct); },
+      (pct: number) => { this.progress = pct; },
       (err: string) => { console.error(err); this.set('isError', err); },
       () => { setTimeout(() => { this.completeUpload(); }, 500); }
     );

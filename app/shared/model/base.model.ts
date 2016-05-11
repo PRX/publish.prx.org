@@ -39,7 +39,7 @@ export abstract class BaseModel {
   abstract encode(): {};
   abstract saveNew(data: {}): Observable<HalDoc>;
 
-  init(doc?: HalDoc) {
+  init(doc?: HalDoc, loadRelated = true) {
     this.doc = doc;
     this.isNew = doc ? false : true;
     if (doc) {
@@ -54,12 +54,14 @@ export abstract class BaseModel {
     this.restore();
     this.revalidate();
 
-    // load related models
-    this.RELATIONS = [];
-    let related = this.related(doc) || {};
-    for (let key of Object.keys(related)) {
-      related[key].subscribe((value: any) => { this[key] = value; });
-      this.RELATIONS.push(key);
+    // optionally load related models
+    if (loadRelated) {
+      this.RELATIONS = [];
+      let related = this.related(doc) || {};
+      for (let key of Object.keys(related)) {
+        related[key].subscribe((value: any) => { this[key] = value; });
+        this.RELATIONS.push(key);
+      }
     }
   }
 
@@ -73,30 +75,44 @@ export abstract class BaseModel {
   }
 
   save(): Observable<boolean> {
+    if (!this.doc && this.isDestroy) { return Observable.of(false); }
     this.isSaving = true;
+
+    let saveMe: Observable<HalDoc>;
     if (this.isNew) {
-      this.saveNew(this.encode()).map((doc) => {
-        this.unstore();
-        this.init(doc);
-        this.isSaving = false;
-        this.isNew = false;
-        return true;
-      });
+      saveMe = this.saveNew(this.encode());
     } else if (this.isDestroy) {
-      return this.doc.destroy().map(() => {
-        this.unstore();
-        this.isSaving = false;
-        return true;
-      });
+      saveMe = this.doc.destroy();
     } else {
-      return this.doc.update(this.encode()).map((doc) => {
-        doc['updatedAt'] = new Date(); // Mock-update the timestamp
-        this.unstore();
-        this.init(doc);
-        this.isSaving = false;
+      saveMe = this.doc.update(this.encode());
+    }
+
+    return saveMe.flatMap((doc?) => {
+      this.unstore();
+      if (doc) {
+        if (doc['updatedAt']) { doc['updatedAt'] = new Date(); } // mock update
+        this.init(doc, false);
+      }
+      this.isNew = false;
+      this.isSaving = false;
+
+      // save related docs in parallel
+      let relatedSavers: Observable<boolean>[] = [];
+      for (let rel of this.RELATIONS) {
+        if (this[rel] instanceof Array) {
+          for (let model of this[rel]) {
+            if (model.changed()) {
+              relatedSavers.push(model.save());
+            }
+          }
+        } else if (this[rel].changed()) {
+          relatedSavers.push(this[rel].save());
+        }
+      }
+      return Observable.fromArray(relatedSavers).concatAll().toArray().map(() => {
         return true;
       });
-    }
+    });
   }
 
   changed(field?: string | string[]): boolean {
@@ -131,7 +147,7 @@ export abstract class BaseModel {
         if (this[f] && this[f] instanceof Array) {
           for (let model of this[f]) {
             if (model.invalid()) {
-              invalids.push(this[f].invalid());
+              invalids.push(model.invalid());
             }
           }
         } else if (this[f] && this[f].invalid()) {
@@ -158,7 +174,6 @@ export abstract class BaseModel {
     if (window && window.localStorage && this.key(this.doc)) {
       let json = window.localStorage.getItem(this.key(this.doc));
       if (json) {
-        console.log('restoring', this.key(this.doc), json);
         let data = JSON.parse(json);
         for (let key of Object.keys(data)) {
           if (this.SETABLE.indexOf(key) > -1) {

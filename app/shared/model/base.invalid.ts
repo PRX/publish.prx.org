@@ -36,3 +36,9 @@ export const IN = (list: any[]): BaseInvalid => {
     }
   };
 };
+
+export const FALSEY = (msg: string): BaseInvalid => {
+  return <BaseInvalid> (key: string, value: any) => {
+    return value ? msg : null;
+  };
+};

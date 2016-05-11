@@ -59,7 +59,6 @@ export class AudioFileComponent {
   @Input() audio: AudioFileModel;
 
   onCancel(event: Event) {
-    console.log('onCancel');
     event.preventDefault();
 
     // wait for fade-out before parent removes this component
@@ -68,7 +67,6 @@ export class AudioFileComponent {
   }
 
   onRetry(event: Event) {
-    console.log('onRetry');
     event.preventDefault();
     if (this.audio.isUploading) {
       this.audio.retryUpload();

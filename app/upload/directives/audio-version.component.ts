@@ -17,7 +17,7 @@ import {AudioFileComponent} from './audio-file.component';
         <strong>{{version.label}}</strong>
         <span>{{DESCRIPTIONS[version.label]}}</span>
       </header>
-      <section [dragula]="id">
+      <section [dragula]="id" [dragulaModel]="version.files">
         <audio-file *ngFor="#file of version.files"
           [audio]="file"></audio-file>
         <div *ngIf="version.files && !version.files.length" class="empty">
@@ -84,10 +84,15 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
         return handle.classList.contains('drag-handle');
       }
     });
+
+    // update positions for visible (non-canceled) audio-files
     this.dragSubscription = this.dragulaService.dropModel.subscribe((args: any[]) => {
-      let i = 0, el = args[1];
-      while (el.previousElementSibling) { i++; el = el.previousElementSibling; }
-      console.log('TODO: changePosition'); // , this.audios[i].filename, i + 1);
+      let position = 1;
+      for (let file of this.version.files) {
+        if (!file.isDestroy) {
+          file.set('position', position++);
+        }
+      }
     });
   }
 

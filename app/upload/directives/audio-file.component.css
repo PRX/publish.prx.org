@@ -23,6 +23,9 @@
 }
 @keyframes fade-out { from { opacity :1; } to { opacity :0; } }
 @-webkit-keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+:host.gu-transit .audio-file {
+  background: none;
+}
 
 .reorder {order: 1; flex-basis: 100%;}
 .cancel {order: 2; flex-basis: 100%;}
