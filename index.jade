@@ -12,10 +12,10 @@ html(lang='en')
       script(src='/config/systemjs.config.js')
       script.
         var readyForMainLoad;
-        if (location.origin.match(/localhost|\.dev/)) {
+        if (location.origin.match(/localhost|\.dev|\.docker/)) {
           System.trace = true;
           readyForMainLoad = System.import('capaj/systemjs-hot-reloader').then((HotReloader) => {
-            hr = new HotReloader.default('http://localhost:3000');
+            hr = new HotReloader.default(location.origin);
 
             // reload same-named components when css changes
             hr.on('change', (fileName) => {
