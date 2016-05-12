@@ -31,13 +31,11 @@ export class AudioFileModel extends BaseModel {
     isError:     [FALSEY('Resolve upload errors first')]
   };
 
-  private version: HalDoc;
   private upload: Upload;
   private progressSub: Subscription;
 
-  constructor(audioVersion: HalDoc, file: HalDoc | Upload | string) {
+  constructor(audioVersion?: HalDoc, file?: HalDoc | Upload | string) {
     super();
-    this.version = audioVersion;
 
     // initialize (loading new uploads by uuid)
     if (typeof file === 'string') {
@@ -45,7 +43,7 @@ export class AudioFileModel extends BaseModel {
     } else if (file instanceof Upload) {
       this.uuid = file.uuid;
     }
-    this.init(file instanceof HalDoc ? file : null);
+    this.init(audioVersion, file instanceof HalDoc ? file : null);
 
     // local-store info on new uploads
     if (file instanceof Upload) {
@@ -58,29 +56,29 @@ export class AudioFileModel extends BaseModel {
     }
   }
 
-  key(doc: HalDoc) {
-    if (doc) {
-      return `prx.audio-file.${doc['id']}`;
+  key() {
+    if (this.doc) {
+      return `prx.audio-file.${this.doc.id}`;
     } else if (this.uuid) {
-      return `prx.audio-file.${this.uuid}`;
+      return `prx.audio-file.new.${this.uuid}`;
     } else {
       return `prx.audio-file.new`;
     }
   }
 
-  related(doc: HalDoc) {
+  related() {
     return {};
   }
 
-  decode(doc: HalDoc) {
-    this.id = doc['id'];
-    this.filename = doc['filename'];
-    this.label = doc['label'];
-    this.size = doc['size'];
-    this.duration = doc['duration'];
-    this.position = doc['position'];
-    this.status = doc['status'];
-    this.enclosureHref = doc.expand('enclosure');
+  decode() {
+    this.id = this.doc['id'];
+    this.filename = this.doc['filename'];
+    this.label = this.doc['label'];
+    this.size = this.doc['size'];
+    this.duration = this.doc['duration'];
+    this.position = this.doc['position'];
+    this.status = this.doc['status'];
+    this.enclosureHref = this.doc.expand('enclosure');
   }
 
   encode(): {} {
@@ -95,7 +93,7 @@ export class AudioFileModel extends BaseModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    return this.version.create('prx:audio', {}, data);
+    return this.parent.create('prx:audio', {}, data);
   }
 
   watchUpload(upload: Upload, startFromBeginning = true) {

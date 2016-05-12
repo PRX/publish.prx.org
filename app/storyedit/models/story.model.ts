@@ -26,40 +26,46 @@ export class StoryModel extends BaseModel {
     subGenre:         [REQUIRED()]
   };
 
-  constructor(story?: HalDoc) {
+  constructor(account: HalDoc, story?: HalDoc) {
     super();
-    this.init(story);
+    this.init(account, story);
   }
 
-  key(doc: HalDoc) {
-    if (doc) {
-      return `prx.story.${doc['id']}`;
+  key() {
+    if (this.doc) {
+      return `prx.story.${this.doc.id}`;
+    } else if (this.parent) {
+      return `prx.story.new.${this.parent.id}`;
     } else {
-      return `prx.story.new`;
+      return 'prx.story.new';
     }
   }
 
-  related(doc: HalDoc) {
-    let rels = <any> {};
-    if (doc) {
-      rels.versions = doc.followItems('prx:audio-versions').map((versions) => {
-        return versions.map((vdoc) => {
-          return new AudioVersionModel(doc, vdoc);
-        });
-      });
+  related() {
+    if (this.doc) {
+      return {
+        versions: this.doc.followItems('prx:audio-versions').map((versions) => {
+          return versions.map((vdoc) => {
+            return new AudioVersionModel(this.doc, vdoc);
+          });
+        })
+      };
+    } else {
+      return {
+        versions: Observable.of([new AudioVersionModel()])
+      };
     }
-    return rels;
   }
 
-  decode(doc: HalDoc) {
-    this.id = doc['id'];
-    this.title = doc['title'] || '';
-    this.shortDescription = doc['shortDescription'] || '';
-    this.genre = this.parseGenre(doc['tags']) || '';
-    this.subGenre = this.parseSubGenre(doc['tags']) || '';
-    this.extraTags = this.parseExtraTags(doc['tags']) || '';
-    this.updatedAt = new Date(doc['updatedAt']);
-    this.publishedAt = new Date(doc['publishedAt']);
+  decode() {
+    this.id = this.doc['id'];
+    this.title = this.doc['title'] || '';
+    this.shortDescription = this.doc['shortDescription'] || '';
+    this.genre = this.parseGenre(this.doc['tags']) || '';
+    this.subGenre = this.parseSubGenre(this.doc['tags']) || '';
+    this.extraTags = this.parseExtraTags(this.doc['tags']) || '';
+    this.updatedAt = new Date(this.doc['updatedAt']);
+    this.publishedAt = new Date(this.doc['publishedAt']);
   }
 
   encode(): {} {
@@ -82,8 +88,7 @@ export class StoryModel extends BaseModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    alert('saveNew story');
-    return null;
+    return this.parent.create('prx:stories', {}, data);
   }
 
   parseGenre(tags: string[] = []): string {

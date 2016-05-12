@@ -7,7 +7,9 @@ import {AudioFileModel} from '../../storyedit/models/audio-file.model';
   selector: 'audio-file',
   styleUrls: ['app/upload/directives/audio-file.component.css'],
   template: `
-    <div *ngIf="!audio.isDestroy" class="audio-file" [class.canceled]="canceled">
+    <div *ngIf="!audio.isDestroy" class="audio-file"
+      [class.canceled]="canceled" [class.changed]="audio.changed()">
+
       <div class="reorder">
         <i *ngIf="!canceled" class="icon-menu drag-handle"></i>
       </div>

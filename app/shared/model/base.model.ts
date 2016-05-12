@@ -2,22 +2,14 @@ import {Observable} from 'rxjs';
 import {HalDoc} from '../../shared/cms/haldoc';
 import {BaseInvalid} from './base.invalid';
 
-interface ValidatorMap {
-  [key: string]: BaseInvalid[];
-}
+interface ValidatorMap { [key: string]: BaseInvalid[]; }
+interface RelatedMap   { [key: string]: Observable<any>; }
+interface InvalidMap   { [key: string]: string; }
+interface ChangedMap   { [key: string]: boolean; }
 
-interface RelatedMap {
-  [key: string]: Observable<any>;
-}
-
-interface InvalidMap {
-  [key: string]: string;
-}
-
-interface ChangedMap {
-  [key: string]: boolean;
-}
-
+/**
+ * Base class for modeling/validating haldocs
+ */
 export abstract class BaseModel {
 
   public isSaving: boolean = false;
@@ -25,6 +17,7 @@ export abstract class BaseModel {
   public isDestroy: boolean = false;
 
   public doc: HalDoc;
+  public parent: HalDoc;
   public original: {};
 
   public SETABLE: string[] = [];
@@ -33,20 +26,21 @@ export abstract class BaseModel {
   public invalidFields: InvalidMap = {};
   public changedFields: ChangedMap = {};
 
-  abstract key(doc: HalDoc): string;
-  abstract related(doc: HalDoc): RelatedMap;
-  abstract decode(doc: HalDoc): void;
+  abstract key(): string;
+  abstract related(): RelatedMap;
+  abstract decode(): void;
   abstract encode(): {};
   abstract saveNew(data: {}): Observable<HalDoc>;
 
-  init(doc?: HalDoc, loadRelated = true) {
-    this.doc = doc;
-    this.isNew = doc ? false : true;
-    if (doc) {
-      this.decode(doc);
+  init(parent?: HalDoc, self?: HalDoc, loadRelated = true) {
+    this.parent = parent;
+    this.doc = self;
+    this.isNew = self ? false : true;
+    if (self) {
+      this.decode();
     }
 
-    // original remote values
+    // get remote values, before overlaying localstorage
     this.original = {};
     for (let f of this.SETABLE) {
       this.original[f] = this[f];
@@ -57,7 +51,7 @@ export abstract class BaseModel {
     // optionally load related models
     if (loadRelated) {
       this.RELATIONS = [];
-      let related = this.related(doc) || {};
+      let related = this.related() || {};
       for (let key of Object.keys(related)) {
         related[key].subscribe((value: any) => { this[key] = value; });
         this.RELATIONS.push(key);
@@ -89,27 +83,23 @@ export abstract class BaseModel {
 
     return saveMe.flatMap((doc?) => {
       this.unstore();
+
+      // update haldoc reference (and mock the timestamp)
       if (doc) {
-        if (doc['updatedAt']) { doc['updatedAt'] = new Date(); } // mock update
-        this.init(doc, false);
+        if (doc['updatedAt']) { doc['updatedAt'] = new Date(); }
+        this.init(this.parent, doc, false);
       }
-      this.isNew = false;
-      this.isSaving = false;
 
       // save related docs in parallel
-      let relatedSavers: Observable<boolean>[] = [];
-      for (let rel of this.RELATIONS) {
-        if (this[rel] instanceof Array) {
-          for (let model of this[rel]) {
-            if (model.changed()) {
-              relatedSavers.push(model.save());
-            }
-          }
-        } else if (this[rel].changed()) {
-          relatedSavers.push(this[rel].save());
-        }
-      }
+      let relatedSavers: Observable<boolean>[] = this.getRelated().filter((model) => {
+        return model.changed();
+      }).map((model) => {
+        model.parent = this.doc; // update reference to haldoc
+        return model.save();
+      });
       return Observable.fromArray(relatedSavers).concatAll().toArray().map(() => {
+        this.isNew = false;
+        this.isSaving = false;
         return true;
       });
     });
@@ -122,12 +112,8 @@ export abstract class BaseModel {
     }
     for (let f of fields) {
       if (this.RELATIONS.indexOf(f) > -1) {
-        if (this[f] && this[f] instanceof Array) {
-          for (let model of this[f]) {
-            if (model.changed()) { return true; }
-          }
-        } else if (this[f] && this[f].changed()) {
-          return true;
+        for (let model of this.getRelated(f)) {
+          if (model.changed()) { return true; }
         }
       } else if (this.changedFields[f]) {
         return true;
@@ -136,7 +122,7 @@ export abstract class BaseModel {
     return false;
   }
 
-  invalid(field: string | string[]): string {
+  invalid(field?: string | string[]): string {
     let fields = (field instanceof Array) ? field : [field];
     if (!field || field.length < 1) {
       fields = this.SETABLE.concat(this.RELATIONS);
@@ -144,14 +130,8 @@ export abstract class BaseModel {
     let invalids: string[] = [];
     for (let f of fields) {
       if (this.RELATIONS.indexOf(f) > -1) {
-        if (this[f] && this[f] instanceof Array) {
-          for (let model of this[f]) {
-            if (model.invalid()) {
-              invalids.push(model.invalid());
-            }
-          }
-        } else if (this[f] && this[f].invalid()) {
-          invalids.push(this[f].invalid());
+        for (let model of this.getRelated(f)) {
+          if (model.invalid()) { invalids.push(model.invalid()); }
         }
       } else if (this.invalidFields[f]) {
         invalids.push(this.invalidFields[f]);
@@ -161,18 +141,18 @@ export abstract class BaseModel {
   }
 
   store() {
-    if (window && window.localStorage && this.key(this.doc)) {
+    if (window && window.localStorage && this.key()) {
       let changed = {};
       for (let f of Object.keys(this.changedFields)) {
         changed[f] = this[f];
       }
-      window.localStorage.setItem(this.key(this.doc), JSON.stringify(changed));
+      window.localStorage.setItem(this.key(), JSON.stringify(changed));
     }
   }
 
   restore() {
-    if (window && window.localStorage && this.key(this.doc)) {
-      let json = window.localStorage.getItem(this.key(this.doc));
+    if (window && window.localStorage && this.key()) {
+      let json = window.localStorage.getItem(this.key());
       if (json) {
         let data = JSON.parse(json);
         for (let key of Object.keys(data)) {
@@ -185,8 +165,15 @@ export abstract class BaseModel {
   }
 
   unstore() {
-    if (window && window.localStorage && this.key(this.doc)) {
-      window.localStorage.removeItem(this.key(this.doc));
+    if (window && window.localStorage && this.key()) {
+      window.localStorage.removeItem(this.key());
+    }
+  }
+
+  revalidate() {
+    for (let f of this.SETABLE) {
+      this.invalidFields[f] = this.invalidate(f, this[f]);
+      this.changedFields[f] = this.changidate(f, this[f]);
     }
   }
 
@@ -205,11 +192,19 @@ export abstract class BaseModel {
     return this.original[field] !== value;
   }
 
-  revalidate() {
-    for (let f of this.SETABLE) {
-      this.invalidFields[f] = this.invalidate(f, this[f]);
-      this.changedFields[f] = this.changidate(f, this[f]);
+  getRelated(rel?: string): BaseModel[] {
+    let checkRels = rel ? [rel] : this.RELATIONS;
+    let models: BaseModel[] = [];
+    for (let checkRel of checkRels) {
+      if (this[checkRel] instanceof Array) {
+        for (let model of this[checkRel]) {
+          models.push(model);
+        }
+      } else if (this[checkRel] instanceof BaseModel) {
+        models.push(this[checkRel]);
+      }
     }
+    return models;
   }
 
 }

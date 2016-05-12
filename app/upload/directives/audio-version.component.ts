@@ -36,7 +36,9 @@ import {AudioFileComponent} from './audio-file.component';
 export class AudioVersionComponent implements OnInit, OnDestroy {
 
   DESCRIPTIONS = {
-    'Piece Audio': 'The standard version of your story you would most like people to hear and buy'
+    'Main Audio': 'The primary version of your audio that blah blah blah',
+    'Piece Audio': 'The standard version of your story you would most like people to hear and buy',
+    'Promos': 'The promotional version of your audio'
   };
 
   @Input() version: AudioVersionModel;
@@ -49,7 +51,7 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
   ) {}
 
   get id(): any {
-    return this.version ? ('version-' + this.version['id']) : 'version-new';
+    return this.version.id ? ('version-' + this.version.id) : 'version-new';
   }
 
   ngOnInit() {

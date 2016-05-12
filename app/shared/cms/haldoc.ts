@@ -28,6 +28,8 @@ Observable.prototype['followItems'] = function(rel: string, params: {} = null) {
  */
 export class HalDoc {
 
+  id: number;
+
   constructor(data: any = {}, protected remote: HalRemote) {
     this.setData(data);
   }

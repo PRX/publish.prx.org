@@ -69,11 +69,14 @@ export class StoryEditComponent implements OnDestroy, CanDeactivate {
     this.storyId = params.params['id'];
     if (this.storyId) {
       cms.follow('prx:authorization').follow('prx:story', {id: this.storyId}).subscribe((doc) => {
-        this.story = new StoryModel(doc);
+        this.story = new StoryModel(null, doc);
         this.bindRouteIO();
       });
     } else {
-      this.story = new StoryModel();
+      cms.account.subscribe((accountDoc) => {
+        this.story = new StoryModel(accountDoc, null);
+        this.bindRouteIO();
+      });
     }
     this.routerSub = <Subscription> this.router.parent.subscribe((path) => {
       this.setHeroText();

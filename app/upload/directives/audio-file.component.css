@@ -13,6 +13,9 @@
   margin-top: -1px;
   padding: 18px 22px;
 }
+.audio-file.changed {
+  outline: 5px auto #f09b4c;
+}
 .audio-file.canceled {
   animation: fade-out 0.5s 1;
   -webkit-animation: fade-out 0.5s 1;
@@ -23,6 +26,8 @@
 }
 @keyframes fade-out { from { opacity :1; } to { opacity :0; } }
 @-webkit-keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+
+/* dragula */
 :host.gu-transit .audio-file {
   background: none;
 }

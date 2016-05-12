@@ -1,5 +1,7 @@
 :host {
   text-align: left;
+  display: block;
+  margin-bottom: 30px;
 }
 header {
   background-color: #B8B8B8;

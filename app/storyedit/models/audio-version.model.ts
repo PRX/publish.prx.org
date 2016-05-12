@@ -6,39 +6,41 @@ import {AudioFileModel} from './audio-file.model';
 
 export class AudioVersionModel extends BaseModel {
 
+  static DEFAULT_LABEL = 'Main Audio';
+
   public id: number;
   public label: string;
   public files: AudioFileModel[];
-  public uploadUuids: string[];
+  public uploadUuids: string[] = [];
 
   // save in-progress uploads to localstorage
   SETABLE = ['uploadUuids'];
 
-  private story: HalDoc;
-
-  constructor(story: HalDoc, audioVersion: HalDoc) {
+  constructor(story?: HalDoc, audioVersion?: HalDoc) {
     super();
-    this.story = story;
-    this.init(audioVersion);
-  }
-
-  key(doc: HalDoc) {
-    if (doc) {
-      return `prx.audio-version.${doc['id']}`;
-    } else if (this.story['id']) {
-      return `prx.audio-version.new.${this.story['id']}`;
-    } else {
-      return `prx.audio-version.new`;
+    this.init(story, audioVersion);
+    if (!audioVersion) {
+      this.set('label', AudioVersionModel.DEFAULT_LABEL);
     }
   }
 
-  related(doc: HalDoc) {
+  key() {
+    if (this.doc) {
+      return `prx.audio-version.${this.doc.id}`;
+    } else if (this.parent) {
+      return `prx.audio-version.new.${this.parent.id}`; // old story, new version
+    } else {
+      return `prx.audio-version.new`; // new story, new version
+    }
+  }
+
+  related() {
     let rels = <any> {};
 
     // unsaved/in-progress file uploads
     let unsavedAudio: AudioFileModel[] = [];
     for (let i = 0; i < this.uploadUuids.length; i++) {
-      let audio = new AudioFileModel(doc, this.uploadUuids[i]);
+      let audio = new AudioFileModel(this.doc, this.uploadUuids[i]);
       if (audio.filename) {
         unsavedAudio.push(audio);
       } else {
@@ -48,9 +50,9 @@ export class AudioVersionModel extends BaseModel {
     }
 
     // load existing audio files
-    if (doc) {
-      rels.files = doc.followList('prx:audio').map((fileDocs) => {
-        let savedAudio = fileDocs.map((fdoc) => { return new AudioFileModel(doc, fdoc); });
+    if (this.doc) {
+      rels.files = this.doc.followList('prx:audio').map((fileDocs) => {
+        let savedAudio = fileDocs.map((fdoc) => { return new AudioFileModel(this.doc, fdoc); });
         return savedAudio.concat(unsavedAudio);
       });
     } else {
@@ -59,21 +61,25 @@ export class AudioVersionModel extends BaseModel {
     return rels;
   }
 
-  decode(doc: HalDoc) {
-    this.id = doc['id'];
-    this.label = doc['label'];
-    this.uploadUuids = [];
+  decode() {
+    this.id = this.doc['id'];
+    this.label = this.doc['label'];
   }
 
   encode(): {} {
-    return {
-      label: this.label
-    };
+    return {label: this.label};
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    alert('saveNew audio-version');
-    return null;
+    return this.parent.create('prx:audio-versions', {}, data);
+  }
+
+  invalid(field: string | string[]): string {
+    let invalid = super.invalid(field);
+    if (!field && !invalid && this.files.length === 0) {
+      invalid = 'You must upload at least 1 audio file';
+    }
+    return invalid;
   }
 
   addUpload(upload: Upload) {
