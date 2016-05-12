@@ -11,8 +11,25 @@ Once published, the other side of the coin is to collect metrics on these channe
 
 # Install
 
-This local dev installation expects that both cms and id are installed locally.
-You will need to have an client application setup for publish in id.prx.dev
+## API and Backend Dependencies
+
+### Use defaults
+By default publish will connect to id.prx.org and cms.prx.org.
+The app and `env-example` defaults match and both will hit these production services.
+
+To set-up environment custom values, start with these defaults in your `.env` file:
+``` sh
+cp env-example .env
+vim .env
+```
+
+### Use local `cms`
+To run cms locally, change the `CMS_HOST` in `.env` to `CMS_HOST=cms.prx.dev`.
+
+###  Use local `id`
+To run id locally, change the `AUTH_HOST` in `.env` to `AUTH_HOST=id.prx.dev`.
+
+Next, you will need to create a client application set up, this is easiest to do from the prx.org console:
 ``` ruby
 # start a console for prx.org
 cd prx.org
@@ -36,12 +53,9 @@ puts "Add this to .env"
 puts "AUTH_CLIENT_ID=#{client.key}"
 ```
 
-Set-up environment specific values.
-Enter in the client id in `AUTH_CLIENT_ID` from above:
-``` sh
-cp env-example .env
-vim .env
-```
+Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from above.
+
+## Docker Install
 
 Now you can install the app dependencies and run it using `npm` and `docker`.
 This guide assumes you already have npm, docker and dinghy installed.
