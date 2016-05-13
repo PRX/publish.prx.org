@@ -3,13 +3,14 @@
 # (3) profit
 
 # prx api
-CMS_HOST=http://cms.prx.dev
-CMS_TTL=30
+CMS_HOST=https://cms.prx.org
+CMS_TTL=1
+CMS_ROOT_TTL=3600
 CMS_USE_LOCALSTORAGE=true
 
 # prx auth
-AUTH_HOST=http://id.prx.dev
-AUTH_CLIENT_ID=foobar
+AUTH_HOST=https://id.prx.org
+AUTH_CLIENT_ID=rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D
 
 # aws uploading
 BUCKET_NAME=

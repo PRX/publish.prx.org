@@ -1,0 +1,11 @@
+app:
+  build: .
+  volumes:
+    - .:/app
+  env_file:
+    - .env
+  ports:
+    - "3000:3000"
+  command: start
+  environment:
+    VIRTUAL_HOST: publish.prx.docker
