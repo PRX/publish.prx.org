@@ -114,6 +114,10 @@ export class MockCmsService {
     return <HalObservable<MockHalDoc>> Observable.of(this.mockRoot);
   }
 
+  get account(): HalObservable<HalDoc> {
+    return this.follow('prx:authorization').follow('prx:default-account');
+  }
+
   follow(rel: string, params: {} = null): HalObservable<HalDoc> {
     return this.mockRoot.follow(rel, params);
   }
