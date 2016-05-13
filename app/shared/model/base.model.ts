@@ -18,7 +18,7 @@ export abstract class BaseModel {
 
   public doc: HalDoc;
   public parent: HalDoc;
-  public original: {};
+  public original: {} = {};
 
   public SETABLE: string[] = [];
   public RELATIONS: string[] = [];
@@ -137,7 +137,7 @@ export abstract class BaseModel {
         invalids.push(this.invalidFields[f]);
       }
     }
-    return invalids ? invalids.join(', ') : null;
+    return invalids.length ? invalids.join(', ') : null;
   }
 
   store() {
