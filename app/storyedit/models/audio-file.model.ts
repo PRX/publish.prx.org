@@ -82,14 +82,17 @@ export class AudioFileModel extends BaseModel {
   }
 
   encode(): {} {
-    return {
+    let data = {
       filename: this.filename,
       label: this.label,
       size: this.size,
       duration: this.duration,
-      position: this.position,
-      upload: this.enclosureHref
+      position: this.position
     };
+    if (this.isNew) {
+      data['upload'] = this.enclosureHref;
+    }
+    return data;
   }
 
   saveNew(data: {}): Observable<HalDoc> {

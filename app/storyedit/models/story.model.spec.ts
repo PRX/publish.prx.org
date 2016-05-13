@@ -1,53 +1,35 @@
 import {it, describe, beforeEach, expect} from 'angular2/testing';
 import {MockCmsService} from '../../shared/cms/cms.mocks';
 import {StoryModel} from './story.model';
+import {AudioVersionModel} from './audio-version.model';
 
 describe('StoryModel', () => {
 
   let cms = <any> new MockCmsService();
 
-  let auth: any;
+  let authMock: any, accountMock: any, storyMock: any;
   beforeEach(() => {
-    auth = cms.mock('prx:authorization', {}); // clears mocks
+    authMock = cms.mock('prx:authorization', {});
+    spyOn(AudioVersionModel.prototype, 'init').and.stub();
   });
 
-  let storyMock: any;
-  const makeStory = (data = {}) => {
-    storyMock = auth.mock('prx:story', data);
-    return new StoryModel(cms, 'any-story-id');
+  const makeStory = (data?: any, versions?: any[]) => {
+    accountMock = authMock.mock('prx:default-account', {id: 'account-id'});
+    storyMock = data ? authMock.mock('prx:story', data) : null;
+    if (storyMock) { storyMock.mockItems('prx:audio-versions', versions || []); }
+    return new StoryModel(accountMock, storyMock);
   };
 
   describe('constructor', () => {
 
-    it('loads existing stories from the CMS', () => {
+    it('loads data from the haldoc', () => {
       let story = makeStory({title: 'Hello World'});
       expect(story.title).toEqual('Hello World');
-      expect(story.isLoaded).toBeTruthy();
       expect(story.isNew).toBeFalsy();
     });
 
-    it('looks up the default account for new stories', () => {
-      auth.mock('prx:default-account', {});
-      let story = new StoryModel(cms);
-      expect(story.title).toEqual('');
-      expect(story.isLoaded).toBeTruthy();
-      expect(story.isNew).toBeTruthy();
-    });
-
-  });
-
-  describe('setDoc', () => {
-
-    it('sets attributes on the story', () => {
-      let story = makeStory();
-      story.setDoc(<any> {id: 12, title: 'hello'});
-      expect(story.id).toEqual(12);
-      expect(story.title).toEqual('hello');
-    });
-
     it('parses dates', () => {
-      let story = makeStory();
-      story.setDoc(<any> {
+      let story = makeStory({
         publishedAt: '2002-02-02T02:02:02.000Z',
         updatedAt: '2004-04-04T04:04:04'
       });
@@ -58,39 +40,67 @@ describe('StoryModel', () => {
     });
 
     it('parses tags', () => {
-      let story = makeStory();
-      story.setDoc(<any> {tags: ['Foo', 'Arts', 'Bar', 'Food']});
+      let story = makeStory({tags: ['Foo', 'Arts', 'Bar', 'Food']});
       expect(story.genre).toEqual('Arts');
       expect(story.subGenre).toEqual('Food');
       expect(story.extraTags).toEqual('Foo, Bar');
     });
 
     it('allows only a single genre', () => {
-      let story = makeStory();
-      story.setDoc(<any> {tags: ['Business', 'Arts', 'Education']});
+      let story = makeStory({tags: ['Business', 'Arts', 'Education']});
       expect(story.genre).toEqual('Business');
       expect(story.subGenre).toEqual('');
       expect(story.extraTags).toEqual('');
     });
 
     it('allows only subGenres of the parent', () => {
-      let story = makeStory();
-      story.setDoc(<any> {tags: ['Arts', 'Business News']});
+      let story = makeStory({tags: ['Arts', 'Business News']});
       expect(story.subGenre).toEqual('');
-      story.setDoc(<any> {tags: ['Business News']});
+      story = makeStory({tags: ['Business News']});
       expect(story.subGenre).toEqual('');
-      story.setDoc(<any> {tags: ['Business News', 'Business']});
+      story = makeStory({tags: ['Business News', 'Business']});
       expect(story.subGenre).toEqual('Business News');
     });
 
   });
 
-  describe('toJSON', () => {
+  describe('key', () => {
+
+    it('uses the story id for the key', () => {
+      expect(makeStory({id: 'story-id'}).key()).toContain('story-id');
+    });
+
+    it('falls back to the account id', () => {
+      expect(makeStory(null).key()).toContain('account-id');
+    });
+
+    it('will just call it a new story if nothing else', () => {
+      let nothin = new StoryModel(null, null);
+      expect(nothin.key()).toMatch(/\.new$/);
+    });
+
+  });
+
+  describe('related', () => {
+
+    it('loads audio versions', () => {
+      let story = makeStory({}, [{label: 'version-one'}, {label: 'version-two'}]);
+      expect(story.versions.length).toEqual(2);
+    });
+
+    it('sets a default version for new stories', () => {
+      let story = makeStory(null);
+      expect(story.versions.length).toEqual(1);
+    });
+
+  });
+
+  describe('encode', () => {
 
     it('returns only saveable attributes', () => {
       let story = makeStory({id: 1, title: '2', shortDescription: '3', tags: ['4'],
         publishedAt: '2002-02-02T02:02:02', updatedAt: '2004-04-04T04:04:04'});
-      let json = story.toJSON();
+      let json = story.encode();
       expect(Object.keys(json).sort()).toEqual(['shortDescription', 'tags', 'title']);
     });
 
@@ -99,49 +109,22 @@ describe('StoryModel', () => {
       story.genre = 'Hello';
       story.subGenre = 'World';
       story.extraTags = 'And,Some ,   More tags, Go here';
-      let json = <any> story.toJSON();
+      let json = <any> story.encode();
       let tags = json.tags.sort();
       expect(tags).toEqual(['And', 'Go here', 'Hello', 'More tags', 'Some', 'World']);
     });
 
   });
 
-  describe('save', () => {
+  describe('saveNew', () => {
 
-    it('updates existing docs with json', () => {
-      let story = makeStory({title: 'Start title'});
-      spyOn(story, 'toJSON').and.returnValue({title: 'Changed it'});
-      story.save().subscribe((wasNew) => {
-        expect(wasNew).toBeFalsy();
-        expect(story.title).toEqual('Changed it');
-      });
-      expect(story.toJSON).toHaveBeenCalled();
-    });
-
-    it('creates new docs on the default account', () => {
-      let account = auth.mock('prx:default-account', {});
-      let story = new StoryModel(cms);
-      spyOn(story, 'toJSON').and.returnValue({title: 'Created it'});
-      expect(account.MOCKS['prx:stories']).toBeUndefined();
-      story.save().subscribe((wasNew) => {
-        expect(wasNew).toBeTruthy();
-        expect(story.title).toEqual('Created it');
-      });
-      expect(story.toJSON).toHaveBeenCalled();
-      expect(account.MOCKS['prx:stories']).toBeDefined();
-    });
-
-  });
-
-  describe('destroy', () => {
-
-    it('deletes the underlying haldoc', () => {
+    it('creates a new story off the account', () => {
       let story = makeStory();
-      expect(story['_destroyed']).toBeUndefined();
-      story.destroy().subscribe((deleted) => {
-        expect(deleted).toBeTruthy();
+      spyOn(accountMock, 'create').and.callFake((rel: string) => {
+        expect(rel).toEqual('prx:stories');
       });
-      expect(storyMock['_destroyed']).toEqual(true);
+      story.saveNew({hello: 'world'});
+      expect(accountMock.create).toHaveBeenCalled();
     });
 
   });

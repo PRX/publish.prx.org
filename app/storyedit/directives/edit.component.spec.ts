@@ -13,11 +13,10 @@ describe('EditComponent', () => {
   mockDirective(UploadComponent, {selector: 'audio-uploader', template: '<i>upload</i>'});
 
   it('does not render until the story is loaded', buildComponent((fix, el, edit) => {
-    expect(el.textContent.trim()).toEqual('');
-    edit.story = {isLoaded: false};
+    edit.story = null;
     fix.detectChanges();
-    expect(el.querySelector('story-field')).toBeNull();
-    edit.story.isLoaded = true;
+    expect(el.textContent.trim()).toEqual('');
+    edit.story = {};
     fix.detectChanges();
     expect(el.querySelector('story-field')).not.toBeNull();
   }));

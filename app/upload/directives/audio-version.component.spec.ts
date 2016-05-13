@@ -4,23 +4,20 @@ import {setupComponent, buildComponent, mockDirective, mockService}
 import {AudioVersionComponent} from './audio-version.component';
 import {UploadService} from '../services/upload.service';
 import {AudioFileComponent} from './audio-file.component';
-import {MockHalDoc} from '../../shared/cms/cms.mocks';
-import {AudioModel} from '../models/audio.model';
 
 describe('AudioVersionComponent', () => {
 
   setupComponent(AudioVersionComponent);
 
-  let addedFile = {};
+  let uploadFiles = {};
   mockService(UploadService, {
-    addFile: (id: any, file: any): any => {
-      addedFile[id] = file;
+    add: (file: any): any => {
+      uploadFiles[file] = file;
+      return file;
     },
-    uploadsForVersion: (versionId: any): any => {
-      if (versionId === 'test-in-progress') {
-        return ['three', 'four'];
-      } else {
-        return [];
+    find: (uuid: any): any => {
+      if (uuid === 'testuuid') {
+        return 'foobar';
       }
     }
   });
@@ -30,69 +27,57 @@ describe('AudioVersionComponent', () => {
     template: '<i>nothing</i>'
   });
 
-  beforeEach(() => {
-    spyOn(AudioModel, 'fromDoc').and.callFake((doc: any) => {
-      return doc.title;
-    });
-    spyOn(AudioModel, 'fromUpload').and.callFake((upload: any, version: any) => {
-      return upload;
-    });
-  });
+  const mockVersion = (data = {}): {} => {
+    let version = <any> {};
+    version.label = 'Main Audio';
+    version.uploadUuids = [];
+    version.files = [];
+    version.watchUpload = () => { return; };
+    version.addUpload = (upload: any) => { version.files.push(upload); };
+    for (let key of Object.keys(data)) { version[key] = data[key]; }
+    return version;
+  };
 
-  it('shows the version labels', buildComponent((fix, el, aversion) => {
-    expect(el.querySelector('header strong')).toHaveText('');
-    expect(el.querySelector('header span')).toHaveText('');
-    aversion.version = new MockHalDoc({label: 'Foobar'});
-    aversion.version.mockList('prx:audio', []);
-    aversion.DESCRIPTIONS['Foobar'] = 'Some description';
+  it('only shows known versions', buildComponent((fix, el, aversion) => {
+    aversion.version = mockVersion({label: 'foobar'});
     fix.detectChanges();
-    expect(el.querySelector('header strong')).toHaveText('Foobar');
-    expect(el.querySelector('header span')).toHaveText('Some description');
+    expect(el.querySelector('header strong')).toBeNull();
+    aversion.version = mockVersion({label: 'Main Audio'});
+    fix.detectChanges();
+    expect(el.querySelector('header strong')).toHaveText('Main Audio');
+    expect(el.querySelector('header span').textContent).toMatch('The primary version');
   }));
 
   it('shows an indicator when there are no audio files', buildComponent((fix, el, aversion) => {
-    aversion.version = new MockHalDoc();
-    aversion.version.mockList('prx:audio', []);
+    aversion.version = mockVersion();
     fix.detectChanges();
     expect(el.querySelector('.empty').textContent).toMatch('Upload a file to get started');
   }));
 
-  it('renders saved audio files', buildComponent((fix, el, aversion) => {
-    aversion.version = new MockHalDoc();
-    aversion.version.mockList('prx:audio', [{title: 'one'}, {title: 'two'}, {title: 'three'}]);
+  it('renders upload files', buildComponent((fix, el, aversion) => {
+    aversion.version = mockVersion({files: ['one', 'two', 'three']});
     fix.detectChanges();
     expect(el.querySelectorAll('audio-file').length).toEqual(3);
   }));
 
-  it('renders in-progress uploads', buildComponent((fix, el, aversion) => {
-    aversion.version = new MockHalDoc({id: 'test-in-progress'});
-    aversion.version.mockList('prx:audio', [{title: 'one'}]);
+  it('finds in-progress uploads', buildComponent((fix, el, aversion) => {
+    aversion.version = mockVersion({uploadUuids: ['testuuid']});
+    spyOn(aversion.version, 'watchUpload').and.stub;
     fix.detectChanges();
-    expect(el.querySelectorAll('audio-file').length).toEqual(3);
+    expect(aversion.version.watchUpload).toHaveBeenCalledWith('foobar');
   }));
 
   it('adds uploads', buildComponent((fix, el, aversion) => {
-    aversion.version = new MockHalDoc({id: 'my-id'});
-    aversion.version.mockList('prx:audio', [{title: 'one'}]);
+    aversion.version = mockVersion({files: ['one']});
     fix.detectChanges();
     expect(el.querySelectorAll('audio-file').length).toEqual(1);
 
+    spyOn(aversion.version, 'addUpload').and.callThrough();
     aversion.addUpload('two');
-    expect(addedFile['my-id']).toEqual('two');
+    expect(uploadFiles['two']).toEqual('two');
     fix.detectChanges();
     expect(el.querySelectorAll('audio-file').length).toEqual(2);
-  }));
-
-  it('removes uploads', buildComponent((fix, el, aversion) => {
-    aversion.version = new MockHalDoc({id: 'test-in-progress'});
-    aversion.version.mockList('prx:audio', [{title: 'one'}, {title: 'two'}]);
-    fix.detectChanges();
-    expect(el.querySelectorAll('audio-file').length).toEqual(4);
-
-    aversion.removeUpload('two');
-    aversion.removeUpload('three');
-    fix.detectChanges();
-    expect(el.querySelectorAll('audio-file').length).toEqual(2);
+    expect(aversion.version.addUpload).toHaveBeenCalledWith('two');
   }));
 
 });

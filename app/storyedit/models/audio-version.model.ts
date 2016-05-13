@@ -74,7 +74,7 @@ export class AudioVersionModel extends BaseModel {
     return this.parent.create('prx:audio-versions', {}, data);
   }
 
-  invalid(field: string | string[]): string {
+  invalid(field?: string | string[]): string {
     let invalid = super.invalid(field);
     if (!field && !invalid && this.files.length === 0) {
       invalid = 'You must upload at least 1 audio file';
