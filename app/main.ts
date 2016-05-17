@@ -9,6 +9,7 @@ import 'rxjs/Rx';
 import {AuthService} from './shared/auth/auth.service';
 import {CmsService} from './shared/cms/cms.service';
 import {MimeTypeService} from '../util/mime-type.service';
+import {ModalService} from './shared/modal/modal.service';
 import {UploadService} from './upload/services/upload.service';
 
 if (!window.location.hostname.match(/localhost|\.dev|\.docker/)) {
@@ -23,5 +24,6 @@ bootstrap(AppComponent, [
   AuthService,
   CmsService,
   MimeTypeService,
+  ModalService,
   UploadService
 ]);

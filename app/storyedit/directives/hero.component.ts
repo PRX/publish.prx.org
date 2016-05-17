@@ -1,7 +1,7 @@
 import {Component, Input} from 'angular2/core';
 import {Router} from 'angular2/router';
 import {StoryModel} from '../models/story.model';
-import {SpinnerComponent}  from '../../shared/spinner/spinner.component';
+import {SpinnerComponent} from '../../shared/spinner/spinner.component';
 import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
 
 @Component({
@@ -17,21 +17,25 @@ import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
     </div>
     <div class="hero toolbar" [class.affix]="affixed" (window:scroll)="onScroll()">
       <section>
-        <spinner *ngIf="!story.isLoaded" inverse=true></spinner>
-        <div class="info" *ngIf="story.isLoaded">
+        <spinner *ngIf="!story" inverse=true></spinner>
+        <div class="info" *ngIf="story">
           <h2>{{story.title || '(Untitled)'}}</h2>
-          <p *ngIf="story.updatedAt">Last saved at {{story.updatedAt | timeago}}</p>
+          <p *ngIf="story.isNew">Not saved</p>
+          <p *ngIf="!story.isNew">Last saved at {{story.updatedAt | timeago}}</p>
         </div>
-        <div class="actions">
-          <button class="preview">Preview</button>
-          <button *ngIf="story.isNew" class="create"
-            [disabled]="story.invalid()"
-            (click)="save()">Create</button>
-          <button *ngIf="!story.isNew" class="save"
-            [disabled]="story.invalid() || !story.changed()"
-            (click)="save()">Save</button>
+        <div class="actions" *ngIf="story">
+          <button class="preview" [disabled]="story.isSaving">Preview</button>
+          <button *ngIf="story.isNew" class="create" [class.saving]="story.isSaving"
+            [disabled]="story.invalid() || story.isSaving"
+            (click)="save()">Create <spinner *ngIf="story.isSaving"></spinner></button>
+          <button *ngIf="!story.isNew" class="save" [class.saving]="story.isSaving"
+            [disabled]="story.invalid() || !story.changed() || story.isSaving"
+            (click)="save()">Save <spinner *ngIf="story.isSaving"></spinner></button>
           <button *ngIf="!story.isNew" class="publish"
-            [disabled]="story.invalid() || story.changed()">Publish</button>
+            [disabled]="story.invalid() || story.changed() || story.isSaving"
+            (click)="publish()">
+            Publish
+          </button>
         </div>
       </section>
     </div>
@@ -53,19 +57,12 @@ export class HeroComponent {
   }
 
   save(): void {
-    this.story.save().subscribe((isNew) => {
-      if (isNew) {
+    let wasNew = this.story.isNew;
+    this.story.save().subscribe(() => {
+      if (wasNew) {
         this.router.parent.navigate(['Edit', {id: this.story.id}]);
       }
     });
-  }
-
-  confirmDelete(): void {
-    if (confirm('Are you sure you want to delete this story?')) {
-      this.story.destroy().subscribe(() => {
-        this.router.parent.navigate(['Home']);
-      });
-    }
   }
 
 }

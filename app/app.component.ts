@@ -2,6 +2,7 @@ import {Component, ViewEncapsulation} from 'angular2/core';
 import {RouteConfig, RouterOutlet} from 'angular2/router';
 
 import {AuthComponent} from './shared/auth/auth.component';
+import {ModalComponent} from './shared/modal/modal.component';
 import {HeaderComponent} from './header/header.component';
 import {NavItemComponent} from './header/navitem.component';
 import {NavUserComponent} from './header/navuser.component';
@@ -10,13 +11,13 @@ import {LoginComponent} from './login/login.component';
 
 import {HomeComponent} from './home/home.component';
 import {StoryEditComponent} from './storyedit/storyedit.component';
-import {UploadComponent} from './upload/upload.component';
 
 @Component({
   directives: [
     RouterOutlet,
     AuthComponent,
     HeaderComponent,
+    ModalComponent,
     NavItemComponent,
     NavUserComponent,
     FooterComponent,
@@ -38,7 +39,6 @@ import {UploadComponent} from './upload/upload.component';
         <publish-header>
           <nav-item route="Home" text="Home"></nav-item>
           <nav-item route="Create" text="Create"></nav-item>
-          <nav-item route="Upload" text="Upload"></nav-item>
           <nav-item href="//www.prx.org/search/all" text="Search"></nav-item>
           <nav-user></nav-user>
         </publish-header>
@@ -55,6 +55,7 @@ import {UploadComponent} from './upload/upload.component';
         <publish-footer></publish-footer>
       </logged-out>
     </prx-auth>
+    <modal-box></modal-box>
     `
 })
 
@@ -62,8 +63,7 @@ import {UploadComponent} from './upload/upload.component';
   { path: '/',             name: 'Index',  component: HomeComponent, useAsDefault: true },
   { path: '/home',         name: 'Home',   component: HomeComponent },
   { path: '/create/...',   name: 'Create', component: StoryEditComponent },
-  { path: '/edit/:id/...', name: 'Edit',   component: StoryEditComponent },
-  { path: '/upload',       name: 'Upload', component: UploadComponent }
+  { path: '/edit/:id/...', name: 'Edit',   component: StoryEditComponent }
 ])
 
 export class AppComponent {}

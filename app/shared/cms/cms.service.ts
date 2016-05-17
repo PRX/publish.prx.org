@@ -37,6 +37,10 @@ export class CmsService {
     });
   }
 
+  get account(): HalObservable<HalDoc> {
+    return this.follow('prx:authorization').follow('prx:default-account');
+  }
+
   follow(rel: string, params: {} = null): HalObservable<HalDoc> {
     return <HalObservable<HalDoc>> this.root.flatMap((rootDoc) => {
       return rootDoc.follow(rel, params);

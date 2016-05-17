@@ -5,7 +5,7 @@ import {StoryModel} from '../models/story.model';
   selector: 'newstory-sell',
   styleUrls: [],
   template: `
-    <div *ngIf="story && story.isLoaded">
+    <div *ngIf="story">
       <h1>Sell your content</h1>
       <p>Sell</p>
       <p>{{story.title}}</p>

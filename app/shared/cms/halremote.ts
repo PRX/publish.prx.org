@@ -39,13 +39,18 @@ export class HalRemote {
       if (cachedResponse) {
         return cachedResponse;
       } else {
-        return HalRemoteCache.set(href, this.http.get(href, this.httpOptions()).flatMap((res) => {
-          if (res.status === 200) {
-            return Observable.of(res.json());
-          } else {
-            return Observable.throw(new Error(`Got ${res.status} from GET ${href}`));
-          }
-        }));
+        return HalRemoteCache.set(href, this.http.get(href, this.httpOptions())
+          .catch((res) => {
+            return Observable.of(res);
+          })
+          .flatMap((res) => {
+            if (res.status === 200) {
+              return Observable.of(res.json());
+            } else {
+              return Observable.throw(new Error(`Got ${res.status} from GET ${href}`));
+            }
+          })
+        );
       }
     } else {
       return Observable.throw(new Error('No link object specified!'));

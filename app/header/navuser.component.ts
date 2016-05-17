@@ -33,7 +33,7 @@ export class NavUserComponent {
   userImage: string;
 
   constructor(private cms: CmsService) {
-    cms.follow('prx:authorization').follow('prx:default-account').subscribe((doc) => {
+    cms.account.subscribe((doc) => {
       this.userName = doc['name'];
       doc.follow('prx:image').subscribe(
         (image) => {

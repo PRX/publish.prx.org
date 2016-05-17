@@ -9,7 +9,7 @@ import {UploadComponent} from '../../upload/upload.component';
   selector: 'newstory-edit',
   styleUrls: ['app/storyedit/directives/edit.component.css'],
   template: `
-    <form *ngIf="story && story.isLoaded">
+    <form *ngIf="story">
 
       <story-field [story]="story" textarea="true" name="title" label="Story Title" required>
         <hint>Write a short, Tweetable title like a newspaper headline. Make viewers
@@ -54,6 +54,8 @@ export class EditComponent {
   get SUBGENRES(): string[] {
     if (this.story && this.story.genre) {
       return SUBCATEGORIES[this.story.genre];
+    } else {
+      return [];
     }
   }
 

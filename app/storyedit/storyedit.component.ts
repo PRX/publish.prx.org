@@ -1,8 +1,10 @@
 import {Component, OnDestroy, ViewChild} from 'angular2/core';
-import {Router, RouteConfig, RouterOutlet, RouterLink, RouteParams} from 'angular2/router';
+import {Router, RouteConfig, RouterOutlet, RouterLink, RouteParams, CanDeactivate}
+  from 'angular2/router';
 import {Subscription} from 'rxjs';
 
 import {CmsService} from '../shared/cms/cms.service';
+import {ModalService} from '../shared/modal/modal.service';
 import {StoryModel} from './models/story.model';
 
 import {HeroComponent}     from './directives/hero.component';
@@ -19,18 +21,18 @@ import {SellComponent}     from './directives/sell.component';
     <div class="main">
       <section>
         <div class="subnav">
-          <nav *ngIf="!story.isNew">
+          <nav *ngIf="storyId">
             <a [routerLink]="['Default']">STEP 1: Edit your story</a>
             <a [routerLink]="['Decorate']">STEP 2: Decorate your story</a>
             <a [routerLink]="['Sell']">STEP 3: Sell your story</a>
           </nav>
-          <nav *ngIf="story.isNew">
+          <nav *ngIf="!storyId">
             <a [routerLink]="['Default']">STEP 1: Create your story</a>
             <a disabled>STEP 2: Decorate your story</a>
             <a disabled>STEP 3: Sell your story</a>
           </nav>
           <div class="extras">
-            <button *ngIf="!story.isNew" class="delete" (click)="confirmDelete()">Delete</button>
+            <button *ngIf="storyId" class="delete" (click)="confirmDelete()">Delete</button>
           </div>
         </div>
         <div class="page">
@@ -47,8 +49,9 @@ import {SellComponent}     from './directives/sell.component';
   { path: '/sell',     name: 'Sell',     component: SellComponent }
 ])
 
-export class StoryEditComponent implements OnDestroy {
+export class StoryEditComponent implements OnDestroy, CanDeactivate {
 
+  private storyId: string;
   private story: StoryModel;
   private stepText: string;
   private routerSub: Subscription;
@@ -60,9 +63,21 @@ export class StoryEditComponent implements OnDestroy {
   constructor(
     private cms: CmsService,
     private router: Router,
-    private params: RouteParams
+    private params: RouteParams,
+    private modal: ModalService
   ) {
-    this.story = new StoryModel(cms, params.params['id']);
+    this.storyId = params.params['id'];
+    if (this.storyId) {
+      cms.follow('prx:authorization').follow('prx:story', {id: this.storyId}).subscribe((doc) => {
+        this.story = new StoryModel(null, doc);
+        this.bindRouteIO();
+      });
+    } else {
+      cms.account.subscribe((accountDoc) => {
+        this.story = new StoryModel(accountDoc, null);
+        this.bindRouteIO();
+      });
+    }
     this.routerSub = <Subscription> this.router.parent.subscribe((path) => {
       this.setHeroText();
       this.bindRouteIO();
@@ -71,7 +86,7 @@ export class StoryEditComponent implements OnDestroy {
 
   setHeroText(): void {
     if (this.creator) {
-      let verb = this.story.id ? 'Edit' : 'Create';
+      let verb = this.storyId ? 'Edit' : 'Create';
       this.stepText = `Step 1: ${verb} your Story!`;
     } else if (this.decorator) {
       this.stepText = 'Step 2: Decorate your Story!';
@@ -88,6 +103,31 @@ export class StoryEditComponent implements OnDestroy {
 
   ngOnDestroy(): any {
     this.routerSub.unsubscribe();
+  }
+
+  routerCanDeactivate(next: any, prev: any): Promise<boolean> {
+    if (this.story.changed()) {
+      return new Promise<boolean>((resolve, reject) => {
+        this.modal.prompt(
+          'Unsaved changes',
+          'This story has unsaved changes - they will be saved locally when you return here',
+          (okay: boolean) => { resolve(okay); }
+        );
+      });
+    }
+  }
+
+  confirmDelete(): void {
+    this.modal.prompt(
+      'Really delete?',
+      'Are you sure you want to delete this story?  This action cannot be undone.',
+      (okay: boolean) => {
+        this.story.isDestroy = true;
+        this.story.save().subscribe(() => {
+          this.router.parent.navigate(['Home']);
+        });
+      }
+    );
   }
 
 }

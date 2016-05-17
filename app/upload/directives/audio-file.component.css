@@ -1,7 +1,7 @@
 /**
  * File upload progress/processing/ordering
  */
-:host {
+.audio-file {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -13,7 +13,10 @@
   margin-top: -1px;
   padding: 18px 22px;
 }
-:host.canceled {
+.audio-file.changed {
+  outline: 5px auto #f09b4c;
+}
+.audio-file.canceled {
   animation: fade-out 0.5s 1;
   -webkit-animation: fade-out 0.5s 1;
   animation-fill-mode: forwards;
@@ -24,11 +27,16 @@
 @keyframes fade-out { from { opacity :1; } to { opacity :0; } }
 @-webkit-keyframes fade-out { from { opacity :1; } to { opacity :0; } }
 
+/* dragula */
+:host.gu-transit .audio-file {
+  background: none;
+}
+
 .reorder {order: 1; flex-basis: 100%;}
 .cancel {order: 2; flex-basis: 100%;}
 .main {order: 3; flex-basis: 100%;}
 @media screen and (min-width:600px) {
-  :host {flex-wrap: nowrap;}
+  .audio-file {flex-wrap: nowrap;}
   .reorder {order: 1; flex-basis: 70px;}
   .cancel {order: 3; flex-basis: 50px;}
   .main {order: 2; flex-basis: 1;}

@@ -5,7 +5,7 @@ import {StoryModel} from '../models/story.model';
   selector: 'newstory-decorate',
   styleUrls: [],
   template: `
-    <div *ngIf="story && story.isLoaded">
+    <div *ngIf="story">
       <h1>Decorate your content</h1>
       <p>Decorate</p>
       <p>{{story.title}}</p>

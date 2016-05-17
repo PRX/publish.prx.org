@@ -58,6 +58,9 @@
   color: #fce4cf;
   background-color: #f9c596;
 }
+.toolbar button.saving {
+  color: rgba(0,0,0,0);
+}
 
 /**
  * Affixing
