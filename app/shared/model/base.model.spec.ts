@@ -83,14 +83,14 @@ describe('BaseModel', () => {
     it('sets and stores the value', () => {
       spyOn(base, 'store').and.stub();
       spyOn(base, 'invalidate').and.stub();
-      spyOn(base, 'changidate').and.stub();
+      spyOn(base, 'checkChanged').and.stub();
       base.set('foo', 'bar');
       expect(base.store).toHaveBeenCalled();
     });
 
     it('only validates setable fields', () => {
       spyOn(base, 'invalidate').and.returnValue('did-invalidate');
-      spyOn(base, 'changidate').and.stub();
+      spyOn(base, 'checkChanged').and.stub();
       base.set('foo', 'bar');
       expect(base.invalidFields['foo']).toBeUndefined();
       base.SETABLE = ['foo'];
@@ -99,13 +99,13 @@ describe('BaseModel', () => {
     });
 
     it('only tracks changes for setable fields', () => {
-      spyOn(base, 'changidate').and.returnValue('did-changidate');
+      spyOn(base, 'checkChanged').and.returnValue('did-checkChanged');
       spyOn(base, 'invalidate').and.stub();
       base.set('foo', 'bar');
       expect(base.changedFields['foo']).toBeUndefined();
       base.SETABLE = ['foo'];
       base.set('foo', 'bar');
-      expect(base.changedFields['foo']).toEqual('did-changidate');
+      expect(base.changedFields['foo']).toEqual('did-checkChanged');
     });
 
   });

@@ -63,7 +63,7 @@ export abstract class BaseModel {
     this[field] = value;
     if (this.SETABLE.indexOf(field) > -1) {
       this.invalidFields[field] = this.invalidate(field, value);
-      this.changedFields[field] = this.changidate(field, value);
+      this.changedFields[field] = this.checkChanged(field, value);
     }
     this.store();
   }
@@ -173,7 +173,7 @@ export abstract class BaseModel {
   revalidate() {
     for (let f of this.SETABLE) {
       this.invalidFields[f] = this.invalidate(f, this[f]);
-      this.changedFields[f] = this.changidate(f, this[f]);
+      this.changedFields[f] = this.checkChanged(f, this[f]);
     }
   }
 
@@ -188,7 +188,7 @@ export abstract class BaseModel {
     return null;
   }
 
-  changidate(field: string, value: any): boolean {
+  checkChanged(field: string, value: any): boolean {
     return this.original[field] !== value;
   }
 
