@@ -60,14 +60,14 @@ Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from abo
 Now you can install the app dependencies and run it using `npm` and `docker`.
 This guide assumes you already have npm, docker and dinghy installed.
 ``` sh
-# start by getting the local files built and installed
-npm install
-
 # build a docker image
 docker-compose build
 
+# install dev dependencies locally, so docker can mount those folders
+npm install
+
 # run the docker image, will detect changes to local file system
-docker-compose build
+docker-compose up
 
 # open up a browser to view
 open http://publish.prx.docker
