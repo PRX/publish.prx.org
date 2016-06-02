@@ -10,7 +10,7 @@ import {AudioVersionComponent} from './directives/audio-version.component';
   template: `
     <spinner *ngIf="!story || !story.versions"></spinner>
     <div *ngIf="story && story.versions">
-      <audio-version *ngFor="#v of story.versions" [version]="v">
+      <audio-version *ngFor="let v of story.versions" [version]="v">
       </audio-version>
       <div *ngIf="!story.versions.length">
         <h1>You have no audio versions for this story. How did that happen?</h1>

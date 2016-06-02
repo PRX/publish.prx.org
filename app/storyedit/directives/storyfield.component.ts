@@ -29,7 +29,7 @@ import {StoryModel} from '../models/story.model';
 
       <select *ngIf="select" [id]="name"
         [(ngModel)]="story[name]" (ngModelChange)="onChange($event)">
-        <option *ngFor="#opt of select" [value]="opt">{{opt}}</option>
+        <option *ngFor="let opt of select" [value]="opt">{{opt}}</option>
       </select>
 
       <p *ngIf="invalidFieldName && !small" class="error">

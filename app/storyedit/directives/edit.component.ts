@@ -1,8 +1,10 @@
-import {Component, Input} from 'angular2/core';
+import {Component, OnDestroy} from 'angular2/core';
+import {Subscription} from 'rxjs';
 import {StoryModel} from '../models/story.model';
 import {CATEGORIES, SUBCATEGORIES} from '../models/story.categories';
 import {StoryFieldComponent} from './storyfield.component';
 import {UploadComponent} from '../../upload/upload.component';
+import {StoryTabService} from '../services/storytab.service';
 
 @Component({
   directives: [StoryFieldComponent, UploadComponent],
@@ -45,11 +47,24 @@ import {UploadComponent} from '../../upload/upload.component';
   `
 })
 
-export class EditComponent {
+export class EditComponent implements OnDestroy {
 
-  GENRES: string[] = CATEGORIES;
+  story: StoryModel;
+  tabSub: Subscription;
 
-  @Input() story: StoryModel;
+  constructor(tab: StoryTabService) {
+    tab.setHero('Step 1: Edit your Story!');
+    this.tabSub = tab.storyModel.subscribe((story) => {
+      this.story = story;
+      if (story.isNew) {
+        tab.setHero('Step 1: Create your Story!');
+      }
+    });
+  }
+
+  get GENRES(): string[] {
+    return CATEGORIES;
+  }
 
   get SUBGENRES(): string[] {
     if (this.story && this.story.genre) {
@@ -57,6 +72,10 @@ export class EditComponent {
     } else {
       return [];
     }
+  }
+
+  ngOnDestroy(): any {
+    this.tabSub.unsubscribe();
   }
 
 }

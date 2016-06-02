@@ -1,5 +1,4 @@
 import {Component} from 'angular2/core';
-import {Location} from 'angular2/router';
 
 @Component({
   selector: 'publish-footer',
@@ -52,12 +51,8 @@ import {Location} from 'angular2/router';
 
 export class FooterComponent {
 
-  constructor(
-    private location: Location
-  ) {}
-
   desktopUrl(): string {
-    return `http://www.prx.org${this.location.path()}?m=false`;
+    return `http://www.prx.org${window.location.pathname}?m=false`;
   }
 
 }

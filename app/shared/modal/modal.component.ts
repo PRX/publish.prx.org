@@ -15,7 +15,7 @@ import {ModalService, ModalState} from './modal.service';
         <p>{{state.body}}</p>
       </section>
       <footer *ngIf="state.buttons">
-        <button *ngFor="#label of state.buttons" [class]="buttonClass(label)"
+        <button *ngFor="let label of state.buttons" [class]="buttonClass(label)"
           (click)="buttonClick(label)">{{label}}</button>
       </footer>
     </div>

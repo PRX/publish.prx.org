@@ -1,10 +1,11 @@
-import {Component, OnDestroy, ViewChild} from 'angular2/core';
+import {Component, OnDestroy} from 'angular2/core';
 import {Router, RouteConfig, RouterOutlet, RouterLink, RouteParams, CanDeactivate}
   from 'angular2/router';
 import {Subscription} from 'rxjs';
 
 import {CmsService} from '../shared/cms/cms.service';
 import {ModalService} from '../shared/modal/modal.service';
+import {StoryTabService} from './services/storytab.service';
 import {StoryModel} from './models/story.model';
 
 import {HeroComponent}     from './directives/hero.component';
@@ -14,6 +15,7 @@ import {SellComponent}     from './directives/sell.component';
 
 @Component({
   directives: [RouterLink, RouterOutlet, HeroComponent],
+  providers: [StoryTabService],
   selector: 'publish-story-edit',
   styleUrls: ['app/storyedit/storyedit.component.css'],
   template: `
@@ -36,7 +38,7 @@ import {SellComponent}     from './directives/sell.component';
           </div>
         </div>
         <div class="page">
-          <router-outlet story="story"></router-outlet>
+          <router-outlet></router-outlet>
         </div>
       </section>
     </div>
@@ -54,14 +56,11 @@ export class StoryEditComponent implements OnDestroy, CanDeactivate {
   private storyId: string;
   private story: StoryModel;
   private stepText: string;
-  private routerSub: Subscription;
-
-  @ViewChild(EditComponent) private creator: EditComponent;
-  @ViewChild(DecorateComponent) private decorator: DecorateComponent;
-  @ViewChild(SellComponent) private seller: SellComponent;
+  private tabSub: Subscription;
 
   constructor(
     private cms: CmsService,
+    private tab: StoryTabService,
     private router: Router,
     private params: RouteParams,
     private modal: ModalService
@@ -70,39 +69,21 @@ export class StoryEditComponent implements OnDestroy, CanDeactivate {
     if (this.storyId) {
       cms.follow('prx:authorization').follow('prx:story', {id: this.storyId}).subscribe((doc) => {
         this.story = new StoryModel(null, doc);
-        this.bindRouteIO();
+        this.tab.setStory(this.story);
       });
     } else {
       cms.account.subscribe((accountDoc) => {
         this.story = new StoryModel(accountDoc, null);
-        this.bindRouteIO();
+        this.tab.setStory(this.story);
       });
     }
-    this.routerSub = <Subscription> this.router.parent.subscribe((path) => {
-      this.setHeroText();
-      this.bindRouteIO();
+    this.tabSub = this.tab.heroText.subscribe((text) => {
+      this.stepText = text;
     });
   }
 
-  setHeroText(): void {
-    if (this.creator) {
-      let verb = this.storyId ? 'Edit' : 'Create';
-      this.stepText = `Step 1: ${verb} your Story!`;
-    } else if (this.decorator) {
-      this.stepText = 'Step 2: Decorate your Story!';
-    } else {
-      this.stepText = 'Step 3: Sell your Story!';
-    }
-  }
-
-  // https://github.com/angular/angular/issues/4452
-  bindRouteIO(): void {
-    let active = (this.creator || this.decorator || this.seller);
-    active.story = this.story;
-  }
-
   ngOnDestroy(): any {
-    this.routerSub.unsubscribe();
+    this.tabSub.unsubscribe();
   }
 
   routerCanDeactivate(next: any, prev: any): Promise<boolean> {
