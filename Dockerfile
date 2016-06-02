@@ -25,4 +25,4 @@ RUN apk --update add --virtual build-dependencies git && \
     /usr/lib/node_modules/npm/man /usr/lib/node_modules/npm/doc /usr/lib/node_modules/npm/html)
 
 ENTRYPOINT ["/tini", "--", "./bin/application"]
-CMD [ "server" ]
+CMD [ "start" ]
