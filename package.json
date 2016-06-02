@@ -33,7 +33,7 @@
   "dependencies": {
     "dotenv": "^2.0.0",
     "express": "^4.13.4",
-    "jade": "^1.11.0"
+    "pug": "^2.0.0-alpha8"
   },
   "devDependencies": {
     "chokidar-socket-emitter": "^0.3.0",
