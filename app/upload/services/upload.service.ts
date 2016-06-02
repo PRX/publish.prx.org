@@ -67,7 +67,7 @@ export class Upload {
     this.uuid = UUID.UUID();
     this.name = file.name;
     this.size = file.size;
-    this.path = ['test', this.uuid, file.name.replace(/[^a-z0-9\.]+/gi,'_')].join('/');
+    this.path = [Env.BUCKET_FOLDER, this.uuid, file.name.replace(/[^a-z0-9\.]+/gi,'_')].join('/');
     this.url = 's3://' + Env.BUCKET_NAME + '/' + this.path;
     this.upload();
   }
