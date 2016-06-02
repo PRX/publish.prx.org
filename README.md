@@ -64,7 +64,7 @@ This guide assumes you already have npm, docker and dinghy installed.
 docker-compose build
 
 # install dev dependencies locally, so docker can mount those folders
-npm install
+npm install && npm run build-dev
 
 # run the docker image, will detect changes to local file system
 docker-compose up
