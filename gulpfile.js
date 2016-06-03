@@ -19,7 +19,7 @@ gulp.task('jspm:bundle:dev',   jspm.bundle('.dev/vendor.js', devInclude, devExcl
 gulp.task('jspm:bundle:test',  jspm.bundle('.dev/main.js'));
 gulp.task('jspm:bundle:dist',  jspm.bundleSfx('.dist/publish.min.js'));
 gulp.task('jspm:unbundle:dev', jspm.unbundle('systemjs.vendor.js'));
-
+gulp.task('jspm:unbundle',     jspm.unbundle());
 
 // Dependency copying to make atom happy
 var npm_deps = ['angular2', 'rxjs', 'angular2-uuid', 'ng2-dragula'];
@@ -33,20 +33,13 @@ gulp.task('copy:deps', ['clean:deps'], () => {
 });
 
 // Testing
-gulp.task('test', function (done) {
-  new KarmaServer({
-    configFile: __dirname + '/config/karma.dev.js',
-    singleRun: true
-  }, done).start();
-});
-gulp.task('test:dist', ['jspm:bundle:test'], function (done) {
-  new KarmaServer({
-    configFile: __dirname + '/config/karma.dist.js',
-    singleRun: true
-  }, done).start();
-});
-gulp.task('tdd', function (done) {
-  new KarmaServer({
-    configFile: __dirname + '/config/karma.dev.js'
-  }, done).start();
-});
+const karmaItUp = (configFile, singleRun) => {
+  return (done) => {
+    let f = `${__dirname}/config/${configFile}`;
+    new KarmaServer({configFile: f, singleRun: singleRun}, done).start();
+  };
+}
+gulp.task('test',      karmaItUp('karma.dev.js', true));
+gulp.task('tdd',       karmaItUp('karma.dev.js', false));
+gulp.task('test:dist', karmaItUp('karma.dist.js', true));
+gulp.task('ci',        seq('jspm:bundle:test', 'test:dist', 'jspm:unbundle'));

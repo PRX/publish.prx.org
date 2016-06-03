@@ -28,7 +28,7 @@
     "start-dev": "node lib/server-dev.js",
     "test": "gulp test",
     "tdd": "gulp tdd",
-    "ci": "gulp test:dist"
+    "ci": "gulp ci"
   },
   "dependencies": {
     "dotenv": "^2.0.0",

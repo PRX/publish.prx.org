@@ -22,6 +22,16 @@ System.config({
     }
   },
 
+  meta: {
+    "npm:angular2@2.0.0-beta.17/*": {
+      "deps": [
+        "es6-shim",
+        "reflect-metadata",
+        "zone.js/dist/zone.js"
+      ]
+    }
+  },
+
   map: {
     "angular2": "npm:angular2@2.0.0-beta.17",
     "angular2-uuid": "npm:angular2-uuid@1.0.7",

@@ -7,17 +7,17 @@ setBaseTestProviders(TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_P
 
 // Mock router
 import {provide, Type, Component} from 'angular2/core';
-import {Router, ROUTER_PRIMARY_COMPONENT, RouteRegistry} from 'angular2/router';
+import {Router, ROUTER_PRIMARY_COMPONENT, ROUTER_PROVIDERS} from 'angular2/router';
 import {RootRouter} from 'angular2/src/router/router';
-import {SpyLocation} from 'angular2/src/mock/location_mock';
-import {Location} from 'angular2/src/router/location/location';
+import {APP_BASE_HREF} from 'angular2/platform/common';
 import {AppComponent} from '../app/app.component';
+import {MockApplicationRef} from 'angular2/src/mock/mock_application_ref';
 
 // Mock cms
 import {CmsService, MockCmsService} from '../app/shared/cms/cms.mocks';
 
 // Component setup
-import {injectAsync, beforeEachProviders} from 'angular2/testing';
+import {inject, beforeEachProviders} from 'angular2/testing';
 import {TestComponentBuilder, ComponentFixture} from 'angular2/testing';
 
 /**
@@ -42,9 +42,10 @@ export function setupComponent(componentType: Type, fixtureBuilder?: FixtureCall
  */
 export function mockRouter() {
   beforeEachProviders(() => [
-    RouteRegistry,
-    provide(Location, {useClass: SpyLocation}),
+    ROUTER_PROVIDERS,
+    provide(APP_BASE_HREF, {useValue: '/'}),
     provide(ROUTER_PRIMARY_COMPONENT, {useValue: AppComponent}),
+    provide(AppComponent, {useClass: MockApplicationRef}),
     provide(Router, {useClass: RootRouter})
   ]);
 }
@@ -89,7 +90,7 @@ export function mockDirective(directive: Type, mockWith: {}) {
 /**
  * Bootstrap a component (configured via setupComponent())
  *
- * TODO: dynamically figure out the injectAsync classes, instead of hardcoding
+ * TODO: dynamically figure out the inject classes, instead of hardcoding
  *       them to [TestComponentBuilder, CmsService]
  */
 interface BuildComponentCallback {
@@ -101,7 +102,7 @@ export function buildComponent(work: BuildComponentCallback, withCms = false): a
     injects.push(CmsService);
   }
 
-  return injectAsync(injects, (tcb: TestComponentBuilder, cms?: any) => {
+  return inject(injects, (tcb: TestComponentBuilder, cms?: any) => {
     if (!this._prxComponent) {
       console.error(`Test has no component defined! Did you forget to setupComponent()?`);
     }

@@ -43,7 +43,7 @@ export class HalDoc {
     } else {
       return <HalObservable<HalDoc>> this.remote.put(link, null, data).map(() => {
         this.setData(data);
-        return this;
+        return <HalDoc> this;
       });
     }
   }
@@ -70,7 +70,7 @@ export class HalDoc {
       return <HalObservable<HalDoc>> this.error(`Expected destroy link at _links.self - got array`);
     } else {
       return <HalObservable<HalDoc>> this.remote.delete(link).map(() => {
-        return this;
+        return <HalDoc> this;
       });
     }
   }
@@ -148,9 +148,10 @@ export class HalDoc {
 
   private linkList(rel: string, params: {} = null): Observable<HalDoc[]> {
     if (this['_links'][rel] instanceof Array) {
-      return Observable.fromArray(this['_links'][rel].map((link: any) => {
+      let links: HalObservable<HalDoc>[] = this['_links'][rel].map((link: any) => {
         return this.followLink(link, params);
-      })).concatAll().toArray();
+      });
+      return Observable.from(links).concatAll().toArray();
     } else {
       return this.error(`Expected array at _links.${rel} - got object`);
     }
