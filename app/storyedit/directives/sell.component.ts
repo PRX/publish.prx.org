@@ -1,5 +1,7 @@
-import {Component, Input} from 'angular2/core';
+import {Component, OnDestroy} from 'angular2/core';
+import {Subscription} from 'rxjs';
 import {StoryModel} from '../models/story.model';
+import {StoryTabService} from '../services/storytab.service';
 
 @Component({
   selector: 'newstory-sell',
@@ -21,8 +23,20 @@ import {StoryModel} from '../models/story.model';
   `
 })
 
-export class SellComponent {
+export class SellComponent implements OnDestroy {
 
-  @Input() public story: StoryModel;
+  story: StoryModel;
+  tabSub: Subscription;
+
+  constructor(tab: StoryTabService) {
+    tab.setHero('Step 3: Sell your Story!');
+    this.tabSub = tab.storyModel.subscribe((story) => {
+      this.story = story;
+    });
+  }
+
+  ngOnDestroy(): any {
+    this.tabSub.unsubscribe();
+  }
 
 }

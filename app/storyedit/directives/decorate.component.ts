@@ -1,5 +1,7 @@
-import {Component, Input} from 'angular2/core';
+import {Component, OnDestroy} from 'angular2/core';
+import {Subscription} from 'rxjs';
 import {StoryModel} from '../models/story.model';
+import {StoryTabService} from '../services/storytab.service';
 
 @Component({
   selector: 'newstory-decorate',
@@ -21,8 +23,20 @@ import {StoryModel} from '../models/story.model';
   `
 })
 
-export class DecorateComponent {
+export class DecorateComponent implements OnDestroy {
 
-  @Input() public story: StoryModel;
+  story: StoryModel;
+  tabSub: Subscription;
+
+  constructor(tab: StoryTabService) {
+    tab.setHero('Step 2: Decorate your Story!');
+    this.tabSub = tab.storyModel.subscribe((story) => {
+      this.story = story;
+    });
+  }
+
+  ngOnDestroy(): any {
+    this.tabSub.unsubscribe();
+  }
 
 }

@@ -18,7 +18,7 @@ import {AudioFileComponent} from './audio-file.component';
         <span>{{DESCRIPTIONS[version.label]}}</span>
       </header>
       <section [dragula]="id" [dragulaModel]="version.files">
-        <audio-file *ngFor="#file of version.files"
+        <audio-file *ngFor="let file of version.files"
           [audio]="file"></audio-file>
         <div *ngIf="version.files && !version.files.length" class="empty">
           <h4>Upload a file to get started</h4>

@@ -1,12 +1,15 @@
-import {it, describe, expect} from 'angular2/testing';
+import {it, describe, expect, beforeEachProviders} from 'angular2/testing';
 import {setupComponent, buildComponent, mockDirective} from '../../../util/test-helper';
 import {EditComponent} from './edit.component';
 import {StoryFieldComponent} from './storyfield.component';
+import {StoryTabService} from '../services/storytab.service';
 import {UploadComponent} from '../../upload/upload.component';
 
 describe('EditComponent', () => {
 
   setupComponent(EditComponent);
+
+  beforeEachProviders(() => [StoryTabService]);
 
   mockDirective(StoryFieldComponent, {selector: 'story-field', template: '<i>field</i>'});
 

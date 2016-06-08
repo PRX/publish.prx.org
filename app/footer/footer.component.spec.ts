@@ -1,17 +1,10 @@
 import {it, describe, expect} from 'angular2/testing';
-import {setupComponent, buildComponent, mockService} from '../../util/test-helper';
-import {Location} from 'angular2/src/router/location/location';
+import {setupComponent, buildComponent} from '../../util/test-helper';
 import {FooterComponent} from './footer.component';
 
 describe('FooterComponent', () => {
 
   setupComponent(FooterComponent);
-
-  mockService(Location, {
-    path(): string {
-      return '/foobar';
-    }
-  });
 
   it('renders the footer', buildComponent((fix, el, footer) => {
     fix.detectChanges();
@@ -19,6 +12,7 @@ describe('FooterComponent', () => {
   }));
 
   it('uses the path in the old version link', buildComponent((fix, el, footer) => {
+    spyOn(footer, 'locationPath').and.returnValue('/foobar');
     fix.detectChanges();
     let old = el.querySelector('a.old-version');
     expect(old).toHaveText('Use Old Version');

@@ -13,7 +13,8 @@ export class Env {
     CMS_ROOT_TTL: 3600, // 1 hour
     CMS_USE_LOCALSTORAGE: false,
     AUTH_HOST: 'https://id.prx.org',
-    AUTH_CLIENT_ID: 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D'
+    AUTH_CLIENT_ID: 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D',
+    BUCKET_FOLDER: 'dev'
   };
 
   public static get CMS_HOST(): string { return this.getVariable('CMS_HOST'); }
@@ -25,6 +26,7 @@ export class Env {
   public static get AUTH_HOST(): string { return this.getVariable('AUTH_HOST'); }
   public static get AUTH_CLIENT_ID(): string { return this.getVariable('AUTH_CLIENT_ID'); }
   public static get BUCKET_NAME(): string { return this.getVariable('BUCKET_NAME'); }
+  public static get BUCKET_FOLDER(): string { return this.getVariable('BUCKET_FOLDER'); }
   public static get SIGN_URL(): string { return this.getVariable('SIGN_URL'); }
   public static get AWS_KEY(): string { return this.getVariable('AWS_KEY'); }
   public static get AWS_URL(): string { return this.getVariable('AWS_URL'); }

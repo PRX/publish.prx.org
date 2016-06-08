@@ -6,6 +6,6 @@ app:
     - .env
   ports:
     - "3000:3000"
-  command: start
+  command: start-dev
   environment:
     VIRTUAL_HOST: publish.prx.docker

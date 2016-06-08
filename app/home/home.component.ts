@@ -13,10 +13,10 @@ import {CmsService} from '../shared/cms/cms.service';
         <spinner *ngIf="!accounts"></spinner>
         <div *ngIf="accounts">
           <h1>Your Accounts</h1>
-          <div *ngFor="#account of accounts; #i = index">
+          <div *ngFor="let account of accounts; let i = index">
             <h2>{{account.name}} <i>{{account.type}}</i></h2>
             <ul>
-              <li *ngFor="#story of accountStories[i]">
+              <li *ngFor="let story of accountStories[i]">
                 <a [routerLink]="['Edit', {id: story.id}]">
                   <p *ngIf="story.title">{{story.title}}</p>
                   <p *ngIf="!story.title">Untitled #{{story.id}}</p>

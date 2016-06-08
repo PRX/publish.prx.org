@@ -97,7 +97,7 @@ export abstract class BaseModel {
         model.parent = this.doc; // update reference to haldoc
         return model.save();
       });
-      return Observable.fromArray(relatedSavers).concatAll().toArray().map(() => {
+      return Observable.from(relatedSavers).concatAll().toArray().map(() => {
         this.isNew = false;
         this.isSaving = false;
         return true;

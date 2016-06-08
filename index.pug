@@ -10,6 +10,7 @@ html(lang='en')
     else
       script(src='/jspm_packages/system.js')
       script(src='/config/systemjs.config.js')
+      script(src='/config/systemjs.vendor.js')
       script.
         var readyForMainLoad;
         if (location.origin.match(/localhost|\.dev|\.docker/)) {

@@ -21,25 +21,25 @@
     "url": "https://github.com/PRX/www.prx.org.git"
   },
   "scripts": {
-    "git:hooks:pre-commit": "gulp git:hooks:pre-commit",
-    "start": "gulp start:dev",
+    "postinstall": "jspm install --log warn && typings install",
     "build": "gulp build:dist",
-    "server": "node lib/server-dist.js",
+    "start": "node lib/server-dist.js",
+    "build-dev": "gulp build:dev",
+    "start-dev": "node lib/server-dev.js",
     "test": "gulp test",
     "tdd": "gulp tdd",
-    "ci": "gulp test:dist",
-    "postinstall": "gulp postinstall"
+    "ci": "gulp ci"
   },
   "dependencies": {
     "dotenv": "^2.0.0",
     "express": "^4.13.4",
-    "jade": "^1.11.0"
+    "pug": "^2.0.0-alpha8"
   },
   "devDependencies": {
-    "chokidar-socket-emitter": "^0.3.0",
+    "chokidar-socket-emitter": "^0.5.2",
     "gulp": "^3.9.1",
+    "gulp-change": "^1.0.0",
     "gulp-clean": "^0.3.2",
-    "gulp-newer": "^1.1.0",
     "gulp-rename": "^1.2.2",
     "gulp-sequence": "^0.4.5",
     "gulp-shell": "^0.5.2",
@@ -62,24 +62,24 @@
   "jspm": {
     "configFile": "config/systemjs.config.js",
     "dependencies": {
-      "angular2": "npm:angular2@^2.0.0-beta.12",
-      "angular2-uuid": "npm:angular2-uuid@^1.0.7",
-      "capaj/systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@^0.5.6",
+      "angular2": "npm:angular2@2.0.0-beta.17",
+      "angular2-uuid": "npm:angular2-uuid@1.0.7",
+      "capaj/systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@0.6.0",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
-      "dragula": "npm:dragula@^3.6.8",
+      "dragula": "npm:dragula@3.6.8",
       "es6-shim": "npm:es6-shim@0.35.0",
-      "evaporate": "github:TTLabs/EvaporateJS@^1.0.2",
-      "ng2-dragula": "npm:ng2-dragula@^1.1.6",
-      "plugin-typescript": "github:frankwallis/plugin-typescript@^4.0.2",
+      "evaporate": "github:TTLabs/EvaporateJS@1.0.2",
+      "ng2-dragula": "npm:ng2-dragula@1.1.6",
+      "plugin-typescript": "github:frankwallis/plugin-typescript@4.0.2",
       "reflect-metadata": "npm:reflect-metadata@0.1.2",
-      "rxjs": "npm:rxjs@5.0.0-beta.2",
-      "ts": "github:frankwallis/plugin-typescript@^4.0.2",
-      "url-template": "npm:url-template@^2.0.6",
-      "zone.js": "npm:zone.js@^0.6.6"
+      "rxjs": "npm:rxjs@5.0.0-beta.8",
+      "ts": "github:frankwallis/plugin-typescript@4.0.2",
+      "url-template": "npm:url-template@2.0.6",
+      "zone.js": "npm:zone.js@0.6.12"
     },
     "devDependencies": {
-      "ts-runtime": "npm:babel-runtime@^5.8.24",
-      "typescript": "npm:typescript@^1.8.7"
+      "ts-runtime": "npm:babel-runtime@5.8.24",
+      "typescript": "npm:typescript@1.8.10"
     }
   }
 }
