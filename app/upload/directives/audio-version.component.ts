@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy} from 'angular2/core';
+import {Component, Input, OnInit, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Dragula, DragulaService} from 'ng2-dragula/ng2-dragula';
 

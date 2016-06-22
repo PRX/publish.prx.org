@@ -1,6 +1,6 @@
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
-import {Http} from 'angular2/http';
+import {Http} from '@angular/http';
 import {HalDoc, HalObservable} from './haldoc';
 import {HalRemote, HalLink} from './halremote';
 import {Env} from '../../../config/env';

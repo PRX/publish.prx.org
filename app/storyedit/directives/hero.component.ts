@@ -1,5 +1,5 @@
-import {Component, Input} from 'angular2/core';
-import {Router} from 'angular2/router';
+import {Component, Input} from '@angular/core';
+import {Router} from '@angular/router-deprecated';
 import {StoryModel} from '../models/story.model';
 import {SpinnerComponent} from '../../shared/spinner/spinner.component';
 import {TimeAgoPipe} from '../../shared/date/timeago.pipe';

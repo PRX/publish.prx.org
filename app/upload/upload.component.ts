@@ -1,4 +1,4 @@
-import {Component, Input} from 'angular2/core';
+import {Component, Input} from '@angular/core';
 import {SpinnerComponent} from '../shared/spinner/spinner.component';
 import {StoryModel} from '../storyedit/models/story.model';
 import {AudioVersionComponent} from './directives/audio-version.component';

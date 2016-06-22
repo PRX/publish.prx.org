@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from 'angular2/core';
+import {Component, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {StoryModel} from '../models/story.model';
 import {CATEGORIES, SUBCATEGORIES} from '../models/story.categories';

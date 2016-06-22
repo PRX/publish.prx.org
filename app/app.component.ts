@@ -1,5 +1,5 @@
-import {Component, ViewEncapsulation} from 'angular2/core';
-import {RouteConfig, RouterOutlet} from 'angular2/router';
+import {Component, ViewEncapsulation} from '@angular/core';
+import {RouteConfig, RouterOutlet} from '@angular/router-deprecated';
 
 import {AuthComponent} from './shared/auth/auth.component';
 import {ModalComponent} from './shared/modal/modal.component';

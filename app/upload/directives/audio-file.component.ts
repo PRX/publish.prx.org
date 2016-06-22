@@ -1,4 +1,4 @@
-import {Component, Input} from 'angular2/core';
+import {Component, Input} from '@angular/core';
 import {FileSizePipe} from '../../shared/file/filesize.pipe';
 import {AudioFileModel} from '../../storyedit/models/audio-file.model';
 

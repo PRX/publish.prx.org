@@ -1,5 +1,5 @@
-import {Component, Input} from 'angular2/core';
-import {NgForm} from 'angular2/common';
+import {Component, Input} from '@angular/core';
+import {NgForm} from '@angular/common';
 import {StoryModel} from '../models/story.model';
 
 @Component({

@@ -1,4 +1,4 @@
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 import {ModalService, ModalState} from './modal.service';
 
 @Component({

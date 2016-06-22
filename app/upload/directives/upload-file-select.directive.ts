@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Output, EventEmitter} from 'angular2/core';
+import {Directive, ElementRef, Output, EventEmitter} from '@angular/core';
 
 @Directive({
   selector: '[upload-file]',

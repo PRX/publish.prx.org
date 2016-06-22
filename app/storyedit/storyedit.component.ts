@@ -1,6 +1,6 @@
-import {Component, OnDestroy} from 'angular2/core';
+import {Component, OnDestroy} from '@angular/core';
 import {Router, RouteConfig, RouterOutlet, RouterLink, RouteParams, CanDeactivate}
-  from 'angular2/router';
+  from '@angular/router-deprecated';
 import {Subscription} from 'rxjs';
 
 import {CmsService} from '../shared/cms/cms.service';

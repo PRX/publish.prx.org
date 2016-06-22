@@ -1,4 +1,5 @@
-import {Component, ElementRef} from 'angular2/core';
+import {Component, ElementRef} from '@angular/core';
+import {DomSanitizationService, SafeResourceUrl} from '@angular/platform-browser';
 import {AuthService} from './auth.service';
 import {CmsService} from '../cms/cms.service';
 
@@ -14,7 +15,7 @@ import {CmsService} from '../cms/cms.service';
 
 export class AuthComponent {
 
-  private authUrl: string;
+  private authUrl: SafeResourceUrl;
 
   // Assume user is logged in, to start
   private isAuthorized: boolean = true;
@@ -22,9 +23,11 @@ export class AuthComponent {
   constructor(
     private element: ElementRef,
     private authService: AuthService,
-    private cmsService: CmsService
+    private cmsService: CmsService,
+    private sanitationService: DomSanitizationService
   ) {
-    this.authUrl = this.authService.authUrl('none');
+    let url = this.authService.authUrl('none');
+    this.authUrl = sanitationService.bypassSecurityTrustResourceUrl(url);
     cmsService.token.subscribe((token) => {
       this.isAuthorized = (token ? true : false);
     });

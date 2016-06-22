@@ -1,4 +1,5 @@
-import {Component, ElementRef} from 'angular2/core';
+import {Component, ElementRef} from '@angular/core';
+import {DomSanitizationService, SafeResourceUrl} from '@angular/platform-browser';
 import {AuthService} from '../shared/auth/auth.service';
 import {CmsService} from '../shared/cms/cms.service';
 
@@ -17,16 +18,18 @@ import {CmsService} from '../shared/cms/cms.service';
 
 export class LoginComponent {
 
-  private iframeUrl: string;
+  private iframeUrl: SafeResourceUrl;
   private errorMsg: string;
   private firstLoad: boolean = false;
 
   constructor(
     private element: ElementRef,
     private authService: AuthService,
-    private cmsService: CmsService
+    private cmsService: CmsService,
+    private sanitationService: DomSanitizationService
   ) {
-    this.iframeUrl = this.authService.authUrl('login');
+    let url = this.authService.authUrl('login');
+    this.iframeUrl = sanitationService.bypassSecurityTrustResourceUrl(url);
   }
 
   checkLogin() {
@@ -42,8 +45,7 @@ export class LoginComponent {
           this.cmsService.setToken(token);
         }
       }
-    }
-    catch (e) {
+    } catch (e) {
       if (this.firstLoad) {
         this.errorMsg = 'Invalid username or password';
       }
