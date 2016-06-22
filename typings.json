@@ -1,7 +1,7 @@
 {
   "ambientDependencies": {
+    "core-js": "registry:dt/core-js#0.9.7+20160215162030",
     "dragula": "registry:dt/dragula#2.1.2+20160317120654",
-    "es6-shim": "registry:dt/es6-shim#0.31.2+20160317120654",
     "evaporate": "registry:dt/evaporate#0.0.0+20160327232844",
     "jasmine": "registry:dt/jasmine#2.2.0+20160505161446",
     "url-template": "registry:dt/url-template#2.0.6+20160317120654"
