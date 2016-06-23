@@ -103,10 +103,12 @@ export class StoryEditComponent implements OnDestroy, CanDeactivate {
       'Really delete?',
       'Are you sure you want to delete this story?  This action cannot be undone.',
       (okay: boolean) => {
-        this.story.isDestroy = true;
-        this.story.save().subscribe(() => {
-          this.router.parent.navigate(['Home']);
-        });
+        if (okay) {
+          this.story.isDestroy = true;
+          this.story.save().subscribe(() => {
+            this.router.parent.navigate(['Home']);
+          });
+        }
       }
     );
   }
