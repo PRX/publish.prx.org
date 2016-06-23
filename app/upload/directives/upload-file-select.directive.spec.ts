@@ -1,8 +1,8 @@
-import {it, describe, expect, beforeEach} from 'angular2/testing';
+import {it, describe, expect, beforeEach} from '@angular/core/testing';
 import {setupComponent, buildComponent} from '../../../util/test-helper';
 import {UploadFileSelect} from './upload-file-select.directive';
 
-import {Component, Output, EventEmitter} from 'angular2/core';
+import {Component, Output, EventEmitter} from '@angular/core';
 @Component({
   directives: [UploadFileSelect],
   selector: 'container',

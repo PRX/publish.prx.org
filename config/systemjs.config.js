@@ -23,9 +23,9 @@ System.config({
   },
 
   meta: {
-    "npm:angular2@2.0.0-beta.17/*": {
+    "npm:@angular/core@2.0.0-rc.3/*": {
       "deps": [
-        "es6-shim",
+        "core-js",
         "reflect-metadata",
         "zone.js/dist/zone.js"
       ]

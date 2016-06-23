@@ -1,24 +1,27 @@
-import {setBaseTestProviders} from 'angular2/testing';
-import {TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_PROVIDERS}
-  from 'angular2/platform/testing/browser';
+import {setBaseTestProviders} from '@angular/core/testing';
+import {TEST_BROWSER_DYNAMIC_PLATFORM_PROVIDERS, TEST_BROWSER_DYNAMIC_APPLICATION_PROVIDERS}
+  from '@angular/platform-browser-dynamic/testing';
 
 // this can only be called ONCE - so don't add it to individual specs
-setBaseTestProviders(TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_PROVIDERS);
+setBaseTestProviders(
+  TEST_BROWSER_DYNAMIC_PLATFORM_PROVIDERS,
+  TEST_BROWSER_DYNAMIC_APPLICATION_PROVIDERS
+);
 
 // Mock router
-import {provide, Type, Component} from 'angular2/core';
-import {Router, ROUTER_PRIMARY_COMPONENT, ROUTER_PROVIDERS} from 'angular2/router';
-import {RootRouter} from 'angular2/src/router/router';
-import {APP_BASE_HREF} from 'angular2/platform/common';
+import {provide, Type, Component} from '@angular/core';
+import {Router, ROUTER_PRIMARY_COMPONENT, ROUTER_PROVIDERS, RootRouter}
+  from '@angular/router-deprecated';
+import {APP_BASE_HREF} from '@angular/common';
 import {AppComponent} from '../app/app.component';
-import {MockApplicationRef} from 'angular2/src/mock/mock_application_ref';
+import {MockApplicationRef} from '@angular/core/testing';
 
 // Mock cms
 import {CmsService, MockCmsService} from '../app/shared/cms/cms.mocks';
 
 // Component setup
-import {inject, beforeEachProviders} from 'angular2/testing';
-import {TestComponentBuilder, ComponentFixture} from 'angular2/testing';
+import {inject, beforeEachProviders} from '@angular/core/testing';
+import {TestComponentBuilder, ComponentFixture} from '@angular/compiler/testing';
 
 /**
  * Common tasks for building components and creating fixtures
@@ -27,6 +30,7 @@ interface FixtureCallback {
   (cms: MockCmsService): void;
 }
 export function setupComponent(componentType: Type, fixtureBuilder?: FixtureCallback) {
+  beforeEachProviders(() => [TestComponentBuilder]);
   beforeEach(() => {
     this._prxComponent = componentType;
     this._prxFixtureBuilder = fixtureBuilder;
@@ -94,7 +98,7 @@ export function mockDirective(directive: Type, mockWith: {}) {
  *       them to [TestComponentBuilder, CmsService]
  */
 interface BuildComponentCallback {
-  (fix: ComponentFixture, el: Element, comp: any): any;
+  (fix: ComponentFixture<any>, el: Element, comp: any): any;
 }
 export function buildComponent(work: BuildComponentCallback, withCms = false): any {
   let injects: any[] = [TestComponentBuilder];
@@ -117,7 +121,7 @@ export function buildComponent(work: BuildComponentCallback, withCms = false): a
     }
     return tcb
       .createAsync(this._prxComponent)
-      .then((fix: ComponentFixture) => {
+      .then((fix: ComponentFixture<any>) => {
         return work(fix, fix.debugElement.nativeElement, fix.debugElement.componentInstance);
       });
   });

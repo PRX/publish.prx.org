@@ -1,4 +1,4 @@
-import {it, describe, expect, beforeEach} from 'angular2/testing';
+import {it, describe, expect, beforeEach} from '@angular/core/testing';
 import {Observable} from 'rxjs';
 import {HalRemoteCache} from './halremote.cache';
 

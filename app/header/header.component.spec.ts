@@ -1,8 +1,8 @@
-import {it, describe, expect} from 'angular2/testing';
+import {it, describe, expect} from '@angular/core/testing';
 import {mockRouter, setupComponent, buildComponent} from '../../util/test-helper';
 import {HeaderComponent} from './header.component';
 
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 @Component({
   directives: [HeaderComponent],
   template: '<publish-header><h4>Something</h4></publish-header>'
@@ -20,9 +20,9 @@ describe('HeaderComponent', () => {
     expect(el.querySelector('h1')).toHaveText('PRX');
   }));
 
-    it('includes ng content', buildComponent((fix, el, mini) => {
-      fix.detectChanges();
-      expect(el.querySelector('nav h4')).toHaveText('Something');
-    }));
+  it('includes ng content', buildComponent((fix, el, mini) => {
+    fix.detectChanges();
+    expect(el.querySelector('nav h4')).toHaveText('Something');
+  }));
 
 });

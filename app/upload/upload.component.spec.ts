@@ -1,4 +1,4 @@
-import {it, describe, expect} from 'angular2/testing';
+import {it, describe, expect} from '@angular/core/testing';
 import {setupComponent, buildComponent, mockDirective} from '../../util/test-helper';
 import {UploadComponent} from './upload.component';
 import {AudioVersionComponent} from './directives/audio-version.component';
