@@ -5,7 +5,6 @@ import {ReplaySubject} from 'rxjs';
 export class AuthService {
 
   token = new ReplaySubject<string>(1);
-  isAuthorized = new ReplaySubject<boolean>(1);
 
   setToken(authToken: string) {
     if (authToken) {

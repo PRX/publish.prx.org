@@ -10,8 +10,10 @@ setBaseTestProviders(
 
 // Mock router
 import {provide, Type, Component} from '@angular/core';
-import {Router, ROUTER_PRIMARY_COMPONENT, ROUTER_PROVIDERS, RootRouter}
-  from '@angular/router-deprecated';
+// import {Router, ROUTER_PRIMARY_COMPONENT, ROUTER_PROVIDERS, RootRouter}
+//   from '@angular/router';
+import {Router, ROUTER_DIRECTIVES, ActivatedRoute, RouterOutletMap} from '@angular/router';
+// import {ROUTER_FAKE_PROVIDERS} from '@angular/router/testing';
 import {APP_BASE_HREF} from '@angular/common';
 import {AppComponent} from '../app/app.component';
 import {MockApplicationRef} from '@angular/core/testing';
@@ -43,14 +45,19 @@ export function setupComponent(componentType: Type, fixtureBuilder?: FixtureCall
 
 /**
  * Provide a mock router, for components lacking their own
+ * TODO: https://github.com/angular/angular/issues/9496
  */
+class MockRouter {
+  createUrlTree(commands: any[]) { return commands[0]; }
+  serializeUrl(url: any) { return url; }
+}
+class MockActivatedRoute { }
+class MockRouterOutletMap { registerOutlet() { return; } }
 export function mockRouter() {
   beforeEachProviders(() => [
-    ROUTER_PROVIDERS,
-    provide(APP_BASE_HREF, {useValue: '/'}),
-    provide(ROUTER_PRIMARY_COMPONENT, {useValue: AppComponent}),
-    provide(AppComponent, {useClass: MockApplicationRef}),
-    provide(Router, {useClass: RootRouter})
+    provide(Router, {useClass: MockRouter}),
+    provide(ActivatedRoute, {useClass: MockActivatedRoute}),
+    provide(RouterOutletMap, {useClass: MockRouterOutletMap})
   ]);
 }
 

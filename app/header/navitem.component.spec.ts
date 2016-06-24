@@ -10,7 +10,7 @@ describe('NavItemComponent', () => {
 
   it('renders a routed nav link', buildComponent((fix, el, navitem) => {
     navitem.text = 'Foobar';
-    navitem.route = 'Home';
+    navitem.route = '/home';
     fix.detectChanges();
     expect(el.querySelector('a')).toHaveText('Foobar');
     expect(el.querySelector('a').getAttribute('href')).toEqual('/home');
