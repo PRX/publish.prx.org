@@ -1,20 +1,18 @@
-import {Component, OnDestroy} from '@angular/core';
-import {Router, RouteConfig, RouterOutlet, RouterLink, RouteParams, CanDeactivate}
-  from '@angular/router-deprecated';
-import {Subscription} from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Router, ROUTER_DIRECTIVES, CanDeactivate, ActivatedRoute} from '@angular/router';
+import {Observable, Subject, Subscription} from 'rxjs';
 
 import {CmsService} from '../shared/cms/cms.service';
 import {ModalService} from '../shared/modal/modal.service';
 import {StoryTabService} from './services/storytab.service';
 import {StoryModel} from './models/story.model';
 
-import {HeroComponent}     from './directives/hero.component';
-import {EditComponent}     from './directives/edit.component';
-import {DecorateComponent} from './directives/decorate.component';
-import {SellComponent}     from './directives/sell.component';
+import {HeroComponent} from './directives/hero.component';
+
+interface CanDeact { canDeactivate: () => boolean | Observable<boolean>; }
 
 @Component({
-  directives: [RouterLink, RouterOutlet, HeroComponent],
+  directives: [ROUTER_DIRECTIVES, HeroComponent],
   providers: [StoryTabService],
   selector: 'publish-story-edit',
   styleUrls: ['app/storyedit/storyedit.component.css'],
@@ -23,18 +21,18 @@ import {SellComponent}     from './directives/sell.component';
     <div class="main">
       <section>
         <div class="subnav">
-          <nav *ngIf="storyId">
+          <nav *ngIf="id">
             <a [routerLink]="['Default']">STEP 1: Edit your story</a>
             <a [routerLink]="['Decorate']">STEP 2: Decorate your story</a>
             <a [routerLink]="['Sell']">STEP 3: Sell your story</a>
           </nav>
-          <nav *ngIf="!storyId">
+          <nav *ngIf="!id">
             <a [routerLink]="['Default']">STEP 1: Create your story</a>
             <a disabled>STEP 2: Decorate your story</a>
             <a disabled>STEP 3: Sell your story</a>
           </nav>
           <div class="extras">
-            <button *ngIf="storyId" class="delete" (click)="confirmDelete()">Delete</button>
+            <button *ngIf="id" class="delete" (click)="confirmDelete()">Delete</button>
           </div>
         </div>
         <div class="page">
@@ -45,56 +43,56 @@ import {SellComponent}     from './directives/sell.component';
     `
 })
 
-@RouteConfig([
-  { path: '/',         name: 'Default',  component: EditComponent, useAsDefault: true },
-  { path: '/decorate', name: 'Decorate', component: DecorateComponent },
-  { path: '/sell',     name: 'Sell',     component: SellComponent }
-])
+export class StoryEditComponent implements OnInit, OnDestroy, CanDeactivate<CanDeact> {
 
-export class StoryEditComponent implements OnDestroy, CanDeactivate {
-
-  private storyId: string;
+  private id: number;
   private story: StoryModel;
   private stepText: string;
+  private routeSub: Subscription;
   private tabSub: Subscription;
 
   constructor(
     private cms: CmsService,
     private tab: StoryTabService,
+    private route: ActivatedRoute,
     private router: Router,
-    private params: RouteParams,
     private modal: ModalService
-  ) {
-    this.storyId = params.params['id'];
-    if (this.storyId) {
-      cms.follow('prx:authorization').follow('prx:story', {id: this.storyId}).subscribe((doc) => {
-        this.story = new StoryModel(null, doc);
-        this.tab.setStory(this.story);
-      });
-    } else {
-      cms.account.subscribe((accountDoc) => {
-        this.story = new StoryModel(accountDoc, null);
-        this.tab.setStory(this.story);
-      });
-    }
+  ) {}
+
+  ngOnInit() {
+    this.routeSub = this.route.params.subscribe(params => {
+      this.id = +params['id'];
+      if (this.id) {
+        this.cms.follow('prx:authorization').follow('prx:story', {id: this.id}).subscribe(doc => {
+          this.story = new StoryModel(null, doc);
+          this.tab.setStory(this.story);
+        });
+      } else {
+        this.cms.account.subscribe(accountDoc => {
+          this.story = new StoryModel(accountDoc, null);
+          this.tab.setStory(this.story);
+        });
+      }
+    });
     this.tabSub = this.tab.heroText.subscribe((text) => {
       this.stepText = text;
     });
   }
 
-  ngOnDestroy(): any {
+  ngOnDestroy() {
+    this.routeSub.unsubscribe();
     this.tabSub.unsubscribe();
   }
 
-  routerCanDeactivate(next: any, prev: any): Promise<boolean> {
+  canDeactivate(next: any, prev: any): Observable<boolean> {
     if (this.story.changed()) {
-      return new Promise<boolean>((resolve, reject) => {
-        this.modal.prompt(
-          'Unsaved changes',
-          'This story has unsaved changes - they will be saved locally when you return here',
-          (okay: boolean) => { resolve(okay); }
-        );
-      });
+      let thatsOkay = new Subject<boolean>();
+      this.modal.prompt(
+        'Unsaved changes',
+        'This story has unsaved changes - they will be saved locally when you return here',
+        (okay: boolean) => { thatsOkay.next(true); }
+      );
+      return thatsOkay;
     }
   }
 
@@ -106,7 +104,7 @@ export class StoryEditComponent implements OnDestroy, CanDeactivate {
         if (okay) {
           this.story.isDestroy = true;
           this.story.save().subscribe(() => {
-            this.router.parent.navigate(['Home']);
+            this.router.navigate(['/']);
           });
         }
       }

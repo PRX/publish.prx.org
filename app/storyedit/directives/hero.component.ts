@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {Router} from '@angular/router-deprecated';
+import {Router} from '@angular/router';
 import {StoryModel} from '../models/story.model';
 import {SpinnerComponent} from '../../shared/spinner/spinner.component';
 import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
@@ -60,7 +60,7 @@ export class HeroComponent {
     let wasNew = this.story.isNew;
     this.story.save().subscribe(() => {
       if (wasNew) {
-        this.router.parent.navigate(['Edit', {id: this.story.id}]);
+        this.router.navigate(['/edit', {id: this.story.id}]);
       }
     });
   }

@@ -1,8 +1,8 @@
 import {Component, Input} from '@angular/core';
-import {RouterLink} from '@angular/router-deprecated';
+import {ROUTER_DIRECTIVES} from '@angular/router';
 
 @Component({
-  directives: [RouterLink],
+  directives: [ROUTER_DIRECTIVES],
   selector: 'nav-item',
   styleUrls: ['app/header/navitem.component.css'],
   template: `

@@ -1,12 +1,11 @@
 import {Component} from '@angular/core';
-import {RouterLink} from '@angular/router-deprecated';
 
 import {CmsService} from '../shared/cms/cms.service';
 import {SpinnerComponent} from '../shared/spinner/spinner.component';
 import {ImageLoaderComponent} from '../shared/image/image-loader.component';
 
 @Component({
-  directives: [RouterLink, SpinnerComponent, ImageLoaderComponent],
+  directives: [SpinnerComponent, ImageLoaderComponent],
   selector: 'nav-user',
   styleUrls: [
     'app/header/navitem.component.css',

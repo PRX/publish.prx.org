@@ -1,10 +1,10 @@
 import {Component} from '@angular/core';
-import {RouterLink} from '@angular/router-deprecated';
+import {ROUTER_DIRECTIVES} from '@angular/router';
 import {SpinnerComponent} from '../shared/spinner/spinner.component';
 import {CmsService} from '../shared/cms/cms.service';
 
 @Component({
-  directives: [SpinnerComponent, RouterLink],
+  directives: [SpinnerComponent, ROUTER_DIRECTIVES],
   selector: 'publish-home',
   styleUrls: ['app/home/home.component.css'],
   template: `
@@ -17,7 +17,7 @@ import {CmsService} from '../shared/cms/cms.service';
             <h2>{{account.name}} <i>{{account.type}}</i></h2>
             <ul>
               <li *ngFor="let story of accountStories[i]">
-                <a [routerLink]="['Edit', {id: story.id}]">
+                <a [routerLink]="['/edit', story.id]">
                   <p *ngIf="story.title">{{story.title}}</p>
                   <p *ngIf="!story.title">Untitled #{{story.id}}</p>
                 </a>
