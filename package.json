@@ -70,7 +70,6 @@
       "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.3",
       "@angular/platform-browser-dynamic": "npm:@angular/platform-browser-dynamic@2.0.0-rc.3",
       "@angular/router": "npm:@angular/router@3.0.0-alpha.7",
-      "@angular/router-deprecated": "npm:@angular/router-deprecated@2.0.0-rc.2",
       "@angular/upgrade": "npm:@angular/upgrade@2.0.0-rc.3",
       "angular2-uuid": "npm:angular2-uuid@1.0.7",
       "capaj/systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@0.6.0",
