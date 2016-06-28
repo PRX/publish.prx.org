@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {CanActivate, Router} from '@angular/router';
+import {CanActivate, CanDeactivate, Router} from '@angular/router';
+import {Observable} from 'rxjs';
 
 import {AuthService} from './auth.service';
 
@@ -37,4 +38,14 @@ export class UnauthGuard implements CanActivate {
     }).first();
   }
 
+}
+
+export interface CanComponentDeactivate {
+  canDeactivate: () => boolean | Observable<boolean>;
+}
+@Injectable()
+export class DeactivateGuard implements CanDeactivate<CanComponentDeactivate> {
+  canDeactivate(component: CanComponentDeactivate): Observable<boolean> | boolean {
+    return component.canDeactivate ? component.canDeactivate() : true;
+  }
 }

@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ActivatedRoute} from '@angular/router';
+import {Router, ROUTER_DIRECTIVES, ActivatedRoute} from '@angular/router';
 import {Observable, Subject, Subscription} from 'rxjs';
 
 import {CmsService} from '../shared/cms/cms.service';
@@ -8,8 +8,6 @@ import {StoryTabService} from './services/storytab.service';
 import {StoryModel} from './models/story.model';
 
 import {HeroComponent} from './directives/hero.component';
-
-interface CanDeact { canDeactivate: () => boolean | Observable<boolean>; }
 
 @Component({
   directives: [ROUTER_DIRECTIVES, HeroComponent],
@@ -22,12 +20,20 @@ interface CanDeact { canDeactivate: () => boolean | Observable<boolean>; }
       <section>
         <div class="subnav">
           <nav *ngIf="id">
-            <a [routerLink]="['Default']">STEP 1: Edit your story</a>
-            <a [routerLink]="['Decorate']">STEP 2: Decorate your story</a>
-            <a [routerLink]="['Sell']">STEP 3: Sell your story</a>
+            <a [routerLinkActive]="['active']" [routerLink]="['/edit', id]">
+              STEP 1: Edit your story
+            </a>
+            <a [routerLinkActive]="['active']" [routerLink]="['decorate']">
+              STEP 2: Decorate your story
+            </a>
+            <a [routerLinkActive]="['active']" [routerLink]="['sell']">
+              STEP 3: Sell your story
+            </a>
           </nav>
           <nav *ngIf="!id">
-            <a [routerLink]="['Default']">STEP 1: Create your story</a>
+            <a [routerLinkActive]="['active']" [routerLink]="['/create']">
+              STEP 1: Create your story
+            </a>
             <a disabled>STEP 2: Decorate your story</a>
             <a disabled>STEP 3: Sell your story</a>
           </nav>
@@ -43,7 +49,7 @@ interface CanDeact { canDeactivate: () => boolean | Observable<boolean>; }
     `
 })
 
-export class StoryEditComponent implements OnInit, OnDestroy, CanDeactivate<CanDeact> {
+export class StoryEditComponent implements OnInit, OnDestroy {
 
   private id: number;
   private story: StoryModel;
@@ -84,15 +90,17 @@ export class StoryEditComponent implements OnInit, OnDestroy, CanDeactivate<CanD
     this.tabSub.unsubscribe();
   }
 
-  canDeactivate(next: any, prev: any): Observable<boolean> {
+  canDeactivate(next: any, prev: any): boolean | Observable<boolean> {
     if (this.story.changed()) {
       let thatsOkay = new Subject<boolean>();
       this.modal.prompt(
         'Unsaved changes',
         'This story has unsaved changes - they will be saved locally when you return here',
-        (okay: boolean) => { thatsOkay.next(true); }
+        (okay: boolean) => { thatsOkay.next(okay); thatsOkay.complete(); }
       );
       return thatsOkay;
+    } else {
+      return true;
     }
   }
 
