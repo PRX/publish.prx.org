@@ -83,6 +83,14 @@ export class HalDoc {
     return this.remote.expand(link, params);
   }
 
+  count(rel: string): number {
+    let link = this['_links'] ? this['_links'][rel] : null;
+    if (link && link instanceof Array) {
+      link = link[0];
+    }
+    return (link && link['count']) ? link['count'] : 0;
+  }
+
   followLink(linkObj: any, params: any = {}): HalObservable<HalDoc> {
     return <HalObservable<HalDoc>> this.remote.get(linkObj, params).map((obj) => {
       return new HalDoc(obj, this.remote);

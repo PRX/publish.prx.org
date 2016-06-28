@@ -2,28 +2,29 @@ import {Component} from '@angular/core';
 import {ROUTER_DIRECTIVES} from '@angular/router';
 import {SpinnerComponent} from '../shared/spinner/spinner.component';
 import {CmsService} from '../shared/cms/cms.service';
+import {HalDoc} from '../shared/cms/haldoc';
+import {HomeSeriesComponent} from './directives/home-series.component';
 
 @Component({
-  directives: [SpinnerComponent, ROUTER_DIRECTIVES],
+  directives: [SpinnerComponent, HomeSeriesComponent, ROUTER_DIRECTIVES],
   selector: 'publish-home',
   styleUrls: ['app/home/home.component.css'],
   template: `
     <div class="main">
       <section>
-        <spinner *ngIf="!accounts"></spinner>
-        <div *ngIf="accounts">
-          <h1>Your Accounts</h1>
-          <div *ngFor="let account of accounts; let i = index">
-            <h2>{{account.name}} <i>{{account.type}}</i></h2>
-            <ul>
-              <li *ngFor="let story of accountStories[i]">
-                <a [routerLink]="['/edit', story.id]">
-                  <p *ngIf="story.title">{{story.title}}</p>
-                  <p *ngIf="!story.title">Untitled #{{story.id}}</p>
-                </a>
-              </li>
-            </ul>
-          </div>
+        <header>
+          <h2>Your Series</h2>
+          <a *ngIf="totalCount" class="all" href="#">View All {{totalCount}} &raquo;</a>
+        </header>
+        <spinner *ngIf="!isLoaded"></spinner>
+        <div *ngIf="noSeries">
+          <h1>No Series</h1>
+        </div>
+        <div *ngIf="oneSeries">
+          <home-series [series]="oneSeries" rows=4></home-series>
+        </div>
+        <div *ngIf="manySeries">
+          <home-series *ngFor="let s of manySeries" [series]="s" rows=2></home-series>
         </div>
       </section>
     </div>
@@ -32,15 +33,27 @@ import {CmsService} from '../shared/cms/cms.service';
 
 export class HomeComponent {
 
-  accounts: any[];
-  accountStories: any[] = [];
+  isLoaded = false;
+  totalCount: number;
+  noSeries: boolean;
+  oneSeries: HalDoc;
+  manySeries: HalDoc[];
 
   constructor(private cms: CmsService) {
-    cms.follow('prx:authorization').followItems('prx:accounts').subscribe((docs) => {
-      this.accounts = docs;
-      for (let i = 0; i < docs.length; i++) {
-        docs[i].followItems('prx:stories').subscribe((storyDocs) => {
-          this.accountStories[i] = storyDocs;
+    cms.follow('prx:authorization').subscribe((auth) => {
+      if (auth.count('prx:series') < 1) {
+        this.noSeries = true;
+        this.isLoaded = true;
+      } else if (auth.count('prx:series') === 1) {
+        auth.followItems('prx:series').subscribe((series) => {
+          this.oneSeries = series[0];
+          this.isLoaded = true;
+        });
+      } else {
+        auth.followItems('prx:series').subscribe((series) => {
+          this.manySeries = series;
+          this.totalCount = auth.count('prx:series');
+          this.isLoaded = true;
         });
       }
     });
