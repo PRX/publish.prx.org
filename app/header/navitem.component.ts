@@ -7,7 +7,7 @@ import {ROUTER_DIRECTIVES} from '@angular/router';
   styleUrls: ['app/header/navitem.component.css'],
   template: `
     <div class="nav-holder">
-      <a *ngIf="route"  [routerLink]="[route]">{{text}}</a>
+      <a *ngIf="route"  [routerLinkActive]="['active']" [routerLink]="[route]">{{text}}</a>
       <a *ngIf="!route" [href]="href">{{text}}</a>
     </div>
     `

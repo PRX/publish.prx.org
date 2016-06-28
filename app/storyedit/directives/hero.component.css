@@ -21,7 +21,8 @@
 .toolbar section {
   display: flex;
   align-items: center;
-  padding: 10px 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
   position: relative;
 }
 .toolbar spinner {
