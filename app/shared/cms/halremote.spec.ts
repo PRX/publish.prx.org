@@ -1,6 +1,6 @@
-import {it, describe, expect, beforeEach} from 'angular2/testing';
-import {Http, Response, ResponseOptions, RequestOptions} from 'angular2/http';
-import {MockBackend} from 'angular2/http/testing';
+import {it, describe, expect, beforeEach} from '@angular/core/testing';
+import {Http, Response, ResponseOptions, RequestOptions} from '@angular/http';
+import {MockBackend} from '@angular/http/testing';
 import {Observable} from 'rxjs';
 import {HalRemote, HalLink} from './halremote';
 

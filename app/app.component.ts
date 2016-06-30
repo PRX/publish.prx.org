@@ -1,27 +1,24 @@
-import {Component, ViewEncapsulation} from 'angular2/core';
-import {RouteConfig, RouterOutlet} from 'angular2/router';
+import {Component, ViewEncapsulation} from '@angular/core';
+import {ROUTER_DIRECTIVES} from '@angular/router';
 
 import {AuthComponent} from './shared/auth/auth.component';
+import {AuthService} from './shared/auth/auth.service';
+import {CmsService} from './shared/cms/cms.service';
 import {ModalComponent} from './shared/modal/modal.component';
 import {HeaderComponent} from './header/header.component';
 import {NavItemComponent} from './header/navitem.component';
 import {NavUserComponent} from './header/navuser.component';
 import {FooterComponent} from './footer/footer.component';
-import {LoginComponent} from './login/login.component';
-
-import {HomeComponent} from './home/home.component';
-import {StoryEditComponent} from './storyedit/storyedit.component';
 
 @Component({
   directives: [
-    RouterOutlet,
+    ROUTER_DIRECTIVES,
     AuthComponent,
     HeaderComponent,
     ModalComponent,
     NavItemComponent,
     NavUserComponent,
-    FooterComponent,
-    LoginComponent
+    FooterComponent
   ],
   selector: 'publish-app',
   encapsulation: ViewEncapsulation.None, // Important!
@@ -34,36 +31,34 @@ import {StoryEditComponent} from './storyedit/storyedit.component';
     'assets/fontello/css/fontello.css'
   ],
   template: `
-    <prx-auth>
-      <logged-in>
-        <publish-header>
-          <nav-item route="Home" text="Home"></nav-item>
-          <nav-item route="Create" text="Create"></nav-item>
-          <nav-item href="//www.prx.org/search/all" text="Search"></nav-item>
-          <nav-user></nav-user>
-        </publish-header>
-        <main>
-          <article>
-            <router-outlet></router-outlet>
-          </article>
-        </main>
-        <publish-footer></publish-footer>
-      </logged-in>
-      <logged-out>
-        <publish-header></publish-header>
-        <main><publish-login></publish-login></main>
-        <publish-footer></publish-footer>
-      </logged-out>
-    </prx-auth>
+    <publish-header>
+      <nav-item *ngIf="loggedIn" route="/" text="Home"></nav-item>
+      <nav-item *ngIf="loggedIn" route="../create" text="Create"></nav-item>
+      <nav-item *ngIf="loggedIn" href="//www.prx.org/search/all" text="Search"></nav-item>
+      <nav-user *ngIf="loggedIn"></nav-user>
+    </publish-header>
+    <main>
+      <article>
+        <router-outlet></router-outlet>
+      </article>
+    </main>
+    <publish-footer></publish-footer>
+    <prx-auth></prx-auth>
     <modal-box></modal-box>
     `
 })
 
-@RouteConfig([
-  { path: '/',             name: 'Index',  component: HomeComponent, useAsDefault: true },
-  { path: '/home',         name: 'Home',   component: HomeComponent },
-  { path: '/create/...',   name: 'Create', component: StoryEditComponent },
-  { path: '/edit/:id/...', name: 'Edit',   component: StoryEditComponent }
-])
+export class AppComponent {
 
-export class AppComponent {}
+  loggedIn: boolean = true; // until proven otherwise
+
+  constructor(authService: AuthService, cmsService: CmsService) {
+    authService.token.subscribe((token) => {
+      if (token) {
+        cmsService.setToken(token);
+      }
+      this.loggedIn = token ? true : false;
+    });
+  }
+
+}

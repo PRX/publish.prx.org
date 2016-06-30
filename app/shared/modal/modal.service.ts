@@ -1,4 +1,4 @@
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 import {Observable, Observer} from 'rxjs';
 
 export interface ModalState {

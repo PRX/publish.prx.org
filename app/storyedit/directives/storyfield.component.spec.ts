@@ -1,9 +1,9 @@
-import {it, describe, expect} from 'angular2/testing';
+import {it, describe, expect} from '@angular/core/testing';
 import {setupComponent, buildComponent} from '../../../util/test-helper';
 import {StoryFieldComponent} from './storyfield.component';
 
 // fake container, with all @Inputs bound
-import {Component} from 'angular2/core';
+import {Component} from '@angular/core';
 @Component({
   directives: [StoryFieldComponent],
   template: `

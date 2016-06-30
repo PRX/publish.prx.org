@@ -1,4 +1,4 @@
-import {it, describe, expect} from 'angular2/testing';
+import {it, describe, expect} from '@angular/core/testing';
 import {FileSizePipe} from './filesize.pipe';
 
 describe('FileSizePipe', () => {

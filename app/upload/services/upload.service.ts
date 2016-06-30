@@ -1,4 +1,4 @@
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 import {Observable, ConnectableObservable, Subscriber} from 'rxjs';
 import {UUID} from 'angular2-uuid';
 import Evaporate from 'evaporate';

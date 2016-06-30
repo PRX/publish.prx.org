@@ -22,13 +22,16 @@ gulp.task('jspm:unbundle:dev', jspm.unbundle('systemjs.vendor.js'));
 gulp.task('jspm:unbundle',     jspm.unbundle());
 
 // Dependency copying to make atom happy
-var npm_deps = ['angular2', 'rxjs', 'angular2-uuid', 'ng2-dragula'];
+var npm_deps = ['@angular', 'rxjs', 'angular2-uuid', 'ng2-dragula'];
 gulp.task('clean:deps', () => {
   return gulp.src(`node_modules/{${npm_deps.join(',')}}`, {read: false}).pipe(clean({force: true}));
 });
 gulp.task('copy:deps', ['clean:deps'], () => {
-  return gulp.src(`jspm_packages/npm/{${npm_deps.join(',')}}@*/**/*`)
-    .pipe(rename((path) => { path.dirname = path.dirname.replace(/^([\w-]+)@[^/]+/, '$1'); }))
+  return gulp.src(`jspm_packages/npm/{${npm_deps.join(',')}}*/**/*`)
+    .pipe(rename((path) => {
+      path.dirname = path.dirname.replace(/^([\w-]+)@[^/]+/, '$1');
+      path.dirname = path.dirname.replace(/^@angular\/([\w-]+)@[^/]+/, '@angular/$1');
+    }))
     .pipe(gulp.dest('node_modules'));
 });
 

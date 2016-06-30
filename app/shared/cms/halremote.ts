@@ -1,4 +1,4 @@
-import {Http, Headers, RequestOptionsArgs} from 'angular2/http';
+import {Http, Headers, RequestOptionsArgs} from '@angular/http';
 import {Observable} from 'rxjs';
 import TemplateParser from 'url-template';
 import {HalRemoteCache} from './halremote.cache';

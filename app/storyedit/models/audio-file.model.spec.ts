@@ -1,4 +1,4 @@
-import {it, describe, expect} from 'angular2/testing';
+import {it, describe, expect} from '@angular/core/testing';
 import {Observable, ConnectableObservable, Subscriber} from 'rxjs';
 import {MockCmsService} from '../../shared/cms/cms.mocks';
 import {Upload} from '../../upload/services/upload.service';

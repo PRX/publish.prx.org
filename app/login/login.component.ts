@@ -1,6 +1,9 @@
-import {Component, ElementRef} from 'angular2/core';
+import {Component, ElementRef} from '@angular/core';
+import {DomSanitizationService, SafeResourceUrl} from '@angular/platform-browser';
+import {Router} from '@angular/router';
+
 import {AuthService} from '../shared/auth/auth.service';
-import {CmsService} from '../shared/cms/cms.service';
+import {AuthUrls} from '../shared/auth/auth.urls';
 
 @Component({
   selector: 'publish-login',
@@ -17,37 +20,48 @@ import {CmsService} from '../shared/cms/cms.service';
 
 export class LoginComponent {
 
-  private iframeUrl: string;
+  private iframeUrl: SafeResourceUrl;
   private errorMsg: string;
-  private firstLoad: boolean = false;
+  private isInitialLoad: boolean = true;
 
   constructor(
     private element: ElementRef,
     private authService: AuthService,
-    private cmsService: CmsService
+    private sanitationService: DomSanitizationService,
+    private router: Router
   ) {
-    this.iframeUrl = this.authService.authUrl('login');
+    this.newIframeUrl();
+  }
+
+  newIframeUrl() {
+    let url = AuthUrls.buildUrl('login');
+    this.iframeUrl = this.sanitationService.bypassSecurityTrustResourceUrl(url);
+  }
+
+  setAuthToken(token: string) {
+    this.authService.setToken(token);
+    this.router.navigate(['/']);
   }
 
   checkLogin() {
-    let iframe = this.element.nativeElement.getElementsByTagName('iframe')[0];
-
     // until the iframe successfully logs in and redirects, we're just going
     // to get errors trying to access the cross-origin frame
     try {
-      let query = iframe.contentDocument.location.hash.replace(/^#/, '');
+      let query = AuthUrls.parseIframeQuery(this.element);
       if (query) {
-        let token = this.authService.parseToken(query);
-        if (token) {
-          this.cmsService.setToken(token);
-        }
+        this.setAuthToken(AuthUrls.parseToken(query));
       }
-    }
-    catch (e) {
-      if (this.firstLoad) {
+    } catch (e) {
+      if (this.isInitialLoad) {
+        this.isInitialLoad = false;
+      } else {
         this.errorMsg = 'Invalid username or password';
+
+        // TODO: the form has disappeared on POST, so render another one. This
+        // causes any field values to disappear, which is not ideal.
+        this.isInitialLoad = true;
+        this.newIframeUrl();
       }
-      this.firstLoad = true;
     }
   }
 

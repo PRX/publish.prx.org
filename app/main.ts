@@ -1,11 +1,14 @@
-import 'angular2/bundles/angular2-polyfills';
-import {enableProdMode} from 'angular2/core';
-import {bootstrap} from 'angular2/platform/browser';
-import {ROUTER_PROVIDERS} from 'angular2/router';
-import {HTTP_BINDINGS} from 'angular2/http';
-
+import 'core-js';
+import 'reflect-metadata';
+import 'zone.js';
 import 'rxjs/Rx';
 
+import {enableProdMode} from '@angular/core';
+import {bootstrap} from '@angular/platform-browser-dynamic';
+import {HTTP_PROVIDERS} from '@angular/http';
+import {disableDeprecatedForms, provideForms} from '@angular/forms';
+
+import {AuthGuard, UnauthGuard} from './shared/auth/auth.guard';
 import {AuthService} from './shared/auth/auth.service';
 import {CmsService} from './shared/cms/cms.service';
 import {MimeTypeService} from '../util/mime-type.service';
@@ -17,13 +20,18 @@ if (!window.location.hostname.match(/localhost|\.dev|\.docker/)) {
 }
 
 import {AppComponent} from './app.component';
+import {APP_ROUTER_PROVIDERS} from './app.routes';
 
 bootstrap(AppComponent, [
-  ROUTER_PROVIDERS,
-  HTTP_BINDINGS,
+  APP_ROUTER_PROVIDERS,
+  HTTP_PROVIDERS,
+  disableDeprecatedForms(),
+  provideForms(),
+  AuthGuard,
   AuthService,
   CmsService,
   MimeTypeService,
   ModalService,
+  UnauthGuard,
   UploadService
-]);
+]).catch((err: any) => console.error(err));

@@ -1,4 +1,4 @@
-import {it, describe, expect, beforeEachProviders} from 'angular2/testing';
+import {it, describe, expect, beforeEachProviders} from '@angular/core/testing';
 import {setupComponent, buildComponent, mockDirective} from '../../../util/test-helper';
 import {EditComponent} from './edit.component';
 import {StoryFieldComponent} from './storyfield.component';

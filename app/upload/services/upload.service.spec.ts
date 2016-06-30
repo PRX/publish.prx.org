@@ -1,5 +1,5 @@
-import {provide} from 'angular2/core';
-import {it, describe, expect, beforeEachProviders, inject} from 'angular2/testing';
+import {provide} from '@angular/core';
+import {it, describe, expect, beforeEachProviders, inject} from '@angular/core/testing';
 import {UploadService} from './upload.service';
 import {MimeTypeService, MimeDefinition} from '../../../util/mime-type.service';
 

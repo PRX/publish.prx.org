@@ -1,4 +1,4 @@
-import {it, describe, expect} from 'angular2/testing';
+import {it, describe, expect} from '@angular/core/testing';
 import {mockRouter, setupComponent, buildComponent} from '../../util/test-helper';
 import {NavItemComponent} from './navitem.component';
 
@@ -10,7 +10,7 @@ describe('NavItemComponent', () => {
 
   it('renders a routed nav link', buildComponent((fix, el, navitem) => {
     navitem.text = 'Foobar';
-    navitem.route = 'Home';
+    navitem.route = '/home';
     fix.detectChanges();
     expect(el.querySelector('a')).toHaveText('Foobar');
     expect(el.querySelector('a').getAttribute('href')).toEqual('/home');

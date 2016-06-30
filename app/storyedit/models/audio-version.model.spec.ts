@@ -1,4 +1,4 @@
-import {it, describe, beforeEach, expect} from 'angular2/testing';
+import {it, describe, beforeEach, expect} from '@angular/core/testing';
 import {MockCmsService} from '../../shared/cms/cms.mocks';
 import {AudioVersionModel} from './audio-version.model';
 import {AudioFileModel} from './audio-file.model';
