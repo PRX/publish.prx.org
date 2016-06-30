@@ -83,9 +83,19 @@ describe('HalDoc', () => {
     beforeEach(() => {
       data = {
         _embedded: {somerel: {foo: 'the-embed'}},
-        _links: {somerel: {href: '/the/link'}}
+        _links: {
+          somerel: {href: '/the/link'},
+          listrel: [
+            {href: '/fetch/{id}{?something}'},
+            {href: '/search{?foo,page,blah,bar}'}
+          ]
+        }
       };
-      linkData = {'/the/link': {foo: 'the-link'}};
+      linkData = {
+        '/the/link': {foo: 'the-link'},
+        '/fetch/{id}{?something}': {foo: 'the-fetch'},
+        '/search{?foo,page,blah,bar}': {foo: 'the-search'}
+      };
     });
 
     it('picks embeds over links', () => {
@@ -129,6 +139,20 @@ describe('HalDoc', () => {
         (err) => { expect(err).toMatch('Unable to find rel otherrel'); }
       );
     });
+
+    it('guesses fetch links when you provide an id', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('listrel', {id: 99}).subscribe((nextDoc) => {
+        expect(nextDoc['foo']).toEqual('the-fetch');
+      });
+    });
+
+    it('guesses search links when you give no id', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('listrel', {nothing: 'important'}).subscribe((nextDoc) => {
+        expect(nextDoc['foo']).toEqual('the-search');
+      });
+    });
   });
 
   describe('followList', () => {
@@ -147,8 +171,8 @@ describe('HalDoc', () => {
     it('picks embeds over links', () => {
       let doc = makeDoc(data, linkData);
       doc.followList('somerel').subscribe((nextDocs) => {
-        expect(nextDocs).toBeAnInstanceOf(Array);
-        expect(nextDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(nextDocs instanceof Array).toBeTruthy();
+        expect(nextDocs[0] instanceof HalDoc).toBeTruthy();
         expect(nextDocs[0]['foo']).toEqual('the-embed1');
         expect(nextDocs[1]['bar']).toEqual('the-embed2');
       });
@@ -157,8 +181,8 @@ describe('HalDoc', () => {
     it('wont pick embeds if you pass params', () => {
       let doc = makeDoc(data, linkData);
       doc.followList('somerel', {some: 'params'}).subscribe((nextDocs) => {
-        expect(nextDocs).toBeAnInstanceOf(Array);
-        expect(nextDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(nextDocs instanceof Array).toBeTruthy();
+        expect(nextDocs[0] instanceof HalDoc).toBeTruthy();
         expect(nextDocs[0]['foo']).toEqual('the-link1');
         expect(nextDocs[1]['bar']).toEqual('the-link2');
       });
@@ -201,8 +225,8 @@ describe('HalDoc', () => {
       }};
       let doc = makeDoc(data, linkData);
       doc.followItems('somerel').subscribe((itemDocs) => {
-        expect(itemDocs).toBeAnInstanceOf(Array);
-        expect(itemDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(itemDocs instanceof Array).toBeTruthy();
+        expect(itemDocs[0] instanceof HalDoc).toBeTruthy();
         expect(itemDocs[0]['foo']).toEqual('bar1');
         expect(itemDocs[1]['foo']).toEqual('bar2');
       });
@@ -226,8 +250,8 @@ describe('HalDoc', () => {
     it('nests HalDoc methods', () => {
       let doc = makeDoc(data, linkData);
       doc.follow('rel1').follow('rel2').followItems('rel3').subscribe((itemDocs) => {
-        expect(itemDocs).toBeAnInstanceOf(Array);
-        expect(itemDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(itemDocs instanceof Array).toBeTruthy();
+        expect(itemDocs[0] instanceof HalDoc).toBeTruthy();
         expect(itemDocs[0]['foo']).toEqual('bar1');
         expect(itemDocs[1]['foo']).toEqual('bar2');
       });

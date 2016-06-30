@@ -138,7 +138,12 @@ export class HalDoc {
 
   private linkOne(rel: string, params: {} = null): Observable<HalDoc> {
     if (this['_links'][rel] instanceof Array) {
-      return this.error(`Expected object at _links.${rel} - got list`);
+      let guessed = this.guessLink(this['_links'][rel], params);
+      if (guessed) {
+        return this.followLink(guessed, params);
+      } else {
+        return this.error(`Expected object at _links.${rel} - got list`);
+      }
     } else {
       return this.followLink(this['_links'][rel], params);
     }
@@ -171,6 +176,18 @@ export class HalDoc {
         this[key] = data[key];
       }
     });
+  }
+
+  private guessLink(links: any[], params: {} = null): any {
+    let lookingForFetch = params && params['id'] !== undefined;
+    for (let link of links) {
+      if (lookingForFetch && link.href.match(/\/\{id\}/)) {
+        return link;
+      } else if (!lookingForFetch && link.href.match(/\{.*page/)) {
+        return link;
+      }
+    }
+    return null;
   }
 
 }
