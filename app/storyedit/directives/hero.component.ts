@@ -1,18 +1,30 @@
-import {Component, Input} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+
 import {StoryModel} from '../models/story.model';
+import {StoryTabService} from '../services/storytab.service';
 import {SpinnerComponent} from '../../shared/spinner/spinner.component';
+import {ImageLoaderComponent} from '../../shared/image/image-loader.component';
 import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
 
 @Component({
-  directives: [SpinnerComponent],
+  directives: [SpinnerComponent, ImageLoaderComponent],
   pipes: [TimeAgoPipe],
   selector: 'publish-story-hero',
   styleUrls: ['app/storyedit/directives/hero.component.css'],
   template: `
     <div class="hero banner">
       <section>
-        <h1>{{title}}</h1>
+        <spinner *ngIf="!bannerTitle"></spinner>
+        <header *ngIf="bannerTitle">
+          <h1 *ngIf="story.isNew">Create Story</h1>
+          <h1 *ngIf="!story.isNew">Edit Story</h1>
+          <div>
+            <image-loader [src]="bannerLogo"></image-loader>
+            <h2>{{bannerTitle}}</h2>
+          </div>
+        </header>
       </section>
     </div>
     <div class="hero toolbar" [class.affix]="affixed" (window:scroll)="onScroll()">
@@ -43,14 +55,36 @@ import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
     `
 })
 
-export class HeroComponent {
+export class HeroComponent implements OnDestroy {
 
-  @Input() title: string;
-  @Input() story: StoryModel;
-
+  story: StoryModel;
+  tabSub: Subscription;
   affixed = false;
+  bannerTitle: string;
+  bannerLogo: string;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private tab: StoryTabService) {
+    this.tabSub = tab.storyModel.subscribe((story) => {
+      this.story = story;
+      if (this.story.parent) {
+        if (this.story.parent.isa('series')) {
+          this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
+        } else {
+          this.bannerTitle = this.story.parent['name'] || '(Unnnamed Account)';
+        }
+        if (this.story.parent.has('prx:image')) {
+          this.story.parent.follow('prx:image')
+            .subscribe(img => this.bannerLogo = img.expand('enclosure'));
+        }
+      } else {
+        this.bannerTitle = '(No series or account!)';
+      }
+    });
+  }
+
+  ngOnDestroy(): any {
+    this.tabSub.unsubscribe();
+  }
 
   onScroll(): void {
     this.affixed = (window.scrollY > 200);

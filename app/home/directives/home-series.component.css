@@ -20,7 +20,7 @@ header image-loader {
   width: 70px;
   height: 70px;
   margin-right: 10px;
-  background: #a3a3a3;
+  background-color: #a3a3a3;
   display: block;
   float: left;
 }

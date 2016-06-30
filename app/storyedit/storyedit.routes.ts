@@ -19,6 +19,17 @@ export const storyEditRoutes: RouterConfig = [
     ]
   },
   {
+    path: 'create',
+    component: StoryEditComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [DeactivateGuard],
+    children: [
+      { path: '',         component: EditComponent },
+      { path: 'decorate', component: DecorateComponent },
+      { path: 'sell',     component: SellComponent }
+    ]
+  },
+  {
     path: 'create/:series_id',
     component: StoryEditComponent,
     canActivate: [AuthGuard],

@@ -29,7 +29,6 @@ export class DecorateComponent implements OnDestroy {
   tabSub: Subscription;
 
   constructor(tab: StoryTabService) {
-    tab.setHero('Step 2: Decorate your Story!');
     this.tabSub = tab.storyModel.subscribe((story) => {
       this.story = story;
     });

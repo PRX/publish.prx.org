@@ -53,12 +53,8 @@ export class EditComponent implements OnDestroy {
   tabSub: Subscription;
 
   constructor(tab: StoryTabService) {
-    tab.setHero('Step 1: Edit your Story!');
     this.tabSub = tab.storyModel.subscribe((story) => {
       this.story = story;
-      if (story.isNew) {
-        tab.setHero('Step 1: Create your Story!');
-      }
     });
   }
 

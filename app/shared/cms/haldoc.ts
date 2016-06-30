@@ -101,6 +101,17 @@ export class HalDoc {
     }
   }
 
+  isa(type: string, includeCollections = true): boolean {
+    let profile = this.expand('profile') || '';
+    if (profile.match(`model/${type}`)) {
+      return true;
+    } else if (includeCollections && profile.match(`model/collection/${type}`)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   followLink(linkObj: any, params: any = {}): HalObservable<HalDoc> {
     return <HalObservable<HalDoc>> this.remote.get(linkObj, params).map((obj) => {
       return new HalDoc(obj, this.remote);

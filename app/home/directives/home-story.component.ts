@@ -58,7 +58,9 @@ export class HomeStoryComponent implements OnInit {
 
     if (this.story.isNew) {
       this.editLink = ['/create'];
-      if (this.story.parent) { this.editLink.push(this.story.parent.id); }
+      if (this.story.parent && this.story.parent.isa('series')) {
+        this.editLink.push(this.story.parent.id);
+      }
     } else {
       this.editLink = ['/edit', this.story.id];
     }
