@@ -15,10 +15,13 @@ module.exports = function(config) {
 
 
     jspm: {
+      useBundles: true,
       loadFiles: process.env['TESTONLY'] ?
         ['**/' + process.env['TESTONLY'] + '.spec.ts'] :
         ['app/**/*.spec.ts', 'util/**/*.spec.ts'],
       serveFiles: [
+        '.dev/vendor.js',
+        '.dev/vendor.js.map',
         'app/**/*!(*.spec).ts',
         'app/**/*.css',
         'config/**/*.ts',
@@ -29,6 +32,7 @@ module.exports = function(config) {
 
 
     proxies: {
+      '/.dev/': '/base/.dev/',
       '/app/': '/base/app/',
       '/assets/': '/base/assets/',
       '/config/': '/base/config/',
@@ -40,6 +44,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      {pattern: 'config/systemjs.vendor.js', watched: false, included: true, served: true},
       {pattern: 'assets/**/*.*', watched: false, included: false, served: true}
     ],
 
