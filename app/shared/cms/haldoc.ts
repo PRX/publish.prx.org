@@ -91,6 +91,16 @@ export class HalDoc {
     return (link && link['count']) ? link['count'] : 0;
   }
 
+  has(rel: string): boolean {
+    if (this['_embedded'] && this['_embedded'][rel]) {
+      return true;
+    } else if (this['_links'] && this['_links'][rel]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   followLink(linkObj: any, params: any = {}): HalObservable<HalDoc> {
     return <HalObservable<HalDoc>> this.remote.get(linkObj, params).map((obj) => {
       return new HalDoc(obj, this.remote);
@@ -119,7 +129,13 @@ export class HalDoc {
 
   followItems(rel: string, params: {} = null): HalObservable<HalDoc[]> {
     return <HalObservable<HalDoc[]>> this.follow(rel, params).flatMap((doc) => {
-      return doc.followList('prx:items');
+      return doc.followList('prx:items').map((items) => {
+        for (let item of items) {
+          item['_count'] = doc['count'];
+          item['_total'] = doc['total'];
+        }
+        return items;
+      });
     });
   }
 

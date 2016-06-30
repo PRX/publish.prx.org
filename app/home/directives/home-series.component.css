@@ -1,12 +1,26 @@
 header {
+  position: relative;
   overflow: auto;
   width: 100%;
   margin-bottom: 10px;
+}
+header h2 {
+  font-size: 25px;
+  line-height: 30px;
+  border-bottom: 1px solid #676767;
+  color: #343434;
+  margin-bottom: 1px;
+}
+header a.all {
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 header image-loader {
   width: 70px;
   height: 70px;
   margin-right: 10px;
+  background: #a3a3a3;
   display: block;
   float: left;
 }

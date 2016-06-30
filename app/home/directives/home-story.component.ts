@@ -20,9 +20,13 @@ import {StoryModel} from '../../storyedit/models/story.model';
     </template>
     <template [ngIf]="!isPlusSign">
       <a [routerLink]="editLink">
-        <image-loader [src]="storyImage"></image-loader>
+        <image-loader *ngIf="storyImage" [src]="storyImage"></image-loader>
+        <div *ngIf="!storyImage" class="no-image">No Image</div>
       </a>
-      <h2><a [routerLink]="editLink">{{storyTitle}}</a></h2>
+      <h2>
+        <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>
+        <a *ngIf="!storyTitle" [routerLink]="editLink">(Untitled)</a>
+      </h2>
       <p class="duration">{{storyDuration | duration}}</p>
       <p class="modified">{{storyUpdated | date:"MM/dd/yy"}}</p>
       <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
@@ -60,22 +64,31 @@ export class HomeStoryComponent implements OnInit {
     }
 
     // TODO: draft images/audios
-    if (!this.story.isNew) {
-      this.story.doc.follow('prx:image').subscribe(
-        img => this.storyImage = img.expand('enclosure'),
-        err => this.storyImage = null
-      );
-      this.story.doc.followItems('prx:audio').subscribe((audios) => {
-        if (!audios || audios.length < 1) {
-          this.storyDuration = 0;
-        } else {
-          this.storyDuration = audios.map((audio) => {
-            return audio['duration'] || 0;
-          }).reduce((prevDuration, currDuration) => {
-            return prevDuration + currDuration;
-          });
-        }
-      });
+    if (this.story.isNew) {
+      this.storyImage = null;
+      this.storyDuration = 0;
+    } else {
+      if (this.story.doc.has('prx:image')) {
+        this.story.doc.follow('prx:image').subscribe(
+          img => this.storyImage = img.expand('enclosure'),
+          err => this.storyImage = null
+        );
+      }
+      if (this.story.doc.has('prx:audio')) {
+        this.story.doc.followItems('prx:audio').subscribe((audios) => {
+          if (!audios || audios.length < 1) {
+            this.storyDuration = 0;
+          } else {
+            this.storyDuration = audios.map((audio) => {
+              return audio['duration'] || 0;
+            }).reduce((prevDuration, currDuration) => {
+              return prevDuration + currDuration;
+            });
+          }
+        });
+      } else {
+        this.storyDuration = 0;
+      }
     }
 
     if (this.story.isNew) {

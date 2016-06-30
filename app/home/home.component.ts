@@ -19,12 +19,15 @@ import {HomeSeriesComponent} from './directives/home-series.component';
         <spinner *ngIf="!isLoaded"></spinner>
         <div *ngIf="noSeries">
           <h1>No Series</h1>
+          <home-series noseries=true [auth]="auth" rows=4></home-series>
         </div>
         <div *ngIf="oneSeries">
           <home-series [series]="oneSeries" rows=4></home-series>
+          <home-series noseries=true [auth]="auth" rows=4></home-series>
         </div>
         <div *ngIf="manySeries">
           <home-series *ngFor="let s of manySeries" [series]="s" rows=2></home-series>
+          <home-series noseries=true [auth]="auth" rows=2></home-series>
         </div>
       </section>
     </div>
@@ -36,11 +39,13 @@ export class HomeComponent {
   isLoaded = false;
   totalCount: number;
   noSeries: boolean;
+  auth: HalDoc;
   oneSeries: HalDoc;
   manySeries: HalDoc[];
 
   constructor(private cms: CmsService) {
     cms.follow('prx:authorization').subscribe((auth) => {
+      this.auth = auth;
       if (auth.count('prx:series') < 1) {
         this.noSeries = true;
         this.isLoaded = true;
