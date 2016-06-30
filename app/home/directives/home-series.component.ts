@@ -1,16 +1,15 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {DatePipe} from '@angular/common';
-import {ROUTER_DIRECTIVES} from '@angular/router';
 
 import {HalDoc} from '../../shared/cms/haldoc';
+import {StoryModel} from '../../storyedit/models/story.model';
 import {SpinnerComponent} from '../../shared/spinner/spinner.component';
 import {ImageLoaderComponent} from '../../shared/image/image-loader.component';
 import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
-import {DurationPipe} from '../../shared/file/duration.pipe';
+import {HomeStoryComponent} from './home-story.component';
 
 @Component({
-  directives: [SpinnerComponent, ImageLoaderComponent, ROUTER_DIRECTIVES],
-  pipes: [DatePipe, TimeAgoPipe, DurationPipe],
+  directives: [SpinnerComponent, ImageLoaderComponent, HomeStoryComponent],
+  pipes: [TimeAgoPipe],
   selector: 'home-series',
   styleUrls: ['app/home/directives/home-series.component.css'],
   template: `
@@ -23,31 +22,23 @@ import {DurationPipe} from '../../shared/file/duration.pipe';
       <p class="updated">Last updated {{seriesUpdated | timeago}}</p>
     </header>
     <div class="story-list">
-      <div *ngFor="let story of stories" class="story">
-        <a [routerLink]="['/edit', story.id]">
-          <image-loader [src]="story.storyImage"></image-loader>
-        </a>
-        <h2><a [routerLink]="['/edit', story.id]">{{story.title}}</a></h2>
-        <p class="duration">{{story.storyAudioDuration | duration}}</p>
-        <p class="modified">{{story.storyUpdated | date:"MM/dd/yy"}}</p>
-      </div>
-      <div *ngIf="!stories" *ngFor="let l of storyLoaders" class="story">
-        <spinner></spinner>
-      </div>
+      <home-story *ngFor="let s of stories" [story]="s"></home-story>
+      <div *ngFor="let l of storyLoaders" class="story"><spinner></spinner></div>
     </div>
   `
 })
 
 export class HomeSeriesComponent implements OnInit {
 
+  PER_ROW = 5;
+
   @Input() series: HalDoc;
   @Input() rows: number = 1;
 
   seriesImage: string;
   seriesUpdated: Date;
-
-  storyLoaders: any[];
-  stories: HalDoc[];
+  stories: StoryModel[];
+  storyLoaders: boolean[];
 
   ngOnInit() {
     this.series.follow('prx:image').subscribe(
@@ -56,33 +47,19 @@ export class HomeSeriesComponent implements OnInit {
     );
     this.seriesUpdated = new Date(this.series['updatedAt']);
 
+    // how many stories to display? (plus 1 new/draft story)
     let total = this.series.count('prx:stories');
-    let max = (this.rows * 5) - 1;
+    let max = (this.rows * this.PER_ROW) - 1; // placeholder
     let limit = Math.min(total, max);
-    this.storyLoaders = Array(limit - 1);
+    this.storyLoaders = Array(limit + 1);
 
     this.series.followItems('prx:stories', {per: limit}).subscribe((stories) => {
-      stories.forEach((story) => {
-        story['storyUpdated'] = new Date(story['updatedAt']);
-        story.follow('prx:image').subscribe(
-          img => story['storyImage'] = img.expand('enclosure'),
-          err => story['storyImage'] = null
-        );
-        story.followItems('prx:audio').subscribe((audios) => {
-          if (!audios || audios.length < 1) {
-            story['storyAudioDuration'] = 0;
-          } else {
-            story['storyAudioDuration'] = audios.map((audio) => {
-              return audio['duration'] || 0;
-            }).reduce((prevDuration, currDuration) => {
-              return prevDuration + currDuration;
-            });
-          }
-        });
-      });
-      this.stories = stories;
+      this.storyLoaders = null;
+      this.stories = [new StoryModel(this.series)];
+      for (let story of stories) {
+        this.stories.push(new StoryModel(this.series, story, false));
+      }
     });
-    console.log(this.series);
   }
 
 }

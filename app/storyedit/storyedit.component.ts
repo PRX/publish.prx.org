@@ -52,6 +52,7 @@ import {HeroComponent} from './directives/hero.component';
 export class StoryEditComponent implements OnInit, OnDestroy {
 
   private id: number;
+  private seriesId: number;
   private story: StoryModel;
   private stepText: string;
   private routeSub: Subscription;
@@ -68,13 +69,22 @@ export class StoryEditComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.routeSub = this.route.params.subscribe(params => {
       this.id = +params['id'];
+      this.seriesId = +params['series_id'];
+
+      // (1) existing story, (2) new series-story, (3) new standalone-story
+      let auth = this.cms.follow('prx:authorization');
       if (this.id) {
-        this.cms.follow('prx:authorization').follow('prx:story', {id: this.id}).subscribe(doc => {
+        auth.follow('prx:story', {id: this.id}).subscribe(doc => {
           this.story = new StoryModel(null, doc);
           this.tab.setStory(this.story);
         });
+      } else if (this.seriesId) {
+        auth.follow('prx:series', {id: this.seriesId}).subscribe(seriesDoc => {
+          this.story = new StoryModel(seriesDoc, null);
+          this.tab.setStory(this.story);
+        });
       } else {
-        this.cms.account.subscribe(accountDoc => {
+        auth.follow('prx:default-account').subscribe(accountDoc => {
           this.story = new StoryModel(accountDoc, null);
           this.tab.setStory(this.story);
         });

@@ -19,6 +19,7 @@ export abstract class BaseModel {
   public doc: HalDoc;
   public parent: HalDoc;
   public original: {} = {};
+  public lastStored: Date;
 
   public SETABLE: string[] = [];
   public RELATIONS: string[] = [];
@@ -83,6 +84,7 @@ export abstract class BaseModel {
 
     return saveMe.flatMap((doc?) => {
       this.unstore();
+      this.lastStored = null;
 
       // update haldoc reference (and mock the timestamp)
       if (doc) {
@@ -141,11 +143,13 @@ export abstract class BaseModel {
   }
 
   store() {
+    this.lastStored = new Date();
     if (window && window.localStorage && this.key()) {
       let changed = {};
       for (let f of Object.keys(this.changedFields)) {
         changed[f] = this[f];
       }
+      changed['lastStored'] = this.lastStored;
       window.localStorage.setItem(this.key(), JSON.stringify(changed));
     }
   }
@@ -159,6 +163,9 @@ export abstract class BaseModel {
           if (this.SETABLE.indexOf(key) > -1) {
             this[key] = data[key];
           }
+          if (key === 'lastStored') {
+            this.lastStored = new Date(data[key]);
+          }
         }
       }
     }
@@ -167,6 +174,14 @@ export abstract class BaseModel {
   unstore() {
     if (window && window.localStorage && this.key()) {
       window.localStorage.removeItem(this.key());
+    }
+  }
+
+  isStored(): boolean {
+    if (window && window.localStorage && this.key()) {
+      return window.localStorage.getItem(this.key()) ? true : false;
+    } else {
+      return false;
     }
   }
 

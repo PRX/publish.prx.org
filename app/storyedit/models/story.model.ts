@@ -26,9 +26,9 @@ export class StoryModel extends BaseModel {
     subGenre:         [REQUIRED()]
   };
 
-  constructor(account: HalDoc, story?: HalDoc) {
+  constructor(series: HalDoc, story?: HalDoc, loadRelated = true) {
     super();
-    this.init(account, story);
+    this.init(series, story, loadRelated);
   }
 
   key() {
