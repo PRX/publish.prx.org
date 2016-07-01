@@ -16,6 +16,7 @@ export class StoryModel extends BaseModel {
   public updatedAt: Date;
   public publishedAt: Date;
   public versions: AudioVersionModel[] = [];
+  public isPublishing: boolean;
 
   SETABLE = ['title', 'shortDescription', 'genre', 'subGenre', 'extraTags'];
 
@@ -65,7 +66,7 @@ export class StoryModel extends BaseModel {
     this.subGenre = this.parseSubGenre(this.doc['tags']) || '';
     this.extraTags = this.parseExtraTags(this.doc['tags']) || '';
     this.updatedAt = new Date(this.doc['updatedAt']);
-    this.publishedAt = new Date(this.doc['publishedAt']);
+    this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
   }
 
   encode(): {} {
@@ -118,6 +119,26 @@ export class StoryModel extends BaseModel {
       }
       return true;
     }).join(', ') || undefined;
+  }
+
+  setPublished(published: boolean): Observable<boolean> {
+    if (!published && this.doc.has('prx:unpublish')) {
+      this.isPublishing = true;
+      return this.doc.follow('prx:unpublish', {method: 'post'}).map(doc => {
+        this.init(this.parent, doc, false);
+        this.isPublishing = false;
+        return false;
+      });
+    } else if (published && this.doc.has('prx:publish')) {
+      this.isPublishing = true;
+      return this.doc.follow('prx:publish', {method: 'post'}).map(doc => {
+        this.init(this.parent, doc, false);
+        this.isPublishing = false;
+        return true;
+      });
+    } else {
+      return Observable.of(null);
+    }
   }
 
 }

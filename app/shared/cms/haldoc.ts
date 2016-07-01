@@ -113,9 +113,15 @@ export class HalDoc {
   }
 
   followLink(linkObj: any, params: any = {}): HalObservable<HalDoc> {
-    return <HalObservable<HalDoc>> this.remote.get(linkObj, params).map((obj) => {
-      return new HalDoc(obj, this.remote);
-    });
+    let result: Observable<{}>;
+    if (params && params['method'] === 'post') {
+      result = this.remote.post(linkObj, params, null);
+    } else if (params && params['method'] === 'put') {
+      result = this.remote.put(linkObj, params, null);
+    } else {
+      result = this.remote.get(linkObj, params);
+    }
+    return <HalObservable<HalDoc>> result.map(obj => { return new HalDoc(obj, this.remote); });
   }
 
   follow(rel: string, params: {} = null): HalObservable<HalDoc> {

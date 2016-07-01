@@ -28,25 +28,45 @@ import {TimeAgoPipe} from '../../shared/date/timeago.pipe';
       </section>
     </div>
     <div class="hero toolbar" [class.affix]="affixed" (window:scroll)="onScroll()">
-      <section>
-        <spinner *ngIf="!story" inverse=true></spinner>
-        <div class="info" *ngIf="story">
+      <section *ngIf="!story">
+        <spinner inverse=true></spinner>
+      </section>
+      <section *ngIf="story?.isNew">
+        <div class="info">
           <h2>{{story.title || '(Untitled)'}}</h2>
-          <p *ngIf="story.isNew">Not saved</p>
-          <p *ngIf="!story.isNew">Last saved at {{story.updatedAt | timeago}}</p>
+          <p>Not saved</p>
         </div>
-        <div class="actions" *ngIf="story">
-          <button class="preview" [disabled]="story.isSaving">Preview</button>
-          <button *ngIf="story.isNew" class="create" [class.saving]="story.isSaving"
+        <div class="actions">
+          <button class="create" [class.saving]="story.isSaving"
             [disabled]="story.invalid() || story.isSaving"
             (click)="save()">Create <spinner *ngIf="story.isSaving"></spinner></button>
-          <button *ngIf="!story.isNew" class="save" [class.saving]="story.isSaving"
-            [disabled]="story.invalid() || !story.changed() || story.isSaving"
-            (click)="save()">Save <spinner *ngIf="story.isSaving"></spinner></button>
-          <button *ngIf="!story.isNew" class="publish"
-            [disabled]="story.invalid() || story.changed() || story.isSaving"
-            (click)="publish()">
-            Publish
+        </div>
+      </section>
+      <section *ngIf="story?.doc">
+        <div class="info">
+          <h2>{{story.title || '(Untitled)'}}</h2>
+          <p>Last saved at {{story.updatedAt | timeago}}</p>
+        </div>
+        <div class="actions">
+          <button *ngIf="story.changed()" class="discard"
+            [disabled]="story.isSaving" (click)="discard()">Discard Changes</button>
+          <button *ngIf="story.changed()" class="save"
+            [class.saving]="story.isSaving"
+            [disabled]="story.invalid() || story.isSaving || story.isPublishing"
+            (click)="save()">
+            Save
+            <spinner *ngIf="story.isSaving"></spinner>
+            <div *ngIf="story.invalid()" class="invalid-tip">
+              <h4>Invalid changes</h4>
+              <p>Correct them before saving</p>
+            </div>
+          </button>
+          <button class="publish"
+            [class.publishing]="story.isPublishing"
+            [disabled]="story.changed() || story.isSaving || story.isPublishing"
+            (click)="togglePublish()">
+            {{story.publishedAt ? 'Unpublish' : 'Publish'}}
+            <spinner *ngIf="story.isPublishing"></spinner>
           </button>
         </div>
       </section>
@@ -86,16 +106,26 @@ export class HeroComponent implements OnDestroy {
     this.tabSub.unsubscribe();
   }
 
-  onScroll(): void {
+  onScroll() {
     this.affixed = (window.scrollY > 200);
   }
 
-  save(): void {
+  save() {
     let wasNew = this.story.isNew;
     this.story.save().subscribe(() => {
       if (wasNew) {
         this.router.navigate(['/edit', {id: this.story.id}]);
       }
+    });
+  }
+
+  discard() {
+    this.story.discard();
+  }
+
+  togglePublish() {
+    this.story.setPublished(!this.story.publishedAt).subscribe(() => {
+      // nothing to do
     });
   }
 
