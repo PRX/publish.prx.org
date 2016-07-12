@@ -75,7 +75,7 @@ export abstract class UploadableModel extends BaseModel {
   }
 
   retryUpload() {
-    this.unsubscribeUpload();
+    this.unsubscribe();
     if (this.upload) {
       this.upload.upload();
       this.watchUpload(this.upload, true);
@@ -84,10 +84,10 @@ export abstract class UploadableModel extends BaseModel {
 
   completeUpload() {
     this.set('isUploading', false);
-    this.unsubscribeUpload();
+    this.unsubscribe();
   }
 
-  unsubscribeUpload() {
+  unsubscribe() {
     if (this.progressSub) {
       this.progressSub.unsubscribe();
       this.progressSub = null;
@@ -112,7 +112,7 @@ export abstract class UploadableModel extends BaseModel {
   }
 
   destroy() {
-    this.unsubscribeUpload();
+    this.unsubscribe();
     if (this.upload) {
       this.upload.cancel();
     }

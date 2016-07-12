@@ -79,6 +79,14 @@ export class AudioVersionModel extends BaseModel {
     this.files.sort((f1, f2) => f1.position - f2.position);
   }
 
+  changed(field?: string | string[], includeRelations = true): boolean {
+    if (this.isNew && this.files.length === 0) {
+      return false;
+    } else {
+      return super.changed(field, includeRelations);
+    }
+  }
+
   invalid(field?: string | string[]): string {
     let invalid = super.invalid(field);
     if (!field && !invalid && this.files.length === 0) {
