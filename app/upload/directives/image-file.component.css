@@ -1,0 +1,88 @@
+.image-file {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+}
+.image-file.canceled {
+  animation: fade-out 0.5s 1;
+  -webkit-animation: fade-out 0.5s 1;
+  animation-fill-mode: forwards;
+  animation-delay: 0.5s;
+  -webkit-animation-delay: 0.5s;
+  -webkit-animation-fill-mode: forwards;
+}
+@keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+@-webkit-keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+
+.thumbnail {
+  height: 200px;
+  width: 266px;
+  margin-right: 20px;
+  position: relative;
+  background: #fff;
+}
+.thumbnail.changed {
+  outline: 5px auto #f09b4c;
+}
+.thumbnail .uploading {
+  width: 100%;
+  height: 100%;
+  border: 2px #ccc dashed;
+  padding-top: 110px;
+  text-align: center;
+}
+.thumbnail .uploading p {
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 100;
+  padding-bottom: 10px;
+  color: #aaa;
+}
+.thumbnail .uploading .meter {
+  flex-grow: 1;
+  background-color: #DDDDDD;
+  height: 10px;
+  position: relative;
+  margin: 0 20px;
+}
+.thumbnail .uploading .meter > span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  transition: 0.4s linear;
+  transition-property: width;
+  background-color: #368aa2;
+  overflow: hidden;
+}
+.thumbnail image-loader {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border: 2px #ccc solid;
+}
+.thumbnail .cancel {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.thumbnail .cancel i {
+  font-size: 22px;
+  color: #368AA2;
+  cursor: pointer;
+}
+.thumbnail .cancel i:hover {
+  color: #2b7187;
+}
+
+
+.info {
+  flex: 1;
+  padding: 10px 0;
+}
+.info h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #999;
+  margin-bottom: 12px;
+}

@@ -4,15 +4,13 @@ import {BaseModel} from '../../shared/model/base.model';
 import {FALSEY} from '../../shared/model/base.invalid';
 import {Upload} from '../../upload/services/upload.service';
 
-export class AudioFileModel extends BaseModel {
+export class ImageModel extends BaseModel {
 
   public id: number;
   public filename: string;
-  public label: string;
   public size: number;
-  public duration: number;
-  public position: number;
-  public status: string;
+  public caption: string = '';
+  public credit: string = '';
   public enclosureHref: string;
   public enclosureS3: string;
 
@@ -24,7 +22,7 @@ export class AudioFileModel extends BaseModel {
   public progress: number;
   public uuid: string;
 
-  SETABLE = ['filename', 'label', 'size', 'duration', 'position', 'enclosureHref',
+  SETABLE = ['filename', 'size', 'caption', 'credit', 'enclosureHref',
     'enclosureS3', 'uuid', 'isUploading', 'isError', 'isDestroy'];
 
   VALIDATORS = {
@@ -32,11 +30,13 @@ export class AudioFileModel extends BaseModel {
     isError:     [FALSEY('Resolve upload errors first')]
   };
 
+  private series: HalDoc;
   private upload: Upload;
   private progressSub: Subscription;
 
-  constructor(audioVersion?: HalDoc, file?: HalDoc | Upload | string) {
+  constructor(series?: HalDoc, story?: HalDoc, file?: HalDoc | Upload | string) {
     super();
+    this.series = series;
 
     // initialize (loading new uploads by uuid)
     if (typeof file === 'string') {
@@ -44,27 +44,33 @@ export class AudioFileModel extends BaseModel {
     } else if (file instanceof Upload) {
       this.uuid = file.uuid;
     }
-    this.init(audioVersion, file instanceof HalDoc ? file : null);
+    this.init(story, file instanceof HalDoc ? file : null);
 
     // local-store info on new uploads
     if (file instanceof Upload) {
-      this.set('filename', file.name);
-      this.set('size', file.size);
-      this.set('enclosureHref', file.url);
-      this.set('enclosureS3', file.s3url);
-      if (!file.complete) {
-        this.watchUpload(file);
-      }
+      this.setUpload(file);
+    }
+  }
+
+  setUpload(file: Upload) {
+    this.set('filename', file.name);
+    this.set('size', file.size);
+    this.set('enclosureHref', file.url);
+    this.set('enclosureS3', file.s3url);
+    if (!file.complete) {
+      this.watchUpload(file);
     }
   }
 
   key() {
     if (this.doc) {
-      return `prx.audio-file.${this.doc.id}`;
-    } else if (this.uuid) {
-      return `prx.audio-file.new.${this.uuid}`;
+      return `prx.image.${this.doc.id}`;
+    } else if (this.parent) {
+      return `prx.image.new.${this.parent.id}`; // existing story
+    } else if (this.series) {
+      return `prx.image.new.series.${this.series.id}`; // new story in series
     } else {
-      return `prx.audio-file.new`;
+      return `prx.image.new`; // new standalone story
     }
   }
 
@@ -75,33 +81,28 @@ export class AudioFileModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.filename = this.doc['filename'];
-    this.label = this.doc['label'];
     this.size = this.doc['size'];
-    this.duration = this.doc['duration'];
-    this.position = this.doc['position'];
-    this.status = this.doc['status'];
+    this.caption = this.doc['caption'] || '';
+    this.credit = this.doc['credit'] || '';
     this.enclosureHref = this.doc.expand('enclosure');
   }
 
   encode(): {} {
-    let data = {
-      filename: this.filename,
-      label: this.label,
-      size: this.size,
-      duration: this.duration,
-      position: this.position
-    };
+    let data = {caption: this.caption, credit: this.credit};
     if (this.isNew) {
-      data['upload'] = this.enclosureS3;
+      data['filename'] = this.filename;
+      data['size'] = this.size;
+      data['upload'] = `http:${this.enclosureHref}`;
     }
     return data;
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    return this.parent.create('prx:audio', {}, data);
+    return this.parent.create('prx:images', {}, data);
   }
 
   watchUpload(upload: Upload, startFromBeginning = true) {
+    this.set('isDestroy', false);
     this.upload = upload;
     if (startFromBeginning) {
       this.progress = 0;
