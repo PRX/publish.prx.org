@@ -78,8 +78,10 @@ export abstract class BaseModel {
       saveMe = this.saveNew(this.encode());
     } else if (this.isDestroy) {
       saveMe = this.doc.destroy();
-    } else {
+    } else if (this.changed(null, false)) {
       saveMe = this.doc.update(this.encode());
+    } else {
+      saveMe = Observable.of(this.doc);
     }
 
     return saveMe.flatMap((doc?) => {
@@ -110,6 +112,7 @@ export abstract class BaseModel {
   discard() {
     this.unstore();
     this.lastStored = null;
+    this.isDestroy = false;
     this.init(this.parent, this.doc, false);
     this.getRelated().forEach(model => {
       model.discard();
@@ -125,10 +128,14 @@ export abstract class BaseModel {
     });
   }
 
-  changed(field?: string | string[]): boolean {
+  changed(field?: string | string[], includeRelations = true): boolean {
     let fields = (field instanceof Array) ? field : [field];
     if (!field || field.length < 1) {
-      fields = this.SETABLE.concat(this.RELATIONS);
+      if (includeRelations) {
+        fields = this.SETABLE.concat(this.RELATIONS);
+      } else {
+        fields = this.SETABLE;
+      }
     }
     for (let f of fields) {
       if (this.RELATIONS.indexOf(f) > -1) {
