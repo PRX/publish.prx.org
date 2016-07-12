@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {DomSanitizationService} from '@angular/platform-browser';
 import {Observable, Observer} from 'rxjs';
 
 export interface ModalState {
@@ -15,14 +16,18 @@ export class ModalService {
   public state: Observable<ModalState>;
   private observer: Observer<ModalState>;
 
-  constructor() {
+  constructor(private sanitizer: DomSanitizationService) {
     this.state = Observable.create((observer: Observer<ModalState>) => {
       this.observer = observer;
     });
   }
 
-  alert(title: string, body?: string) {
-    this.emit({title: title, body: body});
+  alert(title: string, body?: string, callback?: Function) {
+    if (callback) {
+      this.emit({title: title, body: body, buttons: ['Okay'], buttonCallback: callback});
+    } else {
+      this.emit({title: title, body: body});
+    }
   }
 
   prompt(title: string, message: string, callback: Function) {
@@ -42,6 +47,9 @@ export class ModalService {
 
   private emit(data: {}) {
     data['hide'] = (data['hide'] === undefined) ? false : true;
+    if (data['body']) {
+      data['body'] = this.sanitizer.bypassSecurityTrustHtml(data['body']);
+    }
     this.observer.next(<ModalState> data);
   }
 
