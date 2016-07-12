@@ -58,16 +58,16 @@ export class HomeStoryComponent implements OnInit {
 
     if (this.story.isNew) {
       this.editLink = ['/create'];
-      if (this.story.parent && this.story.parent.isa('series')) {
+      if (this.story.parent) {
         this.editLink.push(this.story.parent.id);
       }
     } else {
       this.editLink = ['/edit', this.story.id];
     }
 
-    // TODO: draft images/audios
+    // TODO: draft audios
     if (this.story.isNew) {
-      this.storyImage = null;
+      this.storyImage = this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
       this.storyDuration = 0;
     } else {
       if (this.story.doc.has('prx:image')) {

@@ -74,7 +74,7 @@ export class StoryEditComponent implements OnInit, OnDestroy {
       let auth = this.cms.follow('prx:authorization');
       if (this.id) {
         auth.follow('prx:story', {id: this.id}).subscribe(storyDoc => {
-          if (storyDoc['version'] !== 'v4') {
+          if (storyDoc['appVersion'] !== 'v4') {
             let oldLink = `https://www.prx.org/pieces/${this.id}`;
             this.modal.alert(
               'Cannot Edit Story',

@@ -70,7 +70,11 @@ export abstract class BaseModel {
   }
 
   save(): Observable<boolean> {
-    if (!this.doc && this.isDestroy) { return Observable.of(false); }
+    if (!this.doc && this.isDestroy) {
+      this.unstore();
+      this.lastStored = null;
+      return Observable.of(false);
+    }
     this.isSaving = true;
 
     let saveMe: Observable<HalDoc>;
@@ -98,7 +102,10 @@ export abstract class BaseModel {
       let relatedSavers: Observable<boolean>[] = this.getRelated().filter((model) => {
         return model.changed();
       }).map((model) => {
-        model.parent = this.doc; // update reference to haldoc
+        // update parent, deleting old storage keys
+        if (model.isNew) { model.unstore(); }
+        model.parent = this.doc;
+        if (model.isNew) { model.store(); }
         return model.save();
       });
       return Observable.from(relatedSavers).concatAll().toArray().map(() => {

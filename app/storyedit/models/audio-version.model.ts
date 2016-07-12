@@ -16,8 +16,11 @@ export class AudioVersionModel extends BaseModel {
   // save in-progress uploads to localstorage
   SETABLE = ['uploadUuids'];
 
-  constructor(story?: HalDoc, audioVersion?: HalDoc) {
+  private series: HalDoc;
+
+  constructor(series?: HalDoc, story?: HalDoc, audioVersion?: HalDoc) {
     super();
+    this.series = series;
     this.init(story, audioVersion);
     if (!audioVersion) {
       this.set('label', AudioVersionModel.DEFAULT_LABEL);
@@ -28,9 +31,11 @@ export class AudioVersionModel extends BaseModel {
     if (this.doc) {
       return `prx.audio-version.${this.doc.id}`;
     } else if (this.parent) {
-      return `prx.audio-version.new.${this.parent.id}`; // old story, new version
+      return `prx.audio-version.new.${this.parent.id}`; // existing story
+    } else if (this.series) {
+      return `prx.audio-version.new.series.${this.series.id}`; // new story in series
     } else {
-      return `prx.audio-version.new`; // new story, new version
+      return `prx.audio-version.new`; // new standalone story
     }
   }
 

@@ -20,6 +20,7 @@ export class StoryModel extends BaseModel {
   public versions: AudioVersionModel[] = [];
   public images: ImageModel[] = [];
   public isPublishing: boolean;
+  public account: HalDoc;
 
   SETABLE = ['title', 'description', 'shortDescription', 'genre', 'subGenre', 'extraTags'];
 
@@ -31,9 +32,14 @@ export class StoryModel extends BaseModel {
     subGenre:         [REQUIRED()]
   };
 
-  constructor(series: HalDoc, story?: HalDoc, loadRelated = true) {
+  constructor(seriesOrAccount: HalDoc, story?: HalDoc, loadRelated = true) {
     super();
-    this.init(series, story, loadRelated);
+    if (seriesOrAccount.isa('series')) {
+      this.init(seriesOrAccount, story, loadRelated);
+    } else {
+      this.account = seriesOrAccount;
+      this.init(null, story, loadRelated);
+    }
   }
 
   key() {
@@ -51,7 +57,7 @@ export class StoryModel extends BaseModel {
       return {
         versions: this.doc.followItems('prx:audio-versions').map((versions) => {
           return versions.map((vdoc) => {
-            return new AudioVersionModel(this.doc, vdoc);
+            return new AudioVersionModel(this.parent, this.doc, vdoc);
           });
         }),
         images: this.doc.followItems('prx:images').map((images) => {
@@ -62,7 +68,7 @@ export class StoryModel extends BaseModel {
       };
     } else {
       return {
-        versions: Observable.of([new AudioVersionModel()]),
+        versions: Observable.of([new AudioVersionModel(this.parent)]),
         images: this.unsavedImage ? Observable.of([this.unsavedImage]) : Observable.of([])
       };
     }
@@ -101,7 +107,11 @@ export class StoryModel extends BaseModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    return this.parent.create('prx:stories', {}, data);
+    if (this.parent) {
+      return this.parent.create('prx:stories', {}, data);
+    } else {
+      return this.account.create('prx:stories', {}, data);
+    }
   }
 
   parseGenre(tags: string[] = []): string {

@@ -2,6 +2,7 @@ import {Component, OnDestroy} from '@angular/core';
 import {Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
+import {HalDoc, HalObservable} from '../../shared/cms/haldoc';
 import {StoryModel} from '../models/story.model';
 import {StoryTabService} from '../services/storytab.service';
 import {SpinnerComponent} from '../../shared/spinner/spinner.component';
@@ -87,19 +88,19 @@ export class HeroComponent implements OnDestroy {
     this.tabSub = tab.storyModel.subscribe((story) => {
       this.story = story;
       if (this.story.parent) {
-        if (this.story.parent.isa('series')) {
-          this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
-        } else {
-          this.bannerTitle = this.story.parent['name'] || '(Unnnamed Account)';
-        }
-        if (this.story.parent.has('prx:image')) {
-          this.story.parent.follow('prx:image')
-            .subscribe(img => this.bannerLogo = img.expand('enclosure'));
-        }
+        this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
+        this.setBannerLogo(this.story.parent);
       } else {
-        this.bannerTitle = '(No series or account!)';
+        this.bannerTitle = this.story.account['name'] || '(Unnnamed Account)';
+        this.setBannerLogo(this.story.account);
       }
     });
+  }
+
+  setBannerLogo(doc: HalDoc) {
+    if (doc.has('prx:image')) {
+      doc.follow('prx:image').subscribe(img => this.bannerLogo = img.expand('enclosure'));
+    }
   }
 
   ngOnDestroy(): any {
@@ -114,7 +115,7 @@ export class HeroComponent implements OnDestroy {
     let wasNew = this.story.isNew;
     this.story.save().subscribe(() => {
       if (wasNew) {
-        this.router.navigate(['/edit', {id: this.story.id}]);
+        this.router.navigate(['/edit', this.story.id]);
       }
     });
   }
