@@ -20,15 +20,12 @@ import {HeroComponent} from './directives/hero.component';
       <section>
         <div class="subnav">
           <nav>
-            <a [routerLinkActive]="['active']" [routerLink]="editLink">
-              STEP 1: {{id ? 'Edit' : 'Create'}} your story
-            </a>
-            <a [routerLinkActive]="['active']" [routerLink]="['decorate']">
-              STEP 2: Decorate your story
-            </a>
-            <a [routerLinkActive]="['active']" [routerLink]="['sell']">
-              STEP 3: Sell your story
-            </a>
+            <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+              [routerLink]="editLink">STEP 1: {{id ? 'Edit' : 'Create'}} your story</a>
+            <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+              [routerLink]="['decorate']">STEP 2: Decorate your story</a>
+            <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+              [routerLink]="['sell']">STEP 3: Sell your story</a>
           </nav>
           <div class="extras">
             <button *ngIf="id" class="delete" (click)="confirmDelete()">Delete</button>
@@ -77,7 +74,15 @@ export class StoryEditComponent implements OnInit, OnDestroy {
       let auth = this.cms.follow('prx:authorization');
       if (this.id) {
         auth.follow('prx:story', {id: this.id}).subscribe(storyDoc => {
-          if (storyDoc.has('prx:series')) {
+          if (storyDoc['version'] !== 'v4') {
+            let oldLink = `https://www.prx.org/pieces/${this.id}`;
+            this.modal.alert(
+              'Cannot Edit Story',
+              `This episode was created in the older PRX.org app, and must be
+              edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
+              () => { window.history.back(); }
+            );
+          } else if (storyDoc.has('prx:series')) {
             storyDoc.follow('prx:series').subscribe(seriesDoc => {
               this.story = new StoryModel(seriesDoc, storyDoc);
               this.tab.setStory(this.story);
@@ -112,7 +117,7 @@ export class StoryEditComponent implements OnInit, OnDestroy {
   }
 
   canDeactivate(next: any, prev: any): boolean | Observable<boolean> {
-    if (this.story.changed()) {
+    if (this.story && this.story.changed()) {
       let thatsOkay = new Subject<boolean>();
       this.modal.prompt(
         'Unsaved changes',
