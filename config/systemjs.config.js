@@ -40,7 +40,7 @@ System.config({
     "@angular/http": "npm:@angular/http@2.0.0-rc.3",
     "@angular/platform-browser": "npm:@angular/platform-browser@2.0.0-rc.3",
     "@angular/platform-browser-dynamic": "npm:@angular/platform-browser-dynamic@2.0.0-rc.3",
-    "@angular/router": "npm:@angular/router@3.0.0-alpha.7",
+    "@angular/router": "npm:@angular/router@3.0.0-alpha.8",
     "@angular/upgrade": "npm:@angular/upgrade@2.0.0-rc.3",
     "angular2-uuid": "npm:angular2-uuid@1.0.7",
     "capaj/systemjs-hot-reloader": "github:capaj/systemjs-hot-reloader@0.6.0",
@@ -138,7 +138,7 @@ System.config({
       "@angular/core": "npm:@angular/core@2.0.0-rc.3",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:@angular/router@3.0.0-alpha.7": {
+    "npm:@angular/router@3.0.0-alpha.8": {
       "@angular/common": "npm:@angular/common@2.0.0-rc.3",
       "@angular/compiler": "npm:@angular/compiler@2.0.0-rc.3",
       "@angular/core": "npm:@angular/core@2.0.0-rc.3",
