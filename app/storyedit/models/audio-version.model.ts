@@ -74,6 +74,11 @@ export class AudioVersionModel extends BaseModel {
     return this.parent.create('prx:audio-versions', {}, data);
   }
 
+  discard() {
+    super.discard();
+    this.files.sort((f1, f2) => f1.position - f2.position);
+  }
+
   invalid(field?: string | string[]): string {
     let invalid = super.invalid(field);
     if (!field && !invalid && this.files.length === 0) {
