@@ -8,6 +8,9 @@ setBaseTestProviders(
   TEST_BROWSER_DYNAMIC_APPLICATION_PROVIDERS
 );
 
+// just in case...
+beforeEach(() => window.localStorage.clear());
+
 // Mock router
 import {provide, Type, Component, Input} from '@angular/core';
 // import {Router, ROUTER_PRIMARY_COMPONENT, ROUTER_PROVIDERS, RootRouter}
@@ -53,7 +56,7 @@ class MockRouter {
 }
 class MockActivatedRoute { }
 class MockRouterOutletMap { registerOutlet() { return; } }
-export function mockRouter() {
+export function mockRouter(andLinkActive = false) {
   beforeEachProviders(() => [
     provide(Router, {useClass: MockRouter}),
     provide(ActivatedRoute, {useClass: MockActivatedRoute}),
@@ -61,10 +64,12 @@ export function mockRouter() {
   ]);
 
   // also need some fake router directives TODO: very hacky - help me angular2!
-  @Component({selector: '[routerLinkActive]', template: '<ng-content></ng-content>'})
-  class MockRouterLinkActive { @Input('routerLinkActiveOptions') routerLinkActiveOptions: {}; }
-  let directive = ROUTER_DIRECTIVES.find(dir => !!dir.toString().match(/RouterLinkActive/));
-  this.mockDirective(directive, MockRouterLinkActive);
+  if (andLinkActive) {
+    @Component({selector: '[routerLinkActive]', template: '<ng-content></ng-content>'})
+    class MockRouterLinkActive { @Input('routerLinkActiveOptions') routerLinkActiveOptions: {}; }
+    let directive = ROUTER_DIRECTIVES.find(dir => !!dir.toString().match(/RouterLinkActive/));
+    this.mockDirective(directive, MockRouterLinkActive);
+  }
 }
 
 /**

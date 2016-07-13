@@ -41,6 +41,8 @@ export abstract class UploadableModel extends BaseModel {
       this.uuid = file;
     } else if (file instanceof Upload) {
       this.uuid = file.uuid;
+    } else {
+      this.uuid = null;
     }
     this.init(parent, file instanceof HalDoc ? file : null);
 
