@@ -8,7 +8,8 @@ import {bootstrap} from '@angular/platform-browser-dynamic';
 import {HTTP_PROVIDERS} from '@angular/http';
 import {disableDeprecatedForms, provideForms} from '@angular/forms';
 
-import {AuthGuard, UnauthGuard, DeactivateGuard} from './shared/auth/auth.guard';
+import {AuthGuard, UnauthGuard} from './shared/auth/auth.guard';
+import {DeactivateGuard} from './shared/auth/deactivate.guard';
 import {AuthService} from './shared/auth/auth.service';
 import {CmsService} from './shared/cms/cms.service';
 import {MimeTypeService} from '../util/mime-type.service';

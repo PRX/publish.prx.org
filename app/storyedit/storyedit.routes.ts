@@ -1,10 +1,11 @@
 import {RouterConfig} from '@angular/router';
 
-import {AuthGuard, DeactivateGuard} from '../shared/auth/auth.guard';
-import {StoryEditComponent}         from './storyedit.component';
-import {EditComponent}              from './directives/edit.component';
-import {DecorateComponent}          from './directives/decorate.component';
-import {SellComponent}              from './directives/sell.component';
+import {AuthGuard}          from '../shared/auth/auth.guard';
+import {DeactivateGuard}    from '../shared/auth/deactivate.guard';
+import {StoryEditComponent} from './storyedit.component';
+import {EditComponent}      from './directives/edit.component';
+import {DecorateComponent}  from './directives/decorate.component';
+import {SellComponent}      from './directives/sell.component';
 
 export const storyEditRoutes: RouterConfig = [
   {
