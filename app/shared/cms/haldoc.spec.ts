@@ -69,6 +69,67 @@ describe('HalDoc', () => {
     });
   });
 
+  describe('count', () => {
+    it('gets the count from a link', () => {
+      let doc = makeDoc({_links: {
+        rel1: {},
+        rel2: {count: 99},
+        rel3: [{count: 1}, {count: 2}]
+      }});
+      expect(doc.count('rel1')).toBeUndefined();
+      expect(doc.count('rel2')).toEqual(99);
+      expect(doc.count('rel3')).toEqual(1);
+      expect(doc.count('rel4')).toBeUndefined();
+    });
+
+    it('gets the embedded count from a collection', () => {
+      expect(makeDoc({}).count()).toBeUndefined();
+      expect(makeDoc({_count: 99}).count()).toEqual(99);
+    });
+  });
+
+  describe('total', () => {
+    it('gets the embedded total from a collection', () => {
+      expect(makeDoc({}).total()).toBeUndefined();
+      expect(makeDoc({_total: 99}).total()).toEqual(99);
+    });
+  });
+
+  describe('has', () => {
+    it('checks for links', () => {
+      let doc = makeDoc({_links: {rel1: {}, rel2: null}});
+      expect(doc.has('rel1')).toEqual(true);
+      expect(doc.has('rel2')).toEqual(false);
+      expect(doc.has('rel3')).toEqual(false);
+    });
+
+    it('checks for embeds', () => {
+      let doc = makeDoc({_embedded: {rel1: [], rel2: null}});
+      expect(doc.has('rel1')).toEqual(true);
+      expect(doc.has('rel2')).toEqual(false);
+      expect(doc.has('rel3')).toEqual(false);
+    });
+  });
+
+  describe('isa', () => {
+    let story = makeDoc({_links: {profile: {href: 'http://meta.prx.org/model/story'}}});
+    let image = makeDoc({_links: {profile: {href: 'http://meta.prx.org/model/image/story'}}});
+    let coll = makeDoc({_links: {profile: {href: 'http://meta.prx.org/model/collection/story'}}});
+
+    it('recognizes models', () => {
+      expect(story.isa('story')).toEqual(true);
+      expect(story.isa('image')).toEqual(false);
+      expect(image.isa('story')).toEqual(false);
+      expect(image.isa('image')).toEqual(true);
+    });
+
+    it('differentiates collections', () => {
+      expect(story.isa('story', false)).toEqual(true);
+      expect(coll.isa('story', false)).toEqual(false);
+      expect(coll.isa('story')).toEqual(true);
+    });
+  });
+
   describe('followLink', () => {
     it('http follows links', () => {
       let doc = makeDoc({}, {'/the/link': {foo: 'bar'}});
@@ -221,6 +282,8 @@ describe('HalDoc', () => {
     it('recursively follows the items of a link', () => {
       let data = {_links: {somerel: {href: '/the/link'}}};
       let linkData = {'/the/link': {
+        total: 99,
+        count: 2,
         _embedded: {'prx:items': [{foo: 'bar1'}, {foo: 'bar2'}]}
       }};
       let doc = makeDoc(data, linkData);
@@ -228,7 +291,11 @@ describe('HalDoc', () => {
         expect(itemDocs instanceof Array).toBeTruthy();
         expect(itemDocs[0] instanceof HalDoc).toBeTruthy();
         expect(itemDocs[0]['foo']).toEqual('bar1');
+        expect(itemDocs[0]['_total']).toEqual(99);
+        expect(itemDocs[0]['_count']).toEqual(2);
         expect(itemDocs[1]['foo']).toEqual('bar2');
+        expect(itemDocs[1]['_total']).toEqual(99);
+        expect(itemDocs[1]['_count']).toEqual(2);
       });
     });
   });

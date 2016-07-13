@@ -92,8 +92,8 @@ export class HomeSeriesComponent implements OnInit {
       let accountDoc = <HalDoc> results[0];
       let storyDocs = <HalDoc[]> results[1];
 
-      // parent result total is embedded in child _total
-      this.count = storyDocs.length ? storyDocs[0]['_total'] : 0;
+      // parent result total is embedded in child total
+      this.count = storyDocs.length ? storyDocs[0].total() : 0;
 
       this.stories = [new StoryModel(accountDoc)];
       for (let story of storyDocs) {

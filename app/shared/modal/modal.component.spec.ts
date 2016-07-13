@@ -3,6 +3,13 @@ import {setupComponent, buildComponent, mockService} from '../../../util/test-he
 import {ModalService} from './modal.service';
 import {ModalComponent} from './modal.component';
 
+const simulateKey = (key: string) => {
+  let e = document.createEvent('Event');
+  e['key'] = key;
+  e.initEvent('keyup', true, true);
+  document.dispatchEvent(e);
+};
+
 describe('ModalComponent', () => {
 
   setupComponent(ModalComponent);
@@ -48,6 +55,37 @@ describe('ModalComponent', () => {
     buttons[0]['click']();
     buttons[1]['click']();
     expect(modal.close).toHaveBeenCalledTimes(2);
+  }));
+
+  it('listens to keys when open', buildComponent((fix, el, modal) => {
+    modal.shown = true;
+    modal.state = {};
+    fix.detectChanges();
+    simulateKey('Escape');
+    expect(modal.shown).toEqual(false);
+
+    modal.shown = true;
+    fix.detectChanges();
+    simulateKey('Enter');
+    expect(modal.shown).toEqual(false);
+  }));
+
+  it('matches the escape key to the cancel button', buildComponent((fix, el, modal) => {
+    modal.shown = true;
+    modal.state = {buttons: ['Cancel', 'Okay']};
+    fix.detectChanges();
+    spyOn(modal, 'buttonClick').and.stub();
+    simulateKey('Escape');
+    expect(modal.buttonClick).toHaveBeenCalledWith('Cancel');
+  }));
+
+  it('matches the enter key to the okay button', buildComponent((fix, el, modal) => {
+    modal.shown = true;
+    modal.state = {buttons: ['Cancel', 'Nothing', 'Ok', 'Whatever']};
+    fix.detectChanges();
+    spyOn(modal, 'buttonClick').and.stub();
+    simulateKey('Enter');
+    expect(modal.buttonClick).toHaveBeenCalledWith('Ok');
   }));
 
 });

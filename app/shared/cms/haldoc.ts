@@ -83,12 +83,24 @@ export class HalDoc {
     return this.remote.expand(link, params);
   }
 
-  count(rel: string): number {
-    let link = this['_links'] ? this['_links'][rel] : null;
-    if (link && link instanceof Array) {
-      link = link[0];
+  count(rel?: string): number {
+    if (rel && this['_links'] && this['_links'][rel]) {
+      let link = this['_links'][rel];
+      if (link instanceof Array) {
+        link = link[0];
+      }
+      if (link['count'] !== undefined) {
+        return link['count'];
+      }
+    } else if (!rel && this['_count'] !== undefined) {
+      return this['_count'];
     }
-    return (link && link['count']) ? link['count'] : 0;
+  }
+
+  total(): number {
+    if (this['_total'] !== undefined) {
+      return this['_total'];
+    }
   }
 
   has(rel: string): boolean {

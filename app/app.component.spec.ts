@@ -6,6 +6,7 @@ import {Subject} from 'rxjs';
 import {AppComponent} from './app.component';
 import {AuthComponent}    from './shared/auth/auth.component';
 import {ModalComponent}   from './shared/modal/modal.component';
+import {NavItemComponent} from './header/navitem.component';
 import {NavUserComponent} from './header/navuser.component';
 
 import {AuthService} from './shared/auth/auth.service';
@@ -19,6 +20,7 @@ describe('AppComponent', () => {
 
   mockDirective(AuthComponent,    {selector: 'prx-auth',       template: '<i>auth</i>'});
   mockDirective(ModalComponent,   {selector: 'modal-box',      template: '<i>modal</i>'});
+  mockDirective(NavItemComponent, {selector: 'nav-item',       template: '<i>navitem</i>'});
   mockDirective(NavUserComponent, {selector: 'nav-user',       template: '<i>navuser</i>'});
 
   mockRouter();
