@@ -9,7 +9,7 @@ setBaseTestProviders(
 );
 
 // Mock router
-import {provide, Type, Component} from '@angular/core';
+import {provide, Type, Component, Input} from '@angular/core';
 // import {Router, ROUTER_PRIMARY_COMPONENT, ROUTER_PROVIDERS, RootRouter}
 //   from '@angular/router';
 import {Router, ROUTER_DIRECTIVES, ActivatedRoute, RouterOutletMap} from '@angular/router';
@@ -59,6 +59,12 @@ export function mockRouter() {
     provide(ActivatedRoute, {useClass: MockActivatedRoute}),
     provide(RouterOutletMap, {useClass: MockRouterOutletMap})
   ]);
+
+  // also need some fake router directives TODO: very hacky - help me angular2!
+  @Component({selector: '[routerLinkActive]', template: '<ng-content></ng-content>'})
+  class MockRouterLinkActive { @Input('routerLinkActiveOptions') routerLinkActiveOptions: {}; }
+  let directive = ROUTER_DIRECTIVES.find(dir => !!dir.toString().match(/RouterLinkActive/));
+  this.mockDirective(directive, MockRouterLinkActive);
 }
 
 /**
@@ -82,16 +88,22 @@ export function mockService(service: Type, mockWith: {}) {
 /**
  * Mock out a directive (sub-component).  Call with a @Component config.
  */
-export function mockDirective(directive: Type, mockWith: {}) {
-  @Component(mockWith)
-  class MockComponent {}
+export function mockDirective(directive: Type, mockWith: {} | Type) {
+  let mocker: Type;
+  if (mockWith instanceof Type) {
+    mocker = mockWith;
+  } else {
+    @Component(mockWith)
+    class MockComponent {}
+    mocker = MockComponent;
+  }
 
   let key = directive.toString();
   beforeEach(() => {
     if (!this._prxOverrideDirective) {
       this._prxOverrideDirective = {};
     }
-    this._prxOverrideDirective[key] = [directive, MockComponent];
+    this._prxOverrideDirective[key] = [directive, mocker];
   });
   afterEach(() => {
     delete this._prxOverrideDirective[key];
