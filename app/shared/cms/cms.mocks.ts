@@ -70,6 +70,24 @@ export class MockHalDoc extends HalDoc {
     return <HalObservable<MockHalDoc>> Observable.of(<MockHalDoc> this);
   }
 
+  count(rel?: string): number {
+    if (rel && this.MOCKS[rel] && this.MOCKS[rel] instanceof Array) {
+      return this.MOCKS[rel].length;
+    } else if (rel && this.MOCKS[rel] && this.MOCKS[rel].has('prx:items')) {
+      return this.MOCKS[rel].count('prx:items');
+    } else {
+      return super.count(rel);
+    }
+  }
+
+  total(): number {
+    if (super.total() !== undefined) {
+      return super.total();
+    } else {
+      return this.count();
+    }
+  }
+
   has(rel: string): boolean {
     return this.MOCKS[rel] ? true : false;
   }
