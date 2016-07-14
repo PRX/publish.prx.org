@@ -7,17 +7,24 @@ describe('StoryModel', () => {
 
   let cms = <any> new MockCmsService();
 
-  let authMock: any, accountMock: any, storyMock: any;
+  let authMock: any, accountMock: any, seriesMock: any, storyMock: any;
   beforeEach(() => {
     authMock = cms.mock('prx:authorization', {});
+    accountMock = authMock.mock('prx:default-account', {id: 'account-id'});
+    seriesMock = authMock.mock('prx:series', {id: 'series-id'});
     spyOn(AudioVersionModel.prototype, 'init').and.stub();
   });
 
-  const makeStory = (data?: any, versions?: any[]) => {
-    accountMock = authMock.mock('prx:default-account', {id: 'account-id'});
-    storyMock = data ? authMock.mock('prx:story', data) : null;
-    if (storyMock) { storyMock.mockItems('prx:audio-versions', versions || []); }
-    return new StoryModel(accountMock, storyMock);
+  const makeStory = (data?: any, extra: any = {}) => {
+    let parentMock = extra.parent || seriesMock;
+    if (data) {
+      storyMock = parentMock.mock('prx:story', data);
+      storyMock.mockItems('prx:audio-versions', extra.versions || []);
+      storyMock.mockItems('prx:images', extra.images || []);
+      return new StoryModel(parentMock, storyMock);
+    } else {
+      return new StoryModel(parentMock, null);
+    }
   };
 
   describe('constructor', () => {
@@ -33,8 +40,8 @@ describe('StoryModel', () => {
         publishedAt: '2002-02-02T02:02:02.000Z',
         updatedAt: '2004-04-04T04:04:04'
       });
-      expect(story.publishedAt).toBeAnInstanceOf(Date);
-      expect(story.updatedAt).toBeAnInstanceOf(Date);
+      expect(story.publishedAt instanceof Date).toBeTruthy();
+      expect(story.updatedAt instanceof Date).toBeTruthy();
       expect(story.publishedAt.getFullYear()).toEqual(2002);
       expect(story.updatedAt.getMonth()).toEqual(3);
     });
@@ -67,16 +74,15 @@ describe('StoryModel', () => {
   describe('key', () => {
 
     it('uses the story id for the key', () => {
-      expect(makeStory({id: 'story-id'}).key()).toContain('story-id');
+      expect(makeStory({id: 'story-id'}).key()).toContain('.story-id');
     });
 
-    it('falls back to the account id', () => {
-      expect(makeStory(null).key()).toContain('account-id');
+    it('falls back to the series id', () => {
+      expect(makeStory(null).key()).toContain('.series-id');
     });
 
-    it('will just call it a new story if nothing else', () => {
-      let nothin = new StoryModel(null, null);
-      expect(nothin.key()).toMatch(/\.new$/);
+    it('does not use the parent account id for standalone stories', () => {
+      expect(makeStory(null, {parent: accountMock}).key()).toContain('.new');
     });
 
   });
@@ -84,13 +90,20 @@ describe('StoryModel', () => {
   describe('related', () => {
 
     it('loads audio versions', () => {
-      let story = makeStory({}, [{label: 'version-one'}, {label: 'version-two'}]);
+      let versions = [{label: 'version-one'}, {label: 'version-two'}];
+      let story = makeStory({title: 'foo'}, {versions: versions});
       expect(story.versions.length).toEqual(2);
     });
 
     it('sets a default version for new stories', () => {
       let story = makeStory(null);
       expect(story.versions.length).toEqual(1);
+    });
+
+    it('loads images', () => {
+      let images = [{caption: 'something'}, {caption: 'here'}];
+      let story = makeStory({title: 'foo'}, {images: images});
+      expect(story.images.length).toEqual(2);
     });
 
   });
@@ -101,7 +114,8 @@ describe('StoryModel', () => {
       let story = makeStory({id: 1, title: '2', shortDescription: '3', tags: ['4'],
         publishedAt: '2002-02-02T02:02:02', updatedAt: '2004-04-04T04:04:04'});
       let json = story.encode();
-      expect(Object.keys(json).sort()).toEqual(['shortDescription', 'tags', 'title']);
+      let allowed = ['description', 'shortDescription', 'tags', 'title'];
+      expect(Object.keys(json).sort()).toEqual(allowed);
     });
 
     it('combines tag fields', () => {
@@ -118,8 +132,17 @@ describe('StoryModel', () => {
 
   describe('saveNew', () => {
 
-    it('creates a new story off the account', () => {
+    it('creates a new story off the series', () => {
       let story = makeStory();
+      spyOn(seriesMock, 'create').and.callFake((rel: string) => {
+        expect(rel).toEqual('prx:stories');
+      });
+      story.saveNew({hello: 'world'});
+      expect(seriesMock.create).toHaveBeenCalled();
+    });
+
+    it('creates a new story off the account', () => {
+      let story = makeStory(null, {parent: accountMock});
       spyOn(accountMock, 'create').and.callFake((rel: string) => {
         expect(rel).toEqual('prx:stories');
       });

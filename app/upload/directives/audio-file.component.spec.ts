@@ -97,7 +97,7 @@ describe('AudioFileComponent', () => {
     fix.detectChanges();
     (<HTMLElement> el.querySelector('.cancel i')).click();
     expect(afile.audio.destroy).toHaveBeenCalled();
-    expect(afile.canceled).toBeTruthy();
+    expect(afile.canceled).toEqual(false); // resets after timeout
   }));
 
 });
