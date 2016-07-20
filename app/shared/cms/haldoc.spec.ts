@@ -69,6 +69,67 @@ describe('HalDoc', () => {
     });
   });
 
+  describe('count', () => {
+    it('gets the count from a link', () => {
+      let doc = makeDoc({_links: {
+        rel1: {},
+        rel2: {count: 99},
+        rel3: [{count: 1}, {count: 2}]
+      }});
+      expect(doc.count('rel1')).toBeUndefined();
+      expect(doc.count('rel2')).toEqual(99);
+      expect(doc.count('rel3')).toEqual(1);
+      expect(doc.count('rel4')).toBeUndefined();
+    });
+
+    it('gets the embedded count from a collection', () => {
+      expect(makeDoc({}).count()).toBeUndefined();
+      expect(makeDoc({_count: 99}).count()).toEqual(99);
+    });
+  });
+
+  describe('total', () => {
+    it('gets the embedded total from a collection', () => {
+      expect(makeDoc({}).total()).toBeUndefined();
+      expect(makeDoc({_total: 99}).total()).toEqual(99);
+    });
+  });
+
+  describe('has', () => {
+    it('checks for links', () => {
+      let doc = makeDoc({_links: {rel1: {}, rel2: null}});
+      expect(doc.has('rel1')).toEqual(true);
+      expect(doc.has('rel2')).toEqual(false);
+      expect(doc.has('rel3')).toEqual(false);
+    });
+
+    it('checks for embeds', () => {
+      let doc = makeDoc({_embedded: {rel1: [], rel2: null}});
+      expect(doc.has('rel1')).toEqual(true);
+      expect(doc.has('rel2')).toEqual(false);
+      expect(doc.has('rel3')).toEqual(false);
+    });
+  });
+
+  describe('isa', () => {
+    let story = makeDoc({_links: {profile: {href: 'http://meta.prx.org/model/story'}}});
+    let image = makeDoc({_links: {profile: {href: 'http://meta.prx.org/model/image/story'}}});
+    let coll = makeDoc({_links: {profile: {href: 'http://meta.prx.org/model/collection/story'}}});
+
+    it('recognizes models', () => {
+      expect(story.isa('story')).toEqual(true);
+      expect(story.isa('image')).toEqual(false);
+      expect(image.isa('story')).toEqual(false);
+      expect(image.isa('image')).toEqual(true);
+    });
+
+    it('differentiates collections', () => {
+      expect(story.isa('story', false)).toEqual(true);
+      expect(coll.isa('story', false)).toEqual(false);
+      expect(coll.isa('story')).toEqual(true);
+    });
+  });
+
   describe('followLink', () => {
     it('http follows links', () => {
       let doc = makeDoc({}, {'/the/link': {foo: 'bar'}});
@@ -83,9 +144,19 @@ describe('HalDoc', () => {
     beforeEach(() => {
       data = {
         _embedded: {somerel: {foo: 'the-embed'}},
-        _links: {somerel: {href: '/the/link'}}
+        _links: {
+          somerel: {href: '/the/link'},
+          listrel: [
+            {href: '/fetch/{id}{?something}'},
+            {href: '/search{?foo,page,blah,bar}'}
+          ]
+        }
       };
-      linkData = {'/the/link': {foo: 'the-link'}};
+      linkData = {
+        '/the/link': {foo: 'the-link'},
+        '/fetch/{id}{?something}': {foo: 'the-fetch'},
+        '/search{?foo,page,blah,bar}': {foo: 'the-search'}
+      };
     });
 
     it('picks embeds over links', () => {
@@ -129,6 +200,20 @@ describe('HalDoc', () => {
         (err) => { expect(err).toMatch('Unable to find rel otherrel'); }
       );
     });
+
+    it('guesses fetch links when you provide an id', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('listrel', {id: 99}).subscribe((nextDoc) => {
+        expect(nextDoc['foo']).toEqual('the-fetch');
+      });
+    });
+
+    it('guesses search links when you give no id', () => {
+      let doc = makeDoc(data, linkData);
+      doc.follow('listrel', {nothing: 'important'}).subscribe((nextDoc) => {
+        expect(nextDoc['foo']).toEqual('the-search');
+      });
+    });
   });
 
   describe('followList', () => {
@@ -147,8 +232,8 @@ describe('HalDoc', () => {
     it('picks embeds over links', () => {
       let doc = makeDoc(data, linkData);
       doc.followList('somerel').subscribe((nextDocs) => {
-        expect(nextDocs).toBeAnInstanceOf(Array);
-        expect(nextDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(nextDocs instanceof Array).toBeTruthy();
+        expect(nextDocs[0] instanceof HalDoc).toBeTruthy();
         expect(nextDocs[0]['foo']).toEqual('the-embed1');
         expect(nextDocs[1]['bar']).toEqual('the-embed2');
       });
@@ -157,8 +242,8 @@ describe('HalDoc', () => {
     it('wont pick embeds if you pass params', () => {
       let doc = makeDoc(data, linkData);
       doc.followList('somerel', {some: 'params'}).subscribe((nextDocs) => {
-        expect(nextDocs).toBeAnInstanceOf(Array);
-        expect(nextDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(nextDocs instanceof Array).toBeTruthy();
+        expect(nextDocs[0] instanceof HalDoc).toBeTruthy();
         expect(nextDocs[0]['foo']).toEqual('the-link1');
         expect(nextDocs[1]['bar']).toEqual('the-link2');
       });
@@ -197,14 +282,20 @@ describe('HalDoc', () => {
     it('recursively follows the items of a link', () => {
       let data = {_links: {somerel: {href: '/the/link'}}};
       let linkData = {'/the/link': {
+        total: 99,
+        count: 2,
         _embedded: {'prx:items': [{foo: 'bar1'}, {foo: 'bar2'}]}
       }};
       let doc = makeDoc(data, linkData);
       doc.followItems('somerel').subscribe((itemDocs) => {
-        expect(itemDocs).toBeAnInstanceOf(Array);
-        expect(itemDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(itemDocs instanceof Array).toBeTruthy();
+        expect(itemDocs[0] instanceof HalDoc).toBeTruthy();
         expect(itemDocs[0]['foo']).toEqual('bar1');
+        expect(itemDocs[0]['_total']).toEqual(99);
+        expect(itemDocs[0]['_count']).toEqual(2);
         expect(itemDocs[1]['foo']).toEqual('bar2');
+        expect(itemDocs[1]['_total']).toEqual(99);
+        expect(itemDocs[1]['_count']).toEqual(2);
       });
     });
   });
@@ -226,8 +317,8 @@ describe('HalDoc', () => {
     it('nests HalDoc methods', () => {
       let doc = makeDoc(data, linkData);
       doc.follow('rel1').follow('rel2').followItems('rel3').subscribe((itemDocs) => {
-        expect(itemDocs).toBeAnInstanceOf(Array);
-        expect(itemDocs[0]).toBeAnInstanceOf(HalDoc);
+        expect(itemDocs instanceof Array).toBeTruthy();
+        expect(itemDocs[0] instanceof HalDoc).toBeTruthy();
         expect(itemDocs[0]['foo']).toEqual('bar1');
         expect(itemDocs[1]['foo']).toEqual('bar2');
       });

@@ -54,6 +54,7 @@ export class Upload {
   public size: number;
   public path: string;
   public url: string;
+  public s3url: string;
 
   public progress: ConnectableObservable<number>;
   public uploadId: string;
@@ -68,7 +69,8 @@ export class Upload {
     this.name = file.name;
     this.size = file.size;
     this.path = [Env.BUCKET_FOLDER, this.uuid, file.name.replace(/[^a-z0-9\.]+/gi,'_')].join('/');
-    this.url = 's3://' + Env.BUCKET_NAME + '/' + this.path;
+    this.url = '//s3.amazonaws.com/' + Env.BUCKET_NAME + '/' + this.path;
+    this.s3url = 's3://' + Env.BUCKET_NAME + '/' + this.path;
     this.upload();
   }
 
@@ -94,7 +96,7 @@ export class Upload {
       name: this.path,
       contentType: this.contentType,
       xAmzHeadersAtInitiate: {
-        'x-amz-acl': 'private'
+        'x-amz-acl': 'public-read'
       },
       notSignedHeadersAtInitiate: {
         'Content-Disposition': 'attachment; filename=' + name

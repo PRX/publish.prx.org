@@ -7,9 +7,29 @@
 }
 .banner h1 {
   font-size: 40px;
-  line-height: 200px;
+  line-height: 50px;
+  padding-top: 40px;
   font-weight: 400;
   color: #fff;
+}
+.banner spinner {
+  display: inline-block;
+  position: relative;
+  top: 100px;
+  left: 10px;
+}
+.banner h2 {
+  font-size: 25px;
+  line-height: 70px;
+  color: #fff;
+}
+.banner image-loader {
+  width: 70px;
+  height: 70px;
+  margin-right: 10px;
+  background-color: #a3a3a3;
+  display: block;
+  float: left;
 }
 
 /**
@@ -21,7 +41,8 @@
 .toolbar section {
   display: flex;
   align-items: center;
-  padding: 10px 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
   position: relative;
 }
 .toolbar spinner {
@@ -49,6 +70,12 @@
 .toolbar button.publish:hover, .toolbar button.create:hover {
   background-color: #e28b42;
 }
+.toolbar button.discard {
+  background-color: #bbb;
+}
+.toolbar button.discard:hover {
+  background-color: #999;
+}
 .toolbar button[disabled] {
   color: #adc8d1;
   background-color: #7FA9B7;
@@ -58,8 +85,57 @@
   color: #fce4cf;
   background-color: #f9c596;
 }
-.toolbar button.saving {
+.toolbar button.discard[disabled] {
+  color: #eee;
+  background-color: #ccc;
+}
+.toolbar button.saving, .toolbar button.publishing {
   color: rgba(0,0,0,0);
+}
+
+/**
+ * Tooltip for invalid forms
+ */
+.toolbar .invalid-tip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  color: #368aa2;
+  border: 1px solid #368aa2;
+  padding: 4px 10px;
+  margin-top: 15px;
+  display: none;
+}
+.toolbar button.save:hover .invalid-tip, .toolbar button.create:hover .invalid-tip {
+  display: block;
+}
+.toolbar .invalid-tip h4 {
+  font-weight: 600;
+}
+.toolbar .invalid-tip:after, .toolbar .invalid-tip:before {
+	bottom: 100%;
+	right: 24px;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.toolbar .invalid-tip:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-bottom-color: #fff;
+	border-width: 14px;
+	margin-right: -14px;
+}
+.toolbar .invalid-tip:before {
+	border-color: rgba(173, 200,
+    color: #368aa2; 209, 0);
+	border-bottom-color: #368aa2;
+	border-width: 15px;
+	margin-right: -15px;
 }
 
 /**

@@ -1,25 +1,18 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
+import {Observable, ReplaySubject} from 'rxjs';
 import {StoryModel} from '../models/story.model';
 
 @Injectable()
 export class StoryTabService {
 
-  // Sources
-  storyModelSource = new Subject<StoryModel>();
-  heroTextSource = new Subject<string>();
+  private storyModelSource = new ReplaySubject<StoryModel>(1);
 
-  // Streams
-  storyModel = this.storyModelSource.asObservable();
-  heroText = this.heroTextSource.asObservable();
-
-  // Service message commands
-  setStory(story: StoryModel) {
-    this.storyModelSource.next(story);
+  get storyModel(): Observable<StoryModel> {
+    return this.storyModelSource;
   }
 
-  setHero(text: string) {
-    this.heroTextSource.next(text);
+  setStory(story: StoryModel) {
+    this.storyModelSource.next(story);
   }
 
 }

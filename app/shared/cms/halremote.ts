@@ -59,7 +59,7 @@ export class HalRemote {
 
   put(link: HalLink, params: {} = null, data: {}): Observable<{}> {
     let href = this.expand(link, params);
-    let body = JSON.stringify(data);
+    let body = data ? JSON.stringify(data) : null;
     HalRemoteCache.del(href);
     return this.http.put(href, body, this.httpOptions(true)).map((res) => {
       if (res.status === 204) {
@@ -72,7 +72,7 @@ export class HalRemote {
 
   post(link: HalLink, params: {} = null, data: {}): Observable<{}> {
     let href = this.expand(link, params);
-    let body = JSON.stringify(data);
+    let body = data ? JSON.stringify(data) : null;
     return this.http.post(href, body, this.httpOptions(true)).map((res) => {
       return res.json();
     });

@@ -3,7 +3,8 @@
  */
 .main section {
   display: flex;
-  padding: 30px 0;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 .main .subnav {
   flex: 0 0 260px;
@@ -19,11 +20,11 @@
 .main nav a:hover {
   text-decoration: underline;
 }
-.main nav a.router-link-active {
+.main nav a.active {
   background-color: #368aa2;
   color: #fff;
 }
-.main nav a.router-link-active:hover {
+.main nav a.active:hover {
   background-color: #2b7187;
   text-decoration: none;
 }

@@ -132,7 +132,11 @@ describe('BaseModel', () => {
 
     it('updates existing docs', () => {
       base.doc = <any> {update: null};
+      base.changed = () => false;
       spyOn(base.doc, 'update').and.returnValue(Observable.empty());
+      base.save();
+      expect(base.doc.update).not.toHaveBeenCalled();
+      base.changed = () => true;
       base.save();
       expect(base.doc.update).toHaveBeenCalled();
     });
@@ -147,6 +151,7 @@ describe('BaseModel', () => {
 
     it('re-inits after saving', () => {
       base.doc = <any> {update: null};
+      base.changed = () => true;
       spyOn(base.doc, 'update').and.returnValue(Observable.of({foo: 'bar'}));
       spyOn(base, 'unstore').and.stub();
       spyOn(base, 'init').and.callFake((parent: any, doc: any) => {
@@ -202,6 +207,13 @@ describe('BaseModel', () => {
       ];
       expect(base.changed('foo')).toBeTruthy();
       expect(base.changed()).toBeTruthy();
+    });
+
+    it('optionally ignores relations', () => {
+      base.RELATIONS = ['foo'];
+      base['foo'] = [{changed: () => true}];
+      expect(base.changed()).toBeTruthy();
+      expect(base.changed(null, false)).toBeFalsy();
     });
 
   });

@@ -20,7 +20,7 @@ import {AudioFileComponent} from './audio-file.component';
       <section [dragula]="id" [dragulaModel]="version.files">
         <audio-file *ngFor="let file of version.files"
           [audio]="file"></audio-file>
-        <div *ngIf="version.files && !version.files.length" class="empty">
+        <div *ngIf="noAudioFiles" class="empty">
           <h4>Upload a file to get started</h4>
         </div>
       </section>
@@ -52,6 +52,17 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
 
   get id(): any {
     return this.version.id ? ('version-' + this.version.id) : 'version-new';
+  }
+
+  get noAudioFiles(): boolean {
+    if (this.version.files) {
+      if (this.version.files.length === 0) {
+        return true;
+      } else {
+        return this.version.files.every(f => f.isDestroy === true);
+      }
+    }
+    return false;
   }
 
   ngOnInit() {

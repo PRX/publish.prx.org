@@ -79,11 +79,6 @@ strong {
     display: box;
     display: flex;
   }
-  article .main section,
-  article .asides aside section {
-    padding-right: 0;
-    padding-left: 0;
-  }
   article .main {
     -webkit-box-ordinal-group: 2;
     -moz-box-ordinal-group: 2;

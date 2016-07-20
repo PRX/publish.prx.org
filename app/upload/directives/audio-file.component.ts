@@ -65,7 +65,7 @@ export class AudioFileComponent {
 
     // wait for fade-out before parent removes this component
     this.canceled = true;
-    setTimeout(() => { this.audio.destroy(); }, 1000);
+    setTimeout(() => { this.audio.destroy(); this.canceled = false; }, 1000);
   }
 
   onRetry(event: Event) {

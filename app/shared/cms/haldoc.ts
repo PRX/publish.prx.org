@@ -83,10 +83,57 @@ export class HalDoc {
     return this.remote.expand(link, params);
   }
 
+  count(rel?: string): number {
+    if (rel && this['_links'] && this['_links'][rel]) {
+      let link = this['_links'][rel];
+      if (link instanceof Array) {
+        link = link[0];
+      }
+      if (link['count'] !== undefined) {
+        return link['count'];
+      }
+    } else if (!rel && this['_count'] !== undefined) {
+      return this['_count'];
+    }
+  }
+
+  total(): number {
+    if (this['_total'] !== undefined) {
+      return this['_total'];
+    }
+  }
+
+  has(rel: string): boolean {
+    if (this['_embedded'] && this['_embedded'][rel]) {
+      return true;
+    } else if (this['_links'] && this['_links'][rel]) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isa(type: string, includeCollections = true): boolean {
+    let profile = this.expand('profile') || '';
+    if (profile.match(`model/${type}`)) {
+      return true;
+    } else if (includeCollections && profile.match(`model/collection/${type}`)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   followLink(linkObj: any, params: any = {}): HalObservable<HalDoc> {
-    return <HalObservable<HalDoc>> this.remote.get(linkObj, params).map((obj) => {
-      return new HalDoc(obj, this.remote);
-    });
+    let result: Observable<{}>;
+    if (params && params['method'] === 'post') {
+      result = this.remote.post(linkObj, params, null);
+    } else if (params && params['method'] === 'put') {
+      result = this.remote.put(linkObj, params, null);
+    } else {
+      result = this.remote.get(linkObj, params);
+    }
+    return <HalObservable<HalDoc>> result.map(obj => { return new HalDoc(obj, this.remote); });
   }
 
   follow(rel: string, params: {} = null): HalObservable<HalDoc> {
@@ -111,7 +158,13 @@ export class HalDoc {
 
   followItems(rel: string, params: {} = null): HalObservable<HalDoc[]> {
     return <HalObservable<HalDoc[]>> this.follow(rel, params).flatMap((doc) => {
-      return doc.followList('prx:items');
+      return doc.followList('prx:items').map((items) => {
+        for (let item of items) {
+          item['_count'] = doc['count'];
+          item['_total'] = doc['total'];
+        }
+        return items;
+      });
     });
   }
 
@@ -130,7 +183,12 @@ export class HalDoc {
 
   private linkOne(rel: string, params: {} = null): Observable<HalDoc> {
     if (this['_links'][rel] instanceof Array) {
-      return this.error(`Expected object at _links.${rel} - got list`);
+      let guessed = this.guessLink(this['_links'][rel], params);
+      if (guessed) {
+        return this.followLink(guessed, params);
+      } else {
+        return this.error(`Expected object at _links.${rel} - got list`);
+      }
     } else {
       return this.followLink(this['_links'][rel], params);
     }
@@ -163,6 +221,18 @@ export class HalDoc {
         this[key] = data[key];
       }
     });
+  }
+
+  private guessLink(links: any[], params: {} = null): any {
+    let lookingForFetch = params && params['id'] !== undefined;
+    for (let link of links) {
+      if (lookingForFetch && link.href.match(/\/\{id\}/)) {
+        return link;
+      } else if (!lookingForFetch && link.href.match(/\{.*page/)) {
+        return link;
+      }
+    }
+    return null;
   }
 
 }

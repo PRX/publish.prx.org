@@ -19,6 +19,7 @@ export abstract class BaseModel {
   public doc: HalDoc;
   public parent: HalDoc;
   public original: {} = {};
+  public lastStored: Date;
 
   public SETABLE: string[] = [];
   public RELATIONS: string[] = [];
@@ -69,7 +70,11 @@ export abstract class BaseModel {
   }
 
   save(): Observable<boolean> {
-    if (!this.doc && this.isDestroy) { return Observable.of(false); }
+    if (!this.doc && this.isDestroy) {
+      this.unstore();
+      this.lastStored = null;
+      return Observable.of(false);
+    }
     this.isSaving = true;
 
     let saveMe: Observable<HalDoc>;
@@ -77,12 +82,15 @@ export abstract class BaseModel {
       saveMe = this.saveNew(this.encode());
     } else if (this.isDestroy) {
       saveMe = this.doc.destroy();
-    } else {
+    } else if (this.changed(null, false)) {
       saveMe = this.doc.update(this.encode());
+    } else {
+      saveMe = Observable.of(this.doc);
     }
 
     return saveMe.flatMap((doc?) => {
       this.unstore();
+      this.lastStored = null;
 
       // update haldoc reference (and mock the timestamp)
       if (doc) {
@@ -94,7 +102,10 @@ export abstract class BaseModel {
       let relatedSavers: Observable<boolean>[] = this.getRelated().filter((model) => {
         return model.changed();
       }).map((model) => {
-        model.parent = this.doc; // update reference to haldoc
+        // update parent, deleting old storage keys
+        if (model.isNew) { model.unstore(); }
+        model.parent = this.doc;
+        if (model.isNew) { model.store(); }
         return model.save();
       });
       return Observable.from(relatedSavers).concatAll().toArray().map(() => {
@@ -105,10 +116,33 @@ export abstract class BaseModel {
     });
   }
 
-  changed(field?: string | string[]): boolean {
+  discard() {
+    this.unstore();
+    this.lastStored = null;
+    this.isDestroy = false;
+    this.init(this.parent, this.doc, false);
+    this.getRelated().forEach(model => {
+      model.discard();
+      if (model.isNew) {
+        this.RELATIONS.forEach(rel => {
+          if (this[rel] === model) {
+            this[rel] = null;
+          } else if (this[rel].indexOf(model) > -1) {
+            this[rel].splice(this[rel].indexOf(model), 1);
+          }
+        });
+      }
+    });
+  }
+
+  changed(field?: string | string[], includeRelations = true): boolean {
     let fields = (field instanceof Array) ? field : [field];
     if (!field || field.length < 1) {
-      fields = this.SETABLE.concat(this.RELATIONS);
+      if (includeRelations) {
+        fields = this.SETABLE.concat(this.RELATIONS);
+      } else {
+        fields = this.SETABLE;
+      }
     }
     for (let f of fields) {
       if (this.RELATIONS.indexOf(f) > -1) {
@@ -141,11 +175,13 @@ export abstract class BaseModel {
   }
 
   store() {
+    this.lastStored = new Date();
     if (window && window.localStorage && this.key()) {
       let changed = {};
       for (let f of Object.keys(this.changedFields)) {
         changed[f] = this[f];
       }
+      changed['lastStored'] = this.lastStored;
       window.localStorage.setItem(this.key(), JSON.stringify(changed));
     }
   }
@@ -159,6 +195,9 @@ export abstract class BaseModel {
           if (this.SETABLE.indexOf(key) > -1) {
             this[key] = data[key];
           }
+          if (key === 'lastStored') {
+            this.lastStored = new Date(data[key]);
+          }
         }
       }
     }
@@ -167,6 +206,14 @@ export abstract class BaseModel {
   unstore() {
     if (window && window.localStorage && this.key()) {
       window.localStorage.removeItem(this.key());
+    }
+  }
+
+  isStored(): boolean {
+    if (window && window.localStorage && this.key()) {
+      return window.localStorage.getItem(this.key()) ? true : false;
+    } else {
+      return false;
     }
   }
 

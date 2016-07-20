@@ -6,7 +6,7 @@ describe('NavItemComponent', () => {
 
   setupComponent(NavItemComponent);
 
-  mockRouter();
+  mockRouter(true);
 
   it('renders a routed nav link', buildComponent((fix, el, navitem) => {
     navitem.text = 'Foobar';

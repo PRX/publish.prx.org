@@ -7,8 +7,10 @@ describe('AudioVersionModel', () => {
 
   let cms = <any> new MockCmsService();
 
-  let storyMock: any, versionMock: any;
+  let seriesMock: any, storyMock: any, versionMock: any;
   beforeEach(() => {
+    window.localStorage.clear();
+    seriesMock = cms.mock('prx:series', {id: 'the-series-id'});
     storyMock = cms.mock('prx:story', {id: 'the-story-id'});
     spyOn(AudioFileModel.prototype, 'init').and.callFake(function() {
       this.filename = 'foobar';
@@ -19,7 +21,7 @@ describe('AudioVersionModel', () => {
   const makeVersion = (data?: any, files?: any[]) => {
     versionMock = data ? storyMock.mock('prx:audio-version', data) : null;
     if (versionMock) { versionMock.mockList('prx:audio', files || []); }
-    return new AudioVersionModel(storyMock, versionMock);
+    return new AudioVersionModel(seriesMock, storyMock, versionMock);
   };
 
   describe('constructor', () => {
@@ -39,11 +41,16 @@ describe('AudioVersionModel', () => {
   describe('key', () => {
 
     it('uses the audio version id', () => {
-      expect(makeVersion({id: 'version-id'}).key()).toContain('version-id');
+      expect(makeVersion({id: 'version-id'}).key()).toContain('.version-id');
     });
 
     it('falls back to the story id', () => {
-      expect(makeVersion(null).key()).toContain('story-id');
+      expect(makeVersion(null).key()).toContain('new.the-story-id');
+    });
+
+    it('falls way back to the series id', () => {
+      let seriesOnly = new AudioVersionModel(seriesMock, null, null);
+      expect(seriesOnly.key()).toContain('new.series.the-series-id');
     });
 
     it('also has a key for new stories', () => {

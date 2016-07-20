@@ -17,9 +17,9 @@ export const REQUIRED = (): BaseInvalid => {
 
 export const LENGTH = (minLength: number, maxLength?: number): BaseInvalid => {
   return <BaseInvalid> (key: string, value: any) => {
-    if (minLength && (!value || value.length < minLength)) {
+    if (minLength && value && (value.length < minLength)) {
       return `${key} is too short`;
-    } else if (maxLength && value && value.length > maxLength) {
+    } else if (maxLength && value && (value.length > maxLength)) {
       return `${key} is too long`;
     } else {
       return null;

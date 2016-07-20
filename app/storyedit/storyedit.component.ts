@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Router, ROUTER_DIRECTIVES, CanDeactivate, ActivatedRoute} from '@angular/router';
+import {Router, ROUTER_DIRECTIVES, ActivatedRoute} from '@angular/router';
 import {Observable, Subject, Subscription} from 'rxjs';
 
 import {CmsService} from '../shared/cms/cms.service';
@@ -9,27 +9,23 @@ import {StoryModel} from './models/story.model';
 
 import {HeroComponent} from './directives/hero.component';
 
-interface CanDeact { canDeactivate: () => boolean | Observable<boolean>; }
-
 @Component({
   directives: [ROUTER_DIRECTIVES, HeroComponent],
   providers: [StoryTabService],
   selector: 'publish-story-edit',
   styleUrls: ['app/storyedit/storyedit.component.css'],
   template: `
-    <publish-story-hero [title]="stepText" [story]="story"></publish-story-hero>
+    <publish-story-hero></publish-story-hero>
     <div class="main">
       <section>
         <div class="subnav">
-          <nav *ngIf="id">
-            <a [routerLink]="['Default']">STEP 1: Edit your story</a>
-            <a [routerLink]="['Decorate']">STEP 2: Decorate your story</a>
-            <a [routerLink]="['Sell']">STEP 3: Sell your story</a>
-          </nav>
-          <nav *ngIf="!id">
-            <a [routerLink]="['Default']">STEP 1: Create your story</a>
-            <a disabled>STEP 2: Decorate your story</a>
-            <a disabled>STEP 3: Sell your story</a>
+          <nav>
+            <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+              [routerLink]="editLink">STEP 1: {{id ? 'Edit' : 'Create'}} your story</a>
+            <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+              [routerLink]="['decorate']">STEP 2: Decorate your story</a>
+            <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+              [routerLink]="['sell']">STEP 3: Sell your story</a>
           </nav>
           <div class="extras">
             <button *ngIf="id" class="delete" (click)="confirmDelete()">Delete</button>
@@ -43,13 +39,13 @@ interface CanDeact { canDeactivate: () => boolean | Observable<boolean>; }
     `
 })
 
-export class StoryEditComponent implements OnInit, OnDestroy, CanDeactivate<CanDeact> {
+export class StoryEditComponent implements OnInit, OnDestroy {
 
   private id: number;
+  private seriesId: number;
   private story: StoryModel;
-  private stepText: string;
+  private editLink: any[];
   private routeSub: Subscription;
-  private tabSub: Subscription;
 
   constructor(
     private cms: CmsService,
@@ -62,37 +58,75 @@ export class StoryEditComponent implements OnInit, OnDestroy, CanDeactivate<CanD
   ngOnInit() {
     this.routeSub = this.route.params.subscribe(params => {
       this.id = +params['id'];
+      this.seriesId = +params['series_id'];
+
+      // must explicitly set the base-link for this edit/create route
       if (this.id) {
-        this.cms.follow('prx:authorization').follow('prx:story', {id: this.id}).subscribe(doc => {
-          this.story = new StoryModel(null, doc);
+        this.editLink = ['/edit', this.id];
+      } else {
+        this.editLink = ['/create'];
+        if (this.seriesId) {
+          this.editLink.push(this.seriesId);
+        }
+      }
+
+      // (1) existing story, (2) new series-story, (3) new standalone-story
+      let auth = this.cms.follow('prx:authorization');
+      if (this.id) {
+        auth.follow('prx:story', {id: this.id}).subscribe(storyDoc => {
+          if (storyDoc['appVersion'] !== 'v4') {
+            let oldLink = `https://www.prx.org/pieces/${this.id}`;
+            this.modal.alert(
+              'Cannot Edit Story',
+              `This episode was created in the older PRX.org app, and must be
+              edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
+              () => { window.history.back(); }
+            );
+          } else if (storyDoc.has('prx:series')) {
+            storyDoc.follow('prx:series').subscribe(seriesDoc => {
+              this.story = new StoryModel(seriesDoc, storyDoc);
+              this.tab.setStory(this.story);
+            });
+          } else if (storyDoc.has('prx:account')) {
+            storyDoc.follow('prx:account').subscribe(accountDoc => {
+              this.story = new StoryModel(accountDoc, storyDoc);
+              this.tab.setStory(this.story);
+            });
+          } else {
+            console.error('WOH: story has no series or account!');
+            this.story = new StoryModel(null, storyDoc);
+            this.tab.setStory(this.story);
+          }
+        });
+      } else if (this.seriesId) {
+        auth.follow('prx:series', {id: this.seriesId}).subscribe(seriesDoc => {
+          this.story = new StoryModel(seriesDoc, null);
           this.tab.setStory(this.story);
         });
       } else {
-        this.cms.account.subscribe(accountDoc => {
+        auth.follow('prx:default-account').subscribe(accountDoc => {
           this.story = new StoryModel(accountDoc, null);
           this.tab.setStory(this.story);
         });
       }
     });
-    this.tabSub = this.tab.heroText.subscribe((text) => {
-      this.stepText = text;
-    });
   }
 
   ngOnDestroy() {
     this.routeSub.unsubscribe();
-    this.tabSub.unsubscribe();
   }
 
-  canDeactivate(next: any, prev: any): Observable<boolean> {
-    if (this.story.changed()) {
+  canDeactivate(next: any, prev: any): boolean | Observable<boolean> {
+    if (this.story && this.story.changed()) {
       let thatsOkay = new Subject<boolean>();
       this.modal.prompt(
         'Unsaved changes',
         'This story has unsaved changes - they will be saved locally when you return here',
-        (okay: boolean) => { thatsOkay.next(true); }
+        (okay: boolean) => { thatsOkay.next(okay); thatsOkay.complete(); }
       );
       return thatsOkay;
+    } else {
+      return true;
     }
   }
 

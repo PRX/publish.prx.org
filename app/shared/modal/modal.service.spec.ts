@@ -1,16 +1,20 @@
-import {it, describe, expect} from '@angular/core/testing';
+import {it, describe} from '@angular/core/testing';
 import {ModalService, ModalState} from './modal.service';
 import {Observable} from 'rxjs';
+
+const fakeSanitizer: any = {
+  bypassSecurityTrustHtml: (s: string) => `<sanitized>${s}</sanitized>`
+};
 
 describe('ModalService', () => {
 
   it('shares a global modal state', () => {
-    let modal = new ModalService();
-    expect(modal.state).toBeAnInstanceOf(Observable);
+    let modal = new ModalService(fakeSanitizer);
+    expect(modal.state instanceof Observable).toBeTruthy();
   });
 
   it('creates alert dialogs', () => {
-    let modal = new ModalService(), theState: ModalState;
+    let modal = new ModalService(fakeSanitizer), theState: ModalState;
     modal.state.subscribe((state) => { theState = state; });
 
     modal.alert('hello', 'world');
@@ -22,16 +26,16 @@ describe('ModalService', () => {
   });
 
   it('creates input prompts', () => {
-    let modal = new ModalService(), theState: ModalState;
+    let modal = new ModalService(fakeSanitizer), theState: ModalState;
     modal.state.subscribe((state) => {
       theState = state;
       expect(state.title).toEqual('hello');
-      expect(state.body).toEqual('world');
+      expect(state.body).toEqual('<sanitized><a href="blah">world</a></sanitized>');
       theState.buttonCallback('Okay');
     });
 
     let callbacked = false;
-    modal.prompt('hello', 'world', (okay: boolean) => {
+    modal.prompt('hello', '<a href="blah">world</a>', (okay: boolean) => {
       callbacked = true;
       expect(okay).toEqual(true);
     });

@@ -3,12 +3,14 @@ import {HalDoc} from '../../shared/cms/haldoc';
 import {BaseModel} from '../../shared/model/base.model';
 import {REQUIRED, LENGTH} from '../../shared/model/base.invalid';
 import {AudioVersionModel} from './audio-version.model';
+import {ImageModel} from './image.model';
 import {CATEGORIES, SUBCATEGORIES} from './story.categories';
 
 export class StoryModel extends BaseModel {
 
   public id: number;
   public title: string;
+  public description: string;
   public shortDescription: string;
   public genre: string;
   public subGenre: string;
@@ -16,28 +18,37 @@ export class StoryModel extends BaseModel {
   public updatedAt: Date;
   public publishedAt: Date;
   public versions: AudioVersionModel[] = [];
+  public images: ImageModel[] = [];
+  public isPublishing: boolean;
+  public account: HalDoc;
 
-  SETABLE = ['title', 'shortDescription', 'genre', 'subGenre', 'extraTags'];
+  SETABLE = ['title', 'description', 'shortDescription', 'genre', 'subGenre', 'extraTags'];
 
   VALIDATORS = {
     title:            [REQUIRED(), LENGTH(10)],
+    description:      [LENGTH(10)],
     shortDescription: [REQUIRED(), LENGTH(10)],
     genre:            [REQUIRED()],
     subGenre:         [REQUIRED()]
   };
 
-  constructor(account: HalDoc, story?: HalDoc) {
+  constructor(seriesOrAccount: HalDoc, story?: HalDoc, loadRelated = true) {
     super();
-    this.init(account, story);
+    if (seriesOrAccount.isa('series')) {
+      this.init(seriesOrAccount, story, loadRelated);
+    } else {
+      this.account = seriesOrAccount;
+      this.init(null, story, loadRelated);
+    }
   }
 
   key() {
     if (this.doc) {
       return `prx.story.${this.doc.id}`;
     } else if (this.parent) {
-      return `prx.story.new.${this.parent.id}`;
+      return `prx.story.new.${this.parent.id}`; // new in series
     } else {
-      return 'prx.story.new';
+      return 'prx.story.new'; // new standalone
     }
   }
 
@@ -46,13 +57,19 @@ export class StoryModel extends BaseModel {
       return {
         versions: this.doc.followItems('prx:audio-versions').map((versions) => {
           return versions.map((vdoc) => {
-            return new AudioVersionModel(this.doc, vdoc);
+            return new AudioVersionModel(this.parent, this.doc, vdoc);
           });
+        }),
+        images: this.doc.followItems('prx:images').map((images) => {
+          let imageModels = images.map(idoc => new ImageModel(this.parent, this.doc, idoc));
+          if (this.unsavedImage) { imageModels.push(this.unsavedImage); }
+          return imageModels;
         })
       };
     } else {
       return {
-        versions: Observable.of([new AudioVersionModel()])
+        versions: Observable.of([new AudioVersionModel(this.parent)]),
+        images: this.unsavedImage ? Observable.of([this.unsavedImage]) : Observable.of([])
       };
     }
   }
@@ -60,17 +77,19 @@ export class StoryModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.title = this.doc['title'] || '';
+    this.description = this.doc['description'] || '';
     this.shortDescription = this.doc['shortDescription'] || '';
     this.genre = this.parseGenre(this.doc['tags']) || '';
     this.subGenre = this.parseSubGenre(this.doc['tags']) || '';
     this.extraTags = this.parseExtraTags(this.doc['tags']) || '';
     this.updatedAt = new Date(this.doc['updatedAt']);
-    this.publishedAt = new Date(this.doc['publishedAt']);
+    this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
   }
 
   encode(): {} {
     let data = <any> {};
     data.title = this.title;
+    data.description = this.description;
     data.shortDescription = this.shortDescription;
     data.tags = [];
     if (this.extraTags) {
@@ -88,7 +107,11 @@ export class StoryModel extends BaseModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    return this.parent.create('prx:stories', {}, data);
+    if (this.parent) {
+      return this.parent.create('prx:stories', {}, data);
+    } else {
+      return this.account.create('prx:stories', {}, data);
+    }
   }
 
   parseGenre(tags: string[] = []): string {
@@ -118,6 +141,31 @@ export class StoryModel extends BaseModel {
       }
       return true;
     }).join(', ') || undefined;
+  }
+
+  setPublished(published: boolean): Observable<boolean> {
+    if (!published && this.doc.has('prx:unpublish')) {
+      this.isPublishing = true;
+      return this.doc.follow('prx:unpublish', {method: 'post'}).map(doc => {
+        this.init(this.parent, doc, false);
+        this.isPublishing = false;
+        return false;
+      });
+    } else if (published && this.doc.has('prx:publish')) {
+      this.isPublishing = true;
+      return this.doc.follow('prx:publish', {method: 'post'}).map(doc => {
+        this.init(this.parent, doc, false);
+        this.isPublishing = false;
+        return true;
+      });
+    } else {
+      return Observable.of(null);
+    }
+  }
+
+  get unsavedImage(): ImageModel {
+    let img = new ImageModel(this.parent, this.doc, null);
+    return img.isStored() && !img.isDestroy ? img : null;
   }
 
 }

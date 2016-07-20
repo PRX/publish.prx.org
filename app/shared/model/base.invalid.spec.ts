@@ -22,7 +22,7 @@ describe('BaseInvalid', () => {
   describe('LENGTH', () => {
 
     it('checks the lowerbound', () => {
-      expect(LENGTH(3)('fldname', '')).toMatch('is too short');
+      expect(LENGTH(3)('fldname', '')).toBeNull();
       expect(LENGTH(3)('fldname', '12')).toMatch('is too short');
       expect(LENGTH(3)('fldname', '123')).toBeNull();
     });

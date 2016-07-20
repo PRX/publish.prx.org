@@ -29,7 +29,6 @@ export class SellComponent implements OnDestroy {
   tabSub: Subscription;
 
   constructor(tab: StoryTabService) {
-    tab.setHero('Step 3: Sell your Story!');
     this.tabSub = tab.storyModel.subscribe((story) => {
       this.story = story;
     });
