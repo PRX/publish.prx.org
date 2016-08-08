@@ -46,10 +46,6 @@ export class ImageModel extends UploadableModel {
     let data = super.encode();
     data['caption'] = this.caption;
     data['credit'] =  this.credit;
-    if (this.isNew) {
-      // TODO: eventually images will use the s3:// enclosure
-      data['upload'] = `http:${this.enclosureHref}`;
-    }
     return data;
   }
 
