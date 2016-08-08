@@ -28,7 +28,6 @@ import {StoryFieldComponent} from '../../storyedit/directives/storyfield.compone
       </div>
 
       <div class="info" *ngIf="!canceled">
-        <h3>{{image?.filename}} {{image?.isNew}}</h3>
         <story-field [story]="image" textinput="true" name="caption" label="Caption" small="true"></story-field>
         <story-field [story]="image" textinput="true" name="credit" label="Credit" small="true"></story-field>
       </div>
