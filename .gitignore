@@ -1,5 +1,6 @@
 /.dev/
 /.dist/
+/dist/
 /config/systemjs.vendor.js
 /jspm_packages/
 /node_modules/
@@ -12,5 +13,6 @@
 
 .DS_Store
 
+public/dotenv.js
 /.env
 /.nvmrc
