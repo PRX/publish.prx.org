@@ -1,5 +1,7 @@
 import { Subscription } from 'rxjs';
-import { BaseModel, HalDoc, Upload } from '..';
+import { HalDoc } from '../cms/haldoc';
+import { Upload } from '../upload/upload.service';
+import { BaseModel } from './base.model';
 import { FALSEY } from './base.invalid';
 
 export abstract class UploadableModel extends BaseModel {

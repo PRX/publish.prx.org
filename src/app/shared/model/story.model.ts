@@ -1,5 +1,8 @@
 import { Observable} from 'rxjs';
-import { AudioVersionModel, BaseModel, HalDoc, ImageModel } from '..';
+import { HalDoc } from '../cms/haldoc';
+import { BaseModel } from './base.model';
+import { AudioVersionModel } from './audio-version.model';
+import { ImageModel } from './image.model';
 import { REQUIRED, LENGTH } from './base.invalid';
 import { CATEGORIES, SUBCATEGORIES } from './story.categories';
 

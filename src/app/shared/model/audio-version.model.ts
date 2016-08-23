@@ -1,5 +1,8 @@
 import { Observable } from 'rxjs';
-import { AudioFileModel, BaseModel, HalDoc, Upload } from '..';
+import { HalDoc } from '../cms/haldoc';
+import { Upload } from '../upload/upload.service';
+import { BaseModel } from './base.model';
+import { AudioFileModel } from './audio-file.model';
 
 export class AudioVersionModel extends BaseModel {
 

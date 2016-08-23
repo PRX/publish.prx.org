@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { HalDoc } from '..';
+import { HalDoc } from '../cms/haldoc';
 import { BaseInvalid } from './base.invalid';
 
 interface ValidatorMap { [key: string]: BaseInvalid[]; }
