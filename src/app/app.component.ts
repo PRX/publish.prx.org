@@ -13,7 +13,7 @@ import { FooterComponent } from './footer/footer.component';
     ROUTER_DIRECTIVES,
     AuthComponent,
     HeaderComponent,
-    ModalComponent
+    ModalComponent,
     NavItemComponent,
     NavUserComponent,
     FooterComponent

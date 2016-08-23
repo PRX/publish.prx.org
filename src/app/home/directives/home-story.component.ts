@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 
-import {DurationPipe, ImageLoaderComponent, StoryModel} from '../../shared';
+import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
 
 @Component({
   directives: [ImageLoaderComponent, ROUTER_DIRECTIVES],

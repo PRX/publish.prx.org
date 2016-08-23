@@ -1,0 +1,201 @@
+/*
+ * PRX header component
+ */
+header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 50px;
+  z-index: 200;
+  border-bottom: 1px solid #e6e6e6;
+  background: #fff;
+}
+.contents {
+  max-width: 1060px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+@media screen and (min-width: 768px) {
+  .contents {
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+}
+a.drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  margin: 0 14px;
+  line-height: 50px;
+  background-image: url("/assets/images/ic_header_menu.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+}
+@media all and (-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 1.5/1), (min-device-pixel-ratio: 1.5), (min-resolution: 138dpi), (min-resolution: 1.5dppx) {
+  a.drawer {
+    background-image: url("/assets/images/ic_header_menu@2x.png");
+    -webkit-background-size: auto 15px;
+    -moz-background-size: auto 15px;
+    background-size: auto 15px;
+  }
+}
+h1 {
+  width: 62px;
+  margin: 0 auto;
+  position: relative;
+  opacity: 0.99;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=99)";
+  filter: alpha(opacity=99);
+  z-index: 900;
+}
+h1 a {
+  line-height: 50px;
+  display: block;
+  background-image: url("/assets/images/ic_header_logo.svg");
+  -webkit-background-size: auto 22px;
+  -moz-background-size: auto 22px;
+  background-size: auto 22px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/*
+ * Navigation
+ */
+nav {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 30px;
+  width: calc(50% - 80px);
+  text-align: right;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: box;
+  display: flex;
+  -webkit-box-pack: end;
+  -moz-box-pack: end;
+  -o-box-pack: end;
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -o-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  height: 100%;
+}
+nav.alternate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  visibility: hidden;
+}
+
+/*
+ * Responsively un-drawer stuff
+ */
+@media screen and (min-width: 768px) {
+  header {
+    height: 73px;
+  }
+  h1 {
+    margin-left: 0;
+    width: 93px;
+  }
+  h1 a {
+    line-height: 73px;
+    -webkit-background-size: auto 33px;
+    -moz-background-size: auto 33px;
+    background-size: auto 33px;
+  }
+  a.drawer {
+    position: absolute;
+    left: -10px;
+    top: 12px;
+  }
+  nav {
+    width: 50%;
+  }
+  nav .nav-holder {
+    height: 73px;
+    top: -29.5px;
+  }
+  nav .nav-holder > *:not(.dropdown) {
+    line-height: 73px;
+  }
+}
+
+/*
+ * Loading indicator
+ */
+header.loading {
+  position: fixed !important;
+  top: 0 !important;
+}
+header > div:not(.loading) {
+  margin: 0 auto;
+  position: relative;
+}
+header > .loading {
+  position: absolute;
+  width: 100%;
+  overflow: hidden;
+}
+header > .loading .bar {
+  height: 1px;
+  width: 0%;
+  background: #ffa500;
+  -webkit-transition: width 0.3s linear;
+  -moz-transition: width 0.3s linear;
+  -o-transition: width 0.3s linear;
+  -ms-transition: width 0.3s linear;
+  transition: width 0.3s linear;
+}
+header > .loading.hide {
+  display: none;
+}
+header > .loading.hide-add {
+  display: block;
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+  -webkit-transition: opacity 0.5s 1s;
+  -moz-transition: opacity 0.5s 1s;
+  -o-transition: opacity 0.5s 1s;
+  -ms-transition: opacity 0.5s 1s;
+  transition: opacity 0.5s 1s;
+}
+header > .loading.hide-add-active {
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: alpha(opacity=0);
+}
+header > .loading.reset .bar {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  -ms-transition: none;
+  transition: none;
+}
