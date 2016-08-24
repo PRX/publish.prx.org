@@ -13,6 +13,8 @@ export * from './date/timeago.pipe';
 export * from './file/duration.pipe';
 export * from './file/filesize.pipe';
 
+export * from './form/fancy-field.component';
+
 export * from './image/image-loader.component';
 
 export * from './modal/modal.component';

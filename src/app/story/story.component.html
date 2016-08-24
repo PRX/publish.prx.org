@@ -1,0 +1,21 @@
+<publish-story-hero></publish-story-hero>
+<div class="main">
+  <section>
+    <div class="subnav">
+      <nav>
+        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+          [routerLink]="editLink">STEP 1: {{id ? 'Edit' : 'Create'}} your story</a>
+        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+          [routerLink]="['decorate']">STEP 2: Decorate your story</a>
+        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+          [routerLink]="['sell']">STEP 3: Sell your story</a>
+      </nav>
+      <div class="extras">
+        <button *ngIf="id" class="delete" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+    <div class="page">
+      <router-outlet></router-outlet>
+    </div>
+  </section>
+</div>

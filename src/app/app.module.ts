@@ -9,12 +9,19 @@ import { AuthGuard, AuthService, CmsService, DeactivateGuard, MimeTypeService,
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home';
+import { LoginComponent } from './login';
+import { StoryComponent, EditComponent, DecorateComponent, SellComponent } from './story';
 import { routing } from './app.routes';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    LoginComponent,
+    StoryComponent,
+    EditComponent,
+    DecorateComponent,
+    SellComponent
   ],
   imports: [
     BrowserModule,
