@@ -4,7 +4,7 @@
       <h2>Your Series</h2>
       <a *ngIf="totalCount" class="all" href="#">View All {{totalCount}} &raquo;</a>
     </header>
-    <spinner *ngIf="!isLoaded"></spinner>
+    <publish-spinner *ngIf="!isLoaded"></publish-spinner>
     <div *ngIf="noSeries">
       <h1>No Series</h1>
       <home-series noseries=true [auth]="auth" rows=4></home-series>

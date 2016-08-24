@@ -8,7 +8,7 @@ import { FileSelectDirective } from './directives/file-select.directive';
   selector: 'image-upload',
   styleUrls: ['image-upload.component.css'],
   template: `
-    <spinner *ngIf="story && !story?.images"></spinner>
+    <publish-spinner *ngIf="story && !story?.images"></publish-spinner>
 
     <div *ngIf="noImages" class="new-image">
       <p class="size">{{recommendWidth}}x{{recommendHeight}} px</p>

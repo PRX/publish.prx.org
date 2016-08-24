@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 
 @Component({
-  selector: 'spinner',
+  selector: 'publish-spinner',
   styleUrls: ['spinner.component.css'],
   template: `<div *ngIf="isSpinning" class="spinner" [class.inverse]="inverse"></div>`
 })

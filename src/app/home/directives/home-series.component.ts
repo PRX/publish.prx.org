@@ -31,7 +31,7 @@ import { HomeStoryComponent } from './home-story.component';
     </header>
     <div class="story-list">
       <home-story *ngFor="let s of stories" [story]="s"></home-story>
-      <div *ngFor="let l of storyLoaders" class="story"><spinner></spinner></div>
+      <div *ngFor="let l of storyLoaders" class="story"><publish-spinner></publish-spinner></div>
     </div>
   `
 })

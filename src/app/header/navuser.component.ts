@@ -17,7 +17,7 @@ import { CmsService, ImageLoaderComponent, SpinnerComponent } from '../shared';
         </a>
       </template>
       <div *ngIf="!userName" class="spin-holder">
-        <spinner inverse=true></spinner>
+        <publish-spinner inverse=true></publish-spinner>
       </div>
     </div>
     `

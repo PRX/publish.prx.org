@@ -7,7 +7,7 @@ import { AudioVersionComponent } from './directives/audio-version.component';
   selector: 'audio-upload',
   styleUrls: ['audio-upload.component.css'],
   template: `
-    <spinner *ngIf="!story || !story.versions"></spinner>
+    <publish-spinner *ngIf="!story || !story.versions"></publish-spinner>
     <div *ngIf="story && story.versions">
       <audio-version *ngFor="let v of story.versions" [version]="v">
       </audio-version>

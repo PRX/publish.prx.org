@@ -13,7 +13,7 @@ import { StoryTabService } from '../services/story-tab.service';
   template: `
     <div class="hero banner">
       <section>
-        <spinner *ngIf="!bannerTitle"></spinner>
+        <publish-spinner *ngIf="!bannerTitle"></publish-spinner>
         <header *ngIf="bannerTitle">
           <h1 *ngIf="story.isNew">Create Story</h1>
           <h1 *ngIf="!story.isNew">Edit Story</h1>
@@ -26,7 +26,7 @@ import { StoryTabService } from '../services/story-tab.service';
     </div>
     <div class="hero toolbar" [class.affix]="affixed" (window:scroll)="onScroll()">
       <section *ngIf="!story">
-        <spinner inverse=true></spinner>
+        <publish-spinner inverse=true></publish-spinner>
       </section>
       <section *ngIf="story?.isNew">
         <div class="info">
@@ -36,7 +36,7 @@ import { StoryTabService } from '../services/story-tab.service';
         <div class="actions">
           <button class="create" [class.saving]="story.isSaving"
             [disabled]="story.invalid() || story.isSaving"
-            (click)="save()">Create <spinner *ngIf="story.isSaving"></spinner></button>
+            (click)="save()">Create <publish-spinner *ngIf="story.isSaving"></publish-spinner></button>
         </div>
       </section>
       <section *ngIf="story?.doc">
@@ -52,7 +52,7 @@ import { StoryTabService } from '../services/story-tab.service';
             [disabled]="story.invalid() || story.isSaving || story.isPublishing"
             (click)="save()">
             Save
-            <spinner *ngIf="story.isSaving"></spinner>
+            <publish-spinner *ngIf="story.isSaving"></publish-spinner>
             <div *ngIf="story.invalid()" class="invalid-tip">
               <h4>Invalid changes</h4>
               <p>Correct them before saving</p>
@@ -63,7 +63,7 @@ import { StoryTabService } from '../services/story-tab.service';
             [disabled]="story.changed() || story.isSaving || story.isPublishing"
             (click)="togglePublish()">
             {{story.publishedAt ? 'Unpublish' : 'Publish'}}
-            <spinner *ngIf="story.isPublishing"></spinner>
+            <publish-spinner *ngIf="story.isPublishing"></publish-spinner>
           </button>
         </div>
       </section>
