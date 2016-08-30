@@ -1,3 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
-
-/* TODO: what does this even do??? */
+/*
+ * Global style manifest
+ */
+@import 'assets/styles/reset.css';
+@import 'assets/styles/app.css';
+@import 'assets/styles/forms.css';
+@import 'assets/styles/layout.css';
+@import 'assets/styles/loading.css';
+@import '/assets/fontello/css/fontello.css';

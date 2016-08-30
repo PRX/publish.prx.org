@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 
 import { AuthComponent, AuthService, CmsService, ModalComponent } from './shared';
@@ -18,15 +18,7 @@ import { FooterComponent } from './footer/footer.component';
     NavUserComponent,
     FooterComponent
   ],
-  selector: 'publish-app',
-  encapsulation: ViewEncapsulation.None, // Important!
-  styleUrls: [
-    'shared/styles/reset.css',
-    'shared/styles/app.css',
-    'shared/styles/forms.css',
-    'shared/styles/layout.css',
-    'shared/styles/loading.css'
-  ],
+  selector: 'app-publish',
   templateUrl: 'app.component.html'
 })
 
