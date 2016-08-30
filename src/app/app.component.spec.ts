@@ -1,20 +1,38 @@
-/* tslint:disable:no-unused-variable */
-
-import { addProviders, async, inject } from '@angular/core/testing';
+import { Subject } from 'rxjs';
+import { setupComponent, buildComponent, mockService } from '../test-support';
 import { AppComponent } from './app.component';
 
-describe('App: PublishCli', () => {
-  beforeEach(() => {
-    addProviders([AppComponent]);
+import { AuthService } from './shared/auth/auth.service';
+import { CmsService } from './shared/cms/cms.service';
+import { ModalService } from './shared/modal/modal.service';
+
+let authToken = new Subject<string>();
+let cmsToken: string = null;
+
+describe('AppComponent', () => {
+
+  setupComponent(AppComponent);
+
+  mockService(AuthService, {token: authToken});
+  mockService(CmsService, {
+    setToken: token => cmsToken = token,
+    account: new Subject<any>()
   });
+  mockService(ModalService, {state: new Subject<boolean>()});
 
-  it('should create the app',
-    inject([AppComponent], (app: AppComponent) => {
-      expect(app).toBeTruthy();
-    }));
+  it('only shows header links when logged in', buildComponent((fix, el, app) => {
+    app.loggedIn = true;
+    fix.detectChanges();
+    expect(el.querySelectorAll('nav-item').length).toEqual(3);
+    app.loggedIn = false;
+    fix.detectChanges();
+    expect(el.querySelectorAll('nav-item').length).toEqual(0);
+  }));
 
-  it('should have as title \'app works!\'',
-    inject([AppComponent], (app: AppComponent) => {
-      expect(app.title).toEqual('app works!');
-    }));
+  it('ties together auth and cms', buildComponent((fix, el, app) => {
+    expect(cmsToken).toBeNull();
+    authToken.next('something');
+    expect(cmsToken).toEqual('something');
+  }));
+
 });

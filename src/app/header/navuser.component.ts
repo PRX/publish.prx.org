@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { CmsService, ImageLoaderComponent, SpinnerComponent } from '../shared';
+import { ImageLoaderComponent, SpinnerComponent } from '../shared';
+import { CmsService } from '../shared/cms/cms.service';
 
 @Component({
   directives: [SpinnerComponent, ImageLoaderComponent],

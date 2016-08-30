@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { Env } from '../..';
+import { Env } from '../../environments';
 
 /**
  * Generic cache for json

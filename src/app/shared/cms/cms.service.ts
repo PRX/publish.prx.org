@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { Http } from '@angular/http';
-import { HalDoc, HalObservable } from './haldoc';
-import { HalRemote, HalLink } from './halremote';
-import { Env } from '../..';
+import { HalDoc } from './haldoc';
+import { HalObservable } from './halobservable';
+import { HalRemote } from './halremote';
+import { HalLink } from './hallink';
+import { Env } from '../../environments';
 
 @Injectable()
 export class CmsService {

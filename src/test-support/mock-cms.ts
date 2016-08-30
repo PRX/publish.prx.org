@@ -1,10 +1,11 @@
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CmsService } from './cms.service';
-import { HalDoc, HalObservable } from './haldoc';
-import { HalRemote } from './halremote';
+import { CmsService, HalDoc, HalObservable, HalRemote } from '../app/shared/cms';
 
-// Re-export for convenience
-export { CmsService };
+/*
+ * Collection of utilities for mocking cms requests - actual exports
+ * at the bottom of this file.
+ */
 
 export class MockHalDoc extends HalDoc {
 
@@ -138,6 +139,7 @@ export class MockHalDoc extends HalDoc {
 
 }
 
+@Injectable()
 export class MockCmsService {
 
   private mockRoot: MockHalDoc;
@@ -183,3 +185,11 @@ export class MockCmsService {
   }
 
 }
+
+export const mockCms = new MockCmsService();
+
+export const provideFakeCms = () => {
+  return [
+    { provide: CmsService, useValue: mockCms }
+  ];
+};

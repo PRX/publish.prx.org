@@ -2,6 +2,7 @@
 /.dist/
 /dist/
 /config/systemjs.vendor.js
+/coverage/
 /jspm_packages/
 /node_modules/
 /typings/

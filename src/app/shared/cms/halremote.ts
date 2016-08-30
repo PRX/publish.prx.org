@@ -2,14 +2,7 @@ import { Http, Headers, RequestOptionsArgs } from '@angular/http';
 import { Observable } from 'rxjs';
 import * as TemplateParser from 'url-template';
 import { HalRemoteCache } from './halremote.cache';
-
-export interface HalLink {
-  title: string ;
-  name: string;
-  profile: string;
-  href: string;
-  templated: boolean;
-}
+import { HalLink } from './hallink';
 
 /**
  * Http layer for HAL requests

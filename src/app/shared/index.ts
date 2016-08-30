@@ -4,9 +4,7 @@ export * from './auth/auth.service';
 export * from './auth/auth.urls';
 export * from './auth/deactivate.guard';
 
-export * from './cms/cms.service';
-export * from './cms/haldoc';
-export * from './cms/halremote';
+export * from './cms';
 
 export * from './date/timeago.pipe';
 
