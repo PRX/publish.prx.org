@@ -1,5 +1,5 @@
 import { ElementRef } from '@angular/core';
-import { Env } from '../../environments';
+import { Env } from '../../env';
 
 export class AuthUrls {
 

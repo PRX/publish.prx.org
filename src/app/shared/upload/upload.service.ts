@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, ConnectableObservable, Subscriber } from 'rxjs';
 import Evaporate from 'evaporate';
 
-import { Env } from '../../environments';
+import { Env } from '../../env';
 import { UUID } from '../uuid/uuid';
 import { MimeTypeService } from './mime-type.service';
 

@@ -1,10 +1,7 @@
 //
-// ENV values, set by:
+// DYNAMIC env variables
 //
-// production  - pulled from window.ENV, set by index.html
-// development - pulled from your public/dotenv.js at runtime
-// test        - TBD
-//
+
 const DEFAULTS = {
   CMS_HOST: 'https://cms.prx.org',
   CMS_TTL: 1, // 1 second
