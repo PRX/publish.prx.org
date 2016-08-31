@@ -14,14 +14,13 @@ Once published, the other side of the coin is to collect metrics on these channe
 ## API and Backend Dependencies
 
 ### Use defaults
-By default publish will connect to id.prx.org and cms.prx.org.
-The app and `env-example` defaults match and both will hit these production services.
-
 To set-up environment custom values, start with these defaults in your `.env` file:
 ``` sh
 cp env-example .env
 vim .env
 ```
+
+After this, publish will connect to id.prx.org and cms-staging.prx.tech.
 
 ### Use local `cms`
 To run cms locally, change the `CMS_HOST` in `.env` to `CMS_HOST=cms.prx.dev`.
@@ -37,14 +36,14 @@ cd prx.org
 
 # in the console, save a new client application
 client = ClientApplication.create(
-  :url => "http://publish.prx.docker",
-  :callback_url => "http://publish.prx.docker/assets/callback.html",
-  :support_url => "http://publish.prx.docker",
+  :url => "http://publish.prx.dev",
+  :callback_url => "http://publish.prx.dev/assets/callback.html",
+  :support_url => "http://publish.prx.dev",
   :image_url => "http://s3.amazonaws.com/production.mediajoint.prx.org/public/comatose_files/4625/prx-logo_large.png",
-  :description => "publish.prx.docker",
+  :description => "publish.prx.dev",
   :template_name => "prx_beta",
   :user_id =>8,
-  :name => "publish.prx.docker",
+  :name => "publish.prx.dev",
   :auto_grant =>true
 )
 
@@ -55,16 +54,40 @@ puts "AUTH_CLIENT_ID=#{client.key}"
 
 Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from above.
 
+## Local Install
+
+Due to the complexity of installing node-sass in alpine-linux, it may be easier
+to just develop locally for the time being.  Just make sure you have a modern
+node version installed (6.x.x, ideally).
+
+``` sh
+# install dependencies
+npm install
+
+# setup pow proxy (see http://pow.cx/)
+echo 4200 > ~/.pow/publish.prx
+
+# dev server
+npm start
+open http://publish.prx.dev
+```
+
 ## Docker Install
 
-Now you can install the app dependencies and run it using `npm` and `docker`.
+Or if you really want to, you can develop via docker-compose.
 This guide assumes you already have npm, docker and dinghy installed.
+
+TODO: hot reloading not supported yet - this just builds the prod js.
+
 ``` sh
 # build a docker image
 docker-compose build
 
 # install dev dependencies locally, so docker can mount those folders
-npm install && npm run build-dev
+npm install
+
+# make sure your AUTH_CLIENT_ID is the .docker one
+vim .env
 
 # run the docker image, will detect changes to local file system
 docker-compose up

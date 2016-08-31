@@ -19,6 +19,10 @@ try {
 // stringify to javascript environment
 let jsfile = 'window.ENV = {};';
 for (let key of Object.keys(env)) {
+  if (env[key] === '') {
+    continue; // stick with default
+  }
+
   let val = env[key];
   if (['true', 'false', 'null', 'undefined'].indexOf(val) > -1) {
     val = val;

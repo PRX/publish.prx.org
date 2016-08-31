@@ -5,7 +5,7 @@ CMD_ARGS=
 CMD=
 
 ApplicationUsage () {
-  echo "usage: application [ start | build | start-dev | build-dev | test | tdd | ci | help | -- COMMAND ]"
+  echo "usage: application [ serve | help | -- COMMAND ]"
 }
 
 ApplicationParseOpts () {

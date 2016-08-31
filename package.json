@@ -26,7 +26,10 @@
     "lint": "tslint \"src/**/*.ts\"",
     "test": "ng test",
     "pree2e": "webdriver-manager update",
-    "e2e": "protractor"
+    "e2e": "protractor",
+    "ci": "ng test --watch false --browsers PhantomJS",
+    "build": "ng build -prod",
+    "serve": "node bin/inlineenv.js && http-server dist -p 4200 -d False -g True --cors"
   },
   "dependencies": {
     "@angular/common": "2.0.0-rc.5",
@@ -38,7 +41,9 @@
     "@angular/platform-browser-dynamic": "2.0.0-rc.5",
     "@angular/router": "3.0.0-rc.1",
     "core-js": "^2.4.0",
+    "dotenv": "^2.0.0",
     "evaporate": "^1.5.2",
+    "http-server": "^0.9.0",
     "ng2-dragula": "^1.1.10",
     "rxjs": "5.0.0-beta.11",
     "ts-helpers": "^1.1.1",
@@ -53,14 +58,16 @@
     "jasmine-core": "2.4.1",
     "jasmine-spec-reporter": "2.5.0",
     "karma": "0.13.22",
-    "karma-chrome-launcher": "0.2.3",
     "karma-jasmine": "0.3.8",
-    "karma-phantomjs-launcher": "^1.0.1",
     "karma-remap-istanbul": "^0.2.1",
     "karma-spec-reporter": "0.0.26",
     "protractor": "4.0.3",
     "ts-node": "1.2.1",
     "tslint": "3.13.0",
     "typescript": "2.0.0"
+  },
+  "optionalDependencies": {
+    "karma-chrome-launcher": "0.2.3",
+    "karma-phantomjs-launcher": "^1.0.2"
   }
 }

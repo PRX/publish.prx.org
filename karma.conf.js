@@ -15,10 +15,10 @@ module.exports = function (config) {
     ],
     files: [
       { pattern: './src/test.ts', watched: false },
-      { pattern: './public/**/*.*', watched: false, included: false }
+      { pattern: './src/assets/**/*.*', watched: false, included: false }
     ],
     proxies: {
-      '/assets/': '/base/public/assets/'
+      '/assets/': '/base/src/assets/'
     },
     preprocessors: {
       './src/test.ts': ['angular-cli']
@@ -35,8 +35,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['PhantomJS'],
-    // browsers: ['Chrome'],
+    browsers: ['Chrome'],
     singleRun: false
   });
 };
