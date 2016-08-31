@@ -1,0 +1,13 @@
+window.ENV = {};
+window.ENV.CMS_HOST = 'http://cms-staging.prx.tech';
+window.ENV.CMS_TTL = '';
+window.ENV.CMS_ROOT_TTL = 3600;
+window.ENV.CMS_USE_LOCALSTORAGE = '';
+window.ENV.AUTH_HOST = 'https://id.prx.org';
+window.ENV.AUTH_CLIENT_ID = '35zRqonwphKY05Uu2RA1YquwqyonSh3V6vAtnpBt';
+window.ENV.BUCKET_NAME = 'prx-up';
+window.ENV.BUCKET_FOLDER = 'dev';
+window.ENV.SIGN_URL = 'https://6fzgppd4bk.execute-api.us-east-1.amazonaws.com/prod/signature';
+window.ENV.AWS_KEY = 'AKIAJZ5C7KQPL34SQ63Q';
+window.ENV.AWS_URL = 'https://dsn15m3yob5tf.cloudfront.net';
+window.ENV.USE_CLOUDFRONT = true;
