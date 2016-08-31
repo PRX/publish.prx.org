@@ -1,0 +1,29 @@
+<div [class]="fieldClasses" [class.small]="small">
+  <h3 *ngIf="label && !small">
+    <label [attr.for]="name" [attr.required]="required">{{label}}</label>
+  </h3>
+  <h4 *ngIf="label && small">
+    <label [attr.for]="name" [attr.required]="required">{{label}}</label>
+  </h4>
+
+  <p class="hint"><ng-content select="hint"></ng-content></p>
+
+  <div class="nested">
+    <ng-content></ng-content>
+  </div>
+
+  <input *ngIf="textinput" [id]="name" type="text"
+    [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"/>
+
+  <textarea *ngIf="textarea" [id]="name"
+    [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"></textarea>
+
+  <select *ngIf="select" [id]="name"
+    [(ngModel)]="model[name]" (ngModelChange)="onChange($event)">
+    <option *ngFor="let opt of select" [value]="opt">{{opt}}</option>
+  </select>
+
+  <p *ngIf="invalidFieldName && !small" class="error">
+    {{invalidFieldLabel}} {{model.invalid(invalidFieldName)}}
+  </p>
+</div>

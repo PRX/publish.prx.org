@@ -1,0 +1,14 @@
+<publish-header>
+  <nav-item *ngIf="loggedIn" route="/" text="Home"></nav-item>
+  <nav-item *ngIf="loggedIn" route="../create" text="Create"></nav-item>
+  <nav-item *ngIf="loggedIn" href="//www.prx.org/search/all" text="Search"></nav-item>
+  <nav-user *ngIf="loggedIn"></nav-user>
+</publish-header>
+<main>
+  <article>
+    <router-outlet></router-outlet>
+  </article>
+</main>
+<publish-footer></publish-footer>
+<prx-auth></prx-auth>
+<modal-box></modal-box>

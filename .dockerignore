@@ -1,9 +1,8 @@
-.dev
-.dist
 .env
 .git
 .gitignore
 coverage
+dist
 docker-compose.yml
 node_modules
 tmp
