@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:5.7
+FROM mhart/alpine-node:6.5
 
 MAINTAINER PRX <sysadmin@prx.org>
 
@@ -7,22 +7,21 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-stati
 RUN chmod +x /tini
 
 WORKDIR /app
-EXPOSE 3000
+EXPOSE 4200
 
 ADD . ./
 
-RUN apk --update add --virtual build-dependencies git && \
+# TODO: someday https://github.com/sass/node-sass/issues/1589 will happen,
+# and building this will be way faster.
+RUN apk --update add --no-cache --virtual build-dependencies \
+    python=2.7.12-r0 git-perl bash make gcc g++ && \
     npm set progress=false && \
     npm install --no-optional --unsafe-perm --loglevel error && \
     npm run build && \
-    npm prune --production --loglevel error && npm cache clean && \
-    rm -rf jspm_packages typings .dev && \
+    npm prune --production --loglevel error && \
+    npm cache clean && \
     apk del build-dependencies && \
-    ((find / -type f -iname \*.apk-new -delete || true); \
-    rm -rf /var/cache/apk/* /tmp/* /var/tmp/* ; \
-    find /usr/lib/node_modules/npm -name test -o -name .bin -type d | xargs rm -rf ; \
-    rm -rf /usr/share/man /tmp/* /root/.npm /root/.node-gyp \
-    /usr/lib/node_modules/npm/man /usr/lib/node_modules/npm/doc /usr/lib/node_modules/npm/html)
+    rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
 ENTRYPOINT ["/tini", "--", "./bin/application"]
-CMD [ "start" ]
+CMD [ "serve" ]
