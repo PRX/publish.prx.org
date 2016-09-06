@@ -20,6 +20,9 @@ cp env-example .env
 vim .env
 ```
 
+You'll definitely need to set the "aws uploading" bucket/folder/signer if you plan
+to do any image/audio file uploading.
+
 After this, publish will connect to id.prx.org and cms-staging.prx.tech.
 
 ### Use local `cms`
