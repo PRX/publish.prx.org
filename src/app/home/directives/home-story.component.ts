@@ -18,8 +18,7 @@ import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
     </template>
     <template [ngIf]="!isPlusSign">
       <a [routerLink]="editLink">
-        <image-loader *ngIf="storyImage" [src]="storyImage"></image-loader>
-        <div *ngIf="!storyImage" class="no-image">No Image</div>
+        <image-loader [src]="storyImage"></image-loader>
       </a>
       <h2>
         <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>
