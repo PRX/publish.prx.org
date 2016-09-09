@@ -4,8 +4,7 @@ import { Component, Input, ElementRef } from '@angular/core';
   selector: 'image-loader',
   styleUrls: ['image-loader.component.css'],
   template: `
-    <img *ngIf="src" [src]="src" class="loading" (load)="setBackgroundImage(src)" (error)="setBackgroundImage(placeholderError)"/>
-    <img *ngIf="!src" [src]="placeholderImage" class="loading" (load)="setBackgroundImage(placeholderImage)" (error)="setBackgroundImage(placeholderError)"/>
+    <img *ngIf="src" [src]="src" (load)="onLoad()" (error)="onError()"/>
     `
 })
 
@@ -13,13 +12,17 @@ export class ImageLoaderComponent {
 
   @Input() public src: string;
 
-  placeholderImage: string = '/assets/images/placeholder.png';
-  placeholderError: string = '/assets/images/placeholder_error.png';
+  static PLACEHOLDER_IMAGE: string = '/assets/images/placeholder.png';
+  static PLACEHOLDER_ERROR: string = '/assets/images/placeholder_error.png';
 
   constructor(private element: ElementRef) {}
 
   setBackgroundImage(src) {
     this.element.nativeElement.style['background-image'] = `url(${src})`;
   }
+
+  onLoad = () => this.setBackgroundImage(this.src);
+
+  onError = () => this.setBackgroundImage(ImageLoaderComponent.PLACEHOLDER_ERROR);
 
 }
