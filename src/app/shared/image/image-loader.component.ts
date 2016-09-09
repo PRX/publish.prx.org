@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef } from '@angular/core';
+import { Component, Input, ElementRef, OnChanges } from '@angular/core';
 import { HalDoc } from '../cms/haldoc';
 
 @Component({
@@ -9,7 +9,7 @@ import { HalDoc } from '../cms/haldoc';
     `
 })
 
-export class ImageLoaderComponent {
+export class ImageLoaderComponent implements OnChanges {
 
   @Input() public src: string;
   @Input() public imageDoc: HalDoc;
