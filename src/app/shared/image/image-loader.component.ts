@@ -28,14 +28,18 @@ export class ImageLoaderComponent implements OnChanges {
   onError = () => this.setBackgroundImage(ImageLoaderComponent.PLACEHOLDER_ERROR);
 
   ngOnChanges(changes:any) {
-    if ((!changes.src || !changes.src.currentValue) &&
-        changes.imageDoc && changes.imageDoc.currentValue && changes.imageDoc.currentValue.has('prx:image')) {
-      this.imageDoc.follow('prx:image').subscribe(
-        img => this.src = img.expand('enclosure'),
-        err => this.src = ImageLoaderComponent.PLACEHOLDER_ERROR
-      )
-    } else if (!changes.src || !changes.src.currentValue) {
-      this.src = ImageLoaderComponent.PLACEHOLDER_IMAGE;
+    const doesntHaveSrc = (changes) => !changes.src || !changes.src.currentValue;
+    const hasPRXImageDoc = (changes) => changes.imageDoc && changes.imageDoc.currentValue && changes.imageDoc.currentValue.has('prx:image');
+
+    if (doesntHaveSrc(changes)) {
+      if (hasPRXImageDoc(changes)) {
+        this.imageDoc.follow('prx:image').subscribe(
+          img => this.src = img.expand('enclosure'),
+          err => this.src = ImageLoaderComponent.PLACEHOLDER_ERROR
+        );
+      } else {
+        this.src = ImageLoaderComponent.PLACEHOLDER_IMAGE;
+      }
     }
   }
 
