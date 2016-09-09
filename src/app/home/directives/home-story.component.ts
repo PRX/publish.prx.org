@@ -64,14 +64,16 @@ export class HomeStoryComponent implements OnInit {
 
     // TODO: draft audios
     if (this.story.isNew) {
-      this.storyImage = this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
+      this.storyImage = this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : ImageLoaderComponent.PLACEHOLDER_IMAGE;
       this.storyDuration = 0;
     } else {
       if (this.story.doc.has('prx:image')) {
         this.story.doc.follow('prx:image').subscribe(
           img => this.storyImage = img.expand('enclosure'),
-          err => this.storyImage = null
+          err => this.storyImage = ImageLoaderComponent.PLACEHOLDER_ERROR
         );
+      } else {
+        this.storyImage = ImageLoaderComponent.PLACEHOLDER_IMAGE;
       }
       if (this.story.doc.has('prx:audio')) {
         this.story.doc.followItems('prx:audio').subscribe((audios) => {
