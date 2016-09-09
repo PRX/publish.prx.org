@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 
+import { HalDoc } from '../../shared/cms/haldoc';
 import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
 
 @Component({
@@ -18,7 +19,7 @@ import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
     </template>
     <template [ngIf]="!isPlusSign">
       <a [routerLink]="editLink">
-        <image-loader [src]="storyImage"></image-loader>
+        <image-loader [src]="storyImage" [imageDoc]="storyImageDoc"></image-loader>
       </a>
       <h2>
         <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>
@@ -40,6 +41,7 @@ export class HomeStoryComponent implements OnInit {
 
   storyId: number;
   storyImage: string;
+  storyImageDoc: HalDoc;
   storyTitle: string;
   storyDuration: number;
   storyUpdated: Date;
@@ -64,17 +66,10 @@ export class HomeStoryComponent implements OnInit {
 
     // TODO: draft audios
     if (this.story.isNew) {
-      this.storyImage = this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : ImageLoaderComponent.PLACEHOLDER_IMAGE;
+      this.storyImage = this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
       this.storyDuration = 0;
     } else {
-      if (this.story.doc.has('prx:image')) {
-        this.story.doc.follow('prx:image').subscribe(
-          img => this.storyImage = img.expand('enclosure'),
-          err => this.storyImage = ImageLoaderComponent.PLACEHOLDER_ERROR
-        );
-      } else {
-        this.storyImage = ImageLoaderComponent.PLACEHOLDER_IMAGE;
-      }
+      this.storyImageDoc = this.story.doc;
       if (this.story.doc.has('prx:audio')) {
         this.story.doc.followItems('prx:audio').subscribe((audios) => {
           if (!audios || audios.length < 1) {

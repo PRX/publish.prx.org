@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ImageLoaderComponent, SpinnerComponent } from '../shared';
 import { CmsService } from '../shared/cms/cms.service';
+import { HalDoc } from '../shared/cms/haldoc';
 
 @Component({
   directives: [SpinnerComponent, ImageLoaderComponent],
@@ -14,7 +15,7 @@ import { CmsService } from '../shared/cms/cms.service';
       <template [ngIf]="userName">
         <a *ngIf="userName">
           <span class="name">{{userName}}</span>
-          <image-loader [src]="userImage"></image-loader>
+          <image-loader [imageDoc]="userImageDoc"></image-loader>
         </a>
       </template>
       <div *ngIf="!userName" class="spin-holder">
@@ -27,19 +28,12 @@ import { CmsService } from '../shared/cms/cms.service';
 export class NavUserComponent {
 
   userName: string;
-  userImage: string;
+  userImageDoc: HalDoc;
 
   constructor(private cms: CmsService) {
     cms.account.subscribe((doc) => {
       this.userName = doc['name'];
-      doc.follow('prx:image').subscribe(
-        (image) => {
-          this.userImage = image.expand('enclosure');
-        },
-        (err) => {
-          this.userImage = null; // no image - leave blank
-        }
-      );
+      this.userImageDoc = doc;
     });
   }
 
