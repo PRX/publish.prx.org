@@ -18,7 +18,7 @@ import { StoryTabService } from '../services/story-tab.service';
           <h1 *ngIf="story.isNew">Create Story</h1>
           <h1 *ngIf="!story.isNew">Edit Story</h1>
           <div>
-            <image-loader [src]="bannerLogo"></image-loader>
+            <image-loader [imageDoc]="bannerLogoDoc"></image-loader>
             <h2>{{bannerTitle}}</h2>
           </div>
         </header>
