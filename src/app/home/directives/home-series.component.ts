@@ -23,7 +23,7 @@ import { HomeStoryComponent } from './home-story.component';
     </header>
     <header *ngIf="!noseries">
       <a href="#">
-        <image-loader [src]="logo"></image-loader>
+        <image-loader [imageDoc]="logoDoc"></image-loader>
       </a>
       <p class="count">{{count}} Stories</p>
       <h1><a href="#">{{title}}</a></h1>
@@ -45,7 +45,7 @@ export class HomeSeriesComponent implements OnInit {
   @Input() noseries: boolean;
   @Input() rows: number = 1;
 
-  logo: string;
+  logoDoc: HalDoc;
   count: number = -1;
   title: string;
   updated: Date;
@@ -64,10 +64,7 @@ export class HomeSeriesComponent implements OnInit {
     this.title = this.series['title'];
     this.count = this.series.count('prx:stories');
     this.updated = new Date(this.series['updatedAt']);
-    this.series.follow('prx:image').subscribe(
-      img => this.logo = img.expand('enclosure'),
-      err => this.logo = null
-    );
+    this.logoDoc = this.series;
 
     // how many stories to display? (plus 1 new/draft story)
     let total = this.series.count('prx:stories');

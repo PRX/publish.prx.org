@@ -1,5 +1,6 @@
 import { setupComponent, buildComponent, mockCms } from '../../test-support';
 import { NavUserComponent } from './navuser.component';
+import { ImageLoaderComponent } from '../shared/image/image-loader.component';
 
 describe('NavUserComponent', () => {
 
@@ -18,19 +19,19 @@ describe('NavUserComponent', () => {
       expect(el.querySelector('spinner')).toBeNull();
       expect(el.querySelector('.name').textContent).toEqual('TheAccountName');
       expect(navuser.userName).toEqual('TheAccountName');
-      expect(navuser.userImage).toEqual('http://cms.mock/v1/theimage');
+      expect(el.querySelector('image-loader > img').src).toEqual('http://cms.mock/v1/theimage');
     }));
 
   });
 
-  describe('with no account image', () => {
+  describe('with error requesting account image', () => {
 
     beforeEach(() => account.mockError('prx:image', 'Does not exist'));
 
-    it('leaves the image blank ', buildComponent((fix, el, navuser) => {
+    it('includes the placeholder error image ', buildComponent((fix, el, navuser) => {
       expect(el.querySelector('.name').textContent).toEqual('TheAccountName');
       expect(navuser.userName).toEqual('TheAccountName');
-      expect(navuser.userImage).toBeNull();
+      expect(el.querySelector('image-loader > img').src.indexOf(ImageLoaderComponent.PLACEHOLDER_ERROR)).not.toEqual(-1);
     }));
 
   });

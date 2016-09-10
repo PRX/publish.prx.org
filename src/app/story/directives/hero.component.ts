@@ -18,7 +18,7 @@ import { StoryTabService } from '../services/story-tab.service';
           <h1 *ngIf="story.isNew">Create Story</h1>
           <h1 *ngIf="!story.isNew">Edit Story</h1>
           <div>
-            <image-loader [src]="bannerLogo"></image-loader>
+            <image-loader [imageDoc]="bannerLogoDoc"></image-loader>
             <h2>{{bannerTitle}}</h2>
           </div>
         </header>
@@ -78,25 +78,19 @@ export class HeroComponent implements OnDestroy {
   tabSub: Subscription;
   affixed = false;
   bannerTitle: string;
-  bannerLogo: string;
+  bannerLogoDoc: HalDoc;
 
   constructor(private router: Router, private tab: StoryTabService) {
     this.tabSub = tab.storyModel.subscribe((story) => {
       this.story = story;
       if (this.story.parent) {
         this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
-        this.setBannerLogo(this.story.parent);
+        this.bannerLogoDoc = this.story.parent;
       } else {
         this.bannerTitle = this.story.account['name'] || '(Unnnamed Account)';
-        this.setBannerLogo(this.story.account);
+        this.bannerLogoDoc = this.story.account;
       }
     });
-  }
-
-  setBannerLogo(doc: HalDoc) {
-    if (doc.has('prx:image')) {
-      doc.follow('prx:image').subscribe(img => this.bannerLogo = img.expand('enclosure'));
-    }
   }
 
   ngOnDestroy(): any {
