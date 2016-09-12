@@ -69,7 +69,7 @@ export class StoryHeroComponent implements OnDestroy {
         this.bannerLink = `/series/${this.story.parent.id}`;
         this.bannerLogoDoc = this.story.parent;
       } else {
-        this.bannerTitle = this.story.account['name'] || '(Unnnamed Account)';
+        this.bannerTitle = this.story.account['name'] || '(Unnamed Account)';
         this.bannerLink = null;
         this.bannerLogoDoc = this.story.account;
       }
