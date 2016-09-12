@@ -40,6 +40,7 @@ export class FancyFieldComponent {
   }
 
   get fieldClasses(): string {
+    if (!this.model) { return 'field'; }
     let classes = ['field'];
     let changed = this.changedFieldName && this.model.changed(this.changedFieldName);
     let invalid = this.invalidFieldName && this.model.invalid(this.invalidFieldName);

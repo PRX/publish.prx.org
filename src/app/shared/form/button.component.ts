@@ -10,7 +10,7 @@ import { SpinnerComponent } from '../spinner/spinner.component';
   template: `
     <button *ngIf="isVisible" [disabled]="isDisabled" [class.working]="isWorking"
       [class.orange]="orange" [class.plain]="plain" [class.red]="red"
-      (click)="onClick()">
+      (click)="onClick($event)">
       <ng-content></ng-content>
       <publish-spinner *ngIf="isWorking"></publish-spinner>
     </button>
@@ -54,7 +54,8 @@ export class ButtonComponent {
     }
   }
 
-  onClick() {
+  onClick(event: Event) {
+    event.stopPropagation();
     this.click.emit();
   }
 

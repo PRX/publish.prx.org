@@ -1,12 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { CmsService, ModalService, SeriesModel } from '../shared';
-import { HeroComponent, ButtonComponent } from '../shared';
+import {
+  ButtonComponent,
+  CmsService,
+  FancyFieldComponent,
+  HeroComponent,
+  ModalService,
+  SeriesModel
+} from '../shared';
 
 @Component({
-  directives: [HeroComponent, ButtonComponent],
+  directives: [HeroComponent, ButtonComponent, FancyFieldComponent],
   selector: 'publish-series',
   styleUrls: ['series.component.css'],
   templateUrl: 'series.component.html'
@@ -21,7 +27,8 @@ export class SeriesComponent implements OnInit, OnDestroy {
   constructor(
     private cms: CmsService,
     private modal: ModalService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -39,13 +46,36 @@ export class SeriesComponent implements OnInit, OnDestroy {
     let auth = this.cms.follow('prx:authorization');
     if (this.id) {
       auth.follow('prx:series', {id: this.id}).subscribe(seriesDoc => {
-        this.series = new SeriesModel(null, seriesDoc);
+        if (seriesDoc['appVersion'] !== 'v4') {
+          let oldLink = `https://www.prx.org/series/${this.id}`;
+          this.modal.alert(
+            'Cannot Edit Series',
+            `This series was created in the older PRX.org app, and must be
+            edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
+            () => { window.history.back(); }
+          );
+        } else {
+          this.series = new SeriesModel(null, seriesDoc);
+        }
       });
     } else {
       auth.follow('prx:default-account').subscribe(accountDoc => {
         this.series = new SeriesModel(accountDoc, null);
       });
     }
+  }
+
+  save() {
+    let wasNew = this.series.isNew;
+    this.series.save().subscribe(() => {
+      if (wasNew) {
+        this.router.navigate(['/series', this.series.id]);
+      }
+    });
+  }
+
+  discard() {
+    this.series.discard();
   }
 
 }
