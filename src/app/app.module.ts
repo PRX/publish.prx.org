@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { DragulaModule } from 'ng2-dragula/ng2-dragula';
 
 import { AuthGuard, AuthService, CmsService, DeactivateGuard, MimeTypeService,
   ModalService, UnauthGuard, UploadService } from './shared';
@@ -28,6 +29,7 @@ import { routing } from './app.routes';
     CommonModule,
     FormsModule,
     HttpModule,
+    DragulaModule,
     routing
   ],
   providers: [
