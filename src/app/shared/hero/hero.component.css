@@ -59,34 +59,6 @@
   display: inline-block;
   margin-left: 10px;
 }
-.toolbar >>> button.publish, .toolbar >>> button.create {
-  background-color: #f59f51;
-}
-.toolbar >>> button.publish:hover, .toolbar >>> button.create:hover {
-  background-color: #e28b42;
-}
-.toolbar >>> button.discard {
-  background-color: #bbb;
-}
-.toolbar >>> button.discard:hover {
-  background-color: #999;
-}
-.toolbar >>> button[disabled] {
-  color: #adc8d1;
-  background-color: #7FA9B7;
-  cursor: default;
-}
-.toolbar >>> button.publish[disabled], .toolbar >>> button.create[disabled] {
-  color: #fce4cf;
-  background-color: #f9c596;
-}
-.toolbar >>> button.discard[disabled] {
-  color: #eee;
-  background-color: #ccc;
-}
-.toolbar >>> button.saving, .toolbar >>> button.publishing {
-  color: rgba(0,0,0,0);
-}
 
 /**
  * Tooltip for invalid forms
@@ -102,7 +74,7 @@
   margin-top: 15px;
   display: none;
 }
-.toolbar >>> button.save:hover .invalid-tip, .toolbar >>> button.create:hover .invalid-tip {
+.toolbar >>> button:hover .invalid-tip {
   display: block;
 }
 .toolbar >>> .invalid-tip h4 {
@@ -118,7 +90,6 @@
 	position: absolute;
 	pointer-events: none;
 }
-
 .toolbar >>> .invalid-tip:after {
 	border-color: rgba(255, 255, 255, 0);
 	border-bottom-color: #fff;

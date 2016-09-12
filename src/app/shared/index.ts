@@ -11,6 +11,7 @@ export * from './date/timeago.pipe';
 export * from './file/duration.pipe';
 export * from './file/filesize.pipe';
 
+export * from './form/button.component';
 export * from './form/fancy-field.component';
 
 export * from './hero/hero.component';

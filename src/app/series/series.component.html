@@ -8,6 +8,19 @@
     <p *ngIf="series?.isNew">Not saved</p>
     <p *ngIf="!series?.isNew">Last modified {{series.updatedAt | timeago}}</p>
   </hero-info>
+  <hero-actions *ngIf="series">
+
+    <template [ngIf]="series.isNew">
+      <publish-button [model]="series" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
+      <publish-button [model]="series" visible=1 orange=1 (click)="save()">Create</publish-button>
+    </template>
+
+    <template [ngIf]="!series.isNew">
+      <publish-button [model]="series" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
+      <publish-button [model]="series" (click)="save()">Save</publish-button>
+    </template>
+
+  </hero-actions>
 </publish-hero>
 <div class="main">
   <section>

@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { CmsService, ModalService, SeriesModel } from '../shared';
-import { HeroComponent } from '../shared';
+import { HeroComponent, ButtonComponent } from '../shared';
 
 @Component({
-  directives: [HeroComponent],
+  directives: [HeroComponent, ButtonComponent],
   selector: 'publish-series',
   styleUrls: ['series.component.css'],
   templateUrl: 'series.component.html'

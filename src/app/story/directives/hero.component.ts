@@ -2,12 +2,12 @@ import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { HeroComponent } from '../../shared';
-import { HalDoc, ImageLoaderComponent, SpinnerComponent, StoryModel, TimeAgoPipe } from '../../shared';
+import { HeroComponent, ButtonComponent } from '../../shared';
+import { HalDoc, ImageLoaderComponent, StoryModel, TimeAgoPipe } from '../../shared';
 import { StoryTabService } from '../services/story-tab.service';
 
 @Component({
-  directives: [HeroComponent, SpinnerComponent, ImageLoaderComponent],
+  directives: [HeroComponent, ButtonComponent, ImageLoaderComponent],
   pipes: [TimeAgoPipe],
   selector: 'publish-story-hero',
   styleUrls: ['hero.component.css'],
@@ -28,33 +28,26 @@ import { StoryTabService } from '../services/story-tab.service';
         <p *ngIf="!story?.isNew">Last saved at {{story.updatedAt | timeago}}</p>
       </hero-info>
       <hero-actions *ngIf="story">
+
         <template [ngIf]="story.isNew">
-          <button class="create" [class.saving]="story.isSaving"
-            [disabled]="story.invalid() || story.isSaving"
-            (click)="save()">Create <publish-spinner *ngIf="story.isSaving"></publish-spinner></button>
+          <publish-button [model]="story" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
+          <publish-button [model]="story" visible=1 orange=1 (click)="save()">Create</publish-button>
         </template>
+
         <template [ngIf]="!story.isNew">
-          <button *ngIf="story.changed()" class="discard"
-            [disabled]="story.isSaving" (click)="discard()">Discard Changes</button>
-          <button *ngIf="story.changed()" class="save"
-            [class.saving]="story.isSaving"
-            [disabled]="story.invalid() || story.isSaving || story.isPublishing"
-            (click)="save()">
-            Save
-            <publish-spinner *ngIf="story.isSaving"></publish-spinner>
+          <publish-button [model]="story" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
+          <publish-button [model]="story" (click)="save()">Save
             <div *ngIf="story.invalid()" class="invalid-tip">
               <h4>Invalid changes</h4>
               <p>Correct them before saving</p>
             </div>
-          </button>
-          <button class="publish"
-            [class.publishing]="story.isPublishing"
-            [disabled]="story.changed() || story.isSaving || story.isPublishing"
-            (click)="togglePublish()">
+          </publish-button>
+          <publish-button [model]="story" [visible]="!story.changed()"
+             [working]="story.isPublishing" (click)="togglePublish()" orange=1>
             {{story.publishedAt ? 'Unpublish' : 'Publish'}}
-            <publish-spinner *ngIf="story.isPublishing"></publish-spinner>
-          </button>
+          </publish-button>
         </template>
+
       </hero-actions>
     </publish-hero>
     `
