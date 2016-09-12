@@ -1,0 +1,18 @@
+<div class="main">
+  <section>
+    <header>
+      <h2>Do a search for...</h2>
+      <a *ngIf="totalCount" class="all" href="#">View All {{totalCount}} &raquo;</a>
+    </header>
+    <publish-spinner *ngIf="!isLoaded"></publish-spinner>
+    <div *ngIf="noStories">
+      <h1>No Stories</h1>
+    </div>
+    <div *ngIf="!noStories">
+      <div class="story-list">
+        <home-story *ngFor="let s of stories" [story]="s"></home-story>
+        <div *ngFor="let l of storyLoaders" class="story"><publish-spinner></publish-spinner></div>
+      </div>
+    </div>
+  </section>
+</div>

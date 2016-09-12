@@ -1,0 +1,36 @@
+header {
+  position: relative;
+  overflow: auto;
+  width: 100%;
+  margin-bottom: 10px;
+}
+header h2 {
+  font-size: 25px;
+  line-height: 30px;
+  border-bottom: 1px solid #676767;
+  color: #343434;
+  margin-bottom: 1px;
+}
+header a.all {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.story-list {
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: row wrap;
+  margin-left: -10px;
+}
+home-story, .story {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  margin-top: 10px;
+  margin-left: 10px;
+  flex-basis: 192px;
+  width: 192px;
+  height: 192px;
+  max-width: 192px;
+  background: #ddd;
+}
