@@ -46,17 +46,19 @@ export class SeriesComponent implements OnInit, OnDestroy {
     let auth = this.cms.follow('prx:authorization');
     if (this.id) {
       auth.follow('prx:series', {id: this.id}).subscribe(seriesDoc => {
-        if (seriesDoc['appVersion'] !== 'v4') {
-          let oldLink = `https://www.prx.org/series/${this.id}`;
-          this.modal.alert(
-            'Cannot Edit Series',
-            `This series was created in the older PRX.org app, and must be
-            edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
-            () => { window.history.back(); }
-          );
-        } else {
-          this.series = new SeriesModel(null, seriesDoc);
-        }
+        // TODO: check app_version once CMS starts returning it
+        this.series = new SeriesModel(null, seriesDoc);
+        // if (seriesDoc['appVersion'] !== 'v4') {
+        //   let oldLink = `https://www.prx.org/series/${this.id}`;
+        //   this.modal.alert(
+        //     'Cannot Edit Series',
+        //     `This series was created in the older PRX.org app, and must be
+        //     edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
+        //     () => { window.history.back(); }
+        //   );
+        // } else {
+        //   this.series = new SeriesModel(null, seriesDoc);
+        // }
       });
     } else {
       auth.follow('prx:default-account').subscribe(accountDoc => {
