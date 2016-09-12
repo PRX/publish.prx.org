@@ -18,7 +18,8 @@ import { StoryTabService } from '../services/story-tab.service';
         <h1 *ngIf="!story.isNew">Edit Story</h1>
         <div class="story-series">
           <image-loader [imageDoc]="bannerLogoDoc"></image-loader>
-          <h2>{{bannerTitle}}</h2>
+          <h2 *ngIf="bannerLink"><a [href]="bannerLink">{{bannerTitle}}</a></h2>
+          <h2 *ngIf="!bannerLink">{{bannerTitle}}</h2>
         </div>
       </hero-title>
       <hero-info *ngIf="story">
@@ -64,6 +65,7 @@ export class StoryHeroComponent implements OnDestroy {
   story: StoryModel;
   tabSub: Subscription;
   bannerTitle: string;
+  bannerLink: string;
   bannerLogoDoc: HalDoc;
 
   constructor(private router: Router, private tab: StoryTabService) {
@@ -71,9 +73,11 @@ export class StoryHeroComponent implements OnDestroy {
       this.story = story;
       if (this.story.parent) {
         this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
+        this.bannerLink = `/series/${this.story.parent.id}`;
         this.bannerLogoDoc = this.story.parent;
       } else {
         this.bannerTitle = this.story.account['name'] || '(Unnnamed Account)';
+        this.bannerLink = null;
         this.bannerLogoDoc = this.story.account;
       }
     });

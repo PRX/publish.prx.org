@@ -24,6 +24,7 @@ export * from './model/audio-file.model';
 export * from './model/audio-version.model';
 export * from './model/base.model';
 export * from './model/image.model';
+export * from './model/series.model';
 export * from './model/story.model';
 export * from './model/uploadable.model';
 

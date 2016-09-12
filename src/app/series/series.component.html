@@ -1,10 +1,12 @@
 <publish-hero blue=true>
   <hero-title>
-    <h1>Hello WORLDDDDD</h1>
+    <h1 *ngIf="id">Edit Series</h1>
+    <h1 *ngIf="!id">Create Series</h1>
   </hero-title>
-  <hero-info *ngIf="!isLoading">
-    <h2>The Series Title Here</h2>
-    <p>Last saved at 5 minutes ago</p>
+  <hero-info *ngIf="series">
+    <h2>{{series.title || '(Untitled)'}}</h2>
+    <p *ngIf="series?.isNew">Not saved</p>
+    <p *ngIf="!series?.isNew">Last modified {{series.updatedAt | timeago}}</p>
   </hero-info>
 </publish-hero>
 <div class="main">

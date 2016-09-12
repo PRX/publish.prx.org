@@ -1,6 +1,9 @@
 /**
  * Banner series/account image
  */
+h2 a {
+  color: #fff;
+}
 .story-series {
   margin-top: -28px;
   padding-bottom: 28px;
