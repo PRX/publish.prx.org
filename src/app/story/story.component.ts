@@ -4,10 +4,10 @@ import { Observable, Subject, Subscription } from 'rxjs';
 
 import { CmsService, ModalService, StoryModel } from '../shared';
 import { StoryTabService } from './services/story-tab.service';
-import { HeroComponent } from './directives/hero.component';
+import { StoryHeroComponent } from './directives/hero.component';
 
 @Component({
-  directives: [ROUTER_DIRECTIVES, HeroComponent],
+  directives: [ROUTER_DIRECTIVES, StoryHeroComponent],
   providers: [StoryTabService],
   selector: 'publish-story',
   styleUrls: ['story.component.css'],
