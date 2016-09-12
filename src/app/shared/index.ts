@@ -13,6 +13,8 @@ export * from './file/filesize.pipe';
 
 export * from './form/fancy-field.component';
 
+export * from './hero/hero.component';
+
 export * from './image/image-loader.component';
 
 export * from './modal/modal.component';
