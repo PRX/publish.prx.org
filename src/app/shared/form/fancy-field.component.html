@@ -12,18 +12,24 @@
     <ng-content></ng-content>
   </div>
 
-  <input *ngIf="textinput" [id]="name" type="text"
-    [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"/>
+  <template [ngIf]="model">
+    <input *ngIf="textinput" [id]="name" type="text" [disabled]="!model"
+      [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"/>
+    <textarea *ngIf="textarea" [id]="name" [disabled]="!model"
+      [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"></textarea>
+    <select *ngIf="select" [id]="name" [disabled]="!model"
+      [(ngModel)]="model[name]" (ngModelChange)="onChange($event)">
+      <option *ngFor="let opt of select" [value]="opt">{{opt}}</option>
+    </select>
+  </template>
 
-  <textarea *ngIf="textarea" [id]="name"
-    [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"></textarea>
-
-  <select *ngIf="select" [id]="name"
-    [(ngModel)]="model[name]" (ngModelChange)="onChange($event)">
-    <option *ngFor="let opt of select" [value]="opt">{{opt}}</option>
-  </select>
+  <template [ngIf]="!model">
+    <input *ngIf="textinput" [id]="name" type="text" disabled=true/>
+    <textarea *ngIf="textarea" [id]="name" disabled=true></textarea>
+    <select *ngIf="select" [id]="name" disabled=true></select>
+  </template>
 
   <p *ngIf="invalidFieldName && !small" class="error">
-    {{invalidFieldLabel}} {{model.invalid(invalidFieldName)}}
+    {{invalidFieldLabel}} {{model?.invalid(invalidFieldName)}}
   </p>
 </div>

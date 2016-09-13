@@ -1,0 +1,124 @@
+/**
+ * Banner text
+ */
+.banner {
+  background: #818181 url('/assets/images/towers.png') repeat;
+}
+.banner.orange {
+  background-image: url('/assets/images/tl_orange_radios.png');
+}
+.banner.blue {
+  background-image: url('/assets/images/tl_blue_mics.png');
+}
+.banner section {
+  min-height: 120px;
+}
+.banner >>> h1 {
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 40px;
+  padding: 40px 0;
+  color: #fff;
+}
+.banner >>> h2 {
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 25px;
+  padding: 25px 0;
+  color: #fff;
+}
+
+/**
+ * Toolbar
+ */
+.toolbar {
+  background: #fff;
+}
+.toolbar section {
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  position: relative;
+}
+.toolbar publish-spinner {
+  height: 54px;
+}
+.toolbar .info {
+  flex-grow: 1;
+}
+.toolbar .actions {
+  white-space: nowrap;
+}
+.toolbar >>> h2 {
+  font-size: 26px;
+  line-height: 30px;
+  font-weight: 200;
+}
+.toolbar >>> button {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+/**
+ * Tooltip for invalid forms
+ */
+.toolbar >>> .invalid-tip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  color: #368aa2;
+  border: 1px solid #368aa2;
+  padding: 4px 10px;
+  margin-top: 15px;
+  display: none;
+}
+.toolbar >>> button:hover .invalid-tip {
+  display: block;
+}
+.toolbar >>> .invalid-tip h4 {
+  font-weight: 600;
+}
+.toolbar >>> .invalid-tip:after, .toolbar >>> .invalid-tip:before {
+	bottom: 100%;
+	right: 24px;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+.toolbar >>> .invalid-tip:after {
+	border-color: rgba(255, 255, 255, 0);
+	border-bottom-color: #fff;
+	border-width: 14px;
+	margin-right: -14px;
+}
+.toolbar >>> .invalid-tip:before {
+	border-color: rgba(173, 200,
+    color: #368aa2; 209, 0);
+	border-bottom-color: #368aa2;
+	border-width: 15px;
+	margin-right: -15px;
+}
+
+/**
+ * Affixing
+ */
+.toolbar.affix {
+  position: fixed;
+  top: 73px;
+  right: 0;
+  left: 0;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 75px;
+  z-index: 200;
+  border-bottom: 1px solid #e6e6e6;
+}
+.spacer.affix {
+  height: 75px;
+}

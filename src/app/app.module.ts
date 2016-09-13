@@ -11,6 +11,7 @@ import { AuthGuard, AuthService, CmsService, DeactivateGuard, MimeTypeService,
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home';
 import { LoginComponent } from './login';
+import { SeriesComponent } from './series';
 import { StoryComponent, EditComponent, DecorateComponent, SellComponent } from './story';
 import { routing } from './app.routes';
 
@@ -19,6 +20,7 @@ import { routing } from './app.routes';
     AppComponent,
     HomeComponent,
     LoginComponent,
+    SeriesComponent,
     StoryComponent,
     EditComponent,
     DecorateComponent,

@@ -11,7 +11,10 @@ export * from './date/timeago.pipe';
 export * from './file/duration.pipe';
 export * from './file/filesize.pipe';
 
+export * from './form/button.component';
 export * from './form/fancy-field.component';
+
+export * from './hero/hero.component';
 
 export * from './image/image-loader.component';
 
@@ -22,6 +25,7 @@ export * from './model/audio-file.model';
 export * from './model/audio-version.model';
 export * from './model/base.model';
 export * from './model/image.model';
+export * from './model/series.model';
 export * from './model/story.model';
 export * from './model/uploadable.model';
 

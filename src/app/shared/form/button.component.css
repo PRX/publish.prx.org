@@ -1,0 +1,35 @@
+/**
+ * The button colors! The colors!
+ */
+button[disabled] {
+  color: #adc8d1;
+  background-color: #7FA9B7;
+  cursor: default;
+}
+button.plain {
+  background-color: #bbb;
+}
+button.plain:hover {
+  background-color: #999;
+}
+button.plain[disabled] {
+  color: #eee;
+  background-color: #ccc;
+}
+button.orange {
+  background-color: #f59f51;
+}
+button.orange:hover {
+  background-color: #e28b42;
+}
+button.orange[disabled] {
+  color: #fce4cf;
+  background-color: #f9c596;
+}
+
+/*
+ * Hide text when spinner is showing
+ */
+button.working >>> * {
+  color: rgba(0, 0, 0, 0);
+}

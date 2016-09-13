@@ -26,7 +26,7 @@ import { HomeStoryComponent } from './home-story.component';
         <image-loader [imageDoc]="logoDoc"></image-loader>
       </a>
       <p class="count">{{count}} Stories</p>
-      <h1><a href="#">{{title}}</a></h1>
+      <h1><a href="/series/{{id}}">{{title}}</a></h1>
       <p class="updated">Last updated {{updated | timeago}}</p>
     </header>
     <div class="story-list">
@@ -47,6 +47,7 @@ export class HomeSeriesComponent implements OnInit {
 
   logoDoc: HalDoc;
   count: number = -1;
+  id: number;
   title: string;
   updated: Date;
   stories: StoryModel[];
@@ -61,6 +62,7 @@ export class HomeSeriesComponent implements OnInit {
   }
 
   loadSeriesStories() {
+    this.id = this.series.id;
     this.title = this.series['title'];
     this.count = this.series.count('prx:stories');
     this.updated = new Date(this.series['updatedAt']);
