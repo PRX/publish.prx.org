@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { CmsService, HalDoc, SpinnerComponent } from '../shared';
-import { StoryModel } from '../shared/model/story.model';
-import { HomeStoryComponent } from '../home/directives/home-story.component';
+import { CmsService, SpinnerComponent, HalDoc, StoryModel, SeriesModel } from '../shared';
+import { SearchStoryComponent } from './directives/search-story.component';
 
 @Component({
-  directives: [SpinnerComponent, HomeStoryComponent],
+  directives: [SpinnerComponent, SearchStoryComponent],
   selector: 'search',
   styleUrls: ['search.component.css'],
   templateUrl: 'search.component.html'
@@ -34,9 +33,19 @@ export class SearchComponent implements OnInit {
         auth.followItems('prx:stories').subscribe((stories) => {
           this.storyLoaders = null;
           let storyDocs = <HalDoc[]> stories;
-          this.stories = [new StoryModel(this.auth)];
-          for (let story of storyDocs) {
-            this.stories.push(new StoryModel(this.auth, story, false));
+          let draftStory = new StoryModel(this.auth);
+          this.stories = draftStory.isNew && draftStory.isStored() ? [draftStory] : [];
+          for (let doc of storyDocs) {
+            let story = new StoryModel(this.auth, doc, false);
+            // TODO: a lot of these stories on the search page will likely be from the same series, not good that it's getting each just for the title
+            if (story.doc.has('prx:series')) {
+              story.doc.follow('prx:series').subscribe((series) => {
+                story.parent = <HalDoc> series;
+                this.stories.push(story);
+              });
+            } else {
+              this.stories.push(story);
+            }
           }
           this.totalCount = auth.count('prx:stories');
           this.isLoaded = true;

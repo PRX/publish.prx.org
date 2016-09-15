@@ -22,15 +22,15 @@ header a.all {
   flex-flow: row wrap;
   margin-left: -10px;
 }
-home-story, .story {
+/* TODO: all of the above is copy pasted from home-series */
+search-story, .story {
   display: block;
   overflow: hidden;
   position: relative;
   margin-top: 10px;
   margin-left: 10px;
-  flex-basis: 192px;
-  width: 192px;
+  flex-basis: 495px;
+  width: 495px;
   height: 192px;
-  max-width: 192px;
   background: #ddd;
 }
