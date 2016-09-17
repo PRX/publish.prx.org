@@ -2,27 +2,67 @@ header {
   position: relative;
   overflow: auto;
   width: 100%;
+  border-bottom: 1px solid #676767;
   margin-bottom: 10px;
 }
 header h2 {
   font-size: 25px;
   line-height: 30px;
-  border-bottom: 1px solid #676767;
   color: #343434;
   margin-bottom: 1px;
 }
-header a.all {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+
+[disabled] {
+  cursor: default;
 }
+
+header .tab {
+  float:left;
+  padding: 4px 8px;
+  background-color: #ddd;
+  color: #368aa2;
+}
+header .tab.active {
+  background-color: #368aa2;
+  color: #ddd;
+}
+header .tab.active {
+  background-color: #368aa2;
+  color: #ddd;
+}
+
+.btn-link {
+  color: #368aa2;
+  vertical-align: baseline;
+  padding: 0;
+  border: 0;
+  background: 0 0;
+}
+.btn-link:hover {
+  color: #f59f51;
+}
+.btn-link[disabled] {
+  color: #a3a3a3;
+}
+.btn-link.active {
+  color: #f59f51;
+}
+
+header .pages {
+  float: right;
+  margin-left: 10px;
+}
+header .pages > button {
+  margin-left: 4px;
+}
+
+
 .story-list {
   display: flex;
   justify-content: flex-start;
   flex-flow: row wrap;
   margin-left: -10px;
 }
-/* TODO: all of the above is copy pasted from home-series */
 search-story, .story {
   display: block;
   overflow: hidden;

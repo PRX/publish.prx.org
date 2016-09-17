@@ -2,7 +2,24 @@
   <section>
     <header>
       <h2>Do a search for...</h2>
-      <a *ngIf="totalCount" class="all" href="#">View All {{totalCount}} &raquo;</a>
+
+      <button (click)="search(searchTerm, 1, totalCount)" class="tab">Series</button>
+      <button (click)="search(searchTerm, 1, totalCount)" class="tab active" disabled>Stories</button>
+
+      <span class="pages">
+        <button *ngIf="totalCount && pages?.length > 1" (click)="search(searchTerm, 1, totalCount)" class="btn-link">View All {{totalCount}} &raquo;</button>
+        <button disabled *ngIf="totalCount && pages?.length === 1" class="btn-link">Viewing all {{totalCount}}</button>
+      </span>
+
+      <span *ngIf="pages?.length > 1" class="pages">
+        <button [disabled]="currentPage === 1" (click)="search(searchTerm, currentPage - 1)" class="btn-link">&lt;</button>
+        <button *ngFor="let page of pages | slice:pagesBegin:pagesEnd;"
+                [disabled]="page === currentPage" [ngClass]="{'active': page === currentPage}"
+                (click)="search(searchTerm, page)"
+                class="btn-link">{{page}}</button>
+        <button disabled *ngIf="pages.length > showNumPages" class="btn-link">of {{pages.length}}</button>
+        <button [disabled]="currentPage === pages?.length" (click)="search(searchTerm, currentPage + 1)" class="btn-link">&gt;</button>
+      </span>
     </header>
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>
     <div *ngIf="noStories">
