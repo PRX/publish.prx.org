@@ -14,7 +14,7 @@ import { HomeStoryComponent } from './home-story.component';
 @Component({
   directives: [SpinnerComponent, ImageLoaderComponent, HomeStoryComponent],
   pipes: [TimeAgoPipe],
-  selector: 'home-series',
+  selector: 'publish-home-series',
   styleUrls: ['home-series.component.css'],
   template: `
     <header *ngIf="noseries">
@@ -30,7 +30,7 @@ import { HomeStoryComponent } from './home-story.component';
       <p class="updated">Last updated {{updated | timeago}}</p>
     </header>
     <div class="story-list">
-      <home-story *ngFor="let s of stories" [story]="s"></home-story>
+      <publish-home-story *ngFor="let s of stories" [story]="s"></publish-home-story>
       <div *ngFor="let l of storyLoaders" class="story"><publish-spinner></publish-spinner></div>
     </div>
   `
@@ -74,7 +74,7 @@ export class HomeSeriesComponent implements OnInit {
     let limit = Math.min(total, max);
     this.storyLoaders = Array(limit + 1);
 
-    this.series.followItems('prx:stories', {per: limit}).subscribe((stories) => {
+    this.series.followItems('prx:stories', {per: limit, filters: 'v4'}).subscribe((stories) => {
       this.storyLoaders = null;
       this.stories = [new StoryModel(this.series)];
       for (let story of stories) {
@@ -88,7 +88,7 @@ export class HomeSeriesComponent implements OnInit {
     this.storyLoaders = Array(1); // just one
 
     let account = this.auth.follow('prx:default-account');
-    let stories = this.auth.followItems('prx:stories', {filters: 'noseries', per: limit});
+    let stories = this.auth.followItems('prx:stories', {filters: 'noseries,v4', per: limit});
 
     Observable.concat(account, stories).toArray().subscribe((results) => {
       let accountDoc = <HalDoc> results[0];

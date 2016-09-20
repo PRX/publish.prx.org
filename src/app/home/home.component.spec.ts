@@ -23,9 +23,9 @@ xdescribe('HomeComponent', () => {
   it('shows an empty no-series indicator', buildComponent((fix, el, home) => {
     expect(el.textContent).not.toMatch('View All');
     expect(el.textContent).toMatch('No Series');
-    expect(el.querySelector('home-series')).not.toBeNull();
-    expect(el.querySelector('home-series').getAttribute('noseries')).toEqual('true');
-    expect(el.querySelector('home-series').getAttribute('rows')).toEqual('4');
+    expect(el.querySelector('publish-home-series')).not.toBeNull();
+    expect(el.querySelector('publish-home-series').getAttribute('noseries')).toEqual('true');
+    expect(el.querySelector('publish-home-series').getAttribute('rows')).toEqual('4');
   }));
 
   describe('with many series', () => {
@@ -34,7 +34,7 @@ xdescribe('HomeComponent', () => {
 
     it('shows a list of series', buildComponent((fix, el, home) => {
       expect(el.textContent).toMatch('View All 3');
-      let series = el.querySelectorAll('home-series');
+      let series = el.querySelectorAll('publish-home-series');
       expect(series.length).toEqual(4);
       expect(series[0].getAttribute('rows')).toEqual('2');
       expect(series[0].getAttribute('noseries')).toBeNull();
@@ -50,7 +50,7 @@ xdescribe('HomeComponent', () => {
 
     it('shows many rows of a single series', buildComponent((fix, el, home) => {
       expect(el.textContent).not.toMatch('View All');
-      let series = el.querySelectorAll('home-series');
+      let series = el.querySelectorAll('publish-home-series');
       expect(series.length).toEqual(2);
       expect(series[0].getAttribute('rows')).toEqual('4');
       expect(series[0].getAttribute('noseries')).toBeNull();
