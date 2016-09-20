@@ -2,20 +2,24 @@
   <section>
     <header>
       <h2>Your Series</h2>
+      <a class="create" [routerLink]="['/series/new']">New Series &raquo;</a>
       <a *ngIf="totalCount" class="all" href="#">View All {{totalCount}} &raquo;</a>
     </header>
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>
-    <div *ngIf="noSeries">
-      <h1>No Series</h1>
-      <home-series noseries=true [auth]="auth" rows=4></home-series>
+    <div *ngIf="noSeries" class="empty">
+      <p class="empty">You have no series available to manage via the Publish app.
+        <br/>Older PRX series must be managed on
+        <a href="https://www.prx.org/series/manage">the old version of PRX.org</a>.
+      </p>
+      <publish-home-series noseries=true [auth]="auth" rows=4></publish-home-series>
     </div>
     <div *ngIf="oneSeries">
-      <home-series [series]="oneSeries" rows=4></home-series>
-      <home-series noseries=true [auth]="auth" rows=4></home-series>
+      <publish-home-series [series]="oneSeries" rows=4></publish-home-series>
+      <publish-home-series noseries=true [auth]="auth" rows=4></publish-home-series>
     </div>
     <div *ngIf="manySeries">
-      <home-series *ngFor="let s of manySeries" [series]="s" rows=2></home-series>
-      <home-series noseries=true [auth]="auth" rows=2></home-series>
+      <publish-home-series *ngFor="let s of manySeries" [series]="s" rows=2></publish-home-series>
+      <publish-home-series noseries=true [auth]="auth" rows=2></publish-home-series>
     </div>
   </section>
 </div>

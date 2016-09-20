@@ -50,7 +50,7 @@ header .updated {
   flex-flow: row wrap;
   margin-left: -10px;
 }
-home-story, .story {
+publish-home-story, .story {
   display: block;
   overflow: hidden;
   position: relative;
