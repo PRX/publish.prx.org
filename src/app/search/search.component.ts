@@ -25,60 +25,78 @@ export class SearchComponent implements OnInit {
   pagesEnd: number;
 
   searchTerm: string;
-  genres: string[];
-  subGenres: string[];
+  searchSeriesId: number;
+  searchSeries: SeriesModel;
+  allSeriesIds: number[];
+  allSeries: any;
 
   constructor(private cms: CmsService) {}
 
   ngOnInit() {
-    this.search('', 1);
+    this.cms.follow('prx:authorization').subscribe((auth) => {
+      this.auth = auth;
+
+      this.allSeriesIds = [];
+      this.allSeries = {};
+      auth.followItems('prx:series').subscribe((series) => {
+        for (let s of <HalDoc[]> series) {
+          this.allSeriesIds.push(s.id);
+          this.allSeries[s.id] = new SeriesModel(auth, s, false);
+        }
+
+        this.searchTerm = '';
+        this.searchSeries = null;
+        this.currentPage = 1;
+        this.search(1);
+      });
+    });
   }
 
-  search(term: string, page: number, per: number = 10) {
-    this.searchTerm = term;
+  searchBySeries() {
+    this.searchSeries = this.allSeries[this.searchSeriesId];
+    this.search(1);
+  }
+
+  search(page: number, per: number = 10) {
     this.currentPage = page;
     this.isLoaded = false;
 
-    this.cms.follow('prx:authorization').subscribe((auth) => {
-      this.auth = auth;
-      let storiesCount = auth.count('prx:stories') || 0;
-      if (storiesCount < 1) {
-        this.noStories = true;
-        this.isLoaded = true;
-      } else {
-        this.storyLoaders = Array(storiesCount);
+    let parent = this.searchSeries ? this.searchSeries.doc : this.auth;
 
-        let draftStory = new StoryModel(this.auth);
-        let isUnsavedDraft = draftStory.isNew && draftStory.isStored();
-        let showUnsavedDraft = this.currentPage === 1 && isUnsavedDraft;
+    let storiesCount = parent.count('prx:stories') || 0;
+    if (storiesCount < 1) {
+      this.noStories = true;// TODO: this is wrong because draftStory is not yet included
+      this.isLoaded = true;
+    } else {
+      this.storyLoaders = Array(storiesCount);
 
-        let requestPer = showUnsavedDraft ? per - 1 : per;
+      let draftStory = new StoryModel(this.auth);
+      let isUnsavedDraft = draftStory.isNew && draftStory.isStored();
+      let showUnsavedDraft = this.currentPage === 1 && isUnsavedDraft;
 
-        auth.followItems('prx:stories', {page: this.currentPage, per: requestPer}).subscribe((stories) => {
-          this.stories = showUnsavedDraft ? [draftStory] : [];
-          this.storyLoaders = null;
-          let storyDocs = <HalDoc[]> stories;
-          for (let doc of storyDocs) {
-            let story = new StoryModel(this.auth, doc, false);
-            // TODO: a lot of these stories on the search page will likely be from the same series, not good that it's getting each just for the title
-            if (story.doc.has('prx:series')) {
-              story.doc.follow('prx:series').subscribe((series) => {
-                story.parent = <HalDoc> series;
-                this.stories.push(story);
-              });
-            } else {
-              this.stories.push(story);
-            }
+      let requestPer = showUnsavedDraft ? per - 1 : per;
+
+      parent.followItems('prx:stories', {page: this.currentPage, per: requestPer}).subscribe((stories) => {
+        this.stories = showUnsavedDraft ? [draftStory] : [];
+        this.storyLoaders = null;
+        let storyDocs = <HalDoc[]> stories;
+        for (let doc of storyDocs) {
+          let story = new StoryModel(parent, doc, false);
+          if (story.doc.has('prx:series')) {
+            story.parent = parent;
+            this.stories.push(story);
+          } else {
+            this.stories.push(story);
           }
-          this.totalCount = isUnsavedDraft ? auth.count('prx:stories') + 1 : auth.count('prx:stories');
-          let totalPages = this.totalCount % per ? Math.floor(this.totalCount) / per + 1 : Math.floor(this.totalCount / per);
-          this.pages = Array.apply(null, {length: totalPages}).map((val, i) => i + 1);
-          this.pagesBegin = this.showNumPages * Math.floor((this.currentPage - 1) / this.showNumPages);
-          this.pagesEnd = this.showNumPages * Math.ceil(this.currentPage / this.showNumPages);
-          this.isLoaded = true;
-        });
-      }
-    });
+        }
+        this.totalCount = isUnsavedDraft ? storiesCount + 1 : storiesCount;
+        let totalPages = this.totalCount % per ? Math.floor(this.totalCount) / per + 1 : Math.floor(this.totalCount / per);
+        this.pages = Array.apply(null, {length: totalPages}).map((val, i) => i + 1);
+        this.pagesBegin = this.showNumPages * Math.floor((this.currentPage - 1) / this.showNumPages);
+        this.pagesEnd = this.showNumPages * Math.ceil(this.currentPage / this.showNumPages);
+        this.isLoaded = true;
+      });
+    }
   }
 
 }
