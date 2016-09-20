@@ -11,8 +11,9 @@
         <span class="left">
           <label [attr.for]="searchSeries">Filter by Series</label>
           <select id="searchSeries" [(ngModel)]="searchSeriesId" (ngModelChange)="searchBySeries()">
-            <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId].title}}</option>
+            <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId] ? allSeries[seriesId].title : 'No Series'}}</option>
           </select>
+          <!-- TODO: there should be a way to clear this -->
         </span>
 
         <span class="right">
@@ -30,7 +31,8 @@
 
         <span class="pages">
           <button *ngIf="totalCount && pages?.length > 1" (click)="search(1, totalCount)" class="btn-link">View All {{totalCount}} &raquo;</button>
-          <button disabled *ngIf="totalCount && pages?.length === 1" class="btn-link">Viewing all {{totalCount}}</button>
+          <button disabled *ngIf="totalCount && pages?.length === 1" class="btn-link">Viewing {{totalCount > 1 ? 'all ' + totalCount : totalCount}}</button>
+          <!-- How is the user supposed to get back to the paged view? -->
         </span>
 
         <span *ngIf="pages?.length > 1" class="pages">
@@ -46,11 +48,11 @@
     </header>
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>
     <div *ngIf="noStories">
-      <h1>No Stories</h1>
+      <h1>No Stories match your search</h1>
     </div>
     <div *ngIf="!noStories">
       <div class="story-list">
-        <search-story *ngFor="let s of stories" [story]="s"></search-story>
+        <publish-search-story *ngFor="let s of stories" [story]="s"></publish-search-story>
         <div *ngFor="let l of storyLoaders" class="story"><publish-spinner></publish-spinner></div>
       </div>
     </div>

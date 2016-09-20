@@ -8,7 +8,7 @@ import { DurationPipe, ImageLoaderComponent, OverflowComponent, StoryModel } fro
 @Component({
   directives: [ImageLoaderComponent, OverflowComponent, ROUTER_DIRECTIVES],
   pipes: [DatePipe, DurationPipe],
-  selector: 'search-story',
+  selector: 'publish-search-story',
   styleUrls: ['search-story.component.css'],
   template: `
     <div class="media-container">
@@ -99,7 +99,6 @@ export class SearchStoryComponent implements OnInit {
       } else {
         this.storyDuration = 0;
       }
-      // TODO: a lot of these stories on the search page will likely be from the same series, not good that it's querying it for each just for the title
       if (this.story.parent) {
         this.seriesTitle = this.story.parent['title'];
         this.seriesLink = ['/series', this.story.parent.id];

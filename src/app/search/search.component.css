@@ -89,7 +89,7 @@ header .pages > button {
   flex-flow: row wrap;
   margin-left: -10px;
 }
-search-story, .story {
+publish-search-story, .story {
   display: block;
   overflow: hidden;
   position: relative;
