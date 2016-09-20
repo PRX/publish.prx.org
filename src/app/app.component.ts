@@ -18,7 +18,7 @@ import { FooterComponent } from './footer/footer.component';
     NavUserComponent,
     FooterComponent
   ],
-  selector: 'app-publish',
+  selector: 'publish-root',
   templateUrl: 'app.component.html'
 })
 

@@ -31,43 +31,45 @@
     "build": "ng build -prod",
     "serve": "node bin/inlineenv.js && http-server dist -p 4200 -d False -g True --cors"
   },
+  "private": true,
   "dependencies": {
-    "@angular/common": "2.0.0-rc.5",
-    "@angular/compiler": "2.0.0-rc.5",
-    "@angular/core": "2.0.0-rc.5",
-    "@angular/forms": "0.3.0",
-    "@angular/http": "2.0.0-rc.5",
-    "@angular/platform-browser": "2.0.0-rc.5",
-    "@angular/platform-browser-dynamic": "2.0.0-rc.5",
-    "@angular/router": "3.0.0-rc.1",
-    "core-js": "^2.4.0",
+    "@angular/common": "2.0.0",
+    "@angular/compiler": "2.0.0",
+    "@angular/core": "2.0.0",
+    "@angular/forms": "2.0.0",
+    "@angular/http": "2.0.0",
+    "@angular/platform-browser": "2.0.0",
+    "@angular/platform-browser-dynamic": "2.0.0",
+    "@angular/router": "3.0.0",
+    "core-js": "^2.4.1",
     "dotenv": "^2.0.0",
     "evaporate": "^1.5.2",
     "http-server": "^0.9.0",
     "ng2-dragula": "^1.2.0",
-    "rxjs": "5.0.0-beta.11",
+    "rxjs": "5.0.0-beta.12",
     "ts-helpers": "^1.1.1",
     "url-template": "^2.0.8",
-    "zone.js": "0.6.12"
+    "zone.js": "^0.6.23"
   },
   "devDependencies": {
     "@types/jasmine": "^2.2.30",
     "@types/url-template": "^2.0.26",
-    "angular-cli": "1.0.0-beta.11-webpack.8",
+    "angular-cli": "1.0.0-beta.15",
     "codelyzer": "~0.0.26",
     "jasmine-core": "2.4.1",
     "jasmine-spec-reporter": "2.5.0",
-    "karma": "0.13.22",
-    "karma-jasmine": "0.3.8",
+    "karma": "1.2.0",
+    "karma-cli": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
     "karma-remap-istanbul": "^0.2.1",
     "karma-spec-reporter": "0.0.26",
-    "protractor": "4.0.3",
+    "protractor": "4.0.5",
     "ts-node": "1.2.1",
     "tslint": "3.13.0",
-    "typescript": "2.0.0"
+    "typescript": "2.0.2"
   },
   "optionalDependencies": {
-    "karma-chrome-launcher": "0.2.3",
+    "karma-chrome-launcher": "^2.0.0",
     "karma-phantomjs-launcher": "^1.0.2"
   }
 }

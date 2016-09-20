@@ -1,6 +1,5 @@
-import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { DragulaModule } from 'ng2-dragula/ng2-dragula';
@@ -28,7 +27,6 @@ import { routing } from './app.routes';
   ],
   imports: [
     BrowserModule,
-    CommonModule,
     FormsModule,
     HttpModule,
     DragulaModule,
@@ -44,7 +42,6 @@ import { routing } from './app.routes';
     UnauthGuard,
     UploadService
   ],
-  entryComponents: [AppComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
