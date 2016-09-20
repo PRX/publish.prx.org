@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DomSanitizationService } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Observable, Observer } from 'rxjs';
 
 export interface ModalState {
@@ -16,7 +16,7 @@ export class ModalService {
   public state: Observable<ModalState>;
   private observer: Observer<ModalState>;
 
-  constructor(private sanitizer: DomSanitizationService) {
+  constructor(private sanitizer: DomSanitizer) {
     this.state = Observable.create((observer: Observer<ModalState>) => {
       this.observer = observer;
     });

@@ -2,11 +2,8 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DragulaService } from 'ng2-dragula/ng2-dragula';
 import { AudioVersionModel, UploadService } from '../../shared';
-import { FileSelectDirective } from './file-select.directive';
-import { AudioFileComponent } from './audio-file.component';
 
 @Component({
-  directives: [AudioFileComponent, FileSelectDirective],
   selector: 'audio-version',
   styleUrls: ['audio-version.component.css'],
   template: `

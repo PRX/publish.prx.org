@@ -1,5 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
-import { DomSanitizationService, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 import {AuthService, AuthUrls} from '../shared';
@@ -26,7 +26,7 @@ export class LoginComponent {
   constructor(
     private element: ElementRef,
     private authService: AuthService,
-    private sanitationService: DomSanitizationService,
+    private sanitizer: DomSanitizer,
     private router: Router
   ) {
     this.newIframeUrl();
@@ -34,7 +34,7 @@ export class LoginComponent {
 
   newIframeUrl() {
     let url = AuthUrls.buildUrl('login');
-    this.iframeUrl = this.sanitationService.bypassSecurityTrustResourceUrl(url);
+    this.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   setAuthToken(token: string) {

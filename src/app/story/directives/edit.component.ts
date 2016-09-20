@@ -1,24 +1,22 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { StoryModel, FancyFieldComponent } from '../../shared';
+import { StoryModel } from '../../shared';
 import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
-import { AudioUploadComponent } from '../../upload';
 import { StoryTabService } from '../services/story-tab.service';
 
 @Component({
-  directives: [FancyFieldComponent, AudioUploadComponent],
   selector: 'newstory-edit',
   styleUrls: ['edit.component.css'],
   template: `
     <form *ngIf="story">
 
       <fancy-field [model]="story" textarea="true" name="title" label="Story Title" required>
-        <hint>Write a short, Tweetable title like a newspaper headline. Make viewers
-          want to click on your piece from the title alone.</hint>
+        <fancy-hint>Write a short, Tweetable title like a newspaper headline. Make viewers
+          want to click on your piece from the title alone.</fancy-hint>
       </fancy-field>
 
       <fancy-field [model]="story" textarea="true" name="shortDescription" label="Teaser" required>
-        <hint>A first impression; think of this as the single-item lead of a piece.</hint>
+        <fancy-hint>A first impression; think of this as the single-item lead of a piece.</fancy-hint>
       </fancy-field>
 
       <hr/>
@@ -30,8 +28,8 @@ import { StoryTabService } from '../services/story-tab.service';
       <hr/>
 
       <fancy-field [model]="story" label="Tag your Story" invalid="tags" invalidlabel="" required>
-        <hint>Adding tags that are relevant to your piece helps people find your work
-          on PRX and can help you be licensed and heard.</hint>
+        <fancy-hint>Adding tags that are relevant to your piece helps people find your work
+          on PRX and can help you be licensed and heard.</fancy-hint>
         <div class="span-fields">
           <fancy-field [model]="story" [select]="GENRES" name="genre" label="Genre"
             small="true" required></fancy-field>

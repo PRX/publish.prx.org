@@ -1,8 +1,6 @@
 import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
-  directives: [SpinnerComponent],
   selector: 'publish-hero',
   styleUrls: ['hero.component.css'],
   template: `

@@ -1,19 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import {
-  HalDoc,
-  ImageLoaderComponent,
-  SpinnerComponent,
-  StoryModel,
-  TimeAgoPipe
-} from '../../shared';
-
-import { HomeStoryComponent } from './home-story.component';
+import { HalDoc, StoryModel } from '../../shared';
 
 @Component({
-  directives: [SpinnerComponent, ImageLoaderComponent, HomeStoryComponent],
-  pipes: [TimeAgoPipe],
   selector: 'publish-home-series',
   styleUrls: ['home-series.component.css'],
   template: `

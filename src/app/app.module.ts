@@ -1,29 +1,33 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { DragulaModule } from 'ng2-dragula/ng2-dragula';
 
-import { AuthGuard, AuthService, CmsService, DeactivateGuard, MimeTypeService,
-  ModalService, UnauthGuard, UploadService } from './shared';
-
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home';
-import { LoginComponent } from './login';
-import { SeriesComponent } from './series';
-import { StoryComponent, EditComponent, DecorateComponent, SellComponent } from './story';
-import { routing } from './app.routes';
+import { routing, routingProviders, routingComponents } from './app.routing';
+
+import { AuthComponent, AuthGuard, AuthService, CmsService, DurationPipe,
+  FileSizePipe, ImageLoaderComponent, MimeTypeService, ModalComponent, ModalService,
+  SpinnerComponent, TimeAgoPipe, UploadService } from './shared';
+import { HeaderComponent, NavItemComponent, NavUserComponent } from './header';
+import { FooterComponent } from './footer';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    LoginComponent,
-    SeriesComponent,
-    StoryComponent,
-    EditComponent,
-    DecorateComponent,
-    SellComponent
+    AuthComponent,
+    DurationPipe,
+    FileSizePipe,
+    FooterComponent,
+    HeaderComponent,
+    ImageLoaderComponent,
+    ModalComponent,
+    NavItemComponent,
+    NavUserComponent,
+    SpinnerComponent,
+    TimeAgoPipe,
+    routingComponents
   ],
   imports: [
     BrowserModule,
@@ -36,12 +40,12 @@ import { routing } from './app.routes';
     AuthGuard,
     AuthService,
     CmsService,
-    DeactivateGuard,
     MimeTypeService,
     ModalService,
-    UnauthGuard,
-    UploadService
+    UploadService,
+    routingProviders
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

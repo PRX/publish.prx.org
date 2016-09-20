@@ -2,13 +2,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { HeroComponent, ButtonComponent } from '../../shared';
-import { HalDoc, ImageLoaderComponent, StoryModel, TimeAgoPipe } from '../../shared';
+import { HalDoc, StoryModel } from '../../shared';
 import { StoryTabService } from '../services/story-tab.service';
 
 @Component({
-  directives: [HeroComponent, ButtonComponent, ImageLoaderComponent],
-  pipes: [TimeAgoPipe],
   selector: 'publish-story-hero',
   styleUrls: ['hero.component.css'],
   template: `

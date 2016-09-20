@@ -1,9 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { FancyFieldComponent, FileSizePipe, ImageLoaderComponent, ImageModel } from '../../shared';
+import { ImageModel } from '../../shared';
 
 @Component({
-  directives: [ImageLoaderComponent, FancyFieldComponent],
-  pipes: [FileSizePipe],
   selector: 'image-file',
   styleUrls: ['image-file.component.css'],
   template: `

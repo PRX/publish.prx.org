@@ -1,8 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { AudioFileModel, FileSizePipe } from '../../shared/';
+import { AudioFileModel } from '../../shared/';
 
 @Component({
-  pipes: [FileSizePipe],
   selector: 'audio-file',
   styleUrls: ['audio-file.component.css'],
   template: `

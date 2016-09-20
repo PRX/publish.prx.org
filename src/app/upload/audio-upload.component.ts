@@ -1,9 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { SpinnerComponent, StoryModel } from '../shared';
-import { AudioVersionComponent } from './directives/audio-version.component';
+import { StoryModel } from '../shared';
 
 @Component({
-  directives: [SpinnerComponent, AudioVersionComponent],
   selector: 'audio-upload',
   styleUrls: ['audio-upload.component.css'],
   template: `

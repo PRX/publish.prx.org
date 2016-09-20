@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { ImageLoaderComponent, SpinnerComponent } from '../shared';
 import { CmsService } from '../shared/cms/cms.service';
 import { HalDoc } from '../shared/cms/haldoc';
 
 @Component({
-  directives: [SpinnerComponent, ImageLoaderComponent],
   selector: 'nav-user',
   styleUrls: [
     'navitem.component.css',

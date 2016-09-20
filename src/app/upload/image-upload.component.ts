@@ -1,10 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { ImageModel, SpinnerComponent, StoryModel, UploadService } from '../shared';
-import { ImageFileComponent } from './directives/image-file.component';
-import { FileSelectDirective } from './directives/file-select.directive';
+import { ImageModel, StoryModel, UploadService } from '../shared';
 
 @Component({
-  directives: [SpinnerComponent, ImageFileComponent, FileSelectDirective],
   selector: 'image-upload',
   styleUrls: ['image-upload.component.css'],
   template: `

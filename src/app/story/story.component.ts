@@ -1,13 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ROUTER_DIRECTIVES, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
 
 import { CmsService, ModalService, StoryModel } from '../shared';
 import { StoryTabService } from './services/story-tab.service';
-import { StoryHeroComponent } from './directives/hero.component';
 
 @Component({
-  directives: [ROUTER_DIRECTIVES, StoryHeroComponent],
   providers: [StoryTabService],
   selector: 'publish-story',
   styleUrls: ['story.component.css'],

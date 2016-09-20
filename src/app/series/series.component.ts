@@ -2,17 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import {
-  ButtonComponent,
-  CmsService,
-  FancyFieldComponent,
-  HeroComponent,
-  ModalService,
-  SeriesModel
-} from '../shared';
+import { CmsService, ModalService, SeriesModel } from '../shared';
 
 @Component({
-  directives: [HeroComponent, ButtonComponent, FancyFieldComponent],
   selector: 'publish-series',
   styleUrls: ['series.component.css'],
   templateUrl: 'series.component.html'

@@ -1,5 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
-import { DomSanitizationService, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { AuthService } from './auth.service';
 import { AuthUrls } from './auth.urls';
@@ -17,10 +17,10 @@ export class AuthComponent {
   constructor(
     private element: ElementRef,
     private authService: AuthService,
-    private sanitationService: DomSanitizationService
+    private sanitizer: DomSanitizer
   ) {
     let url = AuthUrls.buildUrl('none');
-    this.authUrl = sanitationService.bypassSecurityTrustResourceUrl(url);
+    this.authUrl = sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   checkAuth() {

@@ -9,7 +9,7 @@ import { FancyFieldComponent } from './fancy-field.component';
     <fancy-field [model]="mockStory" [name]="name" [changed]="changed" [invalid]="invalid"
       [textinput]="textinput" [textarea]="textarea" [select]="select" [label]="label"
       [invalidlabel]="invalidlabel" [small]="small" [required]="required">
-      <hint *ngIf="hint">{{hint}}</hint>
+      <fancy-hint *ngIf="hint">{{hint}}</fancy-hint>
       <h1 *ngIf="nested">{{nested}}</h1>
     </fancy-field>
   `

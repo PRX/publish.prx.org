@@ -1,13 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { ROUTER_DIRECTIVES } from '@angular/router';
 
 import { HalDoc } from '../../shared/cms/haldoc';
-import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
+import { StoryModel } from '../../shared';
 
 @Component({
-  directives: [ImageLoaderComponent, ROUTER_DIRECTIVES],
-  pipes: [DatePipe, DurationPipe],
   selector: 'publish-home-story',
   styleUrls: ['home-story.component.css'],
   template: `

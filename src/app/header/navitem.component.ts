@@ -1,8 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { ROUTER_DIRECTIVES } from '@angular/router';
 
 @Component({
-  directives: [ROUTER_DIRECTIVES],
   selector: 'nav-item',
   styleUrls: ['navitem.component.css'],
   template: `
