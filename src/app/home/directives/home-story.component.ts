@@ -8,7 +8,7 @@ import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
 @Component({
   directives: [ImageLoaderComponent, ROUTER_DIRECTIVES],
   pipes: [DatePipe, DurationPipe],
-  selector: 'home-story',
+  selector: 'publish-home-story',
   styleUrls: ['home-story.component.css'],
   template: `
     <template [ngIf]="isPlusSign">

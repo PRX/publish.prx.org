@@ -6,21 +6,31 @@ section {
   min-height: 340px;
 }
 header {
-  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  border-bottom: 1px solid #676767;
+  margin-bottom: 30px;
 }
 header h2 {
   font-size: 25px;
   line-height: 30px;
-  border-bottom: 1px solid #676767;
   color: #343434;
-  margin-bottom: 30px;
+  flex: 1;
 }
-header a.all {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+header a.create, header a.all {
+  font-size: 14px;
+  line-height: 22px;
+  margin-top: 8px;
+  margin-left: auto;
+  padding-left: 16px;
 }
-home-series {
+p.empty {
+  font-size: 14px;
+  margin: 40px 0;
+}
+publish-home-series {
   display: block;
   margin-bottom: 40px;
 }

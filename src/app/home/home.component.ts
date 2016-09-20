@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { ROUTER_DIRECTIVES } from '@angular/router';
 import { CmsService, HalDoc, SpinnerComponent } from '../shared';
 import { HomeSeriesComponent } from './directives/home-series.component';
 
 @Component({
-  directives: [SpinnerComponent, HomeSeriesComponent],
+  directives: [ROUTER_DIRECTIVES, SpinnerComponent, HomeSeriesComponent],
   selector: 'publish-home',
   styleUrls: ['home.component.css'],
   templateUrl: 'home.component.html'
@@ -22,24 +23,17 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.isLoaded = false;
-    this.cms.follow('prx:authorization').subscribe((auth) => {
+    this.cms.follow('prx:authorization').subscribe(auth => {
       this.auth = auth;
-      let seriesCount = auth.count('prx:series') || 0;
-      if (seriesCount < 1) {
-        this.noSeries = true;
+
+      // only load v4 series
+      auth.followItems('prx:series', {filters: 'v4'}).subscribe(series => {
         this.isLoaded = true;
-      } else if (seriesCount === 1) {
-        auth.followItems('prx:series').subscribe((series) => {
-          this.oneSeries = series[0];
-          this.isLoaded = true;
-        });
-      } else {
-        auth.followItems('prx:series').subscribe((series) => {
-          this.manySeries = series;
-          this.totalCount = auth.count('prx:series');
-          this.isLoaded = true;
-        });
-      }
+        this.totalCount = series.length ? series[0].total() : 0;
+        this.noSeries = (series.length < 1) ? true : null;
+        this.oneSeries = (series.length === 1) ? series[0] : null;
+        this.manySeries = (series.length > 1) ? series : null;
+      });
     });
   }
 
