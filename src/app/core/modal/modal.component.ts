@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ModalService, ModalState } from './modal.service';
 
 @Component({
-  selector: 'modal-box',
+  selector: 'publish-modal',
   styleUrls: ['modal.component.css'],
   template: `
     <div *ngIf="shown" class="overlay" (document:keyup)="onKey($event)"></div>

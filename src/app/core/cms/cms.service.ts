@@ -5,7 +5,7 @@ import { HalDoc } from './haldoc';
 import { HalObservable } from './halobservable';
 import { HalRemote } from './halremote';
 import { HalLink } from './hallink';
-import { Env } from '../../env';
+import { Env } from '../core.env';
 
 @Injectable()
 export class CmsService {

@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'nav-item',
+  selector: 'publish-navitem',
   styleUrls: ['navitem.component.css'],
   template: `
     <div class="nav-holder">

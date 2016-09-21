@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { CmsService } from '../shared/cms/cms.service';
-import { HalDoc } from '../shared/cms/haldoc';
+import { CmsService, HalDoc } from '../cms';
 
 @Component({
-  selector: 'nav-user',
+  selector: 'publish-navuser',
   styleUrls: [
     'navitem.component.css',
     'navuser.component.css'
@@ -13,11 +12,11 @@ import { HalDoc } from '../shared/cms/haldoc';
       <template [ngIf]="userName">
         <a *ngIf="userName">
           <span class="name">{{userName}}</span>
-          <image-loader [imageDoc]="userImageDoc"></image-loader>
+          <ng-content select="user-loaded"></ng-content>
         </a>
       </template>
       <div *ngIf="!userName" class="spin-holder">
-        <publish-spinner inverse=true></publish-spinner>
+        <ng-content select="user-loading"></ng-content>
       </div>
     </div>
     `

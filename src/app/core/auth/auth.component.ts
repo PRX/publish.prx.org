@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { AuthUrls } from './auth.urls';
 
 @Component({
-  selector: 'prx-auth',
+  selector: 'publish-auth',
   styles: ['iframe { display: none; }'],
   template: `<iframe [src]="authUrl" (load)="checkAuth()"></iframe>`
 })
