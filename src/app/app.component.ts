@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-
-import { AuthService, CmsService } from './shared';
+import { AuthService, CmsService } from './core';
 
 @Component({
   selector: 'publish-root',

@@ -25,9 +25,6 @@ import { UploadService } from './upload';
     RouterModule
   ],
   exports: [
-    CommonModule,
-    HttpModule,
-    RouterModule,
     AuthComponent,
     FooterComponent,
     HeaderComponent,
