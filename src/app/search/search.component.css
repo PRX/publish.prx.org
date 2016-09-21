@@ -114,16 +114,15 @@ input[type=checkbox].checkbox-hack + label {
   display: flex;
   justify-content: flex-start;
   flex-flow: row wrap;
-  margin-left: -10px;
+  margin-right: -20px;
 }
 publish-search-story, .story {
   display: block;
   overflow: hidden;
   position: relative;
-  margin-top: 10px;
-  margin-left: 10px;
-  flex-basis: 495px;
-  width: 495px;
-  height: 192px;
+  margin-top: 20px;
+  margin-right: 20px;
+  width: 320px;
+  height: 200px;
   background: #ddd;
 }
