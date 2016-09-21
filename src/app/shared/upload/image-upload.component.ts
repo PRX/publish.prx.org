@@ -1,20 +1,21 @@
 import { Component, Input } from '@angular/core';
-import { ImageModel, StoryModel, UploadService } from '../shared';
-
+import { UploadService } from '../../core';
+import { ImageModel, StoryModel } from '../model';
+console.log('UploadService', UploadService);
 @Component({
-  selector: 'image-upload',
+  selector: 'publish-image-upload',
   styleUrls: ['image-upload.component.css'],
   template: `
     <publish-spinner *ngIf="story && !story?.images"></publish-spinner>
 
     <div *ngIf="noImages" class="new-image">
       <p class="size">{{recommendWidth}}x{{recommendHeight}} px</p>
-      <input type="file" id="file" fileSelect (file)="addUpload($event)"/>
+      <input type="file" id="file" publishFileSelect (file)="addUpload($event)"/>
       <label class="button" for="file">Add Image</label>
     </div>
 
     <div *ngIf="story && story.images">
-      <image-file *ngFor="let i of story.images" [image]="i"></image-file>
+      <publish-image-file *ngFor="let i of story.images" [image]="i"></publish-image-file>
     </div>
   `
 })

@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { AudioFileModel } from '../../shared/';
+import { AudioFileModel } from '../../model';
 
 @Component({
-  selector: 'audio-file',
+  selector: 'publish-audio-file',
   styleUrls: ['audio-file.component.css'],
   template: `
     <div *ngIf="!audio.isDestroy" class="audio-file"

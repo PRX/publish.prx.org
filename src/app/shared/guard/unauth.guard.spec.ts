@@ -1,5 +1,5 @@
 import { ReplaySubject } from 'rxjs';
-import { AuthGuard, UnauthGuard } from './auth.guard';
+import { UnauthGuard } from './auth.guard';
 
 const mockAuthService = {
   token: new ReplaySubject<string>(1)
@@ -9,7 +9,7 @@ const mockRouter = {
   navigate: (params: any[]) => { mockRouter.goto = params[0]; }
 };
 
-describe('AuthGuard', () => {
+describe('UnauthGuard', () => {
 
   beforeEach(() => {
     mockAuthService.token = new ReplaySubject<string>(1);
@@ -17,15 +17,6 @@ describe('AuthGuard', () => {
   });
 
   describe('with a token', () => {
-
-    it('auth allows users', () => {
-      let guard = new AuthGuard(<any> mockAuthService, <any> mockRouter);
-      let canActivate: boolean;
-      guard.canActivate().subscribe((can: boolean) => { canActivate = can; });
-      expect(canActivate).toBeUndefined();
-      mockAuthService.token.next('something');
-      expect(canActivate).toEqual(true);
-    });
 
     it('unauth disallows users', () => {
       let unguard = new UnauthGuard(<any> mockAuthService, <any> mockRouter);
@@ -39,15 +30,6 @@ describe('AuthGuard', () => {
   });
 
   describe('without a token', () => {
-
-    it('auth disallows users', () => {
-      let guard = new AuthGuard(<any> mockAuthService, <any> mockRouter);
-      let canActivate: boolean;
-      guard.canActivate().subscribe((can: boolean) => { canActivate = can; });
-      expect(canActivate).toBeUndefined();
-      mockAuthService.token.next(null);
-      expect(canActivate).toEqual(false);
-    });
 
     it('unauth allows users', () => {
       let unguard = new UnauthGuard(<any> mockAuthService, <any> mockRouter);

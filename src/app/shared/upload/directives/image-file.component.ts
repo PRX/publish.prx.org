@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { ImageModel } from '../../shared';
+import { ImageModel } from '../../model';
 
 @Component({
-  selector: 'image-file',
+  selector: 'publish-image-file',
   styleUrls: ['image-file.component.css'],
   template: `
     <div *ngIf="!image.isDestroy" class="image-file" [class.canceled]="canceled">
@@ -15,16 +15,16 @@ import { ImageModel } from '../../shared';
             <span [style.width.%]="image.progress * 100"></span>
           </div>
         </div>
-        <image-loader *ngIf="!image.isUploading" [src]="image.enclosureHref">
-        </image-loader>
+        <publish-image *ngIf="!image.isUploading" [src]="image.enclosureHref">
+        </publish-image>
         <div class="cancel">
           <i *ngIf="!canceled" class="icon-cancel" (click)="onCancel($event)"></i>
         </div>
       </div>
 
       <div class="info" *ngIf="!canceled">
-        <fancy-field [model]="image" textinput="true" name="caption" label="Caption" small="true"></fancy-field>
-        <fancy-field [model]="image" textinput="true" name="credit" label="Credit" small="true"></fancy-field>
+        <publish-fancy-field [model]="image" textinput="true" name="caption" label="Caption" small="true"></publish-fancy-field>
+        <publish-fancy-field [model]="image" textinput="true" name="credit" label="Credit" small="true"></publish-fancy-field>
       </div>
 
     </div>

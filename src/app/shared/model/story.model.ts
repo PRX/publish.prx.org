@@ -1,5 +1,5 @@
 import { Observable} from 'rxjs';
-import { HalDoc } from '../cms/haldoc';
+import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioVersionModel } from './audio-version.model';
 import { ImageModel } from './image.model';

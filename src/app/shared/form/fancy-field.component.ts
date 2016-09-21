@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { BaseModel } from '../model/base.model';
 
 @Component({
-  selector: 'fancy-field',
+  selector: 'publish-fancy-field',
   styleUrls: ['fancy-field.component.css'],
   templateUrl: 'fancy-field.component.html'
 })

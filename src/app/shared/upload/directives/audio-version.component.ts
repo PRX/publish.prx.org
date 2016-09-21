@@ -1,10 +1,11 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DragulaService } from 'ng2-dragula/ng2-dragula';
-import { AudioVersionModel, UploadService } from '../../shared';
+import { AudioVersionModel } from '../../model';
+import { UploadService } from '../../../core';
 
 @Component({
-  selector: 'audio-version',
+  selector: 'publish-audio-version',
   styleUrls: ['audio-version.component.css'],
   template: `
     <template [ngIf]="DESCRIPTIONS[version.label]">
@@ -13,14 +14,14 @@ import { AudioVersionModel, UploadService } from '../../shared';
         <span>{{DESCRIPTIONS[version.label]}}</span>
       </header>
       <section [dragula]="id" [dragulaModel]="version.files">
-        <audio-file *ngFor="let file of version.files"
-          [audio]="file"></audio-file>
+        <publish-audio-file *ngFor="let file of version.files"
+          [audio]="file"></publish-audio-file>
         <div *ngIf="noAudioFiles" class="empty">
           <h4>Upload a file to get started</h4>
         </div>
       </section>
       <footer>
-        <input type="file" id="file" fileSelect (file)="addUpload($event)"/>
+        <input type="file" id="file" publishFileSelect (file)="addUpload($event)"/>
         <label class="button" for="file">Upload Files</label>
       </footer>
     </template>
