@@ -1,14 +1,12 @@
 <publish-hero blue=true>
-  <hero-title>
-    <h1 *ngIf="id">Edit Series</h1>
-    <h1 *ngIf="!id">Create Series</h1>
-  </hero-title>
-  <hero-info *ngIf="series">
+  <h1 class="hero-title" *ngIf="id">Edit Series</h1>
+  <h1 class="hero-title" *ngIf="!id">Create Series</h1>
+  <div class="hero-info" *ngIf="series">
     <h2>{{series.title || '(Untitled)'}}</h2>
     <p *ngIf="series?.isNew">Not saved</p>
     <p *ngIf="!series?.isNew">Last modified {{series.updatedAt | timeago}}</p>
-  </hero-info>
-  <hero-actions *ngIf="series">
+  </div>
+  <div class="hero-actions" *ngIf="series">
 
     <template [ngIf]="series.isNew">
       <publish-button [model]="series" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
@@ -25,23 +23,23 @@
       </publish-button>
     </template>
 
-  </hero-actions>
+  </div>
 </publish-hero>
 <div class="main">
   <section>
     <form>
 
-      <fancy-field [model]="series" textarea="true" name="title" label="Series Title" required>
-        <fancy-hint>A short headline to describe this series.</fancy-hint>
-      </fancy-field>
+      <publish-fancy-field [model]="series" textarea="true" name="title" label="Series Title" required>
+        <div class="fancy-hint">A short headline to describe this series.</div>
+      </publish-fancy-field>
 
-      <fancy-field [model]="series" textarea="true" name="shortDescription" label="Teaser" required>
-        <fancy-hint>A first impression for your series.</fancy-hint>
-      </fancy-field>
+      <publish-fancy-field [model]="series" textarea="true" name="shortDescription" label="Teaser" required>
+        <div class="fancy-hint">A first impression for your series.</div>
+      </publish-fancy-field>
 
-      <fancy-field [model]="series" textarea="true" name="description" label="Description" required>
-        <fancy-hint>A longer version of your teaser.</fancy-hint>
-      </fancy-field>
+      <publish-fancy-field [model]="series" textarea="true" name="description" label="Description" required>
+        <div class="fancy-hint">A longer version of your teaser.</div>
+      </publish-fancy-field>
 
     </form>
   </section>

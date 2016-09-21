@@ -8,7 +8,7 @@ import { CmsService } from './cms';
 import { FooterComponent } from './footer';
 import { HeaderComponent, NavItemComponent, NavUserComponent } from './header';
 import { ModalComponent, ModalService } from './modal';
-import { UploadService } from './upload';
+import { MimeTypeService, UploadService } from './upload';
 
 @NgModule({
   declarations: [
@@ -35,6 +35,7 @@ import { UploadService } from './upload';
   providers: [
     AuthService,
     CmsService,
+    MimeTypeService,
     ModalService,
     UploadService
   ]

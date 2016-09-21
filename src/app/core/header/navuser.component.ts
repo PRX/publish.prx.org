@@ -12,11 +12,11 @@ import { CmsService, HalDoc } from '../cms';
       <template [ngIf]="userName">
         <a *ngIf="userName">
           <span class="name">{{userName}}</span>
-          <ng-content select="user-loaded"></ng-content>
+          <ng-content select=".user-loaded"></ng-content>
         </a>
       </template>
       <div *ngIf="!userName" class="spin-holder">
-        <ng-content select="user-loading"></ng-content>
+        <ng-content select=".user-loading"></ng-content>
       </div>
     </div>
     `

@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -6,6 +6,8 @@ import { routing, routingProviders, routingComponents } from './app.routing';
 
 import { CoreModule } from './core';
 import { SharedModule } from './shared';
+import { SeriesModule } from './series';
+import { StoryModule } from './story';
 
 @NgModule({
   declarations: [
@@ -15,13 +17,15 @@ import { SharedModule } from './shared';
   imports: [
     BrowserModule,
     CoreModule,
+    SeriesModule,
     SharedModule,
+    StoryModule,
     routing
   ],
   providers: [
     routingProviders
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

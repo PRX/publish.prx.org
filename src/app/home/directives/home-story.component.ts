@@ -52,12 +52,12 @@ export class HomeStoryComponent implements OnInit {
     this.storyUpdated = this.story.lastStored || this.story.updatedAt;
 
     if (this.story.isNew) {
-      this.editLink = ['/create'];
+      this.editLink = ['story/new'];
       if (this.story.parent) {
         this.editLink.push(this.story.parent.id);
       }
     } else {
-      this.editLink = ['/edit', this.story.id];
+      this.editLink = ['/story', this.story.id];
     }
 
     // TODO: draft audios

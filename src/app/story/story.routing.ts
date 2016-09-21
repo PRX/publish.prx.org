@@ -1,4 +1,5 @@
-import { Routes } from '@angular/router';
+import { ModuleWithProviders } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard, DeactivateGuard } from '../shared';
 
 import { StoryComponent }       from './story.component';
@@ -7,32 +8,9 @@ import { EditComponent }        from './directives/edit.component';
 import { DecorateComponent }    from './directives/decorate.component';
 import { SellComponent }        from './directives/sell.component';
 
-import { ButtonComponent, FancyFieldComponent, HeroComponent }  from '../shared';
-import { AudioUploadComponent, ImageUploadComponent, AudioFileComponent,
-  AudioVersionComponent, FileSelectDirective, ImageFileComponent} from '../upload';
-
-export const storyComponents: any[] = [
-  StoryComponent,
-  StoryHeroComponent,
-  EditComponent,
-  DecorateComponent,
-  SellComponent,
-
-  ButtonComponent,
-  FancyFieldComponent,
-  HeroComponent,
-
-  AudioUploadComponent,
-  ImageUploadComponent,
-  AudioFileComponent,
-  AudioVersionComponent,
-  FileSelectDirective,
-  ImageFileComponent
-];
-
 export const storyRoutes: Routes = [
   {
-    path: 'edit/:id',
+    path: 'story/:id',
     component: StoryComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],
@@ -43,7 +21,7 @@ export const storyRoutes: Routes = [
     ]
   },
   {
-    path: 'create',
+    path: 'story/new',
     component: StoryComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],
@@ -54,7 +32,7 @@ export const storyRoutes: Routes = [
     ]
   },
   {
-    path: 'create/:series_id',
+    path: 'story/new/:series_id',
     component: StoryComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],
@@ -65,3 +43,15 @@ export const storyRoutes: Routes = [
     ]
   }
 ];
+
+export const storyComponents: any[] = [
+  StoryComponent,
+  StoryHeroComponent,
+  EditComponent,
+  DecorateComponent,
+  SellComponent
+];
+
+export const storyProviders: any[] = [];
+
+export const storyRouting: ModuleWithProviders = RouterModule.forChild(storyRoutes);

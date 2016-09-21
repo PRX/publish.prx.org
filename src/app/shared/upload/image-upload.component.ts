@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { UploadService } from '../../core';
 import { ImageModel, StoryModel } from '../model';
-console.log('UploadService', UploadService);
+
 @Component({
   selector: 'publish-image-upload',
   styleUrls: ['image-upload.component.css'],

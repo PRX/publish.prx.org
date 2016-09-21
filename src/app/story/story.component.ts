@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
 
-import { CmsService, ModalService, StoryModel } from '../shared';
+import { CmsService, ModalService } from '../core';
+import { StoryModel } from '../shared';
 import { StoryTabService } from './services/story-tab.service';
 
 @Component({
@@ -35,9 +36,9 @@ export class StoryComponent implements OnInit, OnDestroy {
 
       // must explicitly set the base-link for this edit/create route
       if (this.id) {
-        this.editLink = ['/edit', this.id];
+        this.editLink = ['/story', this.id];
       } else {
-        this.editLink = ['/create'];
+        this.editLink = ['/story/new'];
         if (this.seriesId) {
           this.editLink.push(this.seriesId);
         }

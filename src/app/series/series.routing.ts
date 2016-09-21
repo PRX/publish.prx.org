@@ -1,15 +1,8 @@
-import { Routes } from '@angular/router';
+import { ModuleWithProviders } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../shared';
 
 import { SeriesComponent } from './series.component';
-import { ButtonComponent, FancyFieldComponent, HeroComponent } from '../shared';
-
-export const seriesComponents: any[] = [
-  SeriesComponent,
-  HeroComponent,
-  ButtonComponent,
-  FancyFieldComponent
-];
 
 export const seriesRoutes: Routes = [
   {
@@ -23,3 +16,11 @@ export const seriesRoutes: Routes = [
     canActivate: [AuthGuard]
   }
 ];
+
+export const seriesComponents: any[] = [
+  SeriesComponent
+];
+
+export const seriesProviders: any[] = [];
+
+export const seriesRouting: ModuleWithProviders = RouterModule.forChild(seriesRoutes);

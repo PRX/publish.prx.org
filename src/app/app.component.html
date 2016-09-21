@@ -2,8 +2,8 @@
   <publish-navitem *ngIf="loggedIn" route="/" text="Home"></publish-navitem>
   <publish-navitem *ngIf="loggedIn" route="/series/new" text="New Series"></publish-navitem>
   <publish-navuser *ngIf="loggedIn" #nav>
-    <user-loading><publish-spinner inverse=true></publish-spinner></user-loading>
-    <user-loaded><publish-image [imageDoc]="nav.userImageDoc"></publish-image></user-loaded>
+    <publish-spinner class="user-loading" inverse=true></publish-spinner>
+    <publish-image class="user-loaded" [imageDoc]="nav.userImageDoc"></publish-image>
   </publish-navuser>
 </publish-header>
 <main>

@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { CmsService, ModalService, SeriesModel } from '../shared';
+import { CmsService, ModalService } from '../core';
+import { SeriesModel } from '../shared';
 
 @Component({
   selector: 'publish-series',

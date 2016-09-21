@@ -5,28 +5,18 @@ import { AuthGuard, UnauthGuard } from './shared';
 import { HomeComponent, HomeSeriesComponent, HomeStoryComponent } from './home';
 import { LoginComponent } from './login/login.component';
 
-// import { seriesRoutes, seriesComponents, seriesProviders } from './series';
-// import { storyRoutes, storyComponents, storyProviders } from './story';
-
 export const routes: Routes = [
   { path: '',      component: HomeComponent,  canActivate: [AuthGuard] },
-  { path: 'login', component: LoginComponent, canActivate: [UnauthGuard] },
-  // ...seriesRoutes,
-  // ...storyRoutes
+  { path: 'login', component: LoginComponent, canActivate: [UnauthGuard] }
 ];
 
 export const routingComponents: any[] = [
   HomeComponent,
   HomeSeriesComponent,
   HomeStoryComponent,
-  LoginComponent,
-  // ...seriesComponents,
-  // ...storyComponents
+  LoginComponent
 ];
 
-export const routingProviders: any[] = [
-  // ...seriesProviders,
-  // ...storyProviders
-];
+export const routingProviders: any[] = [];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(routes);

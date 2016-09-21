@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DragulaModule } from 'ng2-dragula/ng2-dragula';
@@ -10,28 +10,40 @@ import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { HeroComponent } from './hero';
 import { ImageLoaderComponent } from './image';
 import { SpinnerComponent } from './spinner';
-import { AudioUploadComponent, ImageUploadComponent } from './upload';
-
-const COMPONENTS = [
-  AudioUploadComponent,
-  ButtonComponent,
-  DurationPipe,
-  FancyFieldComponent,
-  FileSizePipe,
-  HeroComponent,
-  ImageLoaderComponent,
-  ImageUploadComponent,
-  SpinnerComponent,
-  TimeAgoPipe
-];
+import { AudioFileComponent, AudioUploadComponent, AudioVersionComponent,
+  FileSelectDirective, ImageFileComponent, ImageUploadComponent } from './upload';
 
 @NgModule({
-  declarations: COMPONENTS,
+  declarations: [
+    AudioFileComponent,
+    AudioUploadComponent,
+    AudioVersionComponent,
+    ButtonComponent,
+    DurationPipe,
+    FancyFieldComponent,
+    FileSelectDirective,
+    FileSizePipe,
+    HeroComponent,
+    ImageFileComponent,
+    ImageLoaderComponent,
+    ImageUploadComponent,
+    SpinnerComponent,
+    TimeAgoPipe
+  ],
   exports: [
     CommonModule,
     DragulaModule,
     FormsModule,
-    ...COMPONENTS
+    AudioUploadComponent,
+    ButtonComponent,
+    DurationPipe,
+    FancyFieldComponent,
+    FileSizePipe,
+    HeroComponent,
+    ImageLoaderComponent,
+    ImageUploadComponent,
+    SpinnerComponent,
+    TimeAgoPipe
   ],
   imports: [
     CommonModule,
@@ -42,8 +54,7 @@ const COMPONENTS = [
     AuthGuard,
     DeactivateGuard,
     UnauthGuard
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  ]
 })
 
 export class SharedModule { }

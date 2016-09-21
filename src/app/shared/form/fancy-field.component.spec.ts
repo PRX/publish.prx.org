@@ -6,12 +6,12 @@ import { FancyFieldComponent } from './fancy-field.component';
 @Component({
   directives: [FancyFieldComponent],
   template: `
-    <fancy-field [model]="mockStory" [name]="name" [changed]="changed" [invalid]="invalid"
+    <publish-fancy-field [model]="mockStory" [name]="name" [changed]="changed" [invalid]="invalid"
       [textinput]="textinput" [textarea]="textarea" [select]="select" [label]="label"
       [invalidlabel]="invalidlabel" [small]="small" [required]="required">
-      <fancy-hint *ngIf="hint">{{hint}}</fancy-hint>
+      <div class="fancy-hint" *ngIf="hint">{{hint}}</div>
       <h1 *ngIf="nested">{{nested}}</h1>
-    </fancy-field>
+    </publish-fancy-field>
   `
 })
 class MiniComponent {
