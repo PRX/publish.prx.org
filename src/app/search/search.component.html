@@ -22,7 +22,7 @@
             <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
           </select>
 
-          <input class="checkbox-hack" type="checkbox" id="order"/>
+          <input class="updown-toggle" type="checkbox" id="order"/>
           <label for="order"></label>
 
         </span>
@@ -35,7 +35,6 @@
         <span class="pages">
           <button *ngIf="totalCount && pages?.length > 1" (click)="search(1, totalCount)" class="btn-link">View All {{totalCount}} &raquo;</button>
           <button disabled *ngIf="totalCount && pages?.length === 1" class="btn-link">Viewing {{totalCount > 1 ? 'all ' + totalCount : totalCount}}</button>
-          <!-- How is the user supposed to get back to the paged view? -->
         </span>
 
         <span *ngIf="pages?.length > 1" class="pages">

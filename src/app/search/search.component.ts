@@ -73,7 +73,7 @@ export class SearchComponent implements OnInit {
     this.search(1);
   }
 
-  search(page: number, per: number = 10) {
+  search(page: number, per: number = 12) {
     this.currentPage = page;
     this.stories = [];
     this.isLoaded = false;
@@ -92,7 +92,8 @@ export class SearchComponent implements OnInit {
       this.storyLoaders = Array(storiesCount);
       parent.followItems('prx:stories', params).subscribe((stories) => {
         this.storyLoaders = null;
-        for (let doc of <HalDoc[]> stories) {
+        let storyDocs = <HalDoc[]> stories;
+        for (let doc of storyDocs) {
           let story = new StoryModel(parent, doc, false);
           if (story.doc.has('prx:series')) {
             // series are embedded, so this should be ok. would prefer to get the series id and use allSeries[id].doc
@@ -104,18 +105,19 @@ export class SearchComponent implements OnInit {
             this.stories.push(story);
           }
         }
+        this.totalCount = storyDocs.length > 0 ? storyDocs[0].total() : 0;
         this.pagingInfo(per);
         this.isLoaded = true;
       });
     } else {
       this.noStories = true;
       this.isLoaded = true;
+      this.totalCount = 0;
       this.pagingInfo(per);
     }
   }
 
   pagingInfo(per) {
-    this.totalCount = this.stories.length;
     let totalPages = this.totalCount % per ? Math.floor(this.totalCount) / per + 1 : Math.floor(this.totalCount / per);
     this.pages = Array.apply(null, {length: totalPages}).map((val, i) => i + 1);
     this.pagesBegin = this.showNumPages * Math.floor((this.currentPage - 1) / this.showNumPages);

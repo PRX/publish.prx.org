@@ -29,8 +29,6 @@ export * from './model/series.model';
 export * from './model/story.model';
 export * from './model/uploadable.model';
 
-export * from './overflow/overflow.component';
-
 export * from './spinner/spinner.component';
 
 export * from './upload/mime-type.service';

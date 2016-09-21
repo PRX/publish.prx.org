@@ -128,3 +128,70 @@ button[disabled], .button[disabled] {
   display: inline-block;
   margin-right: 10px;
 }
+
+.form-group {
+  margin: 10px 0;
+}
+.form-group > .left {
+  float: left;
+}
+.form-group > .right {
+  float: right;
+}
+.form-group:before,
+.form-group:after {
+  content: "";
+  display: table;
+}
+.form-group:after {
+  clear: both;
+}
+
+[disabled] {
+  cursor: default;
+}
+
+button.btn-link {
+  color: #368aa2;
+  vertical-align: baseline;
+  padding: 0;
+  border: 0;
+  background: 0 0 transparent;
+}
+button.btn-link:hover {
+  color: #f59f51;
+}
+button.btn-link[disabled] {
+  color: #a3a3a3;
+}
+button.btn-link.active {
+  color: #f59f51;
+}
+
+input[type=checkbox].updown-toggle {
+  display: none;
+}
+
+input[type=checkbox].updown-toggle + label {
+  float: right;
+  margin: 8px 0 8px 4px;
+}
+
+input[type=checkbox].updown-toggle:checked + label {
+  color: #f59f51;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #368aa2;
+  border-bottom: 0px;
+}
+
+input[type=checkbox].updown-toggle + label {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #368aa2;
+  border-top: 0px;
+}

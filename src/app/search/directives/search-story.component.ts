@@ -3,10 +3,10 @@ import { DatePipe } from '@angular/common';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 
 import { HalDoc } from '../../shared/cms/haldoc';
-import { DurationPipe, ImageLoaderComponent, OverflowComponent, StoryModel } from '../../shared';
+import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
 
 @Component({
-  directives: [ImageLoaderComponent, OverflowComponent, ROUTER_DIRECTIVES],
+  directives: [ImageLoaderComponent, ROUTER_DIRECTIVES],
   pipes: [DatePipe, DurationPipe],
   selector: 'publish-search-story',
   styleUrls: ['search-story.component.css'],
@@ -17,7 +17,7 @@ import { DurationPipe, ImageLoaderComponent, OverflowComponent, StoryModel } fro
         <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
       </section>
       <section class="story-detail">
-        <h2><a [routerLink]="editStoryLink" class="story-title">{{storyTitle}}</a></h2>
+        <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
         
         <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
         <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
