@@ -75,30 +75,24 @@ export class SearchComponent implements OnInit {
 
   search(page: number, per: number = 10) {
     this.currentPage = page;
+    this.stories = [];
     this.isLoaded = false;
     this.noStories = false;
 
     let parent = this.searchSeries ? this.searchSeries.doc : this.auth;
 
-    let draftStory = new StoryModel(this.auth);
-    let isUnsavedDraft = draftStory.isNew && draftStory.isStored() && !this.searchSeries;
-    let showUnsavedDraft = isUnsavedDraft && this.currentPage === 1 && !this.searchSeries;
-
-    let requestPer = showUnsavedDraft ? per - 1 : per;
     let filters = ['v4'];
     if (+this.searchSeriesId === -1) {
       filters.push('noseries');
     }
-    let params = {page: this.currentPage, per: requestPer, filters: filters.join(',')};
+    let params = {page: this.currentPage, per, filters: filters.join(',')};
 
-    let storiesCount = parent.count('prx:stories') || 0; // wrong, doesn't account for filter
+    let storiesCount = parent.count('prx:stories') || 0; // wrong, doesn't account for filter. looks obvs wrong with No Series filter
     if (storiesCount > 0) {
       this.storyLoaders = Array(storiesCount);
       parent.followItems('prx:stories', params).subscribe((stories) => {
-        this.stories = showUnsavedDraft ? [draftStory] : [];
         this.storyLoaders = null;
-        let storyDocs = <HalDoc[]> stories;
-        for (let doc of storyDocs) {
+        for (let doc of <HalDoc[]> stories) {
           let story = new StoryModel(parent, doc, false);
           if (story.doc.has('prx:series')) {
             // series are embedded, so this should be ok. would prefer to get the series id and use allSeries[id].doc
@@ -114,13 +108,7 @@ export class SearchComponent implements OnInit {
         this.isLoaded = true;
       });
     } else {
-      if (showUnsavedDraft) {
-        this.noStories = false;
-        this.stories = [draftStory];
-      } else {
-        this.noStories = true;
-        this.stories = [];
-      }
+      this.noStories = true;
       this.isLoaded = true;
       this.pagingInfo(per);
     }

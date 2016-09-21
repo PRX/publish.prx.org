@@ -14,7 +14,7 @@ import { DurationPipe, ImageLoaderComponent, OverflowComponent, StoryModel } fro
     <div class="media-container">
       <section class="story-link">
         <a [routerLink]="editStoryLink">
-          <image-loader [src]="storyImage" [imageDoc]="storyImageDoc"></image-loader>
+          <image-loader [imageDoc]="story.doc"></image-loader>
         </a>
         <h2>
           <a *ngIf="storyTitle" [routerLink]="editStoryLink">{{storyTitle}}</a>
@@ -43,11 +43,8 @@ export class SearchStoryComponent implements OnInit {
 
   editStoryLink: any[];
   seriesLink: any[];
-  isEmptyDraft: boolean;
 
   storyId: number;
-  storyImage: string;
-  storyImageDoc: HalDoc;
   storyTitle: string;
   storyDuration: number;
   storyAudioTotal: number;
@@ -61,59 +58,39 @@ export class SearchStoryComponent implements OnInit {
 
   ngOnInit() {
     this.storyId = this.story.id;
-    this.isEmptyDraft = this.story.isNew && !this.story.isStored();
     this.storyTitle = this.story.title;
     this.storyUpdated = this.story.lastStored || this.story.updatedAt;
     this.storyDescription = this.story.shortDescription;
     this.storyTags = this.story.extraTags && this.story.extraTags.length > 0 ? this.story.extraTags.split(', ') : [];
 
-    if (this.story.isNew) {
-      this.editStoryLink = ['/create'];
-      if (this.story.parent) {
-        this.editStoryLink.push(this.story.parent.id);
-      }
-    } else {
-      this.editStoryLink = ['/edit', this.story.id];
-    }
+    this.editStoryLink = ['/edit', this.story.id];
 
-    // TODO: draft audios
-    if (this.story.isNew) {
-      this.storyImage = this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
+    if (this.story.doc.has('prx:audio')) {
+      this.story.doc.followItems('prx:audio').subscribe((audios) => {
+        let audiosDocs = <HalDoc[]> audios;
+        if (!audios || audios.length < 1) {
+          this.storyDuration = 0;
+        } else {
+          this.storyAudioTotal = audiosDocs[0].total();
+          this.storyDuration = audios.map((audio) => {
+            return audio['duration'] || 0;
+          }).reduce((prevDuration, currDuration) => {
+            return prevDuration + currDuration;
+          });
+        }
+      });
+    } else {
       this.storyDuration = 0;
-    } else {
-      this.storyImageDoc = this.story.doc;
-      if (this.story.doc.has('prx:audio')) {
-        this.story.doc.followItems('prx:audio').subscribe((audios) => {
-          let audiosDocs = <HalDoc[]> audios;
-          if (!audios || audios.length < 1) {
-            this.storyDuration = 0;
-          } else {
-            this.storyAudioTotal = audiosDocs[0].total();
-            this.storyDuration = audios.map((audio) => {
-              return audio['duration'] || 0;
-            }).reduce((prevDuration, currDuration) => {
-              return prevDuration + currDuration;
-            });
-          }
-        });
-      } else {
-        this.storyDuration = 0;
-      }
-      if (this.story.parent) {
-        this.seriesTitle = this.story.parent['title'];
-        this.seriesLink = ['/series', this.story.parent.id];
-      } else {
-        this.seriesTitle = this.story.account['name'] || '(Unnamed Account)';
-      }
     }
 
-    if (this.story.isNew) {
-      this.statusClass = 'status draft';
-      this.statusText = 'Draft';
-    } else if (this.story.changed()) {
-      this.statusClass = 'status unsaved';
-      this.statusText = 'Edited';
-    } else if (!this.story.publishedAt) {
+    if (this.story.parent) {
+      this.seriesTitle = this.story.parent['title'];
+      this.seriesLink = ['/series', this.story.parent.id];
+    } else {
+      this.seriesTitle = this.story.account['name'] || '(Unnamed Account)';
+    }
+
+    if (!this.story.publishedAt) {
       this.statusClass = 'status unpublished';
       this.statusText = 'Unpublished';
     }

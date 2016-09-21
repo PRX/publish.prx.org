@@ -91,12 +91,6 @@ image-loader {
   text-transform: uppercase;
   line-height: 18px;
 }
-.status.draft {
-  background-color: #ffa500;
-}
-.status.unsaved {
-  background-color: #368aa2;
-}
 .status.unpublished {
   background-color: #ee4d3e;
 }
