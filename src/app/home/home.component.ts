@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CmsService, HalDoc } from '../shared';
+import { CmsService, HalDoc } from '../core';
 
 @Component({
   selector: 'publish-home',

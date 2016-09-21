@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { HalDoc, StoryModel } from '../../shared';
+import { HalDoc } from '../../core';
+import { StoryModel } from '../../shared';
 
 @Component({
   selector: 'publish-home-series',
@@ -13,7 +14,7 @@ import { HalDoc, StoryModel } from '../../shared';
     </header>
     <header *ngIf="!noseries">
       <a href="#">
-        <image-loader [imageDoc]="logoDoc"></image-loader>
+        <publish-image [imageDoc]="logoDoc"></publish-image>
       </a>
       <p class="count">{{count}} Stories</p>
       <h1><a href="/series/{{id}}">{{title}}</a></h1>

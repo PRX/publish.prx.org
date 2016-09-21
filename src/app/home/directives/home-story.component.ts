@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { HalDoc } from '../../shared/cms/haldoc';
+import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
 
 @Component({
@@ -15,7 +15,7 @@ import { StoryModel } from '../../shared';
     </template>
     <template [ngIf]="!isPlusSign">
       <a [routerLink]="editLink">
-        <image-loader [src]="storyImage" [imageDoc]="storyImageDoc"></image-loader>
+        <publish-image [src]="storyImage" [imageDoc]="storyImageDoc"></publish-image>
       </a>
       <h2>
         <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>

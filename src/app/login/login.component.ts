@@ -2,7 +2,7 @@ import { Component, ElementRef } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
-import {AuthService, AuthUrls} from '../shared';
+import { AuthService, AuthUrls } from '../core';
 
 @Component({
   selector: 'publish-login',
