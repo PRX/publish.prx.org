@@ -30,6 +30,22 @@ export class SearchComponent implements OnInit {
   allSeriesIds: number[];
   allSeries: any;
 
+  searchOrderBy: string;
+  orderByOptions: any[] = [
+    {
+      id: 'TITLE',
+      name: 'Story Title'
+    },
+    {
+      id: 'UPDATED',
+      name: 'Last Updated'
+    },
+    {
+      id: 'PUBLISHED',
+      name: 'When Published'
+    }
+  ];
+
   constructor(private cms: CmsService) {}
 
   ngOnInit() {
@@ -65,12 +81,12 @@ export class SearchComponent implements OnInit {
     let parent = this.searchSeries ? this.searchSeries.doc : this.auth;
 
     let draftStory = new StoryModel(this.auth);
-    let isUnsavedDraft = draftStory.isNew && draftStory.isStored() && this.searchSeries === null;
-    let showUnsavedDraft = isUnsavedDraft && this.currentPage === 1 && this.searchSeries === null;
+    let isUnsavedDraft = draftStory.isNew && draftStory.isStored() && !this.searchSeries;
+    let showUnsavedDraft = isUnsavedDraft && this.currentPage === 1 && !this.searchSeries;
 
     let requestPer = showUnsavedDraft ? per - 1 : per;
     let filters = ['v4'];
-    if (this.searchSeriesId === -1) {
+    if (+this.searchSeriesId === -1) {
       filters.push('noseries');
     }
     let params = {page: this.currentPage, per: requestPer, filters: filters.join(',')};

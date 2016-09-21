@@ -11,17 +11,20 @@
         <span class="left">
           <label [attr.for]="searchSeries">Filter by Series</label>
           <select id="searchSeries" [(ngModel)]="searchSeriesId" (ngModelChange)="searchBySeries()">
-            <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId] ? allSeries[seriesId].title : 'No Series'}}</option>
+            <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId]?.title || 'No Series'}}</option>
           </select>
           <!-- TODO: there should be a way to clear this -->
         </span>
 
         <span class="right">
-          <!-- last-modified, published-date, title -->
           <label [attr.for]="orderBy">Order by</label>
-          <select id="orderBy" [(ngModel)]="allSeries" (ngModelChange)="onChange($event)">
-            <option *ngFor="let series of allSeriesIds" [value]="series">{{series}}</option>
+          <select id="orderBy" [(ngModel)]="searchOrderBy">
+            <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
           </select>
+
+          <input class="checkbox-hack" type="checkbox" id="order"/>
+          <label for="order"></label>
+
         </span>
       </div>
 
