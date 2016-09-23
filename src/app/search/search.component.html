@@ -4,7 +4,7 @@
       <h2>Do a search for...</h2>
 
       <div class="form-group">
-        <input (change)="search(1)" [(ngModel)]="searchTerm" placeholder="search by title or description"/><!-- TODO: delay search until finish typing -->
+        <input (keyup)="search()" [(ngModel)]="searchText" placeholder="search by title or description"/><!-- TODO: delay search until finish typing -->
       </div>
 
       <div class="form-group">

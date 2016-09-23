@@ -26,7 +26,7 @@ export class SearchComponent implements OnInit {
   pagesBegin: number;
   pagesEnd: number;
 
-  searchTerm: string;
+  searchText: string;
   searchSeriesId: number;
   searchSeries: SeriesModel;
   allSeriesIds: number[];
@@ -67,7 +67,7 @@ export class SearchComponent implements OnInit {
             this.allSeries[s.id] = new SeriesModel(auth, s, false);
           }
 
-          this.searchTerm = '';
+          this.searchText = '';
           this.searchSeries = null;
           this.currentPage = 1;
           if (this.searchSeriesId) {
@@ -85,7 +85,7 @@ export class SearchComponent implements OnInit {
     this.search(1);
   }
 
-  search(page: number, per: number = 12) {
+  search(page: number, per = 12) {
     this.currentPage = page;
     this.stories = [];
     this.isLoaded = false;
@@ -96,6 +96,9 @@ export class SearchComponent implements OnInit {
     let filters = ['v4'];
     if (+this.searchSeriesId === -1) {
       filters.push('noseries');
+    }
+    if (this.searchText) {
+      filters.push('text=' + this.searchText);
     }
     let params = {page: this.currentPage, per, filters: filters.join(',')};
 
