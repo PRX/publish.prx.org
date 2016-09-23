@@ -1,19 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { ROUTER_DIRECTIVES } from '@angular/router';
 
-import { HalDoc } from '../../shared/cms/haldoc';
-import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
+import { HalDoc } from '../../core';
+import { StoryModel } from '../../shared';
 
 @Component({
-  directives: [ImageLoaderComponent, ROUTER_DIRECTIVES],
-  pipes: [DatePipe, DurationPipe],
   selector: 'publish-search-story',
   styleUrls: ['search-story.component.css'],
   template: `
     <div>
       <section class="story-image">
-        <image-loader [imageDoc]="story.doc"></image-loader>
+        <publish-image [imageDoc]="story.doc"></publish-image>
         <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
       </section>
       <section class="story-detail">
@@ -64,7 +60,7 @@ export class SearchStoryComponent implements OnInit {
     this.storyDescription = this.story.shortDescription;
     this.storyTags = this.story.extraTags && this.story.extraTags.length > 0 ? this.story.extraTags.split(', ') : [];
 
-    this.editStoryLink = ['/edit', this.story.id];
+    this.editStoryLink = ['/story', this.story.id];
 
     if (this.story.doc.has('prx:audio')) {
       this.story.doc.followItems('prx:audio').subscribe((audios) => {

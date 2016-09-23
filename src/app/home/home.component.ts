@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ROUTER_DIRECTIVES } from '@angular/router';
-import { CmsService, HalDoc, SpinnerComponent } from '../shared';
-import { HomeSeriesComponent } from './directives/home-series.component';
+import { CmsService, HalDoc } from '../core';
 
 @Component({
-  directives: [ROUTER_DIRECTIVES, SpinnerComponent, HomeSeriesComponent],
   selector: 'publish-home',
   styleUrls: ['home.component.css'],
   templateUrl: 'home.component.html'

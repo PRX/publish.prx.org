@@ -1,0 +1,30 @@
+/*
+ * Navbar user info
+ */
+.spin-holder {
+  width: 80px;
+}
+.name {
+  display: none;
+}
+.nav-holder >>> publish-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgb(112, 142, 151);
+  display: inline-block;
+  margin-top: 10px;
+}
+@media screen and (min-width: 768px) {
+  .name {
+    display: inline-block;
+  }
+  .nav-holder >>> publish-image {
+    border-width: 2px;
+    width: 40px;
+    height: 40px;
+    margin-right: -10px;
+    margin-left: 10px;
+    margin-bottom: -15px;
+  }
+}

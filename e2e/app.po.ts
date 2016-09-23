@@ -1,6 +1,6 @@
 import { browser, element, by } from 'protractor/globals';
 
-export class PublishCliPage {
+export class PublishprxorgPage {
   navigateTo() {
     return browser.get('/');
   }

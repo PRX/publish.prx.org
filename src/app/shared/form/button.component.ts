@@ -1,10 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { BaseModel } from '../model/base.model';
-import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
-  directives: [SpinnerComponent],
   selector: 'publish-button',
   styleUrls: ['button.component.css'],
   template: `

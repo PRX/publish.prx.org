@@ -1,8 +1,8 @@
 import { Component, Input, ElementRef, OnChanges } from '@angular/core';
-import { HalDoc } from '../cms/haldoc';
+import { HalDoc } from '../../core';
 
 @Component({
-  selector: 'image-loader',
+  selector: 'publish-image',
   styleUrls: ['image-loader.component.css'],
   template: `
     <img *ngIf="src" [src]="src" (load)="onLoad()" (error)="onError()"/>
@@ -11,11 +11,11 @@ import { HalDoc } from '../cms/haldoc';
 
 export class ImageLoaderComponent implements OnChanges {
 
-  @Input() public src: string;
-  @Input() public imageDoc: HalDoc;
-
   static PLACEHOLDER_IMAGE: string = '/assets/images/placeholder.png';
   static PLACEHOLDER_ERROR: string = '/assets/images/placeholder_error.png';
+
+  @Input() public src: string;
+  @Input() public imageDoc: HalDoc;
 
   constructor(private element: ElementRef) {}
 
@@ -27,9 +27,9 @@ export class ImageLoaderComponent implements OnChanges {
 
   onError = () => this.setBackgroundImage(ImageLoaderComponent.PLACEHOLDER_ERROR);
 
-  ngOnChanges(changes:any) {
-    const doesntHaveSrc = (changes) => !changes.src || !changes.src.currentValue;
-    const hasPRXImageDoc = (changes) => changes.imageDoc && changes.imageDoc.currentValue && changes.imageDoc.currentValue.has('prx:image');
+  ngOnChanges(changes: any) {
+    const doesntHaveSrc = (chg) => !chg.src || !chg.src.currentValue;
+    const hasPRXImageDoc = (chg) => chg.imageDoc && chg.imageDoc.currentValue && chg.imageDoc.currentValue.has('prx:image');
 
     if (doesntHaveSrc(changes)) {
       if (hasPRXImageDoc(changes)) {

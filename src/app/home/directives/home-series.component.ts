@@ -1,19 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import {
-  HalDoc,
-  ImageLoaderComponent,
-  SpinnerComponent,
-  StoryModel,
-  TimeAgoPipe
-} from '../../shared';
-
-import { HomeStoryComponent } from './home-story.component';
+import { HalDoc } from '../../core';
+import { StoryModel } from '../../shared';
 
 @Component({
-  directives: [SpinnerComponent, ImageLoaderComponent, HomeStoryComponent],
-  pipes: [TimeAgoPipe],
   selector: 'publish-home-series',
   styleUrls: ['home-series.component.css'],
   template: `
@@ -23,7 +14,7 @@ import { HomeStoryComponent } from './home-story.component';
     </header>
     <header *ngIf="!noseries">
       <a href="#">
-        <image-loader [imageDoc]="logoDoc"></image-loader>
+        <publish-image [imageDoc]="logoDoc"></publish-image>
       </a>
       <p class="count">{{count}} Stories</p>
       <h1><a href="/series/{{id}}">{{title}}</a></h1>

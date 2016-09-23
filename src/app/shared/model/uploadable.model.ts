@@ -1,6 +1,5 @@
 import { Subscription } from 'rxjs';
-import { HalDoc } from '../cms/haldoc';
-import { Upload } from '../upload/upload.service';
+import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { FALSEY } from './base.invalid';
 

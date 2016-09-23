@@ -8,7 +8,7 @@ import { Component, Input, OnDestroy } from '@angular/core';
 
 export class SpinnerComponent implements OnDestroy {
 
-  private currentTimeout: number;
+  private currentTimeout: any;
   private isSpinning: boolean = true;
 
   @Input() public inverse: boolean = false;

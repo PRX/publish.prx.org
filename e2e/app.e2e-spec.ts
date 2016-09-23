@@ -1,10 +1,10 @@
-import { PublishCliPage } from './app.po';
+import { PublishprxorgPage } from './app.po';
 
-describe('publish-cli App', function() {
-  let page: PublishCliPage;
+describe('publishprxorg App', function() {
+  let page: PublishprxorgPage;
 
   beforeEach(() => {
-    page = new PublishCliPage();
+    page = new PublishprxorgPage();
   });
 
   it('should display message saying app works', () => {

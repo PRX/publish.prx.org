@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CmsService, SpinnerComponent, HalDoc, StoryModel, SeriesModel } from '../shared';
-import { SearchStoryComponent } from './directives/search-story.component';
+import { CmsService, HalDoc } from '../core';
+import { StoryModel, SeriesModel } from '../shared';
 
 @Component({
-  directives: [SpinnerComponent, SearchStoryComponent],
   selector: 'publish-search',
   styleUrls: ['search.component.css'],
   templateUrl: 'search.component.html'

@@ -1,2 +1,3 @@
+export * from './series.module';
 export * from './series.component';
-export * from './series.routes';
+export * from './series.routing';
