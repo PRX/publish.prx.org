@@ -10,7 +10,7 @@ import { StoryModel } from '../../shared';
   template: `
     <header *ngIf="noseries">
       <h2>Your Standalone Stories</h2>
-      <a *ngIf="count > -1" class="all" href="#">View All {{count}} &raquo;</a>
+      <a *ngIf="count > -1" class="all" [routerLink]="['search', { tab: 'stories', seriesId: -1 }]">View All {{count}} &raquo;</a>
     </header>
     <header *ngIf="!noseries">
       <a href="#">

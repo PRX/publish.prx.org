@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CmsService, HalDoc } from '../core';
 import { StoryModel, SeriesModel } from '../shared';
 
@@ -9,6 +10,8 @@ import { StoryModel, SeriesModel } from '../shared';
 })
 
 export class SearchComponent implements OnInit {
+
+  selectedTab: string;
 
   isLoaded = false;
   totalCount: number;
@@ -45,24 +48,34 @@ export class SearchComponent implements OnInit {
     }
   ];
 
-  constructor(private cms: CmsService) {}
+  constructor(private cms: CmsService,
+              private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.cms.follow('prx:authorization').subscribe((auth) => {
-      this.auth = auth;
+    this.route.params.subscribe(params => {
+      this.selectedTab = params['tab'];
+      this.searchSeriesId = +params['seriesId'];
 
-      this.allSeriesIds = [-1];
-      this.allSeries = {};
-      auth.followItems('prx:series', {filters: 'v4'}).subscribe((series) => {
-        for (let s of <HalDoc[]> series) {
-          this.allSeriesIds.push(s.id);
-          this.allSeries[s.id] = new SeriesModel(auth, s, false);
-        }
+      this.cms.follow('prx:authorization').subscribe((auth) => {
+        this.auth = auth;
 
-        this.searchTerm = '';
-        this.searchSeries = null;
-        this.currentPage = 1;
-        this.search(1);
+        this.allSeriesIds = [-1];
+        this.allSeries = {};
+        auth.followItems('prx:series', {filters: 'v4'}).subscribe((series) => {
+          for (let s of <HalDoc[]> series) {
+            this.allSeriesIds.push(s.id);
+            this.allSeries[s.id] = new SeriesModel(auth, s, false);
+          }
+
+          this.searchTerm = '';
+          this.searchSeries = null;
+          this.currentPage = 1;
+          if (this.searchSeriesId) {
+            this.searchBySeries();
+          } else {
+            this.search(1);
+          }
+        });
       });
     });
   }
