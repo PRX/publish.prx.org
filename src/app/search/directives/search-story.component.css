@@ -10,6 +10,15 @@ publish-image  {
   height: 100%;
   display: block;
 }
+.story-image::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 25px;
+  height: 25px;
+  background: rgba(255,165,0,.9)url('../../../assets/images/bt_play.svg') center center/8px no-repeat;
+  content: '';
+}
 
 .status {
   position: absolute;
@@ -40,12 +49,10 @@ publish-image  {
   font-size: 16px;
   max-height: 40px;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 .series-title {
   max-height: 40px;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .meta {
