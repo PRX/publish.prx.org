@@ -1,10 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { NgForm } from '@angular/common';
 import { BaseModel } from '../model/base.model';
 
 @Component({
-  directives: [NgForm],
-  selector: 'fancy-field',
+  selector: 'publish-fancy-field',
   styleUrls: ['fancy-field.component.css'],
   templateUrl: 'fancy-field.component.html'
 })

@@ -4,7 +4,6 @@ import { StoryModel } from '../../shared';
 import { StoryTabService } from '../services/story-tab.service';
 
 @Component({
-  selector: 'newstory-sell',
   styleUrls: [],
   template: `
     <div *ngIf="story">

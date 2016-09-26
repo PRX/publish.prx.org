@@ -1,13 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { ROUTER_DIRECTIVES } from '@angular/router';
 
-import { HalDoc } from '../../shared/cms/haldoc';
-import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
+import { HalDoc } from '../../core';
+import { StoryModel } from '../../shared';
 
 @Component({
-  directives: [ImageLoaderComponent, ROUTER_DIRECTIVES],
-  pipes: [DatePipe, DurationPipe],
   selector: 'publish-home-story',
   styleUrls: ['home-story.component.css'],
   template: `
@@ -19,7 +15,7 @@ import { DurationPipe, ImageLoaderComponent, StoryModel } from '../../shared';
     </template>
     <template [ngIf]="!isPlusSign">
       <a [routerLink]="editLink">
-        <image-loader [src]="storyImage" [imageDoc]="storyImageDoc"></image-loader>
+        <publish-image [src]="storyImage" [imageDoc]="storyImageDoc"></publish-image>
       </a>
       <h2>
         <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>
@@ -56,12 +52,12 @@ export class HomeStoryComponent implements OnInit {
     this.storyUpdated = this.story.lastStored || this.story.updatedAt;
 
     if (this.story.isNew) {
-      this.editLink = ['/create'];
+      this.editLink = ['story/new'];
       if (this.story.parent) {
         this.editLink.push(this.story.parent.id);
       }
     } else {
-      this.editLink = ['/edit', this.story.id];
+      this.editLink = ['/story', this.story.id];
     }
 
     // TODO: draft audios

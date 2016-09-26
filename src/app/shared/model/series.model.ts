@@ -1,5 +1,5 @@
 import { Observable} from 'rxjs';
-import { HalDoc } from '../cms/haldoc';
+import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
 import { REQUIRED, LENGTH } from './base.invalid';
 
