@@ -3,8 +3,21 @@
 // https://www.typescriptlang.org/docs/handbook/writing-declaration-files.html
 
 declare var System: any;
-// declare var module: { id: string };
-// declare var require: any;
+
+// extend jasmine matchers
+declare module jasmine {
+  interface Matchers {
+    toHaveText(expected: string): boolean;
+    toContainText(expected: string): boolean;
+    toQueryText(cssQuery: string, expected: string): boolean;
+  }
+}
+
+// TODO: shouldn't need this, but the getter in test-support warns without
+interface NodeModule {
+  exports: any;
+}
+declare var module: NodeModule;
 
 // TODO: npm @types/evaporate has no default export
 declare class Evaporate {

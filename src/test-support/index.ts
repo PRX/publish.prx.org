@@ -1,3 +1,5 @@
+/// <reference path="../../node_modules/@types/jasmine/index.d.ts"/>
+
 import { MockCmsService } from './mock.cms.service';
 import { currentCms } from './components';
 import { matchers } from './matchers';
