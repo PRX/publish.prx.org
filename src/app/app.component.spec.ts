@@ -23,7 +23,7 @@ describe('AppComponent', () => {
   it('only shows header links when logged in', buildComponent((fix, el, app) => {
     app.loggedIn = true;
     fix.detectChanges();
-    expect(el.querySelectorAll('nav-item').length).toEqual(2);
+    expect(el.querySelectorAll('nav-item').length).toEqual(3);
     app.loggedIn = false;
     fix.detectChanges();
     expect(el.querySelectorAll('nav-item').length).toEqual(0);

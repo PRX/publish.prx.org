@@ -1,0 +1,66 @@
+header {
+  position: relative;
+  overflow: auto;
+  width: 100%;
+  border-bottom: 1px solid #676767;
+  margin-bottom: 10px;
+}
+header h2 {
+  font-size: 25px;
+  line-height: 30px;
+  color: #343434;
+  margin-bottom: 1px;
+}
+
+input {
+  width: 100%;
+  border: 0;
+  padding: 6px;
+  color: #939393;
+  background: #fff;
+}
+
+select {
+  background: #fff;
+}
+
+header .tab {
+  float:left;
+  padding: 5px 10px;
+  background-color: #ddd;
+  color: #368aa2;
+}
+header .tab.active {
+  background-color: #368aa2;
+  color: #ddd;
+}
+header .tab.active {
+  background-color: #368aa2;
+  color: #ddd;
+}
+
+header .pages {
+  float: right;
+  margin-left: 10px;
+}
+header .pages > button {
+  margin-left: 4px;
+}
+
+.story-list {
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: row wrap;
+  margin-right: -20px;
+  padding-bottom: 40px;
+}
+publish-search-story, .story {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px;
+  margin-right: 20px;
+  width: 320px;
+  height: 200px;
+  background: #ddd;
+}

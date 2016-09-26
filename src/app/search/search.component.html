@@ -1,0 +1,62 @@
+<div class="main">
+  <section>
+    <header>
+      <h2>Do a search for...</h2>
+
+      <div class="form-group">
+        <input (keyup)="search()" [(ngModel)]="searchText" placeholder="search by title or description"/><!-- TODO: delay search until finish typing -->
+      </div>
+
+      <div class="form-group">
+        <span class="left">
+          <label [attr.for]="searchSeries">Filter by Series</label>
+          <select id="searchSeries" [(ngModel)]="searchSeriesId" (ngModelChange)="searchBySeries()">
+            <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId]?.title || 'No Series'}}</option>
+          </select>
+          <!-- TODO: there should be a way to clear this -->
+        </span>
+
+        <span class="right">
+          <label [attr.for]="orderBy">Order by</label>
+          <select id="orderBy" [(ngModel)]="searchOrderBy">
+            <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
+          </select>
+
+          <input class="updown-toggle" type="checkbox" id="order"/>
+          <label for="order"></label>
+
+        </span>
+      </div>
+
+      <div>
+        <button class="tab">Series</button>
+        <button (click)="search(1)" class="tab active" disabled>Stories</button>
+
+        <span class="pages">
+          <button *ngIf="totalCount && pages?.length > 1" (click)="search(1, totalCount)" class="btn-link">View All {{totalCount}} &raquo;</button>
+          <button disabled *ngIf="totalCount && pages?.length === 1" class="btn-link">Viewing {{totalCount > 1 ? 'all ' + totalCount : totalCount}}</button>
+        </span>
+
+        <span *ngIf="pages?.length > 1" class="pages">
+          <button [disabled]="currentPage === 1" (click)="search(currentPage - 1)" class="btn-link">&lt;</button>
+          <button *ngFor="let page of pages | slice:pagesBegin:pagesEnd;"
+                  [disabled]="page === currentPage" [ngClass]="{'active': page === currentPage}"
+                  (click)="search(page)"
+                  class="btn-link">{{page}}</button>
+          <button disabled *ngIf="pages.length > showNumPages" class="btn-link">of {{pages.length}}</button>
+          <button [disabled]="currentPage === pages?.length" (click)="search(currentPage + 1)" class="btn-link">&gt;</button>
+        </span>
+      </div>
+    </header>
+    <publish-spinner *ngIf="!isLoaded"></publish-spinner>
+    <div *ngIf="noStories">
+      <h1>No Stories match your search</h1>
+    </div>
+    <div *ngIf="!noStories">
+      <div class="story-list">
+        <publish-search-story *ngFor="let s of stories" [story]="s"></publish-search-story>
+        <div *ngFor="let l of storyLoaders" class="story"><publish-spinner></publish-spinner></div>
+      </div>
+    </div>
+  </section>
+</div>

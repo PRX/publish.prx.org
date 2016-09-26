@@ -8,6 +8,7 @@ import { CoreModule } from './core';
 import { SharedModule } from './shared';
 import { SeriesModule } from './series';
 import { StoryModule } from './story';
+import { SearchModule } from './search';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { StoryModule } from './story';
     SeriesModule,
     SharedModule,
     StoryModule,
+    SearchModule,
     routing
   ],
   providers: [
