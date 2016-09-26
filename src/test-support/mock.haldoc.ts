@@ -1,12 +1,9 @@
-import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CmsService, HalDoc, HalObservable, HalRemote } from '../app/shared/cms';
+import { HalDoc, HalObservable, HalRemote } from '../app/core/cms';
 
 /*
- * Collection of utilities for mocking cms requests - actual exports
- * at the bottom of this file.
+ * Mock version of a haldoc
  */
-
 export class MockHalDoc extends HalDoc {
 
   MOCKS = {};
@@ -138,58 +135,3 @@ export class MockHalDoc extends HalDoc {
   }
 
 }
-
-@Injectable()
-export class MockCmsService {
-
-  private mockRoot: MockHalDoc;
-
-  constructor() {
-    this.mockRoot = new MockHalDoc({});
-  }
-
-  mock(rel: string, data: {}): MockHalDoc {
-    return this.mockRoot.mock(rel, data);
-  }
-
-  mockList(rel: string, datas: {}[]): MockHalDoc[] {
-    return this.mockRoot.mockList(rel, datas);
-  }
-
-  mockItems(rel: string, datas: {}[]): MockHalDoc[] {
-    return this.mockRoot.mockItems(rel, datas);
-  }
-
-  /*
-   * Implement enough of cms.service to make auth'd requests happen
-   */
-
-  get root(): HalObservable<MockHalDoc> {
-    return <HalObservable<MockHalDoc>> Observable.of(this.mockRoot);
-  }
-
-  get account(): HalObservable<HalDoc> {
-    return this.follow('prx:authorization').follow('prx:default-account');
-  }
-
-  follow(rel: string, params: {} = null): HalObservable<HalDoc> {
-    return this.mockRoot.follow(rel, params);
-  }
-
-  followList(rel: string, params: {} = null): HalObservable<HalDoc[]> {
-    return this.mockRoot.followList(rel, params);
-  }
-
-  followItems(rel: string, params: {} = null): HalObservable<HalDoc[]> {
-    return this.mockRoot.followItems(rel, params);
-  }
-
-}
-
-export const mockCms = new MockCmsService();
-
-export const provideFakeCms = () => {
-  return [
-    { provide: CmsService, useValue: mockCms }
-  ];
-};

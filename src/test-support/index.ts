@@ -1,7 +1,15 @@
-/// <reference path="../../node_modules/@types/jasmine/index.d.ts"/>
+import { MockCmsService } from './mock.cms.service';
+import { currentCms } from './components';
+import { matchers } from './matchers';
 
-export { buildComponent } from './build-component';
-export { mockCms }        from './mock-cms';
-export { mockDirective }  from './mock-directive';
-export { mockService }    from './mock-service';
-export { setupComponent } from './setup-component';
+// custom jasmine matchers
+beforeEach(() => jasmine.addMatchers(matchers));
+
+// normal exports
+export { cit, create, contain } from './components';
+export { findComponent } from './helpers';
+export { By } from '@angular/platform-browser';
+
+// HACKY: export a getter to the current cms-mocks instance
+export const cms: MockCmsService = null;
+Object.defineProperty(module.exports, 'cms', {get: () => currentCms()});
