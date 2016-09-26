@@ -87,7 +87,6 @@ export class SearchComponent implements OnInit {
 
   search(page: number, per = 12) {
     this.currentPage = page;
-    this.stories = [];
     this.isLoaded = false;
     this.noStories = false;
 
@@ -106,6 +105,7 @@ export class SearchComponent implements OnInit {
     if (storiesCount > 0) {
       this.storyLoaders = Array(storiesCount);
       parent.followItems('prx:stories', params).subscribe((stories) => {
+        this.stories = [];
         this.storyLoaders = null;
         let storyDocs = <HalDoc[]> stories;
         for (let doc of storyDocs) {
