@@ -9,6 +9,7 @@ declare module jasmine {
   interface Matchers {
     toHaveText(expected: string): boolean;
     toContainText(expected: string): boolean;
+    toQueryAttr(cssQuery: string, attrName: string, expected: string): boolean;
     toQueryText(cssQuery: string, expected: string): boolean;
   }
 }

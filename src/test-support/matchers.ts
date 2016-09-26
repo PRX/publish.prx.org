@@ -67,3 +67,24 @@ matchers.toQueryText = (util, customEqualityTesters) => {
     }
   };
 };
+
+// query by css, then check an attribute of the element
+matchers.toQueryAttr = (util, customEqualityTesters) => {
+  return {
+    compare: (actual, cssQuery, attrName, expected) => {
+      if (!actual || !actual.query) {
+        return {pass: false, message: `Expected a DebugElement - given ${actual}`};
+      }
+      let found = actual.query(By.css(cssQuery));
+      if (!found) {
+        return {pass: false, message: `Cannot find css '${cssQuery}' in '${actual}'`};
+      }
+      let value = found.nativeElement.getAttribute(attrName);
+      if (util.equals(value, expected, customEqualityTesters)) {
+        return {pass: true, message: `Expected '${niceEl(found)}' not to have attribute ${attrName}=${expected}`};
+      } else {
+        return {pass: false, message: `Expected '${niceEl(found)}' to have attribute ${attrName}=${expected}`};
+      }
+    }
+  };
+};

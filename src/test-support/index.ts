@@ -8,7 +8,7 @@ import { matchers } from './matchers';
 beforeEach(() => jasmine.addMatchers(matchers));
 
 // normal exports
-export { cit, create, contain } from './components';
+export { cit, create, contain, provide } from './components';
 export { findComponent } from './helpers';
 export { By } from '@angular/platform-browser';
 

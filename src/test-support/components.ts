@@ -3,6 +3,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 
 import { CmsService } from '../app/core/cms/cms.service';
 import { MockCmsService } from './mock.cms.service';
+import { StubRouterLinkDirective } from './stub.routerlink.directive';
 
 interface ComponentTestCallback {
   (fix: ComponentFixture<any>, el: DebugElement, comp: any, done?: Function): any;
@@ -37,7 +38,7 @@ export function create(componentType: Type<any>) {
   mockCms = new MockCmsService();
   beforeEach(function() {
     this._publishComponent    = componentType;
-    this._publishDeclarations = [componentType];
+    this._publishDeclarations = [componentType, StubRouterLinkDirective];
     this._publishProviders    = [{provide: CmsService, useValue: mockCms}];
   });
 }
@@ -49,5 +50,16 @@ export function contain(componentType: Type<any>, componentProperties: any) {
   create(TestContainerComponent);
   beforeEach(function() {
     this._publishDeclarations.push(componentType);
+  });
+}
+
+// ad-hoc providers
+export function provide(provider, useValue?) {
+  beforeEach(function() {
+    if (useValue) {
+      this._publishProviders.push({provide: provider, useValue: useValue});
+    } else {
+      this._publishProviders.push(provider);
+    }
   });
 }

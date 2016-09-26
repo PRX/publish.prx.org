@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { CmsService } from './cms.service';
 import { HalRemoteCache } from './halremote.cache';
 
-xdescribe('CmsService', () => {
+describe('CmsService', () => {
 
   beforeEach(() => {
     HalRemoteCache.clear();

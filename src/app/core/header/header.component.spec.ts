@@ -1,23 +1,18 @@
-import { Component } from '@angular/core';
-import { setupComponent, buildComponent } from '../../test-support';
+import { cit, contain } from '../../../test-support';
 import { HeaderComponent } from './header.component';
-
-@Component({
-  directives: [HeaderComponent],
-  template: '<publish-header><h4>Something</h4></publish-header>'
-})
-class MiniComponent {}
 
 describe('HeaderComponent', () => {
 
-  setupComponent(MiniComponent);
+  contain(HeaderComponent, {
+    template: '<publish-header><h4>Something</h4></publish-header>'
+  });
 
-  it('renders a home logo link', buildComponent((fix, el, mini) => {
-    expect(el.querySelector('h1').textContent).toEqual('PRX');
-  }));
+  cit('renders a home logo link', (fix, el, comp) => {
+    expect(el).toQueryText('h1', 'PRX');
+  });
 
-  it('includes ng content', buildComponent((fix, el, mini) => {
-    expect(el.querySelector('nav h4').textContent).toEqual('Something');
-  }));
+  cit('includes ng content', (fix, el, comp) => {
+    expect(el).toQueryText('h4', 'Something');
+  });
 
 });

@@ -1,20 +1,19 @@
-import { setupComponent, buildComponent } from '../../test-support';
+import { cit, create } from '../../../test-support';
 import { FooterComponent } from './footer.component';
 
 describe('FooterComponent', () => {
 
-  setupComponent(FooterComponent);
+  create(FooterComponent);
 
-  it('renders the footer', buildComponent((fix, el, footer) => {
-    expect(el.textContent).toMatch(`You're seeing a beta preview of prx.org`);
-  }));
+  cit('renders the footer', (fix, el, comp) => {
+    expect(el).toContainText(`You're seeing a beta preview of prx.org`);
+  });
 
-  it('uses the path in the old version link', buildComponent((fix, el, footer) => {
-    spyOn(footer, 'locationPath').and.returnValue('/foobar');
+  cit('uses the path in the old version link', (fix, el, comp) => {
+    spyOn(comp, 'locationPath').and.returnValue('/foobar');
     fix.detectChanges();
-    let old = el.querySelector('a.old-version');
-    expect(old.textContent).toEqual('Use Old Version');
-    expect(old.getAttribute('href')).toMatch('http://www.prx.org/foobar');
-  }));
+    expect(el).toQueryText('a.old-version', 'Use Old Version');
+    expect(el).toQueryAttr('a.old-version', 'href', 'http://www.prx.org/foobar?m=false');
+  });
 
 });

@@ -1,4 +1,4 @@
-import { setupComponent, buildComponent, mockService } from '../../../test-support';
+import { cit, create, provide, By } from '../../../test-support';
 import { ModalService } from './modal.service';
 import { ModalComponent } from './modal.component';
 
@@ -11,80 +11,79 @@ const simulateKey = (key: string) => {
 
 describe('ModalComponent', () => {
 
-  setupComponent(ModalComponent);
+  create(ModalComponent);
 
-  mockService(ModalService, {state: {subscribe: () => { return; }}});
+  provide(ModalService);
 
-  it('defaults to hidden', buildComponent((fix, el, modal) => {
+  cit('defaults to hidden', (fix, el, comp) => {
+    expect(el.query(By.css('.overlay'))).toBeNull();
+    expect(el.query(By.css('.modal'))).toBeNull();
+  });
+
+  cit('shows title and body info', (fix, el, comp) => {
+    comp.shown = true;
+    comp.state = {title: 'hello', body: 'world'};
     fix.detectChanges();
-    expect(el.querySelector('.overlay')).toBeNull();
-    expect(el.querySelector('.modal')).toBeNull();
-  }));
+    expect(el).toQueryText('h1', 'hello');
+    expect(el).toQueryText('p', 'world');
+  });
 
-  it('shows title and body info', buildComponent((fix, el, modal) => {
-    modal.shown = true;
-    modal.state = {title: 'hello', body: 'world'};
+  cit('shows a close button', (fix, el, comp) => {
+    comp.shown = true;
+    comp.state = {};
     fix.detectChanges();
-    expect(el.querySelector('h1').textContent).toEqual('hello');
-    expect(el.querySelector('p').textContent).toEqual('world');
-  }));
-
-  it('shows a close button', buildComponent((fix, el, modal) => {
-    modal.shown = true;
-    modal.state = {};
-    fix.detectChanges();
-    let close = el.querySelector('button.close');
+    let close = el.query(By.css('button.close'));
     expect(close).not.toBeNull();
-    spyOn(modal, 'close').and.stub();
-    close['click']();
-    expect(modal.close).toHaveBeenCalled();
-  }));
+    spyOn(comp, 'close').and.stub();
+    close.nativeElement.click();
+    expect(comp.close).toHaveBeenCalled();
+  });
 
-  it('shows footer buttons', buildComponent((fix, el, modal) => {
-    modal.shown = true;
-    modal.state = {buttons: ['foo', 'bar']};
+  cit('shows footer buttons', (fix, el, comp) => {
+    comp.shown = true;
+    comp.state = {buttons: ['foo', 'bar']};
     fix.detectChanges();
-    expect(el.querySelector('button.close')).toBeNull();
-    let buttons = el.querySelectorAll('footer button');
+    expect(el.query(By.css('button.close'))).toBeNull();
+    let buttons = el.queryAll(By.css('footer button'));
     expect(buttons.length).toEqual(2);
-    expect(buttons[0].textContent).toEqual('foo');
-    expect(buttons[1].textContent).toEqual('bar');
+    expect(buttons[0]).toHaveText('foo');
+    expect(buttons[1]).toHaveText('bar');
 
-    spyOn(modal, 'close').and.stub();
-    buttons[0]['click']();
-    buttons[1]['click']();
-    expect(modal.close).toHaveBeenCalledTimes(2);
-  }));
+    spyOn(comp, 'close').and.stub();
+    buttons[0].nativeElement.click();
+    buttons[1].nativeElement.click();
+    expect(comp.close).toHaveBeenCalledTimes(2);
+  });
 
-  it('listens to keys when open', buildComponent((fix, el, modal) => {
-    modal.shown = true;
-    modal.state = {};
+  cit('listens to keys when open', (fix, el, comp) => {
+    comp.shown = true;
+    comp.state = {};
     fix.detectChanges();
     simulateKey('Escape');
-    expect(modal.shown).toEqual(false);
+    expect(comp.shown).toEqual(false);
 
-    modal.shown = true;
+    comp.shown = true;
     fix.detectChanges();
     simulateKey('Enter');
-    expect(modal.shown).toEqual(false);
-  }));
+    expect(comp.shown).toEqual(false);
+  });
 
-  it('matches the escape key to the cancel button', buildComponent((fix, el, modal) => {
-    modal.shown = true;
-    modal.state = {buttons: ['Cancel', 'Okay']};
+  cit('matches the escape key to the cancel button', (fix, el, comp) => {
+    comp.shown = true;
+    comp.state = {buttons: ['Cancel', 'Okay']};
     fix.detectChanges();
-    spyOn(modal, 'buttonClick').and.stub();
+    spyOn(comp, 'buttonClick').and.stub();
     simulateKey('Escape');
-    expect(modal.buttonClick).toHaveBeenCalledWith('Cancel');
-  }));
+    expect(comp.buttonClick).toHaveBeenCalledWith('Cancel');
+  });
 
-  it('matches the enter key to the okay button', buildComponent((fix, el, modal) => {
-    modal.shown = true;
-    modal.state = {buttons: ['Cancel', 'Nothing', 'Ok', 'Whatever']};
+  cit('matches the enter key to the okay button', (fix, el, comp) => {
+    comp.shown = true;
+    comp.state = {buttons: ['Cancel', 'Nothing', 'Ok', 'Whatever']};
     fix.detectChanges();
-    spyOn(modal, 'buttonClick').and.stub();
+    spyOn(comp, 'buttonClick').and.stub();
     simulateKey('Enter');
-    expect(modal.buttonClick).toHaveBeenCalledWith('Ok');
-  }));
+    expect(comp.buttonClick).toHaveBeenCalledWith('Ok');
+  });
 
 });
