@@ -32,22 +32,6 @@ export class SearchComponent implements OnInit {
   allSeriesIds: number[];
   allSeries: any;
 
-  searchOrderBy: string;
-  orderByOptions: any[] = [
-    {
-      id: 'TITLE',
-      name: 'Story Title'
-    },
-    {
-      id: 'UPDATED',
-      name: 'Last Updated'
-    },
-    {
-      id: 'PUBLISHED',
-      name: 'When Published'
-    }
-  ];
-
   constructor(private cms: CmsService,
               private route: ActivatedRoute) {}
 
@@ -71,21 +55,27 @@ export class SearchComponent implements OnInit {
           this.searchSeries = null;
           this.currentPage = 1;
           if (this.searchSeriesId) {
-            this.searchBySeries();
+            this.searchStoriesBySeries(this.searchSeriesId);
           } else {
-            this.search(1);
+            this.searchStories(1);
           }
         });
       });
     });
   }
 
-  searchBySeries() {
-    this.searchSeries = this.allSeries[this.searchSeriesId];
-    this.search(1);
+  searchStoriesByText(text: string) {
+    this.searchText = text;
+    this.searchStories(1);
   }
 
-  search(page: number, per = 12) {
+  searchStoriesBySeries(searchSeriesId: number) {
+    this.searchSeriesId = searchSeriesId;
+    this.searchSeries = this.allSeries[this.searchSeriesId];
+    this.searchStories(1);
+  }
+
+  searchStories(page: number, per = 12) {
     this.currentPage = page;
     this.isLoaded = false;
     this.noStories = false;

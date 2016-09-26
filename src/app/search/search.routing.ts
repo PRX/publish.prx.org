@@ -4,6 +4,8 @@ import { AuthGuard } from '../shared';
 
 import { SearchComponent } from './search.component';
 import { SearchStoryComponent } from './directives/search-story.component';
+import { StoryListComponent } from './directives/story-list.component';
+import { StoryCardComponent } from './directives/story-card.component';
 
 export const searchRoutes: Routes = [
   {
@@ -15,7 +17,9 @@ export const searchRoutes: Routes = [
 
 export const searchComponents: any[] = [
   SearchComponent,
-  SearchStoryComponent
+  SearchStoryComponent,
+  StoryListComponent,
+  StoryCardComponent
 ];
 
 export const searchProviders: any[] = [];

@@ -1,0 +1,18 @@
+publish-story-card, .story {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px;
+  margin-right: 20px;
+  width: 320px;
+  height: 200px;
+  background: #ddd;
+}
+
+.story-list {
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: row wrap;
+  margin-right: -20px;
+  padding-bottom: 40px;
+}

@@ -3,30 +3,13 @@
     <header>
       <h2>Do a search for...</h2>
 
-      <div class="form-group">
-        <input (keyup)="search()" [(ngModel)]="searchText" placeholder="search by title or description"/><!-- TODO: delay search until finish typing -->
-      </div>
-
-      <div class="form-group">
-        <span class="left">
-          <label [attr.for]="searchSeries">Filter by Series</label>
-          <select id="searchSeries" [(ngModel)]="searchSeriesId" (ngModelChange)="searchBySeries()">
-            <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId]?.title || 'No Series'}}</option>
-          </select>
-          <!-- TODO: there should be a way to clear this -->
-        </span>
-
-        <span class="right">
-          <label [attr.for]="orderBy">Order by</label>
-          <select id="orderBy" [(ngModel)]="searchOrderBy">
-            <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
-          </select>
-
-          <input class="updown-toggle" type="checkbox" id="order"/>
-          <label for="order"></label>
-
-        </span>
-      </div>
+      <publish-search-story
+        [searchSeriesId]="searchSeriesId"
+        [allSeriesIds]="allSeriesIds"
+        [allSeries]="allSeries"
+        (searchStoriesByText)="searchStoriesByText($event)"
+        (searchStoriesBySeries)="searchStoriesBySeries($event)">
+      </publish-search-story>
 
       <div>
         <button class="tab">Series</button>
@@ -48,15 +31,11 @@
         </span>
       </div>
     </header>
+
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>
-    <div *ngIf="noStories">
-      <h1>No Stories match your search</h1>
-    </div>
-    <div *ngIf="!noStories">
-      <div class="story-list">
-        <publish-search-story *ngFor="let s of stories" [story]="s"></publish-search-story>
-        <div *ngFor="let l of storyLoaders" class="story"><publish-spinner></publish-spinner></div>
-      </div>
-    </div>
+    <publish-story-list
+      [noStories]="noStories"
+      [stories]="stories"
+      [storyLoaders]="storyLoaders"></publish-story-list>
   </section>
 </div>
