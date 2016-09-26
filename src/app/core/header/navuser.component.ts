@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CmsService, HalDoc } from '../cms';
+import { CmsService } from '../cms';
 
 @Component({
   selector: 'publish-navuser',
@@ -25,12 +25,10 @@ import { CmsService, HalDoc } from '../cms';
 export class NavUserComponent {
 
   userName: string;
-  userImageDoc: HalDoc;
 
   constructor(private cms: CmsService) {
     cms.account.subscribe((doc) => {
       this.userName = doc['name'];
-      this.userImageDoc = doc;
     });
   }
 
