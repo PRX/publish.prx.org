@@ -1,46 +1,46 @@
-import { setupComponent, buildComponent, mockCms } from '../../test-support';
+import { cit, create, cms, By } from '../../test-support';
 import { HomeComponent } from './home.component';
 
-xdescribe('HomeComponent', () => {
+describe('HomeComponent', () => {
 
-  setupComponent(HomeComponent);
+  create(HomeComponent);
 
   let auth;
   beforeEach(() => {
-    auth = mockCms.mock('prx:authorization', {});
+    auth = cms.mock('prx:authorization', {});
     auth.mockItems('prx:series', []);
     auth.mock('prx:default-account', {});
     auth.mockItems('prx:stories', []);
   });
 
-  it('shows a loading spinner', buildComponent((fix, el, home) => {
-    expect(el.querySelector('spinner')).toBeNull();
-    home.isLoaded = false;
+  cit('shows a loading spinner', (fix, el, comp) => {
+    expect(el).not.toQuery('publish-spinner');
+    comp.isLoaded = false;
     fix.detectChanges();
-    expect(el.querySelector('spinner')).not.toBeNull();
-  }));
+    expect(el).toQuery('publish-spinner');
+  });
 
-  it('shows an empty no-series indicator', buildComponent((fix, el, home) => {
-    expect(el.textContent).not.toMatch('View All');
-    expect(el.textContent).toMatch('No Series');
-    expect(el.querySelector('publish-home-series')).not.toBeNull();
-    expect(el.querySelector('publish-home-series').getAttribute('noseries')).toEqual('true');
-    expect(el.querySelector('publish-home-series').getAttribute('rows')).toEqual('4');
-  }));
+  cit('shows an empty no-series indicator', (fix, el, comp) => {
+    expect(el).not.toContainText('View All');
+    expect(el).toContainText('You have no series');
+    expect(el).toQuery('publish-home-series');
+    expect(el).toQueryAttr('publish-home-series', 'noseries', 'true');
+    expect(el).toQueryAttr('publish-home-series', 'rows', '4');
+  });
 
   describe('with many series', () => {
 
     beforeEach(() => auth.mockItems('prx:series', [{}, {}, {}]));
 
-    it('shows a list of series', buildComponent((fix, el, home) => {
-      expect(el.textContent).toMatch('View All 3');
-      let series = el.querySelectorAll('publish-home-series');
+    cit('shows a list of series', (fix, el, comp) => {
+      expect(el).toContainText('View All 3');
+      let series = el.queryAll(By.css('publish-home-series'));
       expect(series.length).toEqual(4);
-      expect(series[0].getAttribute('rows')).toEqual('2');
-      expect(series[0].getAttribute('noseries')).toBeNull();
-      expect(series[3].getAttribute('rows')).toEqual('2');
-      expect(series[3].getAttribute('noseries')).toEqual('true');
-    }));
+      expect(series[0].nativeElement.getAttribute('rows')).toEqual('2');
+      expect(series[0].nativeElement.getAttribute('noseries')).toBeNull();
+      expect(series[3].nativeElement.getAttribute('rows')).toEqual('2');
+      expect(series[3].nativeElement.getAttribute('noseries')).toEqual('true');
+    });
 
   });
 
@@ -48,15 +48,15 @@ xdescribe('HomeComponent', () => {
 
     beforeEach(() => auth.mockItems('prx:series', [{}]));
 
-    it('shows many rows of a single series', buildComponent((fix, el, home) => {
-      expect(el.textContent).not.toMatch('View All');
-      let series = el.querySelectorAll('publish-home-series');
+    cit('shows many rows of a single series', (fix, el, comp) => {
+      expect(el).toContainText('View All 1');
+      let series = el.queryAll(By.css('publish-home-series'));
       expect(series.length).toEqual(2);
-      expect(series[0].getAttribute('rows')).toEqual('4');
-      expect(series[0].getAttribute('noseries')).toBeNull();
-      expect(series[1].getAttribute('rows')).toEqual('4');
-      expect(series[1].getAttribute('noseries')).toEqual('true');
-    }));
+      expect(series[0].nativeElement.getAttribute('rows')).toEqual('4');
+      expect(series[0].nativeElement.getAttribute('noseries')).toBeNull();
+      expect(series[1].nativeElement.getAttribute('rows')).toEqual('4');
+      expect(series[1].nativeElement.getAttribute('noseries')).toEqual('true');
+    });
 
   });
 

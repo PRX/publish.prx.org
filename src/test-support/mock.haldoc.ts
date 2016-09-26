@@ -41,7 +41,7 @@ export class MockHalDoc extends HalDoc {
   }
 
   mockItems(rel: string, datas: {}[]): MockHalDoc[] {
-    return this.mock(rel, {}).mockList('prx:items', datas).map(doc => {
+    return this.mock(rel, {total: datas.length}).mockList('prx:items', datas).map(doc => {
       doc.profile = MockHalDoc.guessProfile(rel, true);
       return doc;
     });
@@ -79,7 +79,7 @@ export class MockHalDoc extends HalDoc {
   }
 
   total(): number {
-    if (super.total() !== undefined) {
+    if (super.total() > 0) {
       return super.total();
     } else {
       return this.count();

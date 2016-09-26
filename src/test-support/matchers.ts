@@ -52,6 +52,20 @@ matchers.toContainText = (util, customEqualityTesters) => {
   };
 };
 
+// generic null/not-null querying
+matchers.toQuery = (util, customEqualityTesters) => {
+  return {
+    compare: (actual, cssQuery) => {
+      let found = actual.query(By.css(cssQuery));
+      if (found) {
+        return {pass: true, message: `Expected not to find '${cssQuery}' in '${niceEl(actual)}'`};
+      } else {
+        return {pass: false, message: `Expected to find '${cssQuery}' in '${niceEl(actual)}'`};
+      }
+    }
+  };
+};
+
 // query by css, then check the text content
 matchers.toQueryText = (util, customEqualityTesters) => {
   return {

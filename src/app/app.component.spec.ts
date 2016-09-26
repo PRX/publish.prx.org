@@ -1,38 +1,38 @@
 import { Subject } from 'rxjs';
-import { setupComponent, buildComponent, mockService } from '../test-support';
+import { cit, create, provide } from '../test-support';
 import { AppComponent } from './app.component';
 
-import { AuthService } from './shared/auth/auth.service';
-import { CmsService } from './shared/cms/cms.service';
-import { ModalService } from './shared/modal/modal.service';
+import { AuthService } from './core/auth/auth.service';
+import { CmsService } from './core/cms/cms.service';
+import { ModalService } from './core/modal/modal.service';
 
 let authToken = new Subject<string>();
 let cmsToken: string = null;
 
 describe('AppComponent', () => {
 
-  setupComponent(AppComponent);
+  create(AppComponent);
 
-  mockService(AuthService, {token: authToken});
-  mockService(CmsService, {
+  provide(AuthService, {token: authToken});
+  provide(CmsService, {
     setToken: token => cmsToken = token,
     account: new Subject<any>()
   });
-  mockService(ModalService, {state: new Subject<boolean>()});
+  provide(ModalService, {state: new Subject<boolean>()});
 
-  it('only shows header links when logged in', buildComponent((fix, el, app) => {
-    app.loggedIn = true;
+  cit('only shows header links when logged in', (fix, el, comp) => {
+    comp.loggedIn = true;
     fix.detectChanges();
-    expect(el.querySelectorAll('nav-item').length).toEqual(3);
-    app.loggedIn = false;
+    expect(el).toQuery('publish-navitem');
+    comp.loggedIn = false;
     fix.detectChanges();
-    expect(el.querySelectorAll('nav-item').length).toEqual(0);
-  }));
+    expect(el).not.toQuery('publish-navitem');
+  });
 
-  it('ties together auth and cms', buildComponent((fix, el, app) => {
+  cit('ties together auth and cms', (fix, el, comp) => {
     expect(cmsToken).toBeNull();
     authToken.next('something');
     expect(cmsToken).toEqual('something');
-  }));
+  });
 
 });

@@ -1,4 +1,4 @@
-import { Component, Type, DebugElement } from '@angular/core';
+import { Component, Type, DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 
 import { CmsService } from '../app/core/cms/cms.service';
@@ -14,7 +14,8 @@ export function cit(desc: string, testFn: ComponentTestCallback) {
   return it(desc, function(done) {
     TestBed.configureTestingModule({
       declarations: this._publishDeclarations,
-      providers:    this._publishProviders
+      providers:    this._publishProviders,
+      schemas:      [NO_ERRORS_SCHEMA]
     }).compileComponents();
     let fixture = TestBed.createComponent(this._publishComponent);
     fixture.detectChanges();
@@ -61,5 +62,17 @@ export function provide(provider, useValue?) {
     } else {
       this._publishProviders.push(provider);
     }
+  });
+}
+
+// stub a selector
+export function stub(selectorOrProperties) {
+  if (typeof(selectorOrProperties) === 'string') {
+    selectorOrProperties = {selector: selectorOrProperties, template: 'stubbed'};
+  }
+  @Component(selectorOrProperties)
+  class TestStubComponent {}
+  beforeEach(function() {
+    this._publishDeclarations.push(TestStubComponent);
   });
 }
