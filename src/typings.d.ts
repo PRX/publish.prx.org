@@ -15,7 +15,7 @@ declare module jasmine {
   }
 }
 
-// TODO: shouldn't need this, but the getter in test-support warns without
+// TODO: shouldn't need this, but the getter in testing/index.ts warns without
 interface NodeModule {
   exports: any;
 }

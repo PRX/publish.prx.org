@@ -1,4 +1,4 @@
-import { cit, contain, By } from '../../../test-support';
+import { cit, contain, By } from '../../../testing';
 import { FancyFieldComponent } from './fancy-field.component';
 
 describe('FancyFieldComponent', () => {

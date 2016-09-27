@@ -1,4 +1,4 @@
-import { cit, create, provide, By } from '../../../../test-support';
+import { cit, create, provide, By } from '../../../../testing';
 import { AudioVersionComponent } from './audio-version.component';
 import { UploadService } from '../../../core/upload/upload.service';
 

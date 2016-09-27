@@ -1,4 +1,4 @@
-import { cit, create, stubPipe, By } from '../../../../test-support';
+import { cit, create, stubPipe, By } from '../../../../testing';
 import { AudioFileComponent } from './audio-file.component';
 
 describe('AudioFileComponent', () => {

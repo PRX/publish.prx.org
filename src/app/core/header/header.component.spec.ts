@@ -1,4 +1,4 @@
-import { cit, contain } from '../../../test-support';
+import { cit, contain } from '../../../testing';
 import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {

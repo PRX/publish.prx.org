@@ -1,4 +1,4 @@
-import { cit, create, provide } from '../../../test-support';
+import { cit, create, provide } from '../../../testing';
 import { EditComponent } from './edit.component';
 import { StoryTabService } from '../services/story-tab.service';
 

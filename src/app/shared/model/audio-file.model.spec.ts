@@ -1,4 +1,4 @@
-import { cms } from '../../../test-support';
+import { cms } from '../../../testing';
 import { AudioFileModel } from './audio-file.model';
 
 describe('AudioFileModel', () => {

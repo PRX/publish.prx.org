@@ -1,4 +1,4 @@
-import { cit, create } from '../../../test-support';
+import { cit, create } from '../../../testing';
 import { NavItemComponent } from './navitem.component';
 
 describe('NavItemComponent', () => {

@@ -1,4 +1,4 @@
-import { cit, create, By } from '../../../test-support';
+import { cit, create, By } from '../../../testing';
 import { AudioUploadComponent } from './audio-upload.component';
 
 describe('AudioUploadComponent', () => {

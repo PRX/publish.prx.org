@@ -1,4 +1,4 @@
-import { cms } from '../../../test-support';
+import { cms } from '../../../testing';
 import { AudioVersionModel } from './audio-version.model';
 import { AudioFileModel } from './audio-file.model';
 

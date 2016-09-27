@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { cit, create, direct } from '../../../../test-support';
+import { cit, create, direct } from '../../../../testing';
 import { FileSelectDirective } from './file-select.directive';
 
 @Component({

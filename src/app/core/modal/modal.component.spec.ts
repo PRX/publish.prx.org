@@ -1,4 +1,4 @@
-import { cit, create, provide, By } from '../../../test-support';
+import { cit, create, provide, By } from '../../../testing';
 import { ModalService } from './modal.service';
 import { ModalComponent } from './modal.component';
 

@@ -1,4 +1,4 @@
-import { cit, create, cms, By } from '../../test-support';
+import { cit, create, cms, By } from '../../testing';
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {

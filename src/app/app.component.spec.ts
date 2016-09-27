@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { cit, create, provide } from '../test-support';
+import { cit, create, provide } from '../testing';
 import { AppComponent } from './app.component';
 
 import { AuthService } from './core/auth/auth.service';

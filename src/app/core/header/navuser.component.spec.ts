@@ -1,4 +1,4 @@
-import { cit, cms, contain, findComponent } from '../../../test-support';
+import { cit, cms, contain, findComponent } from '../../../testing';
 import { NavUserComponent } from './navuser.component';
 
 describe('NavUserComponent', () => {
