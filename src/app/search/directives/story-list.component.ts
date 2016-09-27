@@ -11,7 +11,7 @@ import { StoryModel } from '../../shared';
     <div *ngIf="!noStories">
       <div class="story-list">
         <publish-story-card *ngFor="let s of stories" [story]="s"></publish-story-card>
-        <div *ngFor="let l of storyLoaders" class="story"><publish-spinner></publish-spinner></div>
+        <div *ngFor="let l of loaders" class="story"><publish-spinner></publish-spinner></div>
       </div>
     </div>
 `
@@ -20,5 +20,5 @@ import { StoryModel } from '../../shared';
 export class StoryListComponent {
   @Input() noStories: boolean;
   @Input() stories: StoryModel[];
-  @Input() storyLoaders: boolean[];
+  @Input() loaders: boolean[];
 }

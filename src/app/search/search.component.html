@@ -3,17 +3,24 @@
     <header>
       <h2>Do a search for...</h2>
 
+      <publish-search-series
+        *ngIf="isOnSeriesTab()"
+        (searchSeriesByText)="searchByText($event)"
+        (searchSeriesByGenre)="searchSeriesByGenre($event)">
+      </publish-search-series>
+
       <publish-search-story
+        *ngIf="isOnStoriesTab()"
         [searchSeriesId]="searchSeriesId"
         [allSeriesIds]="allSeriesIds"
         [allSeries]="allSeries"
-        (searchStoriesByText)="searchStoriesByText($event)"
+        (searchStoriesByText)="searchByText($event)"
         (searchStoriesBySeries)="searchStoriesBySeries($event)">
       </publish-search-story>
 
       <div>
-        <button class="tab">Series</button>
-        <button (click)="search(1)" class="tab active" disabled>Stories</button>
+        <button (click)="searchSeriesTab()" class="tab" [ngClass]="{'active': isOnSeriesTab()}" [disabled]="isOnSeriesTab()">Series</button>
+        <button (click)="searchStoriesTab()" class="tab" [ngClass]="{'active': isOnStoriesTab()}" [disabled]="isOnStoriesTab()">Stories</button>
 
         <span class="pages">
           <button *ngIf="totalCount && pages?.length > 1" (click)="search(1, totalCount)" class="btn-link">View All {{totalCount}} &raquo;</button>
@@ -34,8 +41,15 @@
 
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>
     <publish-story-list
-      [noStories]="noStories"
-      [stories]="stories"
-      [storyLoaders]="storyLoaders"></publish-story-list>
+      *ngIf="isOnStoriesTab()"
+      [noStories]="noResults"
+      [stories]="storiesResults"
+      [loaders]="loaders"></publish-story-list>
+
+    <publish-series-list
+      *ngIf="isOnSeriesTab()"
+      [noSeries]="noResults"
+      [series]="seriesResults"
+      [loaders]="loaders"></publish-series-list>
   </section>
 </div>

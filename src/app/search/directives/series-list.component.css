@@ -1,0 +1,29 @@
+publish-series-card, .series {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px;
+  margin-right: 20px;
+  flex-basis: 490px;
+  -ms-flex-preferred-size: 490px;
+  -webkit-flex-basis: 490px;
+  -webkit-box-flex: 2;
+  -moz-box-flex: 2;
+  -o-box-flex: 2;
+  -ms-box-flex: 2;
+  box-flex: 2;
+  -webkit-flex-grow: 2;
+  flex-grow: 2;
+  -webkit-flex-shrink: 1;
+  flex-shrink: 1;
+  height: 192px;
+  background: #ddd;/* TODO: This should be white. Why is the page background white in IE? */
+}
+
+.series-list {
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: row wrap;
+  margin-right: -20px;
+  padding-bottom: 40px;
+}

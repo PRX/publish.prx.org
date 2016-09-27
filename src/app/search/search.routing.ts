@@ -6,6 +6,9 @@ import { SearchComponent } from './search.component';
 import { SearchStoryComponent } from './directives/search-story.component';
 import { StoryListComponent } from './directives/story-list.component';
 import { StoryCardComponent } from './directives/story-card.component';
+import { SearchSeriesComponent } from './directives/search-series.component';
+import { SeriesListComponent } from './directives/series-list.component';
+import { SeriesCardComponent } from './directives/series-card.component';
 
 export const searchRoutes: Routes = [
   {
@@ -19,7 +22,10 @@ export const searchComponents: any[] = [
   SearchComponent,
   SearchStoryComponent,
   StoryListComponent,
-  StoryCardComponent
+  StoryCardComponent,
+  SearchSeriesComponent,
+  SeriesListComponent,
+  SeriesCardComponent
 ];
 
 export const searchProviders: any[] = [];
