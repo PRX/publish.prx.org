@@ -1,10 +1,8 @@
-import { mockCms } from '../../../test-support';
+import { cms } from '../../../test-support';
 import { StoryModel } from './story.model';
 import { AudioVersionModel } from './audio-version.model';
 
-xdescribe('StoryModel', () => {
-
-  let cms = <any> mockCms;
+describe('StoryModel', () => {
 
   let authMock: any, accountMock: any, seriesMock: any, storyMock: any;
   beforeEach(() => {

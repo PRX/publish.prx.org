@@ -1,6 +1,6 @@
 import { Observable, ConnectableObservable, Subscriber } from 'rxjs';
-import { mockCms } from '../../../test-support';
-import { Upload } from '../upload/upload.service';
+import { cms } from '../../../test-support';
+import { Upload } from '../../core/upload/upload.service';
 import { UploadableModel } from './uploadable.model';
 
 class TestUploadableModel extends UploadableModel {
@@ -11,9 +11,7 @@ class TestUploadableModel extends UploadableModel {
   saveNew() { return Observable.of(null); }
 }
 
-xdescribe('UploadableModel', () => {
-
-  let cms = <any> mockCms;
+describe('UploadableModel', () => {
 
   let model: TestUploadableModel;
   let upload: Upload;

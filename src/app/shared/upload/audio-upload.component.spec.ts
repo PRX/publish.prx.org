@@ -1,34 +1,30 @@
-import { setupComponent, buildComponent, mockDirective } from '../../test-support';
+import { cit, create, By } from '../../../test-support';
 import { AudioUploadComponent } from './audio-upload.component';
-import { AudioVersionComponent } from './directives/audio-version.component';
 
-xdescribe('AudioUploadComponent', () => {
+describe('AudioUploadComponent', () => {
 
-  setupComponent(AudioUploadComponent);
+  create(AudioUploadComponent);
 
-  mockDirective(AudioVersionComponent, {selector: 'audio-version', template: '<i>version</i>'});
-
-  it('waits for the story versions', buildComponent((fix, el, upload) => {
+  cit('waits for the story versions', (fix, el, comp) => {
+    expect(el).toQuery('publish-spinner');
+    comp.story = {};
     fix.detectChanges();
-    expect(el.querySelector('spinner')).not.toBeNull();
-    upload.story = {};
+    expect(el).toQuery('publish-spinner');
+    comp.story.versions = [];
     fix.detectChanges();
-    expect(el.querySelector('spinner')).not.toBeNull();
-    upload.story.versions = [];
-    fix.detectChanges();
-    expect(el.querySelector('spinner')).toBeNull();
-  }));
+    expect(el).not.toQuery('publish-spinner');
+  });
 
-  it('renders the versions', buildComponent((fix, el, upload) => {
-    upload.story = {versions: ['foo', 'bar']};
+  cit('renders the versions', (fix, el, comp) => {
+    comp.story = {versions: ['foo', 'bar']};
     fix.detectChanges();
-    expect(el.querySelectorAll('i').length).toEqual(2);
-  }));
+    expect(el.queryAll(By.css('publish-audio-version')).length).toEqual(2);
+  });
 
-  it('shows a helpful message if you have no versions', buildComponent((fix, el, upload) => {
-    upload.story = {versions: []};
+  cit('shows a helpful message if you have no versions', (fix, el, comp) => {
+    comp.story = {versions: []};
     fix.detectChanges();
-    expect(el.querySelector('h1').textContent).toMatch('You have no audio versions for this story');
-  }));
+    expect(el).toContainText('You have no audio versions for this story');
+  });
 
 });

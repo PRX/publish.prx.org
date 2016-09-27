@@ -83,7 +83,7 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
 
     // stop watching progress
     for (let file of this.version.files) {
-      file.unsubscribe();
+      if (file.unsubscribe) { file.unsubscribe(); }
     }
   }
 

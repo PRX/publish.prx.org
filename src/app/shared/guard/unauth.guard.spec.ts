@@ -1,5 +1,5 @@
 import { ReplaySubject } from 'rxjs';
-import { UnauthGuard } from './auth.guard';
+import { UnauthGuard } from './unauth.guard';
 
 const mockAuthService = {
   token: new ReplaySubject<string>(1)

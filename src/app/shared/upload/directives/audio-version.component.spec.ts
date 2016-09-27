@@ -1,14 +1,13 @@
-import { setupComponent, buildComponent, mockService, mockDirective } from '../../../test-support';
+import { cit, create, provide, By } from '../../../../test-support';
 import { AudioVersionComponent } from './audio-version.component';
-import { UploadService } from '../../shared/upload/upload.service';
-import { AudioFileComponent } from './audio-file.component';
+import { UploadService } from '../../../core/upload/upload.service';
 
-xdescribe('AudioVersionComponent', () => {
+describe('AudioVersionComponent', () => {
 
-  setupComponent(AudioVersionComponent);
+  create(AudioVersionComponent, false);
 
   let uploadFiles = {};
-  mockService(UploadService, {
+  provide(UploadService, {
     add: (file: any): any => {
       uploadFiles[file] = file;
       return file;
@@ -18,11 +17,6 @@ xdescribe('AudioVersionComponent', () => {
         return 'foobar';
       }
     }
-  });
-
-  mockDirective(AudioFileComponent, {
-    selector: 'audio-file',
-    template: '<i>nothing</i>'
   });
 
   const mockVersion = (data = {}): {} => {
@@ -36,46 +30,46 @@ xdescribe('AudioVersionComponent', () => {
     return version;
   };
 
-  it('only shows known versions', buildComponent((fix, el, aversion) => {
-    aversion.version = mockVersion({label: 'foobar'});
+  cit('only shows known versions', (fix, el, comp) => {
+    comp.version = mockVersion({label: 'foobar'});
     fix.detectChanges();
-    expect(el.querySelector('header strong')).toBeNull();
-    aversion.version = mockVersion({label: 'Main Audio'});
+    expect(el).not.toQuery('header strong');
+    comp.version = mockVersion({label: 'Main Audio'});
     fix.detectChanges();
-    expect(el.querySelector('header strong').textContent).toEqual('Main Audio');
-    expect(el.querySelector('header span').textContent).toMatch('The primary version');
-  }));
+    expect(el).toQueryText('header strong', 'Main Audio');
+    expect(el).toContainText('The primary version');
+  });
 
-  it('shows an indicator when there are no audio files', buildComponent((fix, el, aversion) => {
-    aversion.version = mockVersion();
+  cit('shows an indicator when there are no audio files', (fix, el, comp) => {
+    comp.version = mockVersion();
     fix.detectChanges();
-    expect(el.querySelector('.empty').textContent).toMatch('Upload a file to get started');
-  }));
+    expect(el).toContainText('Upload a file to get started');
+  });
 
-  it('renders upload files', buildComponent((fix, el, aversion) => {
-    aversion.version = mockVersion({files: ['one', 'two', 'three']});
+  cit('renders upload files', (fix, el, comp) => {
+    comp.version = mockVersion({files: ['one', 'two', 'three']});
     fix.detectChanges();
-    expect(el.querySelectorAll('audio-file').length).toEqual(3);
-  }));
+    expect(el.queryAll(By.css('publish-audio-file')).length).toEqual(3);
+  });
 
-  it('finds in-progress uploads', buildComponent((fix, el, aversion) => {
-    aversion.version = mockVersion({uploadUuids: ['testuuid']});
-    spyOn(aversion.version, 'watchUpload').and.stub;
+  cit('finds in-progress uploads', (fix, el, comp) => {
+    comp.version = mockVersion({uploadUuids: ['testuuid']});
+    spyOn(comp.version, 'watchUpload').and.stub;
     fix.detectChanges();
-    expect(aversion.version.watchUpload).toHaveBeenCalledWith('foobar');
-  }));
+    expect(comp.version.watchUpload).toHaveBeenCalledWith('foobar');
+  });
 
-  it('adds uploads', buildComponent((fix, el, aversion) => {
-    aversion.version = mockVersion({files: ['one']});
+  cit('adds uploads', (fix, el, comp) => {
+    comp.version = mockVersion({files: ['one']});
     fix.detectChanges();
-    expect(el.querySelectorAll('audio-file').length).toEqual(1);
+    expect(el.queryAll(By.css('publish-audio-file')).length).toEqual(1);
 
-    spyOn(aversion.version, 'addUpload').and.callThrough();
-    aversion.addUpload('two');
+    spyOn(comp.version, 'addUpload').and.callThrough();
+    comp.addUpload('two');
     expect(uploadFiles['two']).toEqual('two');
     fix.detectChanges();
-    expect(el.querySelectorAll('audio-file').length).toEqual(2);
-    expect(aversion.version.addUpload).toHaveBeenCalledWith('two');
-  }));
+    expect(el.queryAll(By.css('publish-audio-file')).length).toEqual(2);
+    expect(comp.version.addUpload).toHaveBeenCalledWith('two');
+  });
 
 });

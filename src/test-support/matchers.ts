@@ -1,52 +1,33 @@
 import { By } from '@angular/platform-browser';
+import { niceEl } from './helpers';
 
 export const matchers: any = {};
 
-const niceEl = el => {
-  el = el.nativeElement || el;
-  if (el.tagName) {
-    let str = `<${el.tagName.toLowerCase()}`;
-    for (let a of el.attributes) {
-      if (a.name[0] !== '_') { str += ` ${a.name}=${a.value}`; }
-    }
-    str += '>';
-    for (let n of el.childNodes) {
-      if (n.nodeType === 1) {
-        str += niceEl(n);
-      } else if (n.nodeType !== 8) {
-        str += n.textContent.replace(/\r?\n|\r/g, '').trim();
-      }
-    }
-    str += `</${el.tagName.toLowerCase()}>`;
-    return str;
-  } else {
-    return `${el}`;
-  }
-};
+const textContent = el => (el && el.nativeElement) ? el.nativeElement.textContent : undefined;
+const pass = msg => { return {pass: true, message: msg }; };
+const fail = msg => { return {pass: false, message: msg }; };
 
 // check for html element text content
 matchers.toHaveText = (util, customEqualityTesters) => {
   return {
     compare: (actual, expected) => {
-      let text = (actual && actual.nativeElement) ? actual.nativeElement.textContent : undefined;
-      if (util.equals(text, expected, customEqualityTesters)) {
-        return {pass: true, message: `Expected '${niceEl(actual)}' to not have text '${expected}'`};
+      if (util.equals(textContent(actual), expected, customEqualityTesters)) {
+        return pass(`Expected '${niceEl(actual)}' to not have text '${expected}'`);
       } else {
-        return {pass: false, message: `Expected '${niceEl(actual)}' to have text '${expected}'`};
+        return fail(`Expected '${niceEl(actual)}' to have text '${expected}'`);
       }
     }
   };
 };
 
-// // check for inclusion of text content
+// check for inclusion of text content
 matchers.toContainText = (util, customEqualityTesters) => {
   return {
     compare: (actual, expected) => {
-      let text = (actual && actual.nativeElement) ? actual.nativeElement.textContent : undefined;
-      if (util.contains(text, expected, customEqualityTesters)) {
-        return {pass: true, message: `Expected '${niceEl(actual)}' to not contain text '${expected}'`};
+      if (util.contains(textContent(actual), expected, customEqualityTesters)) {
+        return pass(`Expected '${niceEl(actual)}' to not contain text '${expected}'`);
       } else {
-        return {pass: false, message: `Expected '${niceEl(actual)}' to contain text '${expected}'`};
+        return fail(`Expected '${niceEl(actual)}' to contain text '${expected}'`);
       }
     }
   };
@@ -56,11 +37,10 @@ matchers.toContainText = (util, customEqualityTesters) => {
 matchers.toQuery = (util, customEqualityTesters) => {
   return {
     compare: (actual, cssQuery) => {
-      let found = actual.query(By.css(cssQuery));
-      if (found) {
-        return {pass: true, message: `Expected not to find '${cssQuery}' in '${niceEl(actual)}'`};
+      if (actual.query(By.css(cssQuery))) {
+        return pass(`Expected not to find '${cssQuery}' in '${niceEl(actual)}'`);
       } else {
-        return {pass: false, message: `Expected to find '${cssQuery}' in '${niceEl(actual)}'`};
+        return fail(`Expected to find '${cssQuery}' in '${niceEl(actual)}'`);
       }
     }
   };
@@ -71,11 +51,11 @@ matchers.toQueryText = (util, customEqualityTesters) => {
   return {
     compare: (actual, cssQuery, expected) => {
       if (!actual || !actual.query) {
-        return {pass: false, message: `Expected a DebugElement - given ${actual}`};
+        return fail(`Expected a DebugElement - given ${actual}`);
       }
       let found = actual.query(By.css(cssQuery));
       if (!found) {
-        return {pass: false, message: `Cannot find css '${cssQuery}' in '${actual}'`};
+        return fail(`Cannot find css '${cssQuery}' in '${actual}'`);
       }
       return matchers.toHaveText(util, customEqualityTesters).compare(found, expected);
     }
@@ -87,13 +67,24 @@ matchers.toQueryAttr = (util, customEqualityTesters) => {
   return {
     compare: (actual, cssQuery, attrName, expected) => {
       if (!actual || !actual.query) {
-        return {pass: false, message: `Expected a DebugElement - given ${actual}`};
+        return fail(`Expected a DebugElement - given ${actual}`);
       }
       let found = actual.query(By.css(cssQuery));
       if (!found) {
-        return {pass: false, message: `Cannot find css '${cssQuery}' in '${actual}'`};
+        return fail(`Cannot find css '${cssQuery}' in '${actual}'`);
       }
-      let value = found.nativeElement.getAttribute(attrName);
+
+      // TODO: ng-model bindings not being reflected in element values yet
+      let value;
+      if (attrName === 'value') {
+        value = found.nativeElement.getAttribute('ng-reflect-model');
+        if (value && found.nativeElement.value === value) {
+          console.log('TODO: remove this hacky code, cause ng-model works again');
+        }
+      } else {
+        value = found.nativeElement.getAttribute(attrName);
+      }
+
       if (util.equals(value, expected, customEqualityTesters)) {
         return {pass: true, message: `Expected '${niceEl(found)}' not to have attribute ${attrName}=${expected}`};
       } else {

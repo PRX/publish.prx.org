@@ -5,7 +5,7 @@ import { AudioFileModel } from '../../model';
   selector: 'publish-audio-file',
   styleUrls: ['audio-file.component.css'],
   template: `
-    <div *ngIf="!audio.isDestroy" class="audio-file"
+    <div *ngIf="audio && !audio.isDestroy" class="audio-file"
       [class.canceled]="canceled" [class.changed]="audio.changed()">
 
       <div class="reorder">

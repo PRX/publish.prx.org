@@ -37,15 +37,15 @@ describe('HalDoc', () => {
   });
 
   xdescribe('save', () => {
-    xit('todo');
+    it('todo', () => {});
   });
 
   xdescribe('create', () => {
-    xit('todo');
+    it('todo', () => {});
   });
 
   xdescribe('destroy', () => {
-    xit('todo');
+    it('todo', () => {});
   });
 
   describe('expand', () => {

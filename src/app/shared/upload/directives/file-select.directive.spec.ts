@@ -1,13 +1,11 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { setupComponent, buildComponent } from '../../../test-support';
+import { cit, create, direct } from '../../../../test-support';
 import { FileSelectDirective } from './file-select.directive';
 
 @Component({
-  directives: [FileSelectDirective],
-  selector: 'mini-container',
-  template: '<input fileSelect (file)="add($event)" />'
+  template: '<input publishFileSelect (file)="add($event)" />'
 })
-export class MiniComponent {
+class MiniComponent {
   @Output() changes = new EventEmitter();
   add(file: any) {
     this.changes.emit(file);
@@ -22,26 +20,26 @@ const triggerChange = (el: Element) => {
 
 describe('FileSelectDirective', () => {
 
-  setupComponent(MiniComponent);
+  create(MiniComponent);
 
-  it('listens for file changes', buildComponent((fix, el, mini) => {
+  direct(FileSelectDirective);
+
+  cit('listens for file changes', (fix, el, comp) => {
     spyOn(FileSelectDirective.prototype, 'onChange').and.returnValue(null);
-    triggerChange(el);
+    triggerChange(el.nativeElement);
     expect(FileSelectDirective.prototype.onChange).toHaveBeenCalled();
-  }));
+  });
 
-  it('processes files individually', buildComponent((fix, el, mini) => {
+  cit('processes files individually', (fix, el, comp, done) => {
     let values = ['foo', 'bar', 'hello'];
     spyOn(FileSelectDirective.prototype, 'getFiles').and.returnValue(values);
 
-    return new Promise((resolve, reject) => {
-      let index = 0;
-      mini.changes.subscribe((data: any) => {
-        expect(data).toEqual(values[index++]);
-        if (index >= values.length) { resolve(); }
-      });
-      triggerChange(el);
+    let index = 0;
+    comp.changes.subscribe((data: any) => {
+      expect(data).toEqual(values[index++]);
+      if (index >= values.length) { done(); }
     });
-  }));
+    triggerChange(el.nativeElement);
+  });
 
 });
