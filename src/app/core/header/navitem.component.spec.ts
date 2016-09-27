@@ -1,24 +1,24 @@
-import { setupComponent, buildComponent } from '../../test-support';
+import { cit, create } from '../../../testing';
 import { NavItemComponent } from './navitem.component';
 
 describe('NavItemComponent', () => {
 
-  setupComponent(NavItemComponent);
+  create(NavItemComponent);
 
-  it('renders a routed nav link', buildComponent((fix, el, navitem) => {
-    navitem.text = 'Foobar';
-    navitem.route = '/home';
+  cit('renders a routed nav link', (fix, el, comp) => {
+    comp.text = 'Foobar';
+    comp.route = '/home';
     fix.detectChanges();
-    expect(el.querySelector('a').textContent).toEqual('Foobar');
-    expect(el.querySelector('a').getAttribute('href')).toEqual('/home');
-  }));
+    expect(el).toQueryText('a', 'Foobar');
+    expect(el).toQueryAttr('a', 'href', '/home');
+  });
 
-  it('renders an arbitrary url', buildComponent((fix, el, navitem) => {
-    navitem.text = 'Somewhere';
-    navitem.href = 'http://some.where';
+  cit('renders an arbitrary url', (fix, el, comp) => {
+    comp.text = 'Somewhere';
+    comp.href = 'http://some.where';
     fix.detectChanges();
-    expect(el.querySelector('a').textContent).toEqual('Somewhere');
-    expect(el.querySelector('a').getAttribute('href')).toEqual('http://some.where');
-  }));
+    expect(el).toQueryText('a', 'Somewhere');
+    expect(el).toQueryAttr('a', 'href', 'http://some.where');
+  });
 
 });

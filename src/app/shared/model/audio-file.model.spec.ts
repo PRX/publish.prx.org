@@ -1,9 +1,7 @@
-import { mockCms } from '../../../test-support';
+import { cms } from '../../../testing';
 import { AudioFileModel } from './audio-file.model';
 
 describe('AudioFileModel', () => {
-
-  let cms = <any> mockCms;
 
   let versionMock: any, fileMock: any;
   const makeFile = (data?: any) => {

@@ -36,16 +36,16 @@ describe('HalDoc', () => {
     });
   });
 
-  describe('save', () => {
-    xit('todo');
+  xdescribe('save', () => {
+    it('todo', () => {});
   });
 
-  describe('create', () => {
-    xit('todo');
+  xdescribe('create', () => {
+    it('todo', () => {});
   });
 
-  describe('destroy', () => {
-    xit('todo');
+  xdescribe('destroy', () => {
+    it('todo', () => {});
   });
 
   describe('expand', () => {

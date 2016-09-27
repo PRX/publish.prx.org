@@ -1,52 +1,36 @@
-import { setupComponent, buildComponent, mockCms } from '../../test-support';
+import { cit, cms, contain, findComponent } from '../../../testing';
 import { NavUserComponent } from './navuser.component';
-import { ImageLoaderComponent } from '../shared/image/image-loader.component';
 
 describe('NavUserComponent', () => {
 
-  setupComponent(NavUserComponent);
+  contain(NavUserComponent, {
+    template: `
+      <publish-navuser>
+        <h1 class="user-loading">IsLoading</h1>
+        <h1 class="user-loaded">IsLoaded</h1>
+      </publish-navuser>
+    `
+  });
 
-  let auth, account, image;
   beforeEach(() => {
-    auth = mockCms.mock('prx:authorization', {});
-    account = auth.mock('prx:default-account', {name: 'TheAccountName'});
-    image = account.mock('prx:image', {_links: {enclosure: {href: '/theimage'}}});
+    let auth = cms.mock('prx:authorization', {});
+    auth.mock('prx:default-account', {name: 'TheAccountName'});
   });
 
-  describe('with an account image', () => {
-
-    it('includes the user image', buildComponent((fix, el, navuser) => {
-      expect(el.querySelector('spinner')).toBeNull();
-      expect(el.querySelector('.name').textContent).toEqual('TheAccountName');
-      expect(navuser.userName).toEqual('TheAccountName');
-      expect(el.querySelector('image-loader > img').src).toEqual('http://cms.mock/v1/theimage');
-    }));
-
+  cit('displays the account name', (fix, el, comp) => {
+    expect(el).toQueryText('.name', 'TheAccountName');
+    expect(findComponent(el, 'publish-navuser').userName).toEqual('TheAccountName');
   });
 
-  describe('with error requesting account image', () => {
-
-    beforeEach(() => account.mockError('prx:image', 'Does not exist'));
-
-    it('includes the placeholder error image ', buildComponent((fix, el, navuser) => {
-      expect(el.querySelector('.name').textContent).toEqual('TheAccountName');
-      expect(navuser.userName).toEqual('TheAccountName');
-      expect(el.querySelector('image-loader > img').src.indexOf(ImageLoaderComponent.PLACEHOLDER_ERROR)).not.toEqual(-1);
-    }));
-
+  cit('displays the loaded content', (fix, el, comp) => {
+    expect(el).toContainText('IsLoaded');
   });
 
-  describe('while loading the account', () => {
-
-    beforeEach(() => {
-      account = auth.mock('prx:default-account', {name: null});
-      account.mockError('prx:image', 'Does not exist');
-    });
-
-    it('displays a waiting spinner', buildComponent((fix, el, navuser) => {
-      expect(el.querySelector('publish-spinner')).not.toBeNull();
-    }));
-
+  cit('displays loading content', (fix, el, comp) => {
+    findComponent(el, 'publish-navuser').userName = null;
+    fix.detectChanges();
+    expect(el).not.toContainText('TheAccountName');
+    expect(el).toContainText('IsLoading');
   });
 
 });

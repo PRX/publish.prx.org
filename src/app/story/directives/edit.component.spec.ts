@@ -1,23 +1,20 @@
-import { setupComponent, buildComponent, mockDirective } from '../../../test-support';
+import { cit, create, provide } from '../../../testing';
 import { EditComponent } from './edit.component';
-import { FancyFieldComponent } from '../../shared/form/fancy-field.component';
-import { AudioUploadComponent } from '../../upload/audio-upload.component';
+import { StoryTabService } from '../services/story-tab.service';
 
-xdescribe('EditComponent', () => {
+describe('EditComponent', () => {
 
-  setupComponent(EditComponent);
+  create(EditComponent);
 
-  mockDirective(FancyFieldComponent, {selector: 'story-field', template: '<i>field</i>'});
+  provide(StoryTabService);
 
-  mockDirective(AudioUploadComponent, {selector: 'audio-uploader', template: '<i>upload</i>'});
-
-  it('does not render until the story is loaded', buildComponent((fix, el, edit) => {
+  cit('does not render until the story is loaded', (fix, el, edit) => {
     edit.story = null;
     fix.detectChanges();
-    expect(el.textContent.trim()).toEqual('');
+    expect(el).not.toQuery('form');
     edit.story = {};
     fix.detectChanges();
-    expect(el.querySelector('story-field')).not.toBeNull();
-  }));
+    expect(el).toQuery('form');
+  });
 
 });

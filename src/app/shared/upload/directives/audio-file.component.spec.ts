@@ -1,9 +1,11 @@
-import { setupComponent, buildComponent } from '../../../test-support';
+import { cit, create, stubPipe, By } from '../../../../testing';
 import { AudioFileComponent } from './audio-file.component';
 
-xdescribe('AudioFileComponent', () => {
+describe('AudioFileComponent', () => {
 
-  setupComponent(AudioFileComponent);
+  create(AudioFileComponent);
+
+  stubPipe('filesize');
 
   const mockFile = (data: any = {}): {} => {
     let file = <any> {};
@@ -15,88 +17,88 @@ xdescribe('AudioFileComponent', () => {
     return file;
   };
 
-  it('shows the file', buildComponent((fix, el, afile) => {
-    afile.audio = mockFile();
+  cit('shows the file', (fix, el, comp) => {
+    comp.audio = mockFile();
     fix.detectChanges();
-    expect(el.querySelector('.info span').textContent).toEqual('My Filename');
-    expect(el.querySelector('.info .size').textContent).toEqual('(10 B)');
-  }));
+    expect(el).toQueryText('.info span', 'My Filename');
+    expect(el).toQueryText('.info .size', '(10)');
+  });
 
-  it('shows a status indicator', buildComponent((fix, el, afile) => {
-    afile.audio = mockFile({isUploading: true});
+  cit('shows a status indicator', (fix, el, comp) => {
+    comp.audio = mockFile({isUploading: true});
     fix.detectChanges();
-    expect(el.querySelector('.progress p').textContent).toEqual('Uploading');
-    afile.audio = mockFile({isUploading: true, isError: true});
+    expect(el).toQueryText('.progress p', 'Uploading');
+    comp.audio = mockFile({isUploading: true, isError: true});
     fix.detectChanges();
-    expect(el.querySelector('.progress p').textContent).toEqual('Upload Error');
-    afile.audio = mockFile();
+    expect(el).toQueryText('.progress p', 'Upload Error');
+    comp.audio = mockFile();
     fix.detectChanges();
-    expect(el.querySelector('.progress p')).toBeNull();
-  }));
+    expect(el).not.toQuery('.progress p');
+  });
 
-  it('shows progress for uploading/processing uploads', buildComponent((fix, el, afile) => {
-    afile.audio = mockFile({isUploading: true});
+  cit('shows progress for uploading/processing uploads', (fix, el, comp) => {
+    comp.audio = mockFile({isUploading: true});
     fix.detectChanges();
-    expect(el.querySelector('.meter')).not.toBeNull();
-    afile.audio = mockFile();
+    expect(el).toQuery('.meter');
+    comp.audio = mockFile();
     fix.detectChanges();
-    expect(el.querySelector('.meter')).toBeNull();
-    afile.audio = mockFile({isUploading: true, isError: true});
+    expect(el).not.toQuery('.meter');
+    comp.audio = mockFile({isUploading: true, isError: true});
     fix.detectChanges();
-    expect(el.querySelector('.meter')).toBeNull();
-    afile.audio = mockFile({isUploading: true});
-    afile.canceled = true;
+    expect(el).not.toQuery('.meter');
+    comp.audio = mockFile({isUploading: true});
+    comp.canceled = true;
     fix.detectChanges();
-    expect(el.querySelector('.meter')).toBeNull();
-  }));
+    expect(el).not.toQuery('.meter');
+  });
 
-  it('follows progress', buildComponent((fix, el, afile) => {
-    afile.audio = mockFile({isUploading: true, progress: 0});
+  cit('follows progress', (fix, el, comp) => {
+    comp.audio = mockFile({isUploading: true, progress: 0});
     fix.detectChanges();
-    let meter = el.querySelector('.meter span');
-    expect(meter['style']['width']).toEqual('0%');
-    afile.audio.progress = 0.4;
+    let meter = el.query(By.css('.meter span'));
+    expect(meter.nativeElement.style.width).toEqual('0%');
+    comp.audio.progress = 0.4;
     fix.detectChanges();
-    expect(meter['style']['width']).toEqual('40%');
-  }));
+    expect(meter.nativeElement.style.width).toEqual('40%');
+  });
 
-  it('hides reordering/cancel for canceled uploads', buildComponent((fix, el, afile) => {
-    afile.audio = mockFile({isUploading: true});
+  cit('hides reordering/cancel for canceled uploads', (fix, el, comp) => {
+    comp.audio = mockFile({isUploading: true});
     fix.detectChanges();
-    expect(el.querySelector('.reorder i')).not.toBeNull();
-    expect(el.querySelector('.cancel i')).not.toBeNull();
-    afile.canceled = true;
+    expect(el).toQuery('.reorder i');
+    expect(el).toQuery('.cancel i');
+    comp.canceled = true;
     fix.detectChanges();
-    expect(el.querySelector('.reorder i')).toBeNull();
-    expect(el.querySelector('.cancel i')).toBeNull();
-  }));
+    expect(el).not.toQuery('.reorder i');
+    expect(el).not.toQuery('.cancel i');
+  });
 
-  it('shows a canceled indicator', buildComponent((fix, el, afile) => {
-    afile.canceled = true;
-    afile.audio = mockFile({isUploading: true});
+  cit('shows a canceled indicator', (fix, el, comp) => {
+    comp.canceled = true;
+    comp.audio = mockFile({isUploading: true});
     fix.detectChanges();
-    expect(el.querySelector('.canceled p').textContent).toEqual('Upload Canceled');
-    afile.audio.isUploading = false;
+    expect(el).toQueryText('.canceled p', 'Upload Canceled');
+    comp.audio.isUploading = false;
     fix.detectChanges();
-    expect(el.querySelector('.canceled p').textContent).toEqual('File Deleted');
-  }));
+    expect(el).toQueryText('.canceled p', 'File Deleted');
+  });
 
-  it('retries errored uploads', buildComponent((fix, el, afile) => {
-    afile.audio = mockFile({isError: true, isUploading: true, upload: true, retryUpload: null});
-    spyOn(afile.audio, 'retryUpload').and.returnValue(null);
+  cit('retries errored uploads', (fix, el, comp) => {
+    comp.audio = mockFile({isError: true, isUploading: true, upload: true, retryUpload: null});
+    spyOn(comp.audio, 'retryUpload').and.returnValue(null);
     fix.detectChanges();
-    (<HTMLElement> el.querySelector('.retry a')).click();
-    expect(afile.audio.retryUpload).toHaveBeenCalled();
-  }));
+    el.query(By.css('.retry a')).nativeElement.click();
+    expect(comp.audio.retryUpload).toHaveBeenCalled();
+  });
 
-  it('cancels uploads', buildComponent((fix, el, afile) => {
+  cit('cancels uploads', (fix, el, comp) => {
     spyOn(window, 'setTimeout').and.callFake((fn: Function) => fn() );
-    afile.audio = mockFile({isUploading: true, destroy: null});
-    spyOn(afile.audio, 'destroy').and.returnValue(null);
+    comp.audio = mockFile({isUploading: true, destroy: null});
+    spyOn(comp.audio, 'destroy').and.returnValue(null);
     fix.detectChanges();
-    (<HTMLElement> el.querySelector('.cancel i')).click();
-    expect(afile.audio.destroy).toHaveBeenCalled();
-    expect(afile.canceled).toEqual(false); // resets after timeout
-  }));
+    el.query(By.css('.cancel i')).nativeElement.click();
+    expect(comp.audio.destroy).toHaveBeenCalled();
+    expect(comp.canceled).toEqual(false); // resets after timeout
+  });
 
 });

@@ -1,141 +1,126 @@
-import { Component } from '@angular/core';
-import { setupComponent, buildComponent } from '../../../test-support';
+import { cit, contain, By } from '../../../testing';
 import { FancyFieldComponent } from './fancy-field.component';
 
-// fake container, with all @Inputs bound
-@Component({
-  directives: [FancyFieldComponent],
-  template: `
-    <publish-fancy-field [model]="mockStory" [name]="name" [changed]="changed" [invalid]="invalid"
-      [textinput]="textinput" [textarea]="textarea" [select]="select" [label]="label"
-      [invalidlabel]="invalidlabel" [small]="small" [required]="required">
-      <div class="fancy-hint" *ngIf="hint">{{hint}}</div>
-      <h1 *ngIf="nested">{{nested}}</h1>
-    </publish-fancy-field>
-  `
-})
-class MiniComponent {
-  changes = {};
-  invalids = {};
-  mockStory: any = {
-    changed: (fld: string) => this.changes[fld],
-    invalid: (fld: string) => this.invalids[fld]
-  };
-}
+describe('FancyFieldComponent', () => {
 
-xdescribe('FancyFieldComponent', () => {
+  contain(FancyFieldComponent, {
+    template: `
+      <publish-fancy-field [model]="model" [name]="name" [changed]="changed" [invalid]="invalid"
+        [textinput]="textinput" [textarea]="textarea" [select]="select" [label]="label"
+        [invalidlabel]="invalidlabel" [small]="small" [required]="required">
+        <div class="fancy-hint" *ngIf="hint">{{hint}}</div>
+        <h1 *ngIf="nested">{{nested}}</h1>
+      </publish-fancy-field>
+    `
+  });
 
-  setupComponent(MiniComponent);
+  cit('renders a blank story field', (fix, el, comp) => {
+    expect(el).toQuery('.field');
+    expect(el).not.toQuery('h1');
+    expect(el).not.toQuery('h3');
+    expect(el).not.toQuery('label');
+    expect(el).toQueryText('p.hint', '');
+  });
 
-  it('renders a blank story field', buildComponent((fix, el, mini) => {
+  cit('renders a small label', (fix, el, comp) => {
+    comp.label = 'small label';
+    comp.small = true;
     fix.detectChanges();
-    expect(el.querySelector('.field')).not.toBeNull();
-    expect(el.querySelector('h1')).toBeNull();
-    expect(el.querySelector('h3')).toBeNull();
-    expect(el.querySelector('label')).toBeNull();
-    expect(el.querySelector('p.hint').textContent).toEqual('');
-  }));
+    expect(el).toQueryText('h4 label', 'small label');
+  });
 
-  it('renders a small label', buildComponent((fix, el, mini) => {
-    mini['label'] = 'small label';
-    mini['small'] = true;
+  cit('renders a large label', (fix, el, comp) => {
+    comp.label = 'large label';
     fix.detectChanges();
-    expect(el.querySelector('h4 label').textContent).toEqual('small label');
-  }));
+    expect(el).toQueryText('h3 label', 'large label');
+  });
 
-  it('renders a large label', buildComponent((fix, el, mini) => {
-    mini['label'] = 'large label';
+  cit('renders a required label', (fix, el, comp) => {
+    comp.label = 'the label';
     fix.detectChanges();
-    expect(el.querySelector('h3 label').textContent).toEqual('large label');
-  }));
+    expect(el).not.toQuery('label[required]');
+    comp.required = true;
+    fix.detectChanges();
+    expect(el).toQuery('label[required]');
+  });
 
-  it('renders a required label', buildComponent((fix, el, mini) => {
-    mini['label'] = 'the label';
+  cit('renders hint content', (fix, el, comp) => {
+    comp.hint = 'the hint content';
     fix.detectChanges();
-    expect(el.querySelector('label[required]')).toBeNull();
-    mini['required'] = true;
-    fix.detectChanges();
-    expect(el.querySelector('label[required]')).not.toBeNull();
-  }));
+    expect(el).toQueryText('p.hint', 'the hint content');
+  });
 
-  it('renders hint content', buildComponent((fix, el, mini) => {
-    mini['hint'] = 'the hint content';
+  cit('renders arbitrary nested content', (fix, el, comp) => {
+    comp.nested = 'some nested content';
     fix.detectChanges();
-    expect(el.querySelector('p.hint').textContent).toEqual('the hint content');
-  }));
+    expect(el).toQueryText('h1', 'some nested content');
+  });
 
-  it('renders arbitrary nested content', buildComponent((fix, el, mini) => {
-    mini['nested'] = 'some nested content';
+  cit('can have a text field', (fix, el, comp) => {
+    comp.model = {foobar: 'some value', changed: () => false, invalid: () => false};
+    comp.name = 'foobar';
+    comp.textinput = true;
     fix.detectChanges();
-    expect(el.querySelector('h1').textContent).toEqual('some nested content');
-  }));
+    expect(el).toQueryAttr('input', 'id', 'foobar');
+    expect(el).toQueryAttr('input', 'value', 'some value');
+  });
 
-  it('can have a text field', buildComponent((fix, el, mini) => {
-    mini.mockStory.foobar = 'some value';
-    mini['name'] = 'foobar';
-    mini['textinput'] = true;
+  cit('can have a text area', (fix, el, comp) => {
+    comp.model = {foobar: 'some textarea value', changed: () => false, invalid: () => false};
+    comp.name = 'foobar';
+    comp.textarea = true;
     fix.detectChanges();
-    let field = el.querySelector('input');
-    expect(field.id).toEqual('foobar');
-    expect(field['value']).toEqual('some value');
-  }));
+    expect(el).toQueryAttr('textarea', 'id', 'foobar');
+    expect(el).toQueryAttr('textarea', 'value', 'some textarea value');
+  });
 
-  it('can have a text area', buildComponent((fix, el, mini) => {
-    mini.mockStory.foobar = 'some textarea value';
-    mini['name'] = 'foobar';
-    mini['textarea'] = true;
+  cit('can have a select with options', (fix, el, comp) => {
+    comp.model = {foobar: 'theselected', changed: () => false, invalid: () => false};
+    comp.name = 'foobar';
+    comp.select = ['foo', 'bar', 'theselected'];
     fix.detectChanges();
-    let field = el.querySelector('textarea');
-    expect(field.id).toEqual('foobar');
-    expect(field['value']).toEqual('some textarea value');
-  }));
+    expect(el).toQueryAttr('select', 'id', 'foobar');
+    expect(el.queryAll(By.css('option')).length).toEqual(3);
+  });
 
-  it('can have a select with options', buildComponent((fix, el, mini) => {
-    mini.mockStory.foobar = 'theselected';
-    mini['name'] = 'foobar';
-    mini['select'] = ['foo', 'bar', 'theselected'];
+  cit('indicates changed fields', (fix, el, comp) => {
+    let isChanged = false;
+    comp.model = {changed: () => isChanged, invalid: () => false};
+    comp.name = 'foobar';
     fix.detectChanges();
-    let field = el.querySelector('select');
-    expect(field.id).toEqual('foobar');
-    expect(field.querySelectorAll('option').length).toEqual(3);
-  }));
+    expect(el).not.toQuery('.field.changed');
+    isChanged = true;
+    fix.detectChanges();
+    expect(el).toQuery('.field.changed');
+  });
 
-  it('indicates changed fields', buildComponent((fix, el, mini) => {
-    mini['name'] = 'foobar';
+  cit('explicitly overrides changed fieldnames', (fix, el, comp) => {
+    comp.model = {changed: (fld) => fld === 'somethingelse', invalid: () => false};
     fix.detectChanges();
-    expect(el.querySelector('.field.changed')).toBeNull();
-    mini.changes.foobar = true;
+    expect(el).not.toQuery('.field.changed-explicit');
+    comp.changed = 'somethingelse';
     fix.detectChanges();
-    expect(el.querySelector('.field.changed')).not.toBeNull();
-  }));
+    expect(el).toQuery('.field.changed-explicit');
+  });
 
-  it('explicitly overrides changed fieldnames', buildComponent((fix, el, mini) => {
-    mini['changed'] = 'somethingelse';
+  cit('indicates invalid fields', (fix, el, comp) => {
+    let isInvalid = false;
+    comp.model = {changed: () => false, invalid: () => isInvalid};
+    comp.name = 'foobar';
     fix.detectChanges();
-    expect(el.querySelector('.field.changed-explicit')).toBeNull();
-    mini.changes.foobar = false;
-    mini.changes.somethingelse = true;
+    expect(el).not.toQuery('.field.invalid');
+    isInvalid = true;
     fix.detectChanges();
-    expect(el.querySelector('.field.changed-explicit')).not.toBeNull();
-  }));
+    expect(el).toQuery('.field.invalid');
+  });
 
-  it('indicates invalid fields', buildComponent((fix, el, mini) => {
-    mini['name'] = 'foobar';
+  cit('explicitly overrides invalid fieldnames', (fix, el, comp) => {
+    comp.model = {changed: false, invalid: (fld) => fld === 'somethingelse'};
     fix.detectChanges();
-    expect(el.querySelector('.field.invalid')).toBeNull();
-    mini.invalids.foobar = 'error message';
+    expect(el).not.toQuery('.field.invalid-explicit');
+    comp.invalid = 'somethingelse';
     fix.detectChanges();
-    expect(el.querySelector('.field.invalid')).not.toBeNull();
-  }));
-
-  it('explicitly overrides invalid fieldnames', buildComponent((fix, el, mini) => {
-    mini['invalid'] = 'somethingelse';
-    fix.detectChanges();
-    expect(el.querySelector('.field.invalid-explicit')).toBeNull();
-    mini.invalids.foobar = null;
-    mini.invalids.somethingelse = 'error message';
-    fix.detectChanges();
-    expect(el.querySelector('.field.invalid-explicit')).not.toBeNull();
-  }));
+    expect(el).toQuery('.field.invalid-explicit');
+  });
 
 });

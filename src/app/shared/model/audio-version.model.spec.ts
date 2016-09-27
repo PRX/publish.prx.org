@@ -1,10 +1,8 @@
-import { mockCms } from '../../../test-support';
+import { cms } from '../../../testing';
 import { AudioVersionModel } from './audio-version.model';
 import { AudioFileModel } from './audio-file.model';
 
 describe('AudioVersionModel', () => {
-
-  let cms = <any> mockCms;
 
   let seriesMock: any, storyMock: any, versionMock: any;
   beforeEach(() => {
