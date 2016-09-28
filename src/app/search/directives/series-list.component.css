@@ -17,7 +17,7 @@ publish-series-card, .series {
   -webkit-flex-shrink: 1;
   flex-shrink: 1;
   height: 192px;
-  background: #ddd;/* TODO: This should be white. Why is the page background white in IE? */
+  background: #fff;
 }
 
 .series-list {
