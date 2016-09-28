@@ -21,8 +21,14 @@ publish-story-card, .story {
 }
 
 .story-list {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
   justify-content: flex-start;
+  -webkit-flex-flow: row wrap;
+  -ms-flex-flow: row wrap;
   flex-flow: row wrap;
   margin-right: -20px;
   padding-bottom: 40px;

@@ -17,11 +17,11 @@ import { StoryModel } from '../../shared';
       <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
       <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
       
-      <p class="meta">
+      <section class="story-info">
         <span class="duration">{{storyDuration | duration}}</span>
         <span *ngIf="storyAudioTotal" class="audio-total"><i class="icon-up-dir"></i>{{storyAudioTotal}}</span>
         <span class="modified">{{storyUpdated | date:"MM/dd/yy"}}</span>
-      </p>
+      </section>
     </section>
     <section class="story-tags">
       <span *ngFor="let tag of storyTags">{{tag}}</span>          

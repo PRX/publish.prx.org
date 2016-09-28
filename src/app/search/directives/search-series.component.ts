@@ -11,7 +11,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
     </div>
     
     <div class="form-group">
-      <span class="left">
+      <p class="left">
         <label [attr.for]="searchGenre">Filter by</label>
         <select id="searchGenre" [(ngModel)]="searchGenre" (ngModelChange)="searchByGenre()">
           <option *ngFor="let genre of GENRES" [value]="genre">{{genre}}</option>
@@ -20,9 +20,9 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
           <option *ngFor="let subgenre of SUBGENRES" [value]="subgenre">{{subgenre}}</option>
         </select>
         <!-- TODO: there should be a way to clear this -->
-      </span>
+      </p>
     
-      <span class="right">
+      <p class="right">
         <label [attr.for]="orderBy">Order by</label>
         <select id="orderBy" [(ngModel)]="searchOrderBy">
           <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
@@ -31,7 +31,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
         <input class="updown-toggle" type="checkbox" id="order"/>
         <label for="order"></label>
     
-      </span>
+      </p>
     </div>
 `
 })

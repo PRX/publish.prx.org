@@ -10,15 +10,15 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     </div>
     
     <div class="form-group">
-      <span class="left">
+      <p class="left">
         <label [attr.for]="searchSeries">Filter by Series</label>
         <select id="searchSeries" [(ngModel)]="searchSeriesId" (ngModelChange)="searchBySeries()">
           <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId]?.title || 'No Series'}}</option>
         </select>
         <!-- TODO: there should be a way to clear this -->
-      </span>
+      </p>
     
-      <span class="right">
+      <p class="right">
         <label [attr.for]="orderBy">Order by</label>
         <select id="orderBy" [(ngModel)]="searchOrderBy">
           <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
@@ -27,7 +27,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
         <input class="updown-toggle" type="checkbox" id="order"/>
         <label for="order"></label>
     
-      </span>
+      </p>
     </div>
 `
 })

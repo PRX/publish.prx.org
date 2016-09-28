@@ -40,9 +40,10 @@ publish-image  {
 .story-detail {
   position: absolute;
   left: 120px;
-  padding: 10px;
+  width: calc(100% - 120px);
   height: 120px;
   line-height: 20px;
+  padding: 10px;
 }
 .story-title {
   font-size: 16px;
@@ -54,17 +55,26 @@ publish-image  {
   overflow: hidden;
 }
 
-.meta {
+.story-info {
   position: absolute;
   bottom: 0;
-  width: 180px;
+  width: calc(100% - 20px);
   line-height: 20px;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
 .duration, .modified, .audio-total {
   width: calc(100%/3);
 }
-.modified {
-  text-align: right;
+.audio-total {
+  flex: 2 2 60px;
+  white-space: nowrap;
+}
+.duration, .modified {
+  flex: 1 1 60px;
 }
 .audio-total > i {
   /* TODO: this isn't the correct icon */
@@ -78,7 +88,6 @@ publish-image  {
   display: flex;
   justify-content: flex-start;
   flex-flow: row wrap;
-  width: 320px;
   padding: 0 10px;
   max-height: 20px;
   line-height: 20px;
