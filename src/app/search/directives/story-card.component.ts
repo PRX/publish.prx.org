@@ -7,30 +7,28 @@ import { StoryModel } from '../../shared';
   selector: 'publish-story-card',
   styleUrls: ['story-card.component.css'],
   template: `
-    <div>
-      <section class="story-image">
-        <publish-image [imageDoc]="story.doc"></publish-image>
-        <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
-      </section>
-      <section class="story-detail">
-        <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
-        
-        <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
-        <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
-        
-        <p class="meta">
-          <span class="duration">{{storyDuration | duration}}</span>
-          <span *ngIf="storyAudioTotal" class="audio-total"><i class="icon-up-dir"></i>{{storyAudioTotal}}</span>
-          <span class="modified">{{storyUpdated | date:"MM/dd/yy"}}</span>
-        </p>
-      </section>
-      <section class="story-tags">
-        <span *ngFor="let tag of storyTags">{{tag}}</span>          
-      </section>
-      <section class="story-description three-lines" [ngClass]="{'two-lines': storyTags.length > 0 }">
-        {{storyDescription}}
-      </section>
-    </div>
+    <section class="story-image">
+      <publish-image [imageDoc]="story.doc"></publish-image>
+      <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
+    </section>
+    <section class="story-detail">
+      <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
+      
+      <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
+      <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
+      
+      <p class="meta">
+        <span class="duration">{{storyDuration | duration}}</span>
+        <span *ngIf="storyAudioTotal" class="audio-total"><i class="icon-up-dir"></i>{{storyAudioTotal}}</span>
+        <span class="modified">{{storyUpdated | date:"MM/dd/yy"}}</span>
+      </p>
+    </section>
+    <section class="story-tags">
+      <span *ngFor="let tag of storyTags">{{tag}}</span>          
+    </section>
+    <section class="story-description three-lines" [ngClass]="{'two-lines': storyTags.length > 0 }">
+      {{storyDescription}}
+    </section>
   `
 })
 

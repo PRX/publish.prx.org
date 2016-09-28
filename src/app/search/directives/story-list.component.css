@@ -4,7 +4,18 @@ publish-story-card, .story {
   position: relative;
   margin-top: 20px;
   margin-right: 20px;
-  width: 320px;
+  flex-basis: 320px;
+  -ms-flex-preferred-size: 320px;
+  -webkit-flex-basis: 320px;
+  -webkit-box-flex: 3;
+  -moz-box-flex: 3;
+  -o-box-flex: 3;
+  -ms-box-flex: 3;
+  box-flex: 3;
+  -webkit-flex-grow: 3;
+  flex-grow: 3;
+  -webkit-flex-shrink: 1;
+  flex-shrink: 1;
   height: 200px;
   background: #ddd;
 }
