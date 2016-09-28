@@ -20,6 +20,20 @@ publish-story-card, .story {
   background: #fff;
 }
 
+/* not a great attempt to fix the odd last items stretching
+@media screen and (min-width: 1060px) {
+  publish-story-card:nth-last-child(2) {
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
+  }
+}
+@media screen and (min-width: 690px) {
+  publish-story-card:last-child {
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
+  }
+}
+*/
 .story-list {
   display: -webkit-box;
   display: -moz-box;

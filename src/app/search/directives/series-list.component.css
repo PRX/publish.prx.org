@@ -20,6 +20,14 @@ publish-series-card, .series {
   background: #fff;
 }
 
+/* attempt to fix the odd last item stretching
+@media screen and (min-width: 1060px) {
+  publish-series-card:last-child {
+    -webkit-flex-grow: 0;
+    flex-grow: 0;
+  }
+}*/
+
 .series-list {
   display: -webkit-box;
   display: -moz-box;
