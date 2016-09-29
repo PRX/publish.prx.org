@@ -1,6 +1,5 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { CmsService, HalDoc } from '../core';
 import { StoryModel, SeriesModel } from '../shared';
 
@@ -10,12 +9,11 @@ import { StoryModel, SeriesModel } from '../shared';
   templateUrl: 'search.component.html'
 })
 
-export class SearchComponent implements OnChanges, OnInit {
+export class SearchComponent implements OnInit {
 
   static TAB_STORIES = 'stories';
   static TAB_SERIES = 'series';
   selectedTab: string;
-  private routeSub: Subscription;
 
   isLoaded = false;
   totalCount: number;
@@ -44,7 +42,7 @@ export class SearchComponent implements OnChanges, OnInit {
               private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.routeSub = this.route.params.subscribe(params => {
+    this.route.params.forEach((params) => {
       this.selectedTab = params['tab'] || SearchComponent.TAB_STORIES;
       this.searchSeriesIdParam = +params['seriesId'];
 
@@ -57,10 +55,6 @@ export class SearchComponent implements OnChanges, OnInit {
         }
       });
     });
-  }
-
-  ngOnDestroy() {
-    this.routeSub.unsubscribe();
   }
 
   initStorySearch() {
@@ -85,10 +79,6 @@ export class SearchComponent implements OnChanges, OnInit {
 
   initSeriesSearch() {
     this.searchSeries(1);
-  }
-
-  ngOnChanges(changes) {
-
   }
 
   searchByText(text: string) {
@@ -151,7 +141,12 @@ export class SearchComponent implements OnChanges, OnInit {
             this.storiesResults.push(story);
           }
         }
-        this.totalCount = storyDocs.length > 0 ? storyDocs[0].total() : 0;
+        if (storyDocs.length === 0) {
+          this.noResults = true;
+          this.totalCount = 0;
+        } else {
+          this.totalCount = storyDocs[0].total();
+        }
         this.pagingInfo(per);
         this.isLoaded = true;
       });
@@ -183,7 +178,12 @@ export class SearchComponent implements OnChanges, OnInit {
         for (let doc of seriesDocs) {
           this.seriesResults.push(new SeriesModel(this.auth, doc, false));
         }
-        this.totalCount = seriesDocs.length > 0 ? seriesDocs[0].total() : 0
+        if (seriesDocs.length === 0) {
+          this.noResults = true;
+          this.totalCount = 0;
+        } else {
+          this.totalCount = seriesDocs[0].total();
+        }
         this.pagingInfo(per);
         this.isLoaded = true;
       });
@@ -202,10 +202,16 @@ export class SearchComponent implements OnChanges, OnInit {
   }
 
   searchStoriesTab() {
+    this.searchTextParam = undefined;
+    this.seriesResults.length = 0;
+    this.totalCount = 0;
     this.router.navigate(['search', { tab: SearchComponent.TAB_STORIES}]);
   }
 
   searchSeriesTab() {
+    this.searchTextParam = undefined;
+    this.storiesResults.length = 0;
+    this.totalCount = 0;
     this.router.navigate(['search', { tab: SearchComponent.TAB_SERIES}]);
   }
 

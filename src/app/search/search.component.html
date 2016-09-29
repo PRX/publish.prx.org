@@ -27,7 +27,7 @@
           <button disabled *ngIf="totalCount && pages?.length === 1" class="btn-link">Viewing {{totalCount > 1 ? 'all ' + totalCount : totalCount}}</button>
         </span>
 
-        <span *ngIf="pages?.length > 1" class="pages">
+        <span *ngIf="totalCount > 0 && pages?.length > 1" class="pages">
           <button [disabled]="currentPage === 1" (click)="search(currentPage - 1)" class="btn-link">&lt;</button>
           <button *ngFor="let page of pages | slice:pagesBegin:pagesEnd;"
                   [disabled]="page === currentPage" [ngClass]="{'active': page === currentPage}"
