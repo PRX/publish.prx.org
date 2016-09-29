@@ -99,21 +99,28 @@ export abstract class BaseModel {
       }
 
       // save related docs in parallel
-      let relatedSavers: Observable<boolean>[] = this.getRelated().filter((model) => {
-        return model.changed();
-      }).map((model) => {
-        // update parent, deleting old storage keys
-        if (model.isNew) { model.unstore(); }
-        model.parent = this.doc;
-        if (model.isNew) { model.store(); }
-        return model.save();
-      });
-      return Observable.from(relatedSavers).concatAll().toArray().map(() => {
+      return this.saveRelated().map(() => {
         this.isNew = false;
         this.isSaving = false;
         return true;
       });
     });
+  }
+
+  saveRelated(): Observable<boolean[]> {
+    let relatedSavers: Observable<boolean>[] = this.getRelated().filter(model => {
+      return model.changed();
+    }).map(model => {
+      if (model.isNew) {
+        model.unstore(); // delete old storage key
+        model.parent = this.doc;
+        model.store(); // save key w/new parent
+      } else {
+        model.parent = this.doc;
+      }
+      return model.save();
+    });
+    return Observable.from(relatedSavers).concatAll().toArray();
   }
 
   discard() {

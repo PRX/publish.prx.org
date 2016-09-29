@@ -5,28 +5,29 @@ import { UploadableModel } from './uploadable.model';
 export class ImageModel extends UploadableModel {
 
   public id: number;
+  public filename: string;
   public caption: string = '';
   public credit: string = '';
 
   SETABLE = ['caption', 'credit', 'isDestroy'];
 
-  private series: HalDoc;
+  private grandparent: HalDoc;
 
-  constructor(series?: HalDoc, story?: HalDoc, file?: HalDoc | Upload | string) {
+  constructor(grandparent: HalDoc, parent?: HalDoc, file?: HalDoc | Upload | string) {
     super();
-    this.series = series;
-    this.initUpload(story, file);
+    this.grandparent = grandparent;
+    this.initUpload(parent, file);
   }
 
   key() {
     if (this.doc) {
-      return `prx.image.${this.doc.id}`;
+      return `prx.image.${this.doc.profileSubtype}.${this.doc.id}`;
     } else if (this.parent) {
-      return `prx.image.new.${this.parent.id}`; // existing story
-    } else if (this.series) {
-      return `prx.image.new.series.${this.series.id}`; // new story in series
+      return `prx.image.new.${this.parent.profileType}.${this.parent.id}`;
+    } else if (this.grandparent) {
+      return `prx.image.draft.${this.grandparent.profileType}.${this.grandparent.id}`;
     } else {
-      return `prx.image.new`; // new standalone story
+      return `prx.image.new`;
     }
   }
 
@@ -37,6 +38,7 @@ export class ImageModel extends UploadableModel {
   decode() {
     super.decode();
     this.id = this.doc['id'];
+    this.filename = this.doc['filename'];
     this.caption = this.doc['caption'] || '';
     this.credit = this.doc['credit'] || '';
   }
@@ -49,20 +51,18 @@ export class ImageModel extends UploadableModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    return this.parent.create('prx:images', {}, data);
+    if (this.parent.has('prx:images')) {
+      return this.parent.create('prx:images', {}, data);
+    } else if (this.parent.has('prx:image', false)) {
+      return this.parent.create('prx:image', {}, data);
+    } else {
+      return Observable.throw(new Error('Cannot find image link on this resource!'));
+    }
   }
 
   watchUpload(upload: Upload, startFromBeginning = true) {
     this.set('isDestroy', false); // TODO: why?
     super.watchUpload(upload, startFromBeginning);
-  }
-
-  destroy() {
-    this.set('isDestroy', true);
-    super.destroy();
-    if (this.isNew) {
-      this.unstore();
-    }
   }
 
 }
