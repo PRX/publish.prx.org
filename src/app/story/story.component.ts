@@ -4,13 +4,26 @@ import { Observable, Subject, Subscription } from 'rxjs';
 
 import { CmsService, ModalService } from '../core';
 import { StoryModel } from '../shared';
-import { StoryTabService } from './services/story-tab.service';
 
 @Component({
-  providers: [StoryTabService],
   selector: 'publish-story',
   styleUrls: ['story.component.css'],
-  templateUrl: 'story.component.html'
+  template: `
+    <publish-story-hero [story]="story"></publish-story-hero>
+
+    <publish-tabs [model]="story">
+
+      <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+        [routerLink]="editLink">STEP 1: {{id ? 'Edit' : 'Create'}} your story</a>
+      <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+        [routerLink]="['decorate']">STEP 2: Decorate your story</a>
+      <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+        [routerLink]="['sell']">STEP 3: Sell your story</a>
+
+      <button *ngIf="id" class="extras delete" (click)="confirmDelete()">Delete</button>
+
+    </publish-tabs>
+  `
 })
 
 export class StoryComponent implements OnInit, OnDestroy {
@@ -23,7 +36,6 @@ export class StoryComponent implements OnInit, OnDestroy {
 
   constructor(
     private cms: CmsService,
-    private tab: StoryTabService,
     private route: ActivatedRoute,
     private router: Router,
     private modal: ModalService
@@ -47,40 +59,24 @@ export class StoryComponent implements OnInit, OnDestroy {
       // (1) existing story, (2) new series-story, (3) new standalone-story
       let auth = this.cms.follow('prx:authorization');
       if (this.id) {
-        auth.follow('prx:story', {id: this.id}).subscribe(storyDoc => {
-          if (storyDoc['appVersion'] !== 'v4') {
-            let oldLink = `https://www.prx.org/pieces/${this.id}`;
-            this.modal.alert(
-              'Cannot Edit Story',
-              `This episode was created in the older PRX.org app, and must be
-              edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
-              () => { window.history.back(); }
-            );
-          } else if (storyDoc.has('prx:series')) {
-            storyDoc.follow('prx:series').subscribe(seriesDoc => {
-              this.story = new StoryModel(seriesDoc, storyDoc);
-              this.tab.setStory(this.story);
-            });
-          } else if (storyDoc.has('prx:account')) {
-            storyDoc.follow('prx:account').subscribe(accountDoc => {
-              this.story = new StoryModel(accountDoc, storyDoc);
-              this.tab.setStory(this.story);
-            });
+        auth.follow('prx:story', {id: this.id}).subscribe(doc => {
+          if (doc.has('prx:series')) {
+            doc.follow('prx:series').subscribe(s => this.story = new StoryModel(s, doc));
+          } else if (doc.has('prx:account')) {
+            doc.follow('prx:account').subscribe(a => this.story = new StoryModel(a, doc));
           } else {
             console.error('WOH: story has no series or account!');
-            this.story = new StoryModel(null, storyDoc);
-            this.tab.setStory(this.story);
+            this.story = new StoryModel(null, doc);
           }
+          this.checkStoryVersion();
         });
       } else if (this.seriesId) {
         auth.follow('prx:series', {id: this.seriesId}).subscribe(seriesDoc => {
           this.story = new StoryModel(seriesDoc, null);
-          this.tab.setStory(this.story);
         });
       } else {
         auth.follow('prx:default-account').subscribe(accountDoc => {
           this.story = new StoryModel(accountDoc, null);
-          this.tab.setStory(this.story);
         });
       }
     });
@@ -88,6 +84,18 @@ export class StoryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.routeSub.unsubscribe();
+  }
+
+  checkStoryVersion() {
+    if (!this.story.isV4()) {
+      let oldLink = `https://www.prx.org/pieces/${this.id}`;
+      this.modal.alert(
+        'Cannot Edit Story',
+        `This episode was created in the older PRX.org app, and must be
+        edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
+        () => { window.history.back(); }
+      );
+    }
   }
 
   canDeactivate(next: any, prev: any): boolean | Observable<boolean> {

@@ -1,7 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { StoryModel } from '../../shared';
-import { StoryTabService } from '../services/story-tab.service';
+import { StoryModel, TabService } from '../../shared';
 
 @Component({
   styleUrls: [],
@@ -9,7 +8,7 @@ import { StoryTabService } from '../services/story-tab.service';
     <form *ngIf="story">
 
       <publish-fancy-field label="Upload a Cover Image">
-        <publish-image-upload [story]="story"></publish-image-upload>
+        <publish-image-upload [model]="story"></publish-image-upload>
       </publish-fancy-field>
 
       <hr/>
@@ -37,10 +36,8 @@ export class DecorateComponent implements OnDestroy {
   story: StoryModel;
   tabSub: Subscription;
 
-  constructor(tab: StoryTabService) {
-    this.tabSub = tab.storyModel.subscribe((story) => {
-      this.story = story;
-    });
+  constructor(tab: TabService) {
+    this.tabSub = tab.model.subscribe((s: StoryModel) => this.story = s);
   }
 
   ngOnDestroy(): any {

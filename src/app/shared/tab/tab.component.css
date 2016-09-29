@@ -1,0 +1,41 @@
+/**
+ * Tabbed edit-page layout
+ */
+.main section {
+  display: flex;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.main .subnav {
+  flex: 0 0 260px;
+  margin-right: 30px;
+}
+.main nav >>> a {
+  display: block;
+  background-color: #fff;
+  padding: 14px 20px;
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.main nav >>> a:hover {
+  text-decoration: underline;
+}
+.main nav >>> a.active {
+  background-color: #368aa2;
+  color: #fff;
+}
+.main nav >>> a.active:hover {
+  background-color: #2b7187;
+  text-decoration: none;
+}
+.main nav >>> a[disabled], .main nav >>> a[disabled]:hover {
+  text-decoration: none;
+  background-color: #f7f7f7;
+  color: #93bdc9;
+  cursor: not-allowed;
+}
+.main section .page {
+  position: relative;
+  flex-grow: 1;
+  min-height: 100px;
+}
