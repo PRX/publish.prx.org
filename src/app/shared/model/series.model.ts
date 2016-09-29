@@ -1,6 +1,7 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
+import { ImageModel } from './image.model';
 import { REQUIRED, LENGTH } from './base.invalid';
 
 export class SeriesModel extends BaseModel {
@@ -11,6 +12,7 @@ export class SeriesModel extends BaseModel {
   public shortDescription: string;
   public createdAt: Date;
   public updatedAt: Date;
+  public images: ImageModel[] = [];
 
   SETABLE = ['title', 'description', 'shortDescription'];
 
@@ -34,7 +36,21 @@ export class SeriesModel extends BaseModel {
   }
 
   related() {
-    return {};
+    let images = Observable.of([]);
+    if (this.doc && this.doc.has('prx:image')) {
+      images = this.doc.follow('prx:image').map(idoc => {
+        let imageModels = [new ImageModel(this.parent, this.doc, idoc)];
+        if (this.unsavedImage) {
+          imageModels.push(this.unsavedImage);
+        }
+        return imageModels;
+      });
+    } else if (this.unsavedImage) {
+      images = Observable.of([this.unsavedImage]);
+    }
+    return {
+      images: images
+    };
   }
 
   decode() {
@@ -56,6 +72,29 @@ export class SeriesModel extends BaseModel {
 
   saveNew(data: {}): Observable<HalDoc> {
     return this.parent.create('prx:series', {}, data);
+  }
+
+  saveRelated(): Observable<boolean[]> {
+    let hasNewImage = this.images.find(i => i.isNew && !i.isDestroy);
+
+    // since series only has 1 image, just fire off the POST for the new image
+    // without DELETE-ing the old one.
+    if (hasNewImage) {
+      this.images = this.images.filter(img => {
+        if (!img.isNew && img.isDestroy) {
+          img.unstore();
+          return false;
+        } else {
+          return true;
+        }
+      });
+    }
+    return super.saveRelated();
+  }
+
+  get unsavedImage(): ImageModel {
+    let img = new ImageModel(this.parent, this.doc, null);
+    return img.isStored() && !img.isDestroy ? img : null;
   }
 
 }

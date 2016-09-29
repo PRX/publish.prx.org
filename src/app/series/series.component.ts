@@ -13,7 +13,7 @@ import { SeriesModel } from '../shared';
 
 export class SeriesComponent implements OnInit, OnDestroy {
 
-  private id: number;
+  private id: string;
   private series: SeriesModel;
   private routeSub: Subscription;
 
@@ -26,7 +26,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.routeSub = this.route.params.subscribe(params => {
-     this.id = +params['id'];
+     this.id = params['id'] || 'new';
      this.loadSeries();
    });
   }
