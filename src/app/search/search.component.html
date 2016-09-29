@@ -5,17 +5,25 @@
 
       <publish-search-series
         *ngIf="isOnSeriesTab()"
+        [searchOrderBy]="searchOrderByParam"
+        [searchOrderDesc]="searchOrderDescParam"
+        [orderByOptions]="orderByOptionsSeries"
         (searchSeriesByText)="searchByText($event)"
-        (searchSeriesByGenre)="searchSeriesByGenre($event)">
+        (searchSeriesByGenre)="searchSeriesByGenre($event)"
+        (searchSeriesByOrder)="searchByOrder($event)">
       </publish-search-series>
 
       <publish-search-story
         *ngIf="isOnStoriesTab()"
-        [searchSeriesId]="searchSeriesId"
+        [searchOrderBy]="searchOrderByParam"
+        [searchOrderDesc]="searchOrderDescParam"
+        [orderByOptions]="orderByOptionsStories"
+        [searchSeriesId]="searchSeriesIdParam"
         [allSeriesIds]="allSeriesIds"
         [allSeries]="allSeries"
         (searchStoriesByText)="searchByText($event)"
-        (searchStoriesBySeries)="searchStoriesBySeries($event)">
+        (searchStoriesBySeries)="searchStoriesBySeries($event)"
+        (searchStoriesByOrder)="searchByOrder($event)">
       </publish-search-story>
 
       <div>

@@ -20,11 +20,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     
       <p class="right">
         <label [attr.for]="orderBy">Order by</label>
-        <select id="orderBy" [(ngModel)]="searchOrderBy">
+        <select id="orderBy" [(ngModel)]="searchOrderBy" (ngModelChange)="searchByOrder()">
           <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
         </select>
     
-        <input class="updown-toggle" type="checkbox" id="order"/>
+        <input class="updown-toggle" type="checkbox" id="order" [(ngModel)]="searchOrderDesc" (ngModelChange)="searchByOrder()"/>
         <label for="order"></label>
     
       </p>
@@ -33,29 +33,17 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 
 export class SearchStoryComponent {
+  @Input() searchOrderBy: string;
+  @Input() searchOrderDesc: boolean;
+  @Input() orderByOptions: any[];
   @Input() searchSeriesId: number;
   @Input() allSeriesIds: number[];
   @Input() allSeries: any;
   @Output() searchStoriesByText = new EventEmitter<string>();
   @Output() searchStoriesBySeries = new EventEmitter<number>();
+  @Output() searchStoriesByOrder = new EventEmitter<any>();
 
   searchText: string;
-  searchOrderBy: string;
-
-  orderByOptions: any[] = [
-    {
-      id: 'TITLE',
-      name: 'Story Title'
-    },
-    {
-      id: 'UPDATED',
-      name: 'Last Updated'
-    },
-    {
-      id: 'PUBLISHED',
-      name: 'When Published'
-    }
-  ];
 
   searchByText() {
     this.searchStoriesByText.emit(this.searchText);
@@ -63,5 +51,9 @@ export class SearchStoryComponent {
 
   searchBySeries() {
     this.searchStoriesBySeries.emit(this.searchSeriesId);
+  }
+
+  searchByOrder() {
+    this.searchStoriesByOrder.emit({orderBy: this.searchOrderBy, desc: this.searchOrderDesc});
   }
 }

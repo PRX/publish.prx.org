@@ -30,12 +30,40 @@ export class SearchComponent implements OnInit {
   pagesEnd: number;
 
   searchTextParam: string;
-  searchGenre: string;
-  searchSubGenre: string;
+  searchGenreParam: string;
+  searchSubGenreParam: string;
   searchSeriesIdParam: number;
   searchSeriesParam: SeriesModel;
+  searchOrderByParam: string = 'updated_at';
+  searchOrderDescParam: boolean = true;
   allSeriesIds: number[];
   allSeries: any;
+
+  orderByOptionsStories: any[] = [
+    {
+      id: 'title',
+      name: 'Story Title'
+    },
+    {
+      id: 'updated_at',
+      name: 'Last Updated'
+    },
+    {
+      id: 'published_at',
+      name: 'When Published'
+    }
+  ];
+
+  orderByOptionsSeries: any[] = [
+    {
+      id: 'title',
+      name: 'Series Title'
+    },
+    {
+      id: 'updated_at',
+      name: 'Last Updated'
+    }
+  ];
 
   constructor(private cms: CmsService,
               private router: Router,
@@ -86,6 +114,12 @@ export class SearchComponent implements OnInit {
     this.search(1);
   }
 
+  searchByOrder(order: any) {
+    this.searchOrderByParam = order.orderBy;
+    this.searchOrderDescParam = order.desc;
+    this.search(1);
+  }
+
   searchStoriesBySeries(searchSeriesId: number) {
     this.searchSeriesIdParam = searchSeriesId;
     this.searchSeriesParam = this.allSeries[this.searchSeriesIdParam];
@@ -93,8 +127,8 @@ export class SearchComponent implements OnInit {
   }
 
   searchSeriesByGenre(genre: any) {
-    this.searchGenre = genre.genre;
-    this.searchSubGenre = genre.subgenre;
+    this.searchGenreParam = genre.genre;
+    this.searchSubGenreParam = genre.subgenre;
     this.searchSeries(1);
   }
 
@@ -120,7 +154,16 @@ export class SearchComponent implements OnInit {
     if (this.searchTextParam) {
       filters.push('text=' + this.searchTextParam);
     }
-    let params = {page: this.currentPage, per, filters: filters.join(',')};
+    let sorts;
+    if (this.searchOrderByParam) {
+      sorts = this.searchOrderByParam + ':';
+      sorts += this.searchOrderDescParam ? 'desc' : 'asc';
+      if (this.searchOrderByParam === 'published_at') {
+        sorts += 'updated_at:';
+        sorts += this.searchOrderDescParam ? 'desc' : 'asc';
+      }
+    }
+    let params = {page: this.currentPage, per, filters: filters.join(','), sorts};
 
     let storiesCount = parent.count('prx:stories') || 0; // wrong, doesn't account for filter. looks obvs wrong with No Series filter
     if (storiesCount > 0) {
@@ -167,7 +210,12 @@ export class SearchComponent implements OnInit {
     if (this.searchTextParam) {
       filters.push('text=' + this.searchTextParam);
     }
-    let params = {page: this.currentPage, per, filters: filters.join(',')};
+    let sorts;
+    if (this.searchOrderByParam) {
+      sorts = this.searchOrderByParam + ':';
+      sorts += this.searchOrderDescParam ? 'desc' : 'asc';
+    }
+    let params = {page: this.currentPage, per, filters: filters.join(','), sorts};
     let seriesCount = this.auth.count('prx:series') || 0;
     if (seriesCount > 0) {
       this.loaders = Array(seriesCount);
@@ -205,6 +253,8 @@ export class SearchComponent implements OnInit {
     this.searchTextParam = undefined;
     this.seriesResults.length = 0;
     this.totalCount = 0;
+    this.searchOrderByParam = 'updated_at';
+    this.searchOrderDescParam = true;
     this.router.navigate(['search', { tab: SearchComponent.TAB_STORIES}]);
   }
 
@@ -212,6 +262,8 @@ export class SearchComponent implements OnInit {
     this.searchTextParam = undefined;
     this.storiesResults.length = 0;
     this.totalCount = 0;
+    this.searchOrderByParam = 'updated_at';
+    this.searchOrderDescParam = true;
     this.router.navigate(['search', { tab: SearchComponent.TAB_SERIES}]);
   }
 

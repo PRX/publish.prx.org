@@ -24,11 +24,11 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
     
       <p class="right">
         <label [attr.for]="orderBy">Order by</label>
-        <select id="orderBy" [(ngModel)]="searchOrderBy">
+        <select id="orderBy" [(ngModel)]="searchOrderBy" (ngModelChange)="searchByOrder()">
           <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
         </select>
     
-        <input class="updown-toggle" type="checkbox" id="order"/>
+        <input class="updown-toggle" type="checkbox" id="order" [(ngModel)]="searchOrderDesc" (ngModelChange)="searchByOrder()"/>
         <label for="order"></label>
     
       </p>
@@ -37,28 +37,16 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
 })
 
 export class SearchSeriesComponent {
+  @Input() searchOrderBy: string;
+  @Input() searchOrderDesc: boolean;
+  @Input() orderByOptions: any[];
   @Output() searchSeriesByText = new EventEmitter<string>();
   @Output() searchSeriesByGenre = new EventEmitter<any>();
+  @Output() searchSeriesByOrder = new EventEmitter<any>();
 
   searchText: string;
   searchGenre: string;
   searchSubGenre: string;
-  searchOrderBy: string;
-
-  orderByOptions: any[] = [
-    {
-      id: 'TITLE',
-      name: 'Series Title'
-    },
-    {
-      id: 'UPDATED',
-      name: 'Last Updated'
-    },
-    {
-      id: 'PUBLISHED',
-      name: 'When Published'
-    }
-  ];
 
   searchByText() {
     this.searchSeriesByText.emit(this.searchText);
@@ -66,6 +54,10 @@ export class SearchSeriesComponent {
 
   searchByGenre() {
     this.searchSeriesByGenre.emit({genre: this.searchGenre, subgenre: this.searchSubGenre});
+  }
+
+  searchByOrder() {
+    this.searchSeriesByOrder.emit({orderBy: this.searchOrderBy, desc: this.searchOrderDesc});
   }
 
   get GENRES(): string[] {
