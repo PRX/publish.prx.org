@@ -1,7 +1,8 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
+import { AppErrorService } from './app-error.service';
 import { routing, routingProviders, routingComponents } from './app.routing';
 
 import { CoreModule } from './core';
@@ -25,6 +26,7 @@ import { SearchModule } from './search';
     routing
   ],
   providers: [
+    {provide: ErrorHandler, useClass: AppErrorService},
     routingProviders
   ],
   bootstrap: [AppComponent]

@@ -35,7 +35,7 @@ button.close {
   top: 23px;
   right: 6px;
   background: none;
-  color: 368aa2;
+  color: #368aa2;
   font-size: 34px;
   margin: 0;
   padding: 0;
@@ -56,6 +56,10 @@ p {
   font-size: 14px;
   line-height: 22px;
   margin-top: 10px;
+}
+pre {
+  font-size: 11px;
+  line-height: 12px;
 }
 footer {
   text-align: right;

@@ -8,6 +8,8 @@ export interface ModalState {
   body: string;
   buttons: string[];
   buttonCallback: Function;
+  height: number;
+  width: number;
 }
 
 @Injectable()
@@ -24,21 +26,25 @@ export class ModalService {
 
   alert(title: string, body?: string, callback?: Function) {
     if (callback) {
-      this.emit({title: title, body: body, buttons: ['Okay'], buttonCallback: callback});
+      this.emit({title: title, body: `<p>${body}</p>`, buttons: ['Okay'], buttonCallback: callback});
     } else {
-      this.emit({title: title, body: body});
+      this.emit({title: title, body: `<p>${body}</p>`});
     }
   }
 
   prompt(title: string, message: string, callback: Function) {
     this.emit({
       title: title,
-      body: message,
+      body: `<p>${message}</p>`,
       buttons: ['Okay', 'Cancel'],
       buttonCallback: (label: string) => {
         if (callback) { callback(label === 'Okay'); }
       }
     });
+  }
+
+  show(options: any) {
+    this.emit(<ModalState> options);
   }
 
   hide() {
