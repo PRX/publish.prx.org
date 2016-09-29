@@ -169,26 +169,24 @@ export class SearchComponent implements OnInit {
     if (storiesCount > 0) {
       this.loaders = Array(storiesCount);
       parent.followItems('prx:stories', params).subscribe((stories) => {
-        this.storiesResults = [];
         this.loaders = null;
-        let storyDocs = <HalDoc[]> stories;
-        for (let doc of storyDocs) {
-          let story = new StoryModel(parent, doc, false);
-          if (story.doc.has('prx:series')) {
-            // series are embedded, so this should be ok. would prefer to get the series id and use allSeries[id].doc
-            story.doc.follow('prx:series').subscribe((series) => {
-              story.parent = series;
-              this.storiesResults.push(story); // TODO: can cause out of order issues
+        this.storiesResults = [];
+        let storiesById = {};
+        let storyIds = stories.map((doc) => {
+          storiesById[doc.id] = new StoryModel(parent, doc, false);
+          if (doc.has('prx:series')) {
+            doc.follow('prx:series').subscribe((series) => {
+              storiesById[doc.id].parent = series;
             });
-          } else {
-            this.storiesResults.push(story);
           }
-        }
-        if (storyDocs.length === 0) {
+          return doc.id;
+        });
+        if (stories.length === 0) {
           this.noResults = true;
           this.totalCount = 0;
         } else {
-          this.totalCount = storyDocs[0].total();
+          this.totalCount = stories[0].total();
+          this.storiesResults = storyIds.map(storyId => storiesById[storyId]);
         }
         this.pagingInfo(per);
         this.isLoaded = true;
