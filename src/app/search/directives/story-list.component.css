@@ -20,20 +20,25 @@ publish-story-card, .story {
   background: #fff;
 }
 
-/* not a great attempt to fix the odd last items stretching
-@media screen and (min-width: 1060px) {
-  publish-story-card:nth-last-child(2) {
-    -webkit-flex-grow: 0;
-    flex-grow: 0;
-  }
+.empty-story-card {
+  display: block;
+  margin-top: 20px;
+  margin-right: 20px;
+  flex-basis: 320px;
+  -ms-flex-preferred-size: 320px;
+  -webkit-flex-basis: 320px;
+  -webkit-box-flex: 3;
+  -moz-box-flex: 3;
+  -o-box-flex: 3;
+  -ms-box-flex: 3;
+  box-flex: 3;
+  -webkit-flex-grow: 3;
+  flex-grow: 3;
+  -webkit-flex-shrink: 1;
+  flex-shrink: 1;
+  height: 0px;
 }
-@media screen and (min-width: 690px) {
-  publish-story-card:last-child {
-    -webkit-flex-grow: 0;
-    flex-grow: 0;
-  }
-}
-*/
+
 .story-list {
   display: -webkit-box;
   display: -moz-box;

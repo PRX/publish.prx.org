@@ -20,13 +20,24 @@ publish-series-card, .series {
   background: #fff;
 }
 
-/* attempt to fix the odd last item stretching
-@media screen and (min-width: 1060px) {
-  publish-series-card:last-child {
-    -webkit-flex-grow: 0;
-    flex-grow: 0;
-  }
-}*/
+.empty-series-card {
+  display: block;
+  margin-top: 20px;
+  margin-right: 20px;
+  flex-basis: 490px;
+  -ms-flex-preferred-size: 490px;
+  -webkit-flex-basis: 490px;
+  -webkit-box-flex: 2;
+  -moz-box-flex: 2;
+  -o-box-flex: 2;
+  -ms-box-flex: 2;
+  box-flex: 2;
+  -webkit-flex-grow: 2;
+  flex-grow: 2;
+  -webkit-flex-shrink: 1;
+  flex-shrink: 1;
+  height: 0px;
+}
 
 .series-list {
   display: -webkit-box;
