@@ -13,8 +13,11 @@ import { SeriesModel } from '../shared';
 
 export class SeriesComponent implements OnInit, OnDestroy {
 
-  private id: string;
+  private id: number;
+  private base: string;
   private series: SeriesModel;
+  private storyCount: number;
+  private storyNoun: string;
   private routeSub: Subscription;
 
   constructor(
@@ -26,7 +29,8 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.routeSub = this.route.params.subscribe(params => {
-     this.id = params['id'] || 'new';
+     this.id = +params['id'];
+     this.base = '/series/' + (this.id || 'new');
      this.loadSeries();
    });
   }
@@ -38,23 +42,32 @@ export class SeriesComponent implements OnInit, OnDestroy {
   loadSeries() {
     let auth = this.cms.follow('prx:authorization');
     if (this.id) {
-      auth.follow('prx:series', {id: this.id}).subscribe(seriesDoc => {
-        if (seriesDoc['appVersion'] !== 'v4') {
-          let oldLink = `https://www.prx.org/series/${this.id}`;
-          this.modal.alert(
-            'Cannot Edit Series',
-            `This series was created in the older PRX.org app, and must be
-            edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
-            () => { window.history.back(); }
-          );
-        } else {
-          this.series = new SeriesModel(null, seriesDoc);
-        }
-      });
+      auth.follow('prx:series', {id: this.id}).subscribe(s => this.setSeries(null, s));
     } else {
-      auth.follow('prx:default-account').subscribe(accountDoc => {
-        this.series = new SeriesModel(accountDoc, null);
-      });
+      auth.follow('prx:default-account').subscribe(a => this.setSeries(a, null));
+    }
+  }
+
+  setSeries(parent: any, series: any) {
+    this.series = new SeriesModel(parent, series);
+    if (series) {
+      this.storyCount = series.count('prx:stories');
+      this.storyNoun = this.storyCount === 1 ? 'Story' : 'Stories';
+    } else {
+      this.storyCount = null;
+    }
+    this.checkSeriesVersion();
+  }
+
+  checkSeriesVersion() {
+    if (!this.series.isV4()) {
+      let oldLink = `https://www.prx.org/series/${this.id}`;
+      this.modal.alert(
+        'Cannot Edit Series',
+        `This series was created in the older PRX.org app, and must be
+        edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
+        () => { window.history.back(); }
+      );
     }
   }
 
@@ -69,6 +82,19 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   discard() {
     this.series.discard();
+  }
+
+  confirmDelete(): void {
+    this.modal.prompt(
+      'Really delete?',
+      'Are you sure you want to delete this series? This action cannot be undone.',
+      (okay: boolean) => {
+        if (okay) {
+          this.series.isDestroy = true;
+          this.series.save().subscribe(() => console.log('gone'));
+        }
+      }
+    );
   }
 
 }

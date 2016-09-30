@@ -11,12 +11,7 @@ import { TabService } from './tab.service';
     <div class="main">
       <section>
         <div class="subnav">
-          <nav>
-            <ng-content select="[routerLink]"></ng-content>
-          </nav>
-          <div class="extras">
-            <ng-content select=".extras"></ng-content>
-          </div>
+          <ng-content></ng-content>
         </div>
         <div class="page">
           <publish-spinner *ngIf="!model"></publish-spinner>

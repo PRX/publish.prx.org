@@ -1,11 +1,6 @@
 /**
- * TODO: restyle this delete button
+ * Story general styling
  */
 button.delete {
-  color: #fff;
-  background-color: #ee4d3e;
   margin: 30px 0 0 90px;
-}
-button.delete:hover {
-  background-color: #ff0000;
 }

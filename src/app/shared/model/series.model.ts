@@ -97,4 +97,8 @@ export class SeriesModel extends BaseModel {
     return img.isStored() && !img.isDestroy ? img : null;
   }
 
+  isV4(): boolean {
+    return !this.doc || this.doc['appVersion'] === 'v4';
+  }
+
 }

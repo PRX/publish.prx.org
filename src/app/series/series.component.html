@@ -27,11 +27,14 @@
 </publish-hero>
 
 <publish-tabs [model]="series">
-
-  <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
-    [routerLink]="['/series', id]">Basic Info</a>
-  <a routerLinkActive="active" [routerLink]="['/series', id, 'image']">Cover Image</a>
-  <a routerLinkActive="active" [routerLink]="['/series', id, 'templates']">Audio Templates</a>
-  <a routerLinkActive="active" [routerLink]="['/series', id, 'advanced']">Advanced</a>
-
+  <nav>
+    <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'image']">Cover Image</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'templates']">Audio Templates</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'advanced']">Advanced</a>
+  </nav>
+  <div class="extras">
+    <a *ngIf="storyCount > 0" [routerLink]="['/search']">{{storyCount}} {{storyNoun}} &raquo;</a>
+    <button *ngIf="id && storyCount == 0" class="delete" (click)="confirmDelete()">Delete</button>
+  </div>
 </publish-tabs>

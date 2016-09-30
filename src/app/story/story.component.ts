@@ -12,16 +12,15 @@ import { StoryModel } from '../shared';
     <publish-story-hero [story]="story"></publish-story-hero>
 
     <publish-tabs [model]="story">
-
-      <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
-        [routerLink]="editLink">STEP 1: {{id ? 'Edit' : 'Create'}} your story</a>
-      <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
-        [routerLink]="['decorate']">STEP 2: Decorate your story</a>
-      <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
-        [routerLink]="['sell']">STEP 3: Sell your story</a>
-
-      <button *ngIf="id" class="extras delete" (click)="confirmDelete()">Delete</button>
-
+      <nav>
+        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+          [routerLink]="editLink">STEP 1: {{id ? 'Edit' : 'Create'}} your story</a>
+        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+          [routerLink]="['decorate']">STEP 2: Decorate your story</a>
+        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
+          [routerLink]="['sell']">STEP 3: Sell your story</a>
+      </nav>
+      <button *ngIf="id" class="delete" (click)="confirmDelete()">Delete</button>
     </publish-tabs>
   `
 })

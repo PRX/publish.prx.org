@@ -168,6 +168,14 @@ button.btn-link.active {
   color: #f59f51;
 }
 
+button.delete {
+  color: #fff;
+  background-color: #ee4d3e;
+}
+button.delete:hover {
+  background-color: #ff0000;
+}
+
 input[type=checkbox].updown-toggle {
   display: none;
 }
