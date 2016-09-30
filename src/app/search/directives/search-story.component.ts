@@ -6,7 +6,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   template: `
     <div class="form-group">
       <!-- TODO: delay search until finish typing -->
-      <input (keyup)="searchByText()" [(ngModel)]="searchText" placeholder="search by title or description"/>
+      <input (ngModelChange)="searchByText()" [(ngModel)]="searchText" placeholder="search by title or description"/>
     </div>
     
     <div class="form-group">

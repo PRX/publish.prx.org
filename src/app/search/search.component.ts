@@ -89,7 +89,7 @@ export class SearchComponent implements OnInit {
     this.allSeriesIds = [-1];
     this.allSeries = {};
     this.auth.followItems('prx:series', {filters: 'v4'}).subscribe((series) => {
-      for (let s of <HalDoc[]> series) {
+      for (let s of series) {
         this.allSeriesIds.push(s.id);
         this.allSeries[s.id] = new SeriesModel(this.auth, s, false);
       }
@@ -220,7 +220,7 @@ export class SearchComponent implements OnInit {
       this.auth.followItems('prx:series', params).subscribe((seriesResults) => {
         this.seriesResults = [];
         this.loaders = null;
-        let seriesDocs = <HalDoc[]> seriesResults;
+        let seriesDocs = seriesResults;
         for (let doc of seriesDocs) {
           this.seriesResults.push(new SeriesModel(this.auth, doc, false));
         }
