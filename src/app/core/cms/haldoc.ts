@@ -100,7 +100,7 @@ export class HalDoc {
     } else if (this['_links'] && this['_links'][rel]) {
       // TODO: temporary hack for has-one images
       if (strict && rel.match('image')) {
-        return this['_links'][rel]['title'] ? true : false;
+        return this['_links'][rel]['title'] !== null ? true : false;
       } else {
         return true;
       }
