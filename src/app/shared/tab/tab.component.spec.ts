@@ -7,9 +7,11 @@ describe('TabComponent', () => {
   contain(TabComponent, {
     template: `
       <publish-tabs [model]="testModel">
-        <a [routerLink]="['foo']">Foo</a>
-        <a [routerLink]="['bar']">Bar</a>
-        <h1 class="extras">Extra stuff here</h1>
+        <nav>
+          <a [routerLink]="['foo']">Foo</a>
+          <a [routerLink]="['bar']">Bar</a>
+        </nav>
+        <h1>Extra stuff here</h1>
       </publish-tabs>
     `
   });
@@ -26,7 +28,7 @@ describe('TabComponent', () => {
     expect(navs.length).toEqual(2);
     expect(navs[0]).toHaveText('Foo');
     expect(navs[1]).toHaveText('Bar');
-    expect(el).toQueryText('h1.extras', 'Extra stuff here');
+    expect(el).toQueryText('h1', 'Extra stuff here');
   });
 
   cit('shows a spinner until the model is bound', (fix, el, comp) => {
