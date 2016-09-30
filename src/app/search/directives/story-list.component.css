@@ -1,0 +1,54 @@
+publish-story-card, .story {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px;
+  margin-right: 20px;
+  flex-basis: 320px;
+  -ms-flex-preferred-size: 320px;
+  -webkit-flex-basis: 320px;
+  -webkit-box-flex: 3;
+  -moz-box-flex: 3;
+  -o-box-flex: 3;
+  -ms-box-flex: 3;
+  box-flex: 3;
+  -webkit-flex-grow: 3;
+  flex-grow: 3;
+  -webkit-flex-shrink: 1;
+  flex-shrink: 1;
+  height: 200px;
+  background: #fff;
+}
+
+.empty-story-card {
+  display: block;
+  margin-top: 20px;
+  margin-right: 20px;
+  flex-basis: 320px;
+  -ms-flex-preferred-size: 320px;
+  -webkit-flex-basis: 320px;
+  -webkit-box-flex: 3;
+  -moz-box-flex: 3;
+  -o-box-flex: 3;
+  -ms-box-flex: 3;
+  box-flex: 3;
+  -webkit-flex-grow: 3;
+  flex-grow: 3;
+  -webkit-flex-shrink: 1;
+  flex-shrink: 1;
+  height: 0px;
+}
+
+.story-list {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: flex-start;
+  -webkit-flex-flow: row wrap;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  margin-right: -20px;
+  padding-bottom: 40px;
+}

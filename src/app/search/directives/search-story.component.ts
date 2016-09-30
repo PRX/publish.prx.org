@@ -1,96 +1,59 @@
-import { Component, Input, OnInit } from '@angular/core';
-
-import { HalDoc } from '../../core';
-import { StoryModel } from '../../shared';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'publish-search-story',
   styleUrls: ['search-story.component.css'],
   template: `
-    <div>
-      <section class="story-image">
-        <publish-image [imageDoc]="story.doc"></publish-image>
-        <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
-      </section>
-      <section class="story-detail">
-        <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
-        
-        <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
-        <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
-        
-        <p class="meta">
-          <span class="duration">{{storyDuration | duration}}</span>
-          <span *ngIf="storyAudioTotal" class="audio-total"><i class="icon-up-dir"></i>{{storyAudioTotal}}</span>
-          <span class="modified">{{storyUpdated | date:"MM/dd/yy"}}</span>
-        </p>
-      </section>
-      <section class="story-tags">
-        <span *ngFor="let tag of storyTags">{{tag}}</span>          
-      </section>
-      <section class="story-description three-lines" [ngClass]="{'two-lines': storyTags.length > 0 }">
-        {{storyDescription}}
-      </section>
+    <div class="form-group">
+      <!-- TODO: delay search until finish typing -->
+      <input (ngModelChange)="searchByText()" [(ngModel)]="searchText" placeholder="search by title or description"/>
     </div>
-  `
+    
+    <div class="form-group">
+      <p class="left">
+        <label [attr.for]="searchSeries">Filter by Series</label>
+        <select id="searchSeries" [(ngModel)]="searchSeriesId" (ngModelChange)="searchBySeries()">
+          <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId]?.title || 'No Series'}}</option>
+        </select>
+        <!-- TODO: there should be a way to clear this -->
+      </p>
+    
+      <p class="right">
+        <label [attr.for]="orderBy">Order by</label>
+        <select id="orderBy" [(ngModel)]="searchOrderBy" (ngModelChange)="searchByOrder()">
+          <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
+        </select>
+    
+        <input class="updown-toggle" type="checkbox" id="order" [(ngModel)]="searchOrderDesc" (ngModelChange)="searchByOrder()"/>
+        <label for="order"></label>
+    
+      </p>
+    </div>
+`
 })
 
-export class SearchStoryComponent implements OnInit {
+export class SearchStoryComponent {
+  @Input() searchOrderBy: string;
+  @Input() searchOrderDesc: boolean;
+  @Input() orderByOptions: any[];
+  @Input() searchSeriesId: number;
+  @Input() allSeriesIds: number[];
+  @Input() allSeries: any;
+  @Output() searchStoriesByText = new EventEmitter<string>();
+  @Output() searchStoriesBySeries = new EventEmitter<number>();
+  @Output() searchStoriesByOrder = new EventEmitter<any>();
 
-  @Input() story: StoryModel;
+  searchText: string;
 
-  editStoryLink: any[];
-  seriesLink: any[];
-
-  storyId: number;
-  storyTitle: string;
-  storyDuration: number;
-  storyAudioTotal: number;
-  storyUpdated: Date;
-  storyDescription: string;
-  storyTags: string[];
-  seriesTitle: string;
-
-  statusClass: string;
-  statusText: string;
-
-  ngOnInit() {
-    this.storyId = this.story.id;
-    this.storyTitle = this.story.title;
-    this.storyUpdated = this.story.lastStored || this.story.updatedAt;
-    this.storyDescription = this.story.shortDescription;
-    this.storyTags = this.story.extraTags && this.story.extraTags.length > 0 ? this.story.extraTags.split(', ') : [];
-
-    this.editStoryLink = ['/story', this.story.id];
-
-    if (this.story.doc.has('prx:audio')) {
-      this.story.doc.followItems('prx:audio').subscribe((audios) => {
-        let audiosDocs = <HalDoc[]> audios;
-        if (!audios || audios.length < 1) {
-          this.storyDuration = 0;
-        } else {
-          this.storyAudioTotal = audiosDocs[0].total();
-          this.storyDuration = audios.map((audio) => {
-            return audio['duration'] || 0;
-          }).reduce((prevDuration, currDuration) => {
-            return prevDuration + currDuration;
-          });
-        }
-      });
-    } else {
-      this.storyDuration = 0;
-    }
-
-    if (this.story.parent) {
-      this.seriesTitle = this.story.parent['title'];
-      this.seriesLink = ['/series', this.story.parent.id];
-    } else {
-      this.seriesTitle = this.story.account['name'] || '(Unnamed Account)';
-    }
-
-    if (!this.story.publishedAt) {
-      this.statusClass = 'status unpublished';
-      this.statusText = 'Unpublished';
-    }
+  searchByText() {
+    this.searchStoriesByText.emit(this.searchText);
   }
 
+  searchBySeries() {
+    this.searchStoriesBySeries.emit(this.searchSeriesId);
+  }
+
+  searchByOrder() {
+    this.searchStoriesByOrder.emit({orderBy: this.searchOrderBy, desc: this.searchOrderDesc});
+  }
 }
