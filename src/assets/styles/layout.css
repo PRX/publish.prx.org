@@ -22,6 +22,7 @@ article .asides aside > section {
   color: #fff;
 }
 main {
+  display: block;/* IE 11 gives auto/no height to main */
   min-height: 200px;
   background: #f0f0f0;
   padding-top: 50px;

@@ -1,0 +1,54 @@
+publish-series-card, .series {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px;
+  margin-right: 20px;
+  flex-basis: 490px;
+  -ms-flex-preferred-size: 490px;
+  -webkit-flex-basis: 490px;
+  -webkit-box-flex: 2;
+  -moz-box-flex: 2;
+  -o-box-flex: 2;
+  -ms-box-flex: 2;
+  box-flex: 2;
+  -webkit-flex-grow: 2;
+  flex-grow: 2;
+  -webkit-flex-shrink: 1;
+  flex-shrink: 1;
+  height: 192px;
+  background: #fff;
+}
+
+.empty-series-card {
+  display: block;
+  margin-top: 20px;
+  margin-right: 20px;
+  flex-basis: 490px;
+  -ms-flex-preferred-size: 490px;
+  -webkit-flex-basis: 490px;
+  -webkit-box-flex: 2;
+  -moz-box-flex: 2;
+  -o-box-flex: 2;
+  -ms-box-flex: 2;
+  box-flex: 2;
+  -webkit-flex-grow: 2;
+  flex-grow: 2;
+  -webkit-flex-shrink: 1;
+  flex-shrink: 1;
+  height: 0px;
+}
+
+.series-list {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: flex-start;
+  -webkit-flex-flow: row wrap;
+  -ms-flex-flow: row wrap;
+  flex-flow: row wrap;
+  margin-right: -20px;
+  padding-bottom: 40px;
+}

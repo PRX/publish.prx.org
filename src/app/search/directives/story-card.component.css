@@ -1,0 +1,132 @@
+.story-image {
+  position: relative;
+  float: left;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 5px;
+}
+publish-image  {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.story-image::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 25px;
+  height: 25px;
+  background: rgba(255,165,0,.9)url('../../../assets/images/bt_play.svg') center center/8px no-repeat;
+  content: '';
+}
+
+.status {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 3px 10px;
+  z-index: 10;
+  color: #fff;
+  background-color: #444;
+  font-weight: 400;
+  font-size: 11px;
+  text-transform: uppercase;
+  line-height: 18px;
+}
+.status.unpublished {
+  background-color: #ee4d3e;
+}
+
+.story-detail {
+  position: absolute;
+  left: 120px;
+  width: calc(100% - 120px);
+  height: 120px;
+  line-height: 20px;
+  padding: 10px;
+}
+.story-title {
+  font-size: 16px;
+  max-height: 40px;
+  overflow: hidden;
+}
+.series-title {
+  max-height: 40px;
+  overflow: hidden;
+}
+
+.story-info {
+  position: absolute;
+  bottom: 0;
+  width: calc(100% - 20px);
+  line-height: 20px;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.duration, .modified, .audio-total {
+  width: calc(100%/3);
+}
+.audio-total {
+  flex: 2 2 60px;
+  white-space: nowrap;
+}
+.duration, .modified {
+  flex: 1 1 60px;
+}
+.audio-total > i {
+  /* TODO: this isn't the correct icon */
+  display: inline-block;
+  transform: rotate(90deg);
+  margin-right: -5px;
+}
+
+.story-tags {
+  clear: left;
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: row wrap;
+  padding: 0 10px;
+  max-height: 20px;
+  line-height: 20px;
+  overflow: hidden;
+}
+.story-tags > span {
+  background-color: #f0f0f0;
+  padding: 0 4px;
+}
+
+.story-tags > span + span {
+  margin-left: 4px;
+}
+
+.story-description {
+  padding: 0 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.three-lines {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 60px;
+  line-height: 20px;
+  -webkit-line-clamp: 3;
+  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.two-lines {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 40px;
+  line-height: 20px;
+  -webkit-line-clamp: 2;
+  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
