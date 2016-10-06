@@ -10,8 +10,9 @@ import { SeriesModel } from '../../shared';
     </section>
     <section>
       <h2 class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h2>
-      <p class="meta">
+      <p class="series-info">
         <span class="episode-count">{{seriesEpisodeCount}} Ep.</span>
+        <span class="updated-at">{{seriesUpdatedAt | date:"MM/dd/yy"}}</span>
       </p>
     </section>
     <section class="series-detail">
@@ -30,6 +31,7 @@ export class SeriesCardComponent implements OnInit {
   seriesId: number;
   seriesTitle: string;
   seriesEpisodeCount: number;
+  seriesUpdatedAt: Date;
   seriesDescription: string;
   seriesGenre: string;
   seriesSubGenre: string;
@@ -38,9 +40,10 @@ export class SeriesCardComponent implements OnInit {
     this.seriesId = this.series.id;
     this.seriesTitle = this.series.title;
     this.seriesEpisodeCount = this.series.doc.count('prx:stories') || 0;
+    this.seriesUpdatedAt = this.series.updatedAt;
 
     this.seriesDescription = this.series.shortDescription;
-    /* TODO: sort out genre/tags, thought Andrew said stories have tags and series have genre
+    /* TODO: add support when series has genre and subgenre
     this.seriesGenre = this.series.genre;
     this.seriesSubGenre = this.series.subgenre;*/
 
