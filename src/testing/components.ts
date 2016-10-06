@@ -1,6 +1,6 @@
 import { Component, Type, DebugElement, NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 
 import { CmsService } from '../app/core/cms/cms.service';
 import { MockCmsService } from './mock.cms.service';
@@ -70,7 +70,11 @@ export function direct(directiveType) {
 export function provide(provider, useValue?) {
   beforeEach(function() {
     if (useValue) {
-      this._publishProviders.push({provide: provider, useValue: useValue});
+      if (useValue instanceof Type) {
+        this._publishProviders.push({provide: provider, useClass: useValue});
+      } else {
+        this._publishProviders.push({provide: provider, useValue: useValue});
+      }
     } else {
       this._publishProviders.push(provider);
     }

@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 import { CmsService, ModalService } from '../core';
 import { SeriesModel } from '../shared';
@@ -11,14 +10,13 @@ import { SeriesModel } from '../shared';
   templateUrl: 'series.component.html'
 })
 
-export class SeriesComponent implements OnInit, OnDestroy {
+export class SeriesComponent implements OnInit {
 
   private id: number;
   private base: string;
   private series: SeriesModel;
   private storyCount: number;
   private storyNoun: string;
-  private routeSub: Subscription;
 
   constructor(
     private cms: CmsService,
@@ -28,15 +26,11 @@ export class SeriesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.routeSub = this.route.params.subscribe(params => {
+    this.route.params.forEach(params => {
      this.id = +params['id'];
      this.base = '/series/' + (this.id || 'new');
      this.loadSeries();
    });
-  }
-
-  ngOnDestroy() {
-    this.routeSub.unsubscribe();
   }
 
   loadSeries() {
@@ -73,8 +67,11 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   save() {
     let wasNew = this.series.isNew;
+    console.log('save');
     this.series.save().subscribe(() => {
+      console.log('saved!', wasNew);
       if (wasNew) {
+        console.log('routing', this.router.navigate);
         this.router.navigate(['/series', this.series.id]);
       }
     });
