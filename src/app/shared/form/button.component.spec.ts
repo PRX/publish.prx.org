@@ -61,12 +61,6 @@ describe('ButtonComponent', () => {
       expect(el).toQueryAttr('button', 'disabled', '');
     });
 
-    cit('is disabled when saving', (fix, el, comp) => {
-      comp.model = new MockModel({changed: true, saving: true});
-      fix.detectChanges();
-      expect(el).toQueryAttr('button', 'disabled', '');
-    });
-
     cit('is disabled when invalid', (fix, el, comp) => {
       comp.model = new MockModel({changed: true, invalid: true});
       fix.detectChanges();
