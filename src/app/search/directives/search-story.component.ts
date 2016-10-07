@@ -5,7 +5,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['search-story.component.css'],
   template: `
     <div class="form-group">
-      <!-- TODO: delay search until finish typing -->
+      <!-- TODO: delay search until finish typing, issue #54 -->
       <input (ngModelChange)="searchByText()" [(ngModel)]="searchText" placeholder="search by title or description"/>
     </div>
     
@@ -15,7 +15,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
         <select id="searchSeries" [(ngModel)]="searchSeriesId" (ngModelChange)="searchBySeries()">
           <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId]?.title || 'No Series'}}</option>
         </select>
-        <!-- TODO: there should be a way to clear this -->
+        <!-- TODO: there should be a way to clear this, issue #52 -->
       </p>
     
       <p class="right">

@@ -6,7 +6,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
   styleUrls: ['search-series.component.css'],
   template: `
     <div class="form-group">
-      <!-- TODO: delay search until finish typing -->
+      <!-- TODO: delay search until finish typing, issue #54 -->
       <input (ngModelChange)="searchByText()" [(ngModel)]="searchText" placeholder="search by title or description"/>
     </div>
     
@@ -19,7 +19,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
         <select id="searchSubGenre" [(ngModel)]="searchSubGenre" (ngModelChange)="searchByGenre()">
           <option *ngFor="let subgenre of SUBGENRES" [value]="subgenre">{{subgenre}}</option>
         </select>
-        <!-- TODO: there should be a way to clear this -->
+        <!-- TODO: there should be a way to clear this, issue #52 -->
       </p>
     
       <p class="right">
