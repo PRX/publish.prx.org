@@ -7,6 +7,9 @@ import { SeriesModel } from '../../shared';
   template: `
     <section class="series-image">
       <a [routerLink]="seriesLink"><publish-image [imageDoc]="series.doc"></publish-image></a>
+      <div class="stack stk-one"></div>
+      <div class="stack stk-two"></div>
+      <div class="stack stk-three"></div>
     </section>
     <section>
       <h2 class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h2>

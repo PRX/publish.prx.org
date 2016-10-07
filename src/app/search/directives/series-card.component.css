@@ -9,6 +9,26 @@ publish-image {
   height: 100%;
   display: block;
 }
+.stack {
+  position: absolute;
+  top: 192px;
+  background-color: rgba(37,37,37,.7);
+}
+.stk-one {
+  bottom: -5px;
+  left: 5px;
+  width: 182px;
+}
+.stk-two {
+  bottom: -10px;
+  left: 10px;
+  width: 172px;
+}
+.stk-three {
+  bottom: -15px;
+  left: 15px;
+  width: 162px;
+}
 .series-link {
   width: 192px;
 }
