@@ -67,11 +67,8 @@ export class SeriesComponent implements OnInit {
 
   save() {
     let wasNew = this.series.isNew;
-    console.log('save');
     this.series.save().subscribe(() => {
-      console.log('saved!', wasNew);
       if (wasNew) {
-        console.log('routing', this.router.navigate);
         this.router.navigate(['/series', this.series.id]);
       }
     });
@@ -88,7 +85,9 @@ export class SeriesComponent implements OnInit {
       (okay: boolean) => {
         if (okay) {
           this.series.isDestroy = true;
-          this.series.save().subscribe(() => console.log('gone'));
+          this.series.save().subscribe(() => {
+            this.router.navigate(['/']);
+          });
         }
       }
     );
