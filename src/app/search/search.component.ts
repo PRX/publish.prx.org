@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CmsService, HalDoc } from '../core';
 import { StoryModel, SeriesModel } from '../shared';
+import { SearchStory } from './search-story.model';
+import { SearchSeries } from './search-series.model';
 
 @Component({
   selector: 'publish-search',
@@ -20,8 +22,8 @@ export class SearchComponent implements OnInit {
   pages: number[];
   noResults: boolean;
   auth: HalDoc;
-  storiesResults: StoryModel[];
-  seriesResults: SeriesModel[];
+  storiesResults: StoryModel[] = [];
+  seriesResults: SeriesModel[] = [];
   loaders: boolean[];
 
   currentPage: number;
@@ -29,110 +31,67 @@ export class SearchComponent implements OnInit {
   pagesBegin: number;
   pagesEnd: number;
 
-  searchTextParam: string;
-  searchGenreParam: string;
-  searchSubGenreParam: string;
-  searchSeriesIdParam: number;
-  searchSeriesParam: SeriesModel;
-  searchOrderByParam: string = 'updated_at';
-  searchOrderDescParam: boolean = true;
+  searchStoryParams: SearchStory = new SearchStory();
+  searchSeriesParams: SearchSeries = new SearchSeries();
+
   allSeriesIds: number[];
   allSeries: any;
 
-  orderByOptionsStories: any[] = [
-    {
-      id: 'title',
-      name: 'Story Title'
-    },
-    {
-      id: 'updated_at',
-      name: 'Last Updated'
-    },
-    {
-      id: 'published_at',
-      name: 'When Published'
-    }
-  ];
-
-  orderByOptionsSeries: any[] = [
-    {
-      id: 'title',
-      name: 'Series Title'
-    },
-    {
-      id: 'updated_at',
-      name: 'Last Updated'
-    }
-  ];
+  orderByOptionsStories = SearchStory.ORDERBY_OPTIONS;
+  orderByOptionsSeries = SearchStory.ORDERBY_OPTIONS;
 
   constructor(private cms: CmsService,
               private router: Router,
               private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.route.params.forEach((params) => {
-      this.selectedTab = params['tab'] || SearchComponent.TAB_STORIES;
-      this.searchSeriesIdParam = +params['seriesId'];
+    this.cms.follow('prx:authorization').subscribe((auth) => {
+      this.auth = auth;
 
-      this.cms.follow('prx:authorization').subscribe((auth) => {
-        this.auth = auth;
-        if (this.selectedTab === SearchComponent.TAB_STORIES) {
-          this.initStorySearch();
-        } else {
-          this.initSeriesSearch();
+      this.allSeriesIds = [-1];
+      this.allSeries = {};
+      this.auth.followItems('prx:series', {filters: 'v4'}).subscribe((series) => {
+        for (let s of series) {
+          this.allSeriesIds.push(s.id);
+          this.allSeries[s.id] = new SeriesModel(this.auth, s, false);
         }
+        this.subscribeRouteParams();
       });
     });
   }
 
-  initStorySearch() {
-    this.allSeriesIds = [-1];
-    this.allSeries = {};
-    this.auth.followItems('prx:series', {filters: 'v4'}).subscribe((series) => {
-      for (let s of series) {
-        this.allSeriesIds.push(s.id);
-        this.allSeries[s.id] = new SeriesModel(this.auth, s, false);
+  subscribeRouteParams() {
+    this.route.params.forEach((params) => {
+      this.selectedTab = params['tab'] || SearchComponent.TAB_STORIES;
+      if (this.selectedTab === SearchComponent.TAB_STORIES) {
+        this.searchStoryParams.fromRouteParams(params);
+      } else if (this.selectedTab === SearchComponent.TAB_SERIES) {
+        this.searchSeriesParams.fromRouteParams(params);
       }
-
-      this.searchTextParam = '';
-      this.searchSeriesParam = null;
-      this.currentPage = 1;
-      if (this.searchSeriesIdParam) {
-        this.searchStoriesBySeries(this.searchSeriesIdParam);
-      } else {
-        this.searchStories(1);
-      }
+      this.initSearch();
     });
   }
 
-  initSeriesSearch() {
-    this.searchSeries(1);
+  searchWithParams(searchParams: any) {
+    let routeParams = {tab: this.selectedTab};
+    Object.keys(searchParams).forEach(key => {
+      if (searchParams[key] !== undefined) {
+        routeParams[key] = searchParams[key];
+      }
+    });
+    this.router.navigate(['search', routeParams]);
   }
 
-  searchByText(text: string) {
-    this.searchTextParam = text;
-    this.search(1);
+  initSearch() {
+    this.currentPage = 1;
+    if (this.selectedTab === SearchComponent.TAB_STORIES) {
+      this.searchStories(this.currentPage);
+    } else if (this.selectedTab === SearchComponent.TAB_SERIES) {
+      this.searchSeries(this.currentPage);
+    }
   }
 
-  searchByOrder(order: any) {
-    this.searchOrderByParam = order.orderBy;
-    this.searchOrderDescParam = order.desc;
-    this.search(1);
-  }
-
-  searchStoriesBySeries(searchSeriesId: number) {
-    this.searchSeriesIdParam = searchSeriesId;
-    this.searchSeriesParam = this.allSeries[this.searchSeriesIdParam];
-    this.searchStories(1);
-  }
-
-  searchSeriesByGenre(genre: any) {
-    this.searchGenreParam = genre.genre;
-    this.searchSubGenreParam = genre.subgenre;
-    this.searchSeries(1);
-  }
-
-  search(page: number, per: number = undefined) {
+  navigateToPagePer(page: number, per: number = undefined) {
     if (this.isOnSeriesTab()) {
       this.searchSeries(page, per);
     } else if (this.isOnStoriesTab) {
@@ -145,27 +104,31 @@ export class SearchComponent implements OnInit {
     this.isLoaded = false;
     this.noResults = false;
 
-    let parent = this.searchSeriesParam ? this.searchSeriesParam.doc : this.auth;
+    let parent = this.auth;
+    if (this.searchStoryParams.seriesId && this.searchStoryParams.seriesId !== -1) {
+      parent = this.allSeries[this.searchStoryParams.seriesId].doc;
+    }
 
     let filters = ['v4'];
-    if (+this.searchSeriesIdParam === -1) {
+    if (this.searchStoryParams.seriesId === -1) {
       filters.push('noseries');
     }
-    if (this.searchTextParam) {
-      filters.push('text=' + this.searchTextParam);
+    if (this.searchStoryParams.text)  {
+      filters.push('text=' + this.searchStoryParams.text);
     }
     let sorts;
-    if (this.searchOrderByParam) {
-      sorts = this.searchOrderByParam + ':';
-      sorts += this.searchOrderDescParam ? 'desc' : 'asc';
-      if (this.searchOrderByParam === 'published_at') {
+    if (this.searchStoryParams.orderBy) {
+      sorts = this.searchStoryParams.orderBy + ':';
+      sorts += this.searchStoryParams.orderDesc ? 'desc' : 'asc';
+      if (this.searchStoryParams.orderBy === 'published_at') {
         sorts += 'updated_at:';
-        sorts += this.searchOrderDescParam ? 'desc' : 'asc';
+        sorts += this.searchStoryParams.orderDesc ? 'desc' : 'asc';
       }
     }
     let params = {page: this.currentPage, per, filters: filters.join(','), sorts};
 
-    let storiesCount = parent.count('prx:stories') || 0; // wrong, doesn't account for filter. looks obvs wrong with No Series filter
+    // TODO: wrong, doesn't account for filter. looks obvs wrong with No Series filter, issue #53
+    let storiesCount = parent.count('prx:stories') || 0;
     if (storiesCount > 0) {
       this.loaders = Array(storiesCount);
       parent.followItems('prx:stories', params).subscribe((stories) => {
@@ -205,13 +168,13 @@ export class SearchComponent implements OnInit {
     this.noResults = false;
 
     let filters = ['v4'];
-    if (this.searchTextParam) {
-      filters.push('text=' + this.searchTextParam);
+    if (this.searchSeriesParams.text)  {
+      filters.push('text=' + this.searchStoryParams.text);
     }
     let sorts;
-    if (this.searchOrderByParam) {
-      sorts = this.searchOrderByParam + ':';
-      sorts += this.searchOrderDescParam ? 'desc' : 'asc';
+    if (this.searchSeriesParams.orderBy) {
+      sorts = this.searchSeriesParams.orderBy + ':';
+      sorts += this.searchSeriesParams.orderDesc ? 'desc' : 'asc';
     }
     let params = {page: this.currentPage, per, filters: filters.join(','), sorts};
     let seriesCount = this.auth.count('prx:series') || 0;
@@ -248,20 +211,14 @@ export class SearchComponent implements OnInit {
   }
 
   searchStoriesTab() {
-    this.searchTextParam = undefined;
     this.seriesResults.length = 0;
     this.totalCount = 0;
-    this.searchOrderByParam = 'updated_at';
-    this.searchOrderDescParam = true;
     this.router.navigate(['search', { tab: SearchComponent.TAB_STORIES}]);
   }
 
   searchSeriesTab() {
-    this.searchTextParam = undefined;
     this.storiesResults.length = 0;
     this.totalCount = 0;
-    this.searchOrderByParam = 'updated_at';
-    this.searchOrderDescParam = true;
     this.router.navigate(['search', { tab: SearchComponent.TAB_SERIES}]);
   }
 
