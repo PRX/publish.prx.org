@@ -1,6 +1,6 @@
 import { Component, Type, DebugElement, NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TestBed, ComponentFixture, async } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 
 import { CmsService } from '../app/core/cms/cms.service';
 import { MockCmsService } from './mock.cms.service';
