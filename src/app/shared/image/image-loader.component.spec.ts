@@ -16,7 +16,7 @@ describe('ImageLoaderComponent', () => {
   const getBackground = (el) => {
     let style = el.nativeElement.getAttribute('style') || '';
     let match = style.match(/background-image: url\((.+)\)/);
-    return match ? match[1] : '';
+    return match ? match[1].replace(/^"|"$/g, '') : '';
   };
 
   const mockDoc = (linkHref) => {
