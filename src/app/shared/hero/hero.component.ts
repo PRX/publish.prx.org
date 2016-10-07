@@ -36,7 +36,11 @@ export class HeroComponent implements OnInit {
   }
 
   onScroll() {
-    this.affixed = (window.scrollY > this.affixedY);
+    this.affixed = (this.getScrollY() > this.affixedY);
+  }
+
+  getScrollY() {
+    return window.scrollY;
   }
 
 }

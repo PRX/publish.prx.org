@@ -19,6 +19,10 @@ export class UploadService {
   private useCloudfront: boolean = Env.USE_CLOUDFRONT;
 
   constructor(private mimeTypeService: MimeTypeService) {
+    this.init();
+  }
+
+  init() {
     // until there is a good way to load from env and inject
     this.evaporate = new Evaporate({
       signerUrl: this.signUrl,
