@@ -5,7 +5,7 @@ import { ModalService, ModalState } from './modal.service';
   selector: 'publish-modal',
   styleUrls: ['modal.component.css'],
   template: `
-    <div *ngIf="shown" class="overlay" (document:keyup)="onKey($event)"></div>
+    <div *ngIf="shown" class="overlay" (document:keydown)="onKey($event)"></div>
     <div *ngIf="shown" class="modal"
       [style.height.px]="state.height" [style.marginTop.px]="-state.height / 2"
       [style.width.px]="state.width" [style.marginLeft.px]="-state.width / 2">
