@@ -8,39 +8,33 @@ import { EditComponent }        from './directives/edit.component';
 import { DecorateComponent }    from './directives/decorate.component';
 import { SellComponent }        from './directives/sell.component';
 
+const storyChildRoutes = [
+  { path: '',         component: EditComponent },
+  { path: 'decorate', component: DecorateComponent },
+  { path: 'sell',     component: SellComponent }
+];
+
 export const storyRoutes: Routes = [
-  {
-    path: 'story/:id',
-    component: StoryComponent,
-    canActivate: [AuthGuard],
-    canDeactivate: [DeactivateGuard],
-    children: [
-      { path: '',         component: EditComponent },
-      { path: 'decorate', component: DecorateComponent },
-      { path: 'sell',     component: SellComponent }
-    ]
-  },
   {
     path: 'story/new',
     component: StoryComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],
-    children: [
-      { path: '',         component: EditComponent },
-      { path: 'decorate', component: DecorateComponent },
-      { path: 'sell',     component: SellComponent }
-    ]
+    children: storyChildRoutes
   },
   {
     path: 'story/new/:series_id',
     component: StoryComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],
-    children: [
-      { path: '',         component: EditComponent },
-      { path: 'decorate', component: DecorateComponent },
-      { path: 'sell',     component: SellComponent }
-    ]
+    children: storyChildRoutes
+  },
+  {
+    path: 'story/:id',
+    component: StoryComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [DeactivateGuard],
+    children: storyChildRoutes
   }
 ];
 
