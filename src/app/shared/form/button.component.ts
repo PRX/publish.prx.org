@@ -7,7 +7,7 @@ import { BaseModel } from '../model/base.model';
   styleUrls: ['button.component.css'],
   template: `
     <button *ngIf="isVisible" [disabled]="isDisabled" [class.working]="isWorking"
-      [class.orange]="orange" [class.plain]="plain" [class.red]="red"
+      [class.orange]="orange" [class.plain]="plain" [class.red]="red" [class.green]="green"
       (click)="onClick($event)">
       <ng-content></ng-content>
       <publish-spinner *ngIf="isWorking"></publish-spinner>
@@ -23,6 +23,7 @@ export class ButtonComponent {
   @Input() orange = false;
   @Input() plain = false;
   @Input() red = false;
+  @Input() green = false;
 
   @Input() working: boolean;
   @Input() disabled: boolean;

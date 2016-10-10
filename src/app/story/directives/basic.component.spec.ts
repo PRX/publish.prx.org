@@ -1,10 +1,10 @@
 import { cit, create, provide } from '../../../testing';
-import { EditComponent } from './edit.component';
+import { EditComponent } from './basic.component';
 import { TabService } from '../../shared';
 
-describe('EditComponent', () => {
+describe('BasicComponent', () => {
 
-  create(EditComponent);
+  create(BasicComponent);
 
   provide(TabService);
 

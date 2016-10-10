@@ -5,7 +5,7 @@
   width: 100%;
 }
 .field {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 .field.small {
   margin-bottom: 20px;
@@ -39,7 +39,7 @@ p.error {
 }
 input, textarea {
   width: 100%;
-  padding: 6px;
+  padding: 10px 8px;
   color: #939393;
   background: #fff;
 }

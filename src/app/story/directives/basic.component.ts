@@ -4,23 +4,31 @@ import { StoryModel, TabService } from '../../shared';
 import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
 
 @Component({
-  styleUrls: ['edit.component.css'],
+  styleUrls: ['basic.component.css'],
   template: `
     <form *ngIf="story">
 
-      <publish-fancy-field [model]="story" textarea="true" name="title" label="Story Title" required>
-        <div class="fancy-hint">Write a short, Tweetable title like a newspaper headline. Make viewers
-          want to click on your piece from the title alone.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title" required>
+        <div class="fancy-hint">Write a short, Tweetable title like a newspaper headline.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field [model]="story" textarea="true" name="shortDescription" label="Teaser" required>
+      <publish-fancy-field [model]="story" textinput="true" name="shortDescription" label="Teaser" required>
         <div class="fancy-hint">A first impression; think of this as the single-item lead of a piece.</div>
+      </publish-fancy-field>
+
+      <publish-fancy-field [model]="story" textarea="true" name="description" label="Description">
+        <div class="fancy-hint">A full description of your piece including keywords, names
+          of interviewees, places and topics.</div>
       </publish-fancy-field>
 
       <hr/>
 
-      <publish-fancy-field label="Story Versions" required>
+      <publish-fancy-field label="Audio Files" required>
         <publish-audio-upload [story]="story"></publish-audio-upload>
+      </publish-fancy-field>
+
+      <publish-fancy-field label="Cover Image">
+        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400></publish-image-upload>
       </publish-fancy-field>
 
       <hr/>
@@ -42,7 +50,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
   `
 })
 
-export class EditComponent implements OnDestroy {
+export class BasicComponent implements OnDestroy {
 
   story: StoryModel;
   tabSub: Subscription;

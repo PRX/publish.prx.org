@@ -3,25 +3,21 @@ import { Subscription } from 'rxjs';
 import { StoryModel, TabService } from '../../shared';
 
 @Component({
-  styleUrls: [],
+  styleUrls: ['podcast.component.css'],
   template: `
-    <div *ngIf="story">
-      <h1>Sell your content</h1>
-      <p>Sell</p>
-      <p>{{story.title}}</p>
-      <br/><br/>
-      <p>Sell</p>
-      <br/><br/>
-      <p>Sell</p>
-      <br/><br/>
-      <p>Sell</p>
-      <br/><br/>
-      <p>Sell</p>
-    </div>
+    <form *ngIf="story">
+
+      <publish-fancy-field label="Advanced">
+        <div class="fancy-hint">These are really advanced fields</div>
+        <h3>Some sort of dropdown for series</h3>
+        <h3>And some sort of dropdown for account</h3>
+      </publish-fancy-field>
+
+    </form>
   `
 })
 
-export class SellComponent implements OnDestroy {
+export class PodcastComponent implements OnDestroy {
 
   story: StoryModel;
   tabSub: Subscription;

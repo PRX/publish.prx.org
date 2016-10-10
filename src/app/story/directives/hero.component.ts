@@ -9,14 +9,13 @@ import { StoryModel } from '../../shared';
   styleUrls: ['hero.component.css'],
   template: `
     <publish-hero>
-      <div class="hero-title" *ngIf="bannerTitle">
-        <h1 *ngIf="story.isNew">Create Story</h1>
-        <h1 *ngIf="!story.isNew">Edit Story</h1>
-        <div class="story-series">
-          <publish-image [imageDoc]="bannerLogoDoc"></publish-image>
-          <h2 *ngIf="bannerLink"><a [href]="bannerLink">{{bannerTitle}}</a></h2>
-          <h2 *ngIf="!bannerLink">{{bannerTitle}}</h2>
-        </div>
+      <div class="hero-title">
+        <h1 *ngIf="id">Edit Story</h1>
+        <h1 *ngIf="!id">Create Story</h1>
+        <a *ngIf="series" class="series" [routerLink]="['/series', series.id]">
+          <publish-image [imageDoc]="series"></publish-image>
+          <h3>something here</h3>
+        </a>
       </div>
       <div class="hero-info" *ngIf="story">
         <h2>{{story.title || '(Untitled)'}}</h2>
@@ -27,7 +26,7 @@ import { StoryModel } from '../../shared';
 
         <template [ngIf]="story.isNew">
           <publish-button [model]="story" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
-          <publish-button [model]="story" visible=1 orange=1 (click)="save()">Create</publish-button>
+          <publish-button [model]="story" visible=1 green=1 (click)="save()">Create</publish-button>
         </template>
 
         <template [ngIf]="!story.isNew">
@@ -51,11 +50,14 @@ import { StoryModel } from '../../shared';
 
 export class StoryHeroComponent implements OnInit, OnChanges {
 
+  @Input() id: number;
   @Input() story: StoryModel;
 
-  bannerTitle: string;
-  bannerLink: string;
-  bannerLogoDoc: HalDoc;
+  series: HalDoc;
+
+  // bannerTitle: string;
+  // bannerLink: string;
+  // bannerLogoDoc: HalDoc;
 
   constructor(private router: Router) {}
 
@@ -68,16 +70,35 @@ export class StoryHeroComponent implements OnInit, OnChanges {
   }
 
   updateBanner() {
-    if (this.story && this.story.parent) {
-      this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
-      this.bannerLink = `/series/${this.story.parent.id}`;
-      this.bannerLogoDoc = this.story.parent;
-    } else if (this.story ) {
-      this.bannerTitle = this.story.account['name'] || '(Unnamed Account)';
-      this.bannerLink = null;
-      this.bannerLogoDoc = this.story.account;
+    if (this.story) {
+      if (this.story.isNew && this.story.parent.isa('series')) {
+        this.series = this.story.parent;
+      } else if (!this.story.isNew && this.story.doc.has('prx:series')) {
+        this.story.doc.follow('prx:series').subscribe(e => this.series = e);
+      }
     }
   }
+
+
+
+    // new
+
+    // if (s.has('prx:series')) {
+    //   s.follow('prx:series').subscribe(e => this.setStory(e, s));
+    // } else {
+    //   s.follow('prx:account').subscribe(a => this.setStory(a, s));
+    // }
+    //
+    // if (this.story && this.story.parent) {
+    //   this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
+    //   this.bannerLink = `/series/${this.story.parent.id}`;
+    //   this.bannerLogoDoc = this.story.parent;
+    // } else if (this.story ) {
+    //   this.bannerTitle = this.story.account['name'] || '(Unnamed Account)';
+    //   this.bannerLink = null;
+    //   this.bannerLogoDoc = this.story.account;
+    // }
+  // }
 
   save() {
     let wasNew = this.story.isNew;

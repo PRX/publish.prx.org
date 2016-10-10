@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { CmsService, ModalService } from '../core';
 import { StoryModel } from '../shared';
@@ -9,29 +9,25 @@ import { StoryModel } from '../shared';
   selector: 'publish-story',
   styleUrls: ['story.component.css'],
   template: `
-    <publish-story-hero [story]="story"></publish-story-hero>
+    <publish-story-hero [id]="id" [story]="story"></publish-story-hero>
 
     <publish-tabs [model]="story">
       <nav>
-        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
-          [routerLink]="editLink">STEP 1: {{id ? 'Edit' : 'Create'}} your story</a>
-        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
-          [routerLink]="['decorate']">STEP 2: Decorate your story</a>
-        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"
-          [routerLink]="['sell']">STEP 3: Sell your story</a>
+        <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
+        <a routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Distribution</a>
+        <a routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
       </nav>
       <button *ngIf="id" class="delete" (click)="confirmDelete()">Delete</button>
     </publish-tabs>
   `
 })
 
-export class StoryComponent implements OnInit, OnDestroy {
+export class StoryComponent implements OnInit {
 
   private id: number;
+  private base: string;
   private seriesId: number;
   private story: StoryModel;
-  private editLink: any[];
-  private routeSub: Subscription;
 
   constructor(
     private cms: CmsService,
@@ -41,48 +37,31 @@ export class StoryComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.routeSub = this.route.params.subscribe(params => {
+    this.route.params.forEach(params => {
       this.id = +params['id'];
       this.seriesId = +params['series_id'];
-
-      // must explicitly set the base-link for this edit/create route
-      if (this.id) {
-        this.editLink = ['/story', this.id];
-      } else {
-        this.editLink = ['/story/new'];
-        if (this.seriesId) {
-          this.editLink.push(this.seriesId);
-        }
+      this.base = '/story/' + (this.id || 'new');
+      if (this.seriesId) {
+        this.base += `/${this.seriesId}`;
       }
-
-      // (1) existing story, (2) new series-story, (3) new standalone-story
-      let auth = this.cms.follow('prx:authorization');
-      if (this.id) {
-        auth.follow('prx:story', {id: this.id}).subscribe(doc => {
-          if (doc.has('prx:series')) {
-            doc.follow('prx:series').subscribe(s => this.story = new StoryModel(s, doc));
-          } else if (doc.has('prx:account')) {
-            doc.follow('prx:account').subscribe(a => this.story = new StoryModel(a, doc));
-          } else {
-            console.error('WOH: story has no series or account!');
-            this.story = new StoryModel(null, doc);
-          }
-          this.checkStoryVersion();
-        });
-      } else if (this.seriesId) {
-        auth.follow('prx:series', {id: this.seriesId}).subscribe(seriesDoc => {
-          this.story = new StoryModel(seriesDoc, null);
-        });
-      } else {
-        auth.follow('prx:default-account').subscribe(accountDoc => {
-          this.story = new StoryModel(accountDoc, null);
-        });
-      }
+      this.loadStory();
     });
   }
 
-  ngOnDestroy() {
-    this.routeSub.unsubscribe();
+  loadStory() {
+    let auth = this.cms.follow('prx:authorization');
+    if (this.id) {
+      auth.follow('prx:story', {id: this.id}).subscribe(s => this.setStory(null, s));
+    } else if (this.seriesId) {
+      auth.follow('prx:series', {id: this.seriesId}).subscribe(s => this.setStory(s, null));
+    } else {
+      auth.follow('prx:default-account').subscribe(a => this.setStory(a, null));
+    }
+  }
+
+  setStory(parent: any, story: any) {
+    this.story = new StoryModel(parent, story);
+    this.checkStoryVersion();
   }
 
   checkStoryVersion() {

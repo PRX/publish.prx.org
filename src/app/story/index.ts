@@ -2,6 +2,6 @@ export * from './story.module';
 
 export * from './story.component';
 export * from './story.routing';
-export * from './directives/decorate.component';
-export * from './directives/edit.component';
-export * from './directives/sell.component';
+export * from './directives/basic.component';
+export * from './directives/podcast.component';
+export * from './directives/player.component';

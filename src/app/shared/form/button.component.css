@@ -9,7 +9,7 @@ button[disabled] {
 button.plain {
   background-color: #bbb;
 }
-button.plain:hover {
+button.plain:hover, button.plain:focus {
   background-color: #999;
 }
 button.plain[disabled] {
@@ -19,12 +19,22 @@ button.plain[disabled] {
 button.orange {
   background-color: #f59f51;
 }
-button.orange:hover {
+button.orange:hover, button.orange:focus {
   background-color: #e28b42;
 }
 button.orange[disabled] {
   color: #fce4cf;
   background-color: #f9c596;
+}
+button.green {
+  background-color: #61A85D;
+}
+button.green:hover, button.green:focus {
+  background-color: #52B84C;
+}
+button.green[disabled] {
+  background-color: #87c390;
+  color: #BCDBC0;
 }
 
 /*
