@@ -16,7 +16,7 @@ export class AppErrorService implements ErrorHandler {
       body: `
         <p>${err.message}</p>
         <hr/>
-        <pre style="font-size:12px;line-height:16px;white-space:pre">${err.stack}</pre>
+        <pre>${err.stack}</pre>
       `,
       buttons: ['Okay'],
       height: 400,
