@@ -93,7 +93,7 @@ export class AudioVersionModel extends BaseModel {
 
   invalid(field?: string | string[]): string {
     let invalid = super.invalid(field);
-    if (!field && !invalid && this.files.length === 0) {
+    if (!field && !invalid && this.files.filter(f => !f.isDestroy).length === 0) {
       invalid = 'You must upload at least 1 audio file';
     }
     return invalid;

@@ -21,7 +21,7 @@ import { UploadService } from '../../../core';
         </div>
       </section>
       <footer>
-        <input type="file" id="file" publishFileSelect (file)="addUpload($event)"/>
+        <input type="file" id="file" multiple publishFileSelect (file)="addUpload($event)"/>
         <label class="button" for="file">Upload Files</label>
       </footer>
     </template>
@@ -32,7 +32,7 @@ import { UploadService } from '../../../core';
 export class AudioVersionComponent implements OnInit, OnDestroy {
 
   DESCRIPTIONS = {
-    'Main Audio': 'The primary version of your audio that blah blah blah',
+    'Main Audio': 'The primary mp3 version of your story',
     'Piece Audio': 'The standard version of your story you would most like people to hear and buy',
     'Promos': 'The promotional version of your audio'
   };
