@@ -5,7 +5,7 @@ import { ModalComponent } from './modal.component';
 const simulateKey = (key: string) => {
   let e = document.createEvent('Event');
   e['key'] = key;
-  e.initEvent('keyup', true, true);
+  e.initEvent('keydown', true, true);
   document.dispatchEvent(e);
 };
 
