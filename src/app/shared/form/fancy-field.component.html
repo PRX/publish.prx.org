@@ -29,7 +29,5 @@
     <select *ngIf="select" [id]="name" disabled=true></select>
   </template>
 
-  <p *ngIf="invalidFieldName && !small" class="error">
-    {{invalidFieldLabel}} {{model?.invalid(invalidFieldName)}}
-  </p>
+  <p *ngIf="formattedInvalid && !small" class="error">{{formattedInvalid}}</p>
 </div>
