@@ -13,10 +13,10 @@ import { StoryModel } from '../../shared';
     </section>
     <section class="story-detail">
       <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
-      
+
       <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
       <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
-      
+
       <section class="story-info">
         <span class="duration">{{storyDuration | duration}}</span>
         <span *ngIf="storyAudioTotal" class="audio-total"><i class="icon-up-dir"></i>{{storyAudioTotal}}</span>
@@ -24,7 +24,7 @@ import { StoryModel } from '../../shared';
       </section>
     </section>
     <section class="story-tags">
-      <span *ngFor="let tag of storyTags">{{tag}}</span>          
+      <span *ngFor="let tag of storyTags">{{tag}}</span>
     </section>
     <section class="story-description three-lines" [ngClass]="{'two-lines': storyTags.length > 0 }">
       {{storyDescription}}
@@ -56,7 +56,7 @@ export class StoryCardComponent implements OnInit {
     this.storyTitle = this.story.title;
     this.storyUpdated = this.story.lastStored || this.story.updatedAt;
     this.storyDescription = this.story.shortDescription;
-    this.storyTags = this.story.extraTags && this.story.extraTags.length > 0 ? this.story.extraTags.split(', ') : [];
+    this.storyTags = this.story.splitTags();
 
     this.editStoryLink = ['/story', this.story.id];
 

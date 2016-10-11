@@ -1,7 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { StoryModel, TabService } from '../../shared';
-import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
 
 @Component({
   styleUrls: ['basic.component.css'],
@@ -23,7 +22,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
 
       <hr/>
 
-      <publish-fancy-field label="Audio Files" required>
+      <publish-fancy-field [model]="story" label="Audio Files" required invalid="versions">
         <publish-audio-upload [story]="story"></publish-audio-upload>
       </publish-fancy-field>
 
@@ -33,17 +32,8 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
 
       <hr/>
 
-      <publish-fancy-field [model]="story" label="Tag your Story" invalid="tags" invalidlabel="" required>
-        <div class="fancy-hint">Adding tags that are relevant to your piece helps people find your work
-          on PRX and can help you be licensed and heard.</div>
-        <div class="span-fields">
-          <publish-fancy-field [model]="story" [select]="GENRES" name="genre" label="Genre"
-            small="true" required></publish-fancy-field>
-          <publish-fancy-field [model]="story" [select]="SUBGENRES" name="subGenre" label="SubGenre"
-            small="true" required></publish-fancy-field>
-        </div>
-        <publish-fancy-field [model]="story" textinput="true" name="extraTags"
-          label="Extra Tags" small="true"></publish-fancy-field>
+      <publish-fancy-field [model]="story" textinput="true" name="tags">
+        <div class="fancy-hint">A comma-separated list of tags relevant to your story.</div>
       </publish-fancy-field>
 
     </form>
@@ -57,18 +47,6 @@ export class BasicComponent implements OnDestroy {
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.story = s);
-  }
-
-  get GENRES(): string[] {
-    return CATEGORIES;
-  }
-
-  get SUBGENRES(): string[] {
-    if (this.story && this.story.genre) {
-      return SUBCATEGORIES[this.story.genre];
-    } else {
-      return [];
-    }
   }
 
   ngOnDestroy(): any {
