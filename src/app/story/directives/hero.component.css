@@ -12,7 +12,13 @@
 .series h3 {
   color: #fff;
   font-size: 16px;
+  line-height: 60px;
   font-weight: 400;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  float: right;
 }
 .series publish-image {
   width: 60px;

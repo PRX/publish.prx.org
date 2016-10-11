@@ -14,7 +14,7 @@ import { StoryModel } from '../../shared';
         <h1 *ngIf="!id">Create Story</h1>
         <a *ngIf="series" class="series" [routerLink]="['/series', series.id]">
           <publish-image [imageDoc]="series"></publish-image>
-          <h3>something here</h3>
+          <h3>{{series.title || '(Untitled Series)'}}</h3>
         </a>
       </div>
       <div class="hero-info" *ngIf="story">
@@ -55,10 +55,6 @@ export class StoryHeroComponent implements OnInit, OnChanges {
 
   series: HalDoc;
 
-  // bannerTitle: string;
-  // bannerLink: string;
-  // bannerLogoDoc: HalDoc;
-
   constructor(private router: Router) {}
 
   ngOnInit() {
@@ -78,27 +74,6 @@ export class StoryHeroComponent implements OnInit, OnChanges {
       }
     }
   }
-
-
-
-    // new
-
-    // if (s.has('prx:series')) {
-    //   s.follow('prx:series').subscribe(e => this.setStory(e, s));
-    // } else {
-    //   s.follow('prx:account').subscribe(a => this.setStory(a, s));
-    // }
-    //
-    // if (this.story && this.story.parent) {
-    //   this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
-    //   this.bannerLink = `/series/${this.story.parent.id}`;
-    //   this.bannerLogoDoc = this.story.parent;
-    // } else if (this.story ) {
-    //   this.bannerTitle = this.story.account['name'] || '(Unnamed Account)';
-    //   this.bannerLink = null;
-    //   this.bannerLogoDoc = this.story.account;
-    // }
-  // }
 
   save() {
     let wasNew = this.story.isNew;
