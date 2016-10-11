@@ -35,7 +35,7 @@ button.close {
   top: 23px;
   right: 6px;
   background: none;
-  color: 368aa2;
+  color: #368aa2;
   font-size: 34px;
   margin: 0;
   padding: 0;
@@ -52,11 +52,6 @@ h1 {
 section {
   flex-grow: 1;
 }
-p {
-  font-size: 14px;
-  line-height: 22px;
-  margin-top: 10px;
-}
 footer {
   text-align: right;
 }
@@ -70,4 +65,18 @@ footer button:last-child {
 footer button:last-child:hover {
   color: #fff;
   background-color: #f59f51;
+}
+
+/*
+ * innerHTML must be styled with deep selectors
+ */
+section >>> p {
+  font-size: 14px;
+  line-height: 22px;
+  margin-top: 10px;
+}
+section >>> pre {
+  font-size: 12px;
+  line-height: 16px;
+  white-space: pre;
 }

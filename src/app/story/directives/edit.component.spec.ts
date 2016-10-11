@@ -1,12 +1,12 @@
 import { cit, create, provide } from '../../../testing';
 import { EditComponent } from './edit.component';
-import { StoryTabService } from '../services/story-tab.service';
+import { TabService } from '../../shared';
 
 describe('EditComponent', () => {
 
   create(EditComponent);
 
-  provide(StoryTabService);
+  provide(TabService);
 
   cit('does not render until the story is loaded', (fix, el, edit) => {
     edit.story = null;

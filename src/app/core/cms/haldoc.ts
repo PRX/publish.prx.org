@@ -13,6 +13,18 @@ export class HalDoc {
     this.setData(data);
   }
 
+  get profileType() {
+    let profile = this.expand('profile') || '';
+    let match = profile.match(/\/model\/(collection\/)?([^\/]+)/);
+    return match ? match.pop() : null;
+  }
+
+  get profileSubtype() {
+    let profile = this.expand('profile') || '';
+    let match = profile.match(/\/model\/(collection\/)?[^/]+\/(.+)$/);
+    return match ? match.pop() : null;
+  }
+
   update(data: any): HalObservable<HalDoc> {
     let link = this['_links'] ? this['_links']['self'] : null;
     if (!link) {
@@ -82,11 +94,16 @@ export class HalDoc {
     }
   }
 
-  has(rel: string): boolean {
+  has(rel: string, strict = true): boolean {
     if (this['_embedded'] && this['_embedded'][rel]) {
       return true;
     } else if (this['_links'] && this['_links'][rel]) {
-      return true;
+      // TODO: temporary hack for has-one images
+      if (strict && rel.match('image')) {
+        return this['_links'][rel]['title'] !== null ? true : false;
+      } else {
+        return true;
+      }
     } else {
       return false;
     }

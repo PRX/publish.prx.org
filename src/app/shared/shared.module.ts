@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { DragulaModule } from 'ng2-dragula/ng2-dragula';
 
 import { TimeAgoPipe } from './date';
@@ -10,6 +11,7 @@ import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { HeroComponent } from './hero';
 import { ImageLoaderComponent } from './image';
 import { SpinnerComponent } from './spinner';
+import { TabComponent } from './tab';
 import { AudioFileComponent, AudioUploadComponent, AudioVersionComponent,
   FileSelectDirective, ImageFileComponent, ImageUploadComponent } from './upload';
 
@@ -28,6 +30,7 @@ import { AudioFileComponent, AudioUploadComponent, AudioVersionComponent,
     ImageLoaderComponent,
     ImageUploadComponent,
     SpinnerComponent,
+    TabComponent,
     TimeAgoPipe
   ],
   exports: [
@@ -43,12 +46,14 @@ import { AudioFileComponent, AudioUploadComponent, AudioVersionComponent,
     ImageLoaderComponent,
     ImageUploadComponent,
     SpinnerComponent,
+    TabComponent,
     TimeAgoPipe
   ],
   imports: [
     CommonModule,
     DragulaModule,
-    FormsModule
+    FormsModule,
+    RouterModule
   ],
   providers: [
     AuthGuard,
