@@ -1,5 +1,6 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ImageModel } from '../../model';
+import { UploadService } from '../../../core';
 
 @Component({
   selector: 'publish-image-file',
@@ -60,11 +61,22 @@ import { ImageModel } from '../../model';
   `
 })
 
-export class ImageFileComponent implements OnDestroy {
+export class ImageFileComponent implements OnInit, OnDestroy {
 
   canceled: boolean;
 
   @Input() image: ImageModel;
+
+  constructor(private uploadService: UploadService) {}
+
+  ngOnInit() {
+    if (this.image.uuid) {
+      let upload = this.uploadService.find(this.image.uuid);
+      if (upload) {
+        this.image.watchUpload(upload, false);
+      }
+    }
+  }
 
   ngOnDestroy() {
     if (this.image) {
