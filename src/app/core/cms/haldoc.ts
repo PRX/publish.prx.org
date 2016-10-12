@@ -108,16 +108,11 @@ export class HalDoc {
     }
   }
 
-  has(rel: string, strict = true): boolean {
+  has(rel: string): boolean {
     if (this['_embedded'] && this['_embedded'][rel]) {
       return true;
     } else if (this['_links'] && this['_links'][rel]) {
-      // TODO: temporary hack for has-one images
-      if (strict && rel.match('image')) {
-        return this['_links'][rel]['title'] !== null ? true : false;
-      } else {
-        return true;
-      }
+      return true;
     } else {
       return false;
     }
