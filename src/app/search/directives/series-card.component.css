@@ -12,19 +12,23 @@ publish-image {
 .stack {
   position: absolute;
   top: 192px;
-  background-color: rgba(37,37,37,.7);
 }
 .stk-one {
+  background-color: rgba(37,37,37,.55);
   bottom: -5px;
   left: 5px;
   width: 182px;
 }
 .stk-two {
+  background-color: rgba(37,37,37,.4);
+  top: 197px;
   bottom: -10px;
   left: 10px;
   width: 172px;
 }
 .stk-three {
+  background-color: rgba(37,37,37,.25);
+  top: 202px;
   bottom: -15px;
   left: 15px;
   width: 162px;
