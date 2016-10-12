@@ -1,10 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
-import { StoryTabService } from '../services/story-tab.service';
 
 @Component({
   selector: 'publish-story-hero',
@@ -51,31 +49,34 @@ import { StoryTabService } from '../services/story-tab.service';
     `
 })
 
-export class StoryHeroComponent implements OnDestroy {
+export class StoryHeroComponent implements OnInit, OnChanges {
 
-  story: StoryModel;
-  tabSub: Subscription;
+  @Input() story: StoryModel;
+
   bannerTitle: string;
   bannerLink: string;
   bannerLogoDoc: HalDoc;
 
-  constructor(private router: Router, private tab: StoryTabService) {
-    this.tabSub = tab.storyModel.subscribe((story) => {
-      this.story = story;
-      if (this.story.parent) {
-        this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
-        this.bannerLink = `/series/${this.story.parent.id}`;
-        this.bannerLogoDoc = this.story.parent;
-      } else {
-        this.bannerTitle = this.story.account['name'] || '(Unnamed Account)';
-        this.bannerLink = null;
-        this.bannerLogoDoc = this.story.account;
-      }
-    });
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.updateBanner();
   }
 
-  ngOnDestroy(): any {
-    this.tabSub.unsubscribe();
+  ngOnChanges() {
+    this.updateBanner();
+  }
+
+  updateBanner() {
+    if (this.story && this.story.parent) {
+      this.bannerTitle = this.story.parent['title'] || '(Untitled Series)';
+      this.bannerLink = `/series/${this.story.parent.id}`;
+      this.bannerLogoDoc = this.story.parent;
+    } else if (this.story ) {
+      this.bannerTitle = this.story.account['name'] || '(Unnamed Account)';
+      this.bannerLink = null;
+      this.bannerLogoDoc = this.story.account;
+    }
   }
 
   save() {

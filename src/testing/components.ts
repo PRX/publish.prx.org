@@ -70,7 +70,11 @@ export function direct(directiveType) {
 export function provide(provider, useValue?) {
   beforeEach(function() {
     if (useValue) {
-      this._publishProviders.push({provide: provider, useValue: useValue});
+      if (useValue instanceof Type) {
+        this._publishProviders.push({provide: provider, useClass: useValue});
+      } else {
+        this._publishProviders.push({provide: provider, useValue: useValue});
+      }
     } else {
       this._publishProviders.push(provider);
     }

@@ -20,6 +20,8 @@ export class HalRemote {
       return null;
     } else if (link.templated) {
       return TemplateParser.parse(this.host + link.href).expand(params || {});
+    } else if (link.href.match(/^http(s)?:\/\//)) {
+      return link.href;
     } else {
       return this.host + link.href;
     }

@@ -5,7 +5,7 @@ import { ModalComponent } from './modal.component';
 const simulateKey = (key: string) => {
   let e = document.createEvent('Event');
   e['key'] = key;
-  e.initEvent('keyup', true, true);
+  e.initEvent('keydown', true, true);
   document.dispatchEvent(e);
 };
 
@@ -25,7 +25,7 @@ describe('ModalComponent', () => {
     comp.state = {title: 'hello', body: 'world'};
     fix.detectChanges();
     expect(el).toQueryText('h1', 'hello');
-    expect(el).toQueryText('p', 'world');
+    expect(el).toQueryText('section', 'world');
   });
 
   cit('shows a close button', (fix, el, comp) => {

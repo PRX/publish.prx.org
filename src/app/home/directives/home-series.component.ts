@@ -17,7 +17,7 @@ import { StoryModel } from '../../shared';
         <publish-image [imageDoc]="logoDoc"></publish-image>
       </a>
       <p class="count">{{count}} Stories</p>
-      <h1><a href="/series/{{id}}">{{title}}</a></h1>
+      <h1><a [routerLink]="['series', id]">{{title}}</a></h1>
       <p class="updated">Last updated {{updated | timeago}}</p>
     </header>
     <div class="story-list">

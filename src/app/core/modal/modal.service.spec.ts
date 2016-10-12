@@ -29,7 +29,7 @@ describe('ModalService', () => {
     modal.state.subscribe((state) => {
       theState = state;
       expect(state.title).toEqual('hello');
-      expect(state.body).toEqual('<sanitized><a href="blah">world</a></sanitized>');
+      expect(state.body).toEqual('<sanitized><p><a href="blah">world</a></p></sanitized>');
       theState.buttonCallback('Okay');
     });
 

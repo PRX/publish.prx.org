@@ -1,18 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ModalService, ModalState } from './modal.service';
 
 @Component({
   selector: 'publish-modal',
   styleUrls: ['modal.component.css'],
   template: `
-    <div *ngIf="shown" class="overlay" (document:keyup)="onKey($event)"></div>
-    <div *ngIf="shown" class="modal">
+    <div *ngIf="shown" class="overlay" (document:keydown)="onKey($event)"></div>
+    <div *ngIf="shown" class="modal"
+      [style.height.px]="state.height" [style.marginTop.px]="-state.height / 2"
+      [style.width.px]="state.width" [style.marginLeft.px]="-state.width / 2">
       <button *ngIf="!state.buttons" class="close icon-cancel" (click)="close()"></button>
       <header *ngIf="state.title">
         <h1>{{state.title}}</h1>
       </header>
-      <section *ngIf="state.body">
-        <p [innerHTML]="state.body"></p>
+      <section *ngIf="state.body" [innerHTML]="state.body">
       </section>
       <footer *ngIf="state.buttons">
         <button *ngFor="let label of state.buttons" [class]="buttonClass(label)"
@@ -27,7 +28,7 @@ export class ModalComponent {
   private shown: boolean;
   private state: ModalState;
 
-  constructor(modalService: ModalService) {
+  constructor(modalService: ModalService, ref: ChangeDetectorRef) {
     modalService.state.subscribe((state) => {
       this.shown = !state.hide;
       if (state.hide) {
@@ -36,6 +37,7 @@ export class ModalComponent {
         this.setScroll(false);
       }
       this.state = state;
+      ref.detectChanges();
     });
   }
 
