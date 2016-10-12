@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 import { SearchSeries } from '../search-series.model';
 import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
 
@@ -8,8 +9,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
   template: `
   <form #searchSeriesForm="ngForm">
     <div class="form-group">
-      <!-- TODO: delay search until finish typing, issue #54 -->
-      <input name="text" [(ngModel)]="model.text" (ngModelChange)="modelChange.emit(model)"  
+      <input name="text" [(ngModel)]="model.text" (ngModelChange)="searchTextChange(model.text)"  
         placeholder="search by title or description"/>
     </div>
     
@@ -45,6 +45,21 @@ export class SearchSeriesFormComponent {
   @Input() orderByOptions: any[];
   @Input() model: SearchSeries;
   @Output() modelChange = new EventEmitter<SearchSeries>();
+
+  searchTextStream = new Subject<string>();
+
+  searchTextChange(text: string) {
+    this.searchTextStream.next(text);
+  }
+
+  ngOnInit() {
+    this.searchTextStream
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .subscribe((text: string) => {
+        this.modelChange.emit(this.model);
+      });
+  }
 
   get GENRES(): string[] {
     return CATEGORIES;
