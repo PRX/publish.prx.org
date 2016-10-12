@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { AudioFileModel } from '../../model';
+import { UploadService } from '../../../core';
 
 @Component({
   selector: 'publish-audio-file',
@@ -21,7 +22,8 @@ import { AudioFileModel } from '../../model';
 
         <div class="info">
           <span>{{audio.filename}}</span>
-          <span class="size">({{audio.size | filesize}})</span>
+          <span *ngIf="audio.duration" class="size">({{audio.duration | duration}})</span>
+          <span *ngIf="!audio.duration && audio.size" class="size">({{audio.size | filesize}})</span>
         </div>
 
         <div *ngIf="canceled" class="progress canceled">
@@ -29,15 +31,29 @@ import { AudioFileModel } from '../../model';
           <p *ngIf="!audio.isUploading">File Deleted</p>
         </div>
 
-        <div *ngIf="!canceled && audio.isUploading && audio.isError" class="progress error">
+        <div *ngIf="!canceled && audio.isUploadError" class="progress errored">
           <p>Upload Error</p>
-          <div *ngIf="audio.isError && audio.upload" class="retry">
-            <a class="icon-cw" href="#" (click)="onRetry($event)">Try Again</a>
+          <div *ngIf="audio.upload" class="retry">
+            <a class="icon-cw" href="" (click)="onRetry($event)">Try Again</a>
           </div>
         </div>
 
-        <div *ngIf="!canceled && audio.isUploading && !audio.isError" class="progress uploading">
+        <div *ngIf="!canceled && audio.isUploading && !audio.isUploadError" class="progress uploading">
           <p>Uploading</p>
+          <div class="meter">
+            <span [style.width.%]="audio.progress * 100"></span>
+          </div>
+        </div>
+
+        <div *ngIf="!canceled && audio.isProcessError" class="progress errored">
+          <p>{{audio.isProcessError}}</p>
+          <div class="retry">
+            <a class="icon-cw" href="" (click)="onRetry($event)">Try Again</a>
+          </div>
+        </div>
+
+        <div *ngIf="!canceled && audio.isProcessing" class="progress processing">
+          <p>Processing</p>
           <div class="meter">
             <span [style.width.%]="audio.progress * 100"></span>
           </div>
@@ -52,18 +68,40 @@ import { AudioFileModel } from '../../model';
   `
 })
 
-export class AudioFileComponent {
+export class AudioFileComponent implements OnInit, OnDestroy {
 
   canceled: boolean;
 
   @Input() audio: AudioFileModel;
+  @Output() cancel = new EventEmitter<string>();
+
+  constructor(private uploadService: UploadService) {}
+
+  ngOnInit() {
+    if (this.audio.uuid) {
+      let upload = this.uploadService.find(this.audio.uuid);
+      if (upload) {
+        this.audio.watchUpload(upload, false);
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.audio) {
+      this.audio.unsubscribe();
+    }
+  }
 
   onCancel(event: Event) {
     event.preventDefault();
 
     // wait for fade-out before parent removes this component
     this.canceled = true;
-    setTimeout(() => { this.audio.destroy(); this.canceled = false; }, 1000);
+    setTimeout(() => {
+      this.audio.destroy();
+      this.cancel.emit(this.audio.uuid);
+      this.canceled = false;
+    }, 1000);
   }
 
   onRetry(event: Event) {
@@ -71,7 +109,7 @@ export class AudioFileComponent {
     if (this.audio.isUploading) {
       this.audio.retryUpload();
     } else {
-      alert('TODO: retry non-uploader failure');
+      this.audio.retryProcessing();
     }
   }
 }

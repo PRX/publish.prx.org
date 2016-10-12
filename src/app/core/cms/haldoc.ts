@@ -25,6 +25,20 @@ export class HalDoc {
     return match ? match.pop() : null;
   }
 
+  reload(): HalObservable<HalDoc> {
+    let link = this['_links'] ? this['_links']['self'] : null;
+    if (!link) {
+      return <HalObservable<HalDoc>> this.error(`Expected reload link at _links.self - got null`);
+    } else if (link instanceof Array) {
+      return <HalObservable<HalDoc>> this.error(`Expected reload link at _links.self - got array`);
+    } else {
+      return <HalObservable<HalDoc>> this.remote.get(link).map((obj) => {
+        this.setData(obj);
+        return <HalDoc> this;
+      });
+    }
+  }
+
   update(data: any): HalObservable<HalDoc> {
     let link = this['_links'] ? this['_links']['self'] : null;
     if (!link) {

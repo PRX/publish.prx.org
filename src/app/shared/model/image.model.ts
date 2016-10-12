@@ -19,6 +19,20 @@ export class ImageModel extends UploadableModel {
     this.initUpload(parent, file);
   }
 
+  stateComplete(status: string): boolean {
+    return status === 'complete';
+  }
+
+  stateError(status: string): string {
+    if (this.status === 'not found') {
+      return 'Unable to find file - please remove and try again';
+    } else if (this.status === 'invalid') {
+      return 'Not a valid image file - please remove and try again';
+    } else if (this.status === 'failed') {
+      return 'Unable to process file - please remove and try again';
+    }
+  }
+
   key() {
     if (this.doc) {
       return `prx.image.${this.doc.profileSubtype}.${this.doc.id}`;

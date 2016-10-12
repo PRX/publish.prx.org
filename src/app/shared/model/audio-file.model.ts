@@ -8,13 +8,26 @@ export class AudioFileModel extends UploadableModel {
   public label: string;
   public duration: number;
   public position: number;
-  public status: string;
 
   SETABLE = ['label', 'duration', 'position', 'isDestroy'];
 
   constructor(audioVersion?: HalDoc, file?: HalDoc | Upload | string) {
     super();
     this.initUpload(audioVersion, file);
+  }
+
+  stateComplete(status: string): boolean {
+    return status === 'complete';
+  }
+
+  stateError(status: string): string {
+    if (this.status === 'not found') {
+      return 'Unable to find file - please remove and try again';
+    } else if (this.status === 'invalid') {
+      return 'Not a valid audio file - please remove and try again';
+    } else if (this.status === 'failed') {
+      return 'Unable to process file - please remove and try again';
+    }
   }
 
   key() {
@@ -37,7 +50,6 @@ export class AudioFileModel extends UploadableModel {
     this.label = this.doc['label'];
     this.duration = this.doc['duration'];
     this.position = this.doc['position'];
-    this.status = this.doc['status'];
   }
 
   encode(): {} {
@@ -49,7 +61,11 @@ export class AudioFileModel extends UploadableModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    return this.parent.create('prx:audio', {}, data);
+    return this.parent.create('prx:audio', {}, data).map(doc => {
+      this.setState();
+      this.watchProcess();
+      return doc;
+    });
   }
 
 }

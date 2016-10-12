@@ -10,8 +10,8 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
 
     <div *ngIf="noImages" class="new-image">
       <p class="size">{{minWidth}}x{{minHeight}} px</p>
-      <input type="file" id="file" publishFileSelect (file)="addUpload($event)"/>
-      <label class="button" for="file">Add Image</label>
+      <input type="file" id="image-file" publishFileSelect (file)="addUpload($event)"/>
+      <label class="button" for="image-file">Add Image</label>
     </div>
 
     <div *ngIf="model && model.images">
