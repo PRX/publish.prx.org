@@ -17,37 +17,37 @@
 @-webkit-keyframes fade-out { from { opacity :1; } to { opacity :0; } }
 
 .thumbnail {
-  height: 200px;
   width: 266px;
+  min-height: 200px;
   margin-right: 20px;
   position: relative;
-  background: #fff;
 }
 .thumbnail.changed {
   outline: 5px auto #f09b4c;
 }
 .thumbnail .uploading {
   width: 100%;
-  height: 100%;
+  height: 200px;
+  background: #fff;
   border: 2px #ccc dashed;
   padding-top: 110px;
   text-align: center;
 }
-.thumbnail .uploading p {
+.thumbnail p {
   font-size: 14px;
   line-height: 16px;
   font-weight: 100;
   padding-bottom: 10px;
   color: #aaa;
 }
-.thumbnail .uploading .meter {
+.thumbnail .meter {
   flex-grow: 1;
   background-color: #DDDDDD;
   height: 10px;
   position: relative;
   margin: 0 20px;
 }
-.thumbnail .uploading .meter > span {
+.thumbnail .meter > span {
   display: block;
   height: 100%;
   width: 0%;
@@ -58,8 +58,9 @@
 }
 .thumbnail publish-image {
   display: block;
-  height: 100%;
+  height: 200px;
   width: 100%;
+  background-color: #fff;
   border: 2px #ccc solid;
 }
 .thumbnail .cancel {
@@ -75,8 +76,21 @@
 .thumbnail .cancel i:hover {
   color: #2b7187;
 }
-
-
+.thumbnail .processing {
+  text-align: center;
+  padding-top: 8px;
+}
+.thumbnail .processing p {
+  color: #25B370;
+  font-size: 14px;
+  font-weight: bold;
+}
+.thumbnail .processing .meter > span {
+  background-color: #25B370;
+}
+.thumbnail .errored p {
+  color: #E32E32;
+}
 .info {
   flex: 1;
   padding: 10px 0;
@@ -86,4 +100,8 @@
   font-weight: 600;
   color: #999;
   margin-bottom: 12px;
+}
+.info p {
+  font-size: 14px;
+  font-weight: bold;
 }

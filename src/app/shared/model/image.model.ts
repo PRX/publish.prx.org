@@ -66,9 +66,17 @@ export class ImageModel extends UploadableModel {
 
   saveNew(data: {}): Observable<HalDoc> {
     if (this.parent.has('prx:images')) {
-      return this.parent.create('prx:images', {}, data);
+      return this.parent.create('prx:images', {}, data).map(doc => {
+        this.setState();
+        this.watchProcess();
+        return doc;
+      });
     } else if (this.parent.has('prx:image', false)) {
-      return this.parent.create('prx:image', {}, data);
+      return this.parent.create('prx:image', {}, data).map(doc => {
+        this.setState();
+        this.watchProcess();
+        return doc;
+      });
     } else {
       return Observable.throw(new Error('Cannot find image link on this resource!'));
     }

@@ -8,39 +8,22 @@ import { ImageModel } from '../../model';
     <div *ngIf="!image.isDestroy" class="image-file" [class.canceled]="canceled">
       <div class="thumbnail" [class.changed]="image.isNew">
 
-        <template [ngIf]="canceled">
-          <div *ngIf="image.isUploading" class="uploading errored">
-            <p *ngIf="image.isUploading">Upload Canceled</p>
-            <p *ngIf="!image.isUploading">File Deleted</p>
-          </div>
-        </template>
+        <div *ngIf="canceled && image.isUploading" class="uploading errored">
+          <p *ngIf="image.isUploading">Upload Canceled</p>
+          <p *ngIf="!image.isUploading">File Deleted</p>
+        </div>
 
-        <template [ngIf]="!canceled">
-
-          <div *ngIf="image.isUploadError" class="uploading errored">
-            <p>Upload Error</p>
-            <div *ngIf="image.upload" class="retry">
-              <a class="icon-cw" href="" (click)="onRetry($event)">Try Again</a>
-            </div>
+        <div *ngIf="!canceled && image.isUploadError" class="uploading errored">
+          <p>Upload Error</p>
+          <div *ngIf="image.upload" class="retry">
+            <a class="icon-cw" href="" (click)="onRetry($event)">Try Again</a>
           </div>
+        </div>
 
-          <div *ngIf="image.isUploading && !image.isUploadError" class="uploading">
-            <p>Uploading</p>
-            <div class="meter"><span [style.width.%]="image.progress * 100"></span></div>
-          </div>
-
-          <div *ngIf="image.isProcessing" class="uploading">
-            <p>Processing</p>
-            <div class="meter"><span [style.width.%]="image.progress * 100"></span></div>
-          </div>
-
-          <div *ngIf="image.isProcessError" class="uploading">
-            <p>{{image.isProcessError}}</p>
-            <div class="retry">
-              <a class="icon-cw" href="" (click)="onRetry($event)">Try Again</a>
-            </div>
-          </div>
-        </template>
+        <div *ngIf="!canceled && image.isUploading && !image.isUploadError" class="uploading">
+          <p>Uploading</p>
+          <div class="meter"><span [style.width.%]="image.progress * 100"></span></div>
+        </div>
 
         <publish-image *ngIf="!image.isUploading" [src]="image.enclosureHref">
         </publish-image>
@@ -48,6 +31,19 @@ import { ImageModel } from '../../model';
         <div *ngIf="!canceled" class="cancel">
           <i class="icon-cancel" (click)="onCancel($event)"></i>
         </div>
+
+        <div *ngIf="!canceled && image.isProcessing" class="processing">
+          <p>Processing</p>
+          <div class="meter"><span [style.width.%]="image.progress * 100"></span></div>
+        </div>
+
+        <div *ngIf="!canceled && image.isProcessError" class="processing errored">
+          <p>{{image.isProcessError}}</p>
+          <div class="retry">
+            <a class="icon-cw" href="" (click)="onRetry($event)">Try Again</a>
+          </div>
+        </div>
+
       </div>
 
       <div *ngIf="canceled && !image.isUploading" class="info">
