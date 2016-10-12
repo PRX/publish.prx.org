@@ -11,6 +11,7 @@ export class SearchSeries {
   ];
 
   constructor(
+    public perPage?: number,
     public text?: string,
     public genre?: string,
     public subGenre?: string,
@@ -19,10 +20,11 @@ export class SearchSeries {
   ) {  }
 
   fromRouteParams(params) {
+    this.perPage = params['perPage'] || 10;
     this.text = params['text'];
     this.genre = params['genre'];
     this.subGenre = params['subGenre'];
     this.orderBy = params['orderBy'] || 'updated_at';
-    this.orderDesc = params['orderDesc'] || params['orderDesc'] === undefined;
+    this.orderDesc = params['orderDesc'] === 'true' || params['orderDesc'] === undefined;
   }
 }

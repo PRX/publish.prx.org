@@ -63,12 +63,14 @@ export class SearchComponent implements OnInit {
   subscribeRouteParams() {
     this.route.params.forEach((params) => {
       this.selectedTab = params['tab'] || SearchComponent.TAB_STORIES;
+      this.currentPage = params['page'] ? +params['page'] : 1;
       if (this.selectedTab === SearchComponent.TAB_STORIES) {
         this.searchStoryParams.fromRouteParams(params);
+        this.searchStories();
       } else if (this.selectedTab === SearchComponent.TAB_SERIES) {
         this.searchSeriesParams.fromRouteParams(params);
+        this.searchSeries();
       }
-      this.initSearch();
     });
   }
 
@@ -82,25 +84,15 @@ export class SearchComponent implements OnInit {
     this.router.navigate(['search', routeParams]);
   }
 
-  initSearch() {
-    this.currentPage = 1;
+  navigateToPagePer(page: number, perPage: number = undefined) {
     if (this.selectedTab === SearchComponent.TAB_STORIES) {
-      this.searchStories(this.currentPage);
+      this.searchWithParams(Object.assign({}, this.searchStoryParams, {tab: this.selectedTab, page, perPage}));
     } else if (this.selectedTab === SearchComponent.TAB_SERIES) {
-      this.searchSeries(this.currentPage);
+      this.searchWithParams(Object.assign({}, this.searchSeriesParams, {tab: this.selectedTab, page, perPage}));
     }
   }
 
-  navigateToPagePer(page: number, per: number = undefined) {
-    if (this.isOnSeriesTab()) {
-      this.searchSeries(page, per);
-    } else if (this.isOnStoriesTab) {
-      this.searchStories(page, per);
-    }
-  }
-
-  searchStories(page: number, per = 12) {
-    this.currentPage = page;
+  searchStories() {
     this.isLoaded = false;
     this.noResults = false;
 
@@ -125,7 +117,7 @@ export class SearchComponent implements OnInit {
         sorts += this.searchStoryParams.orderDesc ? 'desc' : 'asc';
       }
     }
-    let params = {page: this.currentPage, per, filters: filters.join(','), sorts};
+    let params = {page: this.currentPage, per: this.searchStoryParams.perPage, filters: filters.join(','), sorts};
 
     // TODO: wrong, doesn't account for filter. looks obvs wrong with No Series filter, issue #53
     let storiesCount = parent.count('prx:stories') || 0;
@@ -151,19 +143,17 @@ export class SearchComponent implements OnInit {
           this.totalCount = stories[0].total();
           this.storiesResults = storyIds.map(storyId => storiesById[storyId]);
         }
-        this.pagingInfo(per);
+        this.pagingInfo(this.searchStoryParams.perPage);
         this.isLoaded = true;
       });
     } else {
       this.noResults = true;
       this.isLoaded = true;
       this.totalCount = 0;
-      this.pagingInfo(per);
     }
   }
 
-  searchSeries(page: number, per = 10) {
-    this.currentPage = page;
+  searchSeries() {
     this.isLoaded = false;
     this.noResults = false;
 
@@ -176,7 +166,7 @@ export class SearchComponent implements OnInit {
       sorts = this.searchSeriesParams.orderBy + ':';
       sorts += this.searchSeriesParams.orderDesc ? 'desc' : 'asc';
     }
-    let params = {page: this.currentPage, per, filters: filters.join(','), sorts};
+    let params = {page: this.currentPage, per: this.searchSeriesParams.perPage, filters: filters.join(','), sorts};
     let seriesCount = this.auth.count('prx:series') || 0;
     if (seriesCount > 0) {
       this.loaders = Array(seriesCount);
@@ -193,7 +183,7 @@ export class SearchComponent implements OnInit {
         } else {
           this.totalCount = seriesDocs[0].total();
         }
-        this.pagingInfo(per);
+        this.pagingInfo(this.searchSeriesParams.perPage);
         this.isLoaded = true;
       });
     } else {

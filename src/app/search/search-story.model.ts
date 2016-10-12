@@ -15,6 +15,7 @@ export class SearchStory {
   ];
 
   constructor(
+    public perPage?: number,
     public text?: string,
     public seriesId?: number,
     public orderBy?: string,
@@ -22,9 +23,10 @@ export class SearchStory {
   ) {  }
 
   fromRouteParams(params) {
+    this.perPage = params['perPage'] || 12;
     this.seriesId = params['seriesId'] ? +params['seriesId'] : undefined;
     this.text = params['text'];
     this.orderBy = params['orderBy'] || 'updated_at';
-    this.orderDesc = params['orderDesc'] || params['orderDesc'] === undefined;
+    this.orderDesc = params['orderDesc'] === 'true' || params['orderDesc'] === undefined;
   }
 }
