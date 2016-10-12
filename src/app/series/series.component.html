@@ -25,22 +25,16 @@
 
   </div>
 </publish-hero>
-<div class="main">
-  <section>
-    <form>
 
-      <publish-fancy-field [model]="series" textarea="true" name="title" label="Series Title" required>
-        <div class="fancy-hint">A short headline to describe this series.</div>
-      </publish-fancy-field>
-
-      <publish-fancy-field [model]="series" textarea="true" name="shortDescription" label="Teaser" required>
-        <div class="fancy-hint">A first impression for your series.</div>
-      </publish-fancy-field>
-
-      <publish-fancy-field [model]="series" textarea="true" name="description" label="Description" required>
-        <div class="fancy-hint">A longer version of your teaser.</div>
-      </publish-fancy-field>
-
-    </form>
-  </section>
-</div>
+<publish-tabs [model]="series">
+  <nav>
+    <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'image']">Cover Image</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'templates']">Audio Templates</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'advanced']">Advanced</a>
+  </nav>
+  <div class="extras">
+    <a *ngIf="storyCount > 0" [routerLink]="['/search']">{{storyCount}} {{storyNoun}} &raquo;</a>
+    <button *ngIf="id && storyCount == 0" class="delete" (click)="confirmDelete()">Delete</button>
+  </div>
+</publish-tabs>

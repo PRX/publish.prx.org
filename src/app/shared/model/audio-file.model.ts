@@ -52,12 +52,4 @@ export class AudioFileModel extends UploadableModel {
     return this.parent.create('prx:audio', {}, data);
   }
 
-  destroy() {
-    this.set('isDestroy', true);
-    super.destroy();
-    if (this.isNew) {
-      this.unstore();
-    }
-  }
-
 }

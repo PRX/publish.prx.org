@@ -55,7 +55,7 @@ matchers.toQueryText = (util, customEqualityTesters) => {
       }
       let found = actual.query(By.css(cssQuery));
       if (!found) {
-        return fail(`Cannot find css '${cssQuery}' in '${actual}'`);
+        return fail(`Cannot find css '${cssQuery}' in '${niceEl(actual)}'`);
       }
       return matchers.toHaveText(util, customEqualityTesters).compare(found, expected);
     }

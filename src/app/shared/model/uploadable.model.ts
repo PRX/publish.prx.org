@@ -113,9 +113,13 @@ export abstract class UploadableModel extends BaseModel {
   }
 
   destroy() {
+    this.set('isDestroy', true);
     this.unsubscribe();
     if (this.upload) {
       this.upload.cancel();
+    }
+    if (this.isNew) {
+      this.unstore();
     }
   }
 

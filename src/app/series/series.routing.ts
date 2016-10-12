@@ -3,22 +3,39 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../shared';
 
 import { SeriesComponent } from './series.component';
+import { SeriesBasicComponent } from './directives/series-basic.component';
+import { SeriesImageComponent } from './directives/series-image.component';
+import { SeriesTemplatesComponent } from './directives/series-templates.component';
+import { SeriesAdvancedComponent } from './directives/series-advanced.component';
+
+const seriesChildRoutes = [
+  { path: '',          component: SeriesBasicComponent },
+  { path: 'image',     component: SeriesImageComponent },
+  { path: 'templates', component: SeriesTemplatesComponent },
+  { path: 'advanced',  component: SeriesAdvancedComponent }
+];
 
 export const seriesRoutes: Routes = [
   {
-    path: 'series/create',
+    path: 'series/new',
     component: SeriesComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    children: seriesChildRoutes
   },
   {
     path: 'series/:id',
     component: SeriesComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    children: seriesChildRoutes
   }
 ];
 
 export const seriesComponents: any[] = [
-  SeriesComponent
+  SeriesComponent,
+  SeriesBasicComponent,
+  SeriesImageComponent,
+  SeriesTemplatesComponent,
+  SeriesAdvancedComponent
 ];
 
 export const seriesProviders: any[] = [];

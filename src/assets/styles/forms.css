@@ -158,7 +158,7 @@ button.btn-link {
   border: 0;
   background: 0 0 transparent;
 }
-button.btn-link:hover {
+button.btn-link:hover, button.btn-link:focus {
   color: #f59f51;
 }
 button.btn-link[disabled] {
@@ -166,6 +166,14 @@ button.btn-link[disabled] {
 }
 button.btn-link.active {
   color: #f59f51;
+}
+
+button.delete {
+  color: #fff;
+  background-color: #ee4d3e;
+}
+button.delete:hover, button.delete:focus {
+  background-color: #ff0000;
 }
 
 input[type=checkbox].updown-toggle {

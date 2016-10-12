@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { UploadService } from '../../core';
-import { ImageModel, StoryModel } from '../model';
+import { ImageModel, StoryModel, SeriesModel } from '../model';
 
 @Component({
   selector: 'publish-image-upload',
   styleUrls: ['image-upload.component.css'],
   template: `
-    <publish-spinner *ngIf="story && !story?.images"></publish-spinner>
+    <publish-spinner *ngIf="model && !model?.images"></publish-spinner>
 
     <div *ngIf="noImages" class="new-image">
       <p class="size">{{recommendWidth}}x{{recommendHeight}} px</p>
@@ -14,14 +14,14 @@ import { ImageModel, StoryModel } from '../model';
       <label class="button" for="file">Add Image</label>
     </div>
 
-    <div *ngIf="story && story.images">
-      <publish-image-file *ngFor="let i of story.images" [image]="i"></publish-image-file>
+    <div *ngIf="model && model.images">
+      <publish-image-file *ngFor="let i of model.images" [image]="i"></publish-image-file>
     </div>
   `
 })
 export class ImageUploadComponent {
 
-  @Input() story: StoryModel;
+  @Input() model: StoryModel|SeriesModel;
 
   recommendWidth = 200;
   recommendHeight = 200;
@@ -29,11 +29,11 @@ export class ImageUploadComponent {
   constructor(private uploadService: UploadService) {}
 
   get noImages(): boolean {
-    if (this.story && this.story.images) {
-      this.story.images = this.story.images.filter(img => !(img.isNew && img.isDestroy));
-      if (this.story.images.length === 0) {
+    if (this.model && this.model.images) {
+      this.model.images = this.model.images.filter(img => !(img.isNew && img.isDestroy));
+      if (this.model.images.length === 0) {
         return true;
-      } else if (this.story.images.every(img => img.isDestroy)) {
+      } else if (this.model.images.every(img => img.isDestroy)) {
         return true;
       }
     }
@@ -42,6 +42,6 @@ export class ImageUploadComponent {
 
   addUpload(file: File) {
     let upload = this.uploadService.add(file);
-    this.story.images.push(new ImageModel(this.story.parent, this.story.doc, upload));
+    this.model.images.push(new ImageModel(this.model.parent, this.model.doc, upload));
   }
 }

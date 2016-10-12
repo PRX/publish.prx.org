@@ -1,8 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { StoryModel } from '../../shared';
+import { StoryModel, TabService } from '../../shared';
 import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
-import { StoryTabService } from '../services/story-tab.service';
 
 @Component({
   styleUrls: ['edit.component.css'],
@@ -48,10 +47,8 @@ export class EditComponent implements OnDestroy {
   story: StoryModel;
   tabSub: Subscription;
 
-  constructor(tab: StoryTabService) {
-    this.tabSub = tab.storyModel.subscribe((story) => {
-      this.story = story;
-    });
+  constructor(tab: TabService) {
+    this.tabSub = tab.model.subscribe((s: StoryModel) => this.story = s);
   }
 
   get GENRES(): string[] {
