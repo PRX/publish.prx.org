@@ -159,7 +159,7 @@ export class SearchComponent implements OnInit {
 
     let filters = ['v4'];
     if (this.searchSeriesParams.text)  {
-      filters.push('text=' + this.searchStoryParams.text);
+      filters.push('text=' + this.searchSeriesParams.text);
     }
     let sorts;
     if (this.searchSeriesParams.orderBy) {
