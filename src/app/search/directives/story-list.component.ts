@@ -11,7 +11,7 @@ import { StoryModel } from '../../shared';
     <div *ngIf="!noStories">
       <div class="story-list">
         <publish-story-card *ngFor="let s of stories" [story]="s"></publish-story-card>
-        <div *ngFor="let l of loaders" class="story"><publish-spinner></publish-spinner></div>
+        <div *ngIf="!isLoaded" class="story-loading"><publish-spinner></publish-spinner></div>
         <div *ngFor="let i of emptyCards" class="empty-story-card"></div>
       </div>
     </div>
@@ -21,7 +21,7 @@ import { StoryModel } from '../../shared';
 export class StoryListComponent {
   @Input() noStories: boolean;
   @Input() stories: StoryModel[];
-  @Input() loaders: boolean[];
+  @Input() isLoaded: boolean;
 
   emptyCards: number[] = [1, 2]; // These are fillers for cheating the flexbox "grid"
 }
