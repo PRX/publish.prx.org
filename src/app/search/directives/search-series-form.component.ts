@@ -7,7 +7,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
   selector: 'publish-search-series',
   styleUrls: ['search-series-form.component.css'],
   template: `
-  <form #searchSeriesForm="ngForm">
+  <form>
     <div class="form-group">
       <input name="text" [(ngModel)]="model.text" (ngModelChange)="searchTextChange(model.text)"  
         placeholder="search by title or description"/>

@@ -6,7 +6,7 @@ import { SearchStory } from '../search-story.model';
   selector: 'publish-search-story-form',
   styleUrls: ['search-story-form.component.css'],
   template: `
-    <form #searchStoryForm="ngForm">
+    <form>
       <div class="form-group">
         <input name="text" [(ngModel)]="model.text" (ngModelChange)="searchTextChange(model.text)" 
           placeholder="search by title or description"/>
