@@ -74,6 +74,7 @@ export class SearchComponent implements OnInit {
   }
 
   searchWithParams(searchParams: any) {
+    this.clearResults();
     let routeParams = {tab: this.selectedTab};
     Object.keys(searchParams).forEach(key => {
       if (searchParams[key] !== undefined) {
@@ -193,15 +194,19 @@ export class SearchComponent implements OnInit {
   }
 
   searchStoriesTab() {
-    this.seriesResults.length = 0;
-    this.totalCount = 0;
+    this.clearResults();
     this.router.navigate(['search', { tab: SearchComponent.TAB_STORIES}]);
   }
 
   searchSeriesTab() {
-    this.storiesResults.length = 0;
-    this.totalCount = 0;
+    this.clearResults();
     this.router.navigate(['search', { tab: SearchComponent.TAB_SERIES}]);
+  }
+
+  clearResults() {
+    this.storiesResults.length = 0;
+    this.seriesResults.length = 0;
+    this.totalCount = 0;
   }
 
   isOnSeriesTab() {
