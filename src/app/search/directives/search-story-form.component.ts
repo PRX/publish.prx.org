@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 import { SearchStory } from '../search-story.model';
 
 @Component({
@@ -7,8 +8,7 @@ import { SearchStory } from '../search-story.model';
   template: `
     <form>
       <div class="form-group">
-        <!-- TODO: delay search until finish typing, issue #54 -->
-        <input name="text" [(ngModel)]="model.text" (ngModelChange)="modelChange.emit(model)" 
+        <input name="text" [(ngModel)]="model.text" (ngModelChange)="searchTextChange(model.text)" 
           placeholder="search by title or description"/>
       </div>
       
@@ -45,4 +45,19 @@ export class SearchStoryFormComponent {
 
   @Input() model: SearchStory;
   @Output() modelChange = new EventEmitter<SearchStory>();
+
+  searchTextStream = new Subject<string>();
+
+  searchTextChange(text: string) {
+    this.searchTextStream.next(text);
+  }
+
+  ngOnInit() {
+    this.searchTextStream
+      .debounceTime(300)
+      .distinctUntilChanged()
+      .subscribe((text: string) => {
+        this.modelChange.emit(this.model);
+      });
+  }
 }
