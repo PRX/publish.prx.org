@@ -40,17 +40,16 @@
       </div>
     </header>
 
-    <publish-spinner *ngIf="!isLoaded"></publish-spinner>
     <publish-story-list
       *ngIf="isOnStoriesTab()"
       [noStories]="noResults"
       [stories]="storiesResults"
-      [loaders]="loaders"></publish-story-list>
+      [isLoaded]="isLoaded"></publish-story-list>
 
     <publish-series-list
       *ngIf="isOnSeriesTab()"
       [noSeries]="noResults"
       [series]="seriesResults"
-      [loaders]="loaders"></publish-series-list>
+      [isLoaded]="isLoaded"></publish-series-list>
   </section>
 </div>

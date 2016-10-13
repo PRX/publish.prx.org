@@ -11,7 +11,7 @@ import { SeriesModel } from '../../shared';
     <div *ngIf="!noSeries">
       <div class="series-list">
         <publish-series-card *ngFor="let s of series" [series]="s"></publish-series-card>
-        <div *ngFor="let l of loaders" class="series"><publish-spinner></publish-spinner></div>
+        <div *ngIf="!isLoaded" class="series-loading"><publish-spinner></publish-spinner></div>
         <div class="empty-series-card"></div>
       </div>
     </div>
@@ -21,5 +21,5 @@ import { SeriesModel } from '../../shared';
 export class SeriesListComponent {
   @Input() noSeries: boolean;
   @Input() series: SeriesModel[];
-  @Input() loaders: boolean[];
+  @Input() isLoaded: boolean;
 }

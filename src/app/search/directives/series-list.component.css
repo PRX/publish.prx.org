@@ -1,4 +1,4 @@
-publish-series-card, .series {
+publish-series-card {
   display: block;
   overflow: hidden;
   position: relative;
@@ -18,6 +18,19 @@ publish-series-card, .series {
   flex-shrink: 1;
   height: 192px;
   background: #fff;
+}
+
+.series-loading {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px;
+  margin-right: 20px;
+  flex-basis: 490px;
+  -ms-flex-preferred-size: 490px;
+  -webkit-flex-basis: 490px;
+  height: 192px;
+  background: #ddd;
 }
 
 .empty-series-card {

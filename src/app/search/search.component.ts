@@ -24,7 +24,6 @@ export class SearchComponent implements OnInit {
   auth: HalDoc;
   storiesResults: StoryModel[] = [];
   seriesResults: SeriesModel[] = [];
-  loaders: boolean[];
 
   currentPage: number;
   showNumPages: number = 10;
@@ -119,12 +118,8 @@ export class SearchComponent implements OnInit {
     }
     let params = {page: this.currentPage, per: this.searchStoryParams.perPage, filters: filters.join(','), sorts};
 
-    // TODO: wrong, doesn't account for filter. looks obvs wrong with No Series filter, issue #53
-    let storiesCount = parent.count('prx:stories') || 0;
-    if (storiesCount > 0) {
-      this.loaders = Array(storiesCount);
+    if (parent.count('prx:stories')) {
       parent.followItems('prx:stories', params).subscribe((stories) => {
-        this.loaders = null;
         this.storiesResults = [];
         let storiesById = {};
         let storyIds = stories.map((doc) => {
@@ -167,12 +162,9 @@ export class SearchComponent implements OnInit {
       sorts += this.searchSeriesParams.orderDesc ? 'desc' : 'asc';
     }
     let params = {page: this.currentPage, per: this.searchSeriesParams.perPage, filters: filters.join(','), sorts};
-    let seriesCount = this.auth.count('prx:series') || 0;
-    if (seriesCount > 0) {
-      this.loaders = Array(seriesCount);
+    if (this.auth.count('prx:series')) {
       this.auth.followItems('prx:series', params).subscribe((seriesResults) => {
         this.seriesResults = [];
-        this.loaders = null;
         let seriesDocs = seriesResults;
         for (let doc of seriesDocs) {
           this.seriesResults.push(new SeriesModel(this.auth, doc, false));
