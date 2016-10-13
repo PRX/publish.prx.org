@@ -6,7 +6,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
   selector: 'publish-search-series',
   styleUrls: ['search-series-form.component.css'],
   template: `
-  <form #searchSeriesForm="ngForm">
+  <form>
     <div class="form-group">
       <!-- TODO: delay search until finish typing, issue #54 -->
       <input name="text" [(ngModel)]="model.text" (ngModelChange)="modelChange.emit(model)"  
