@@ -4,17 +4,14 @@ import { BaseModel } from './base.model';
 import { AudioVersionModel } from './audio-version.model';
 import { ImageModel } from './image.model';
 import { REQUIRED, LENGTH } from './base.invalid';
-import { CATEGORIES, SUBCATEGORIES } from './story.categories';
 
 export class StoryModel extends BaseModel {
 
   public id: number;
   public title: string;
-  public description: string;
   public shortDescription: string;
-  public genre: string;
-  public subGenre: string;
-  public extraTags: string;
+  public description: string;
+  public tags: string;
   public updatedAt: Date;
   public publishedAt: Date;
   public versions: AudioVersionModel[] = [];
@@ -22,19 +19,17 @@ export class StoryModel extends BaseModel {
   public isPublishing: boolean;
   public account: HalDoc;
 
-  SETABLE = ['title', 'description', 'shortDescription', 'genre', 'subGenre', 'extraTags'];
+  SETABLE = ['title', 'shortDescription', 'description', 'tags'];
 
   VALIDATORS = {
     title:            [REQUIRED(), LENGTH(10)],
-    description:      [LENGTH(10)],
     shortDescription: [REQUIRED(), LENGTH(10)],
-    genre:            [REQUIRED()],
-    subGenre:         [REQUIRED()]
+    description:      [LENGTH(10)]
   };
 
   constructor(seriesOrAccount: HalDoc, story?: HalDoc, loadRelated = true) {
     super();
-    if (seriesOrAccount.isa('series')) {
+    if (seriesOrAccount && seriesOrAccount.isa('series')) {
       this.init(seriesOrAccount, story, loadRelated);
     } else {
       this.account = seriesOrAccount;
@@ -77,11 +72,9 @@ export class StoryModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.title = this.doc['title'] || '';
-    this.description = this.doc['description'] || '';
     this.shortDescription = this.doc['shortDescription'] || '';
-    this.genre = this.parseGenre(this.doc['tags']) || '';
-    this.subGenre = this.parseSubGenre(this.doc['tags']) || '';
-    this.extraTags = this.parseExtraTags(this.doc['tags']) || '';
+    this.description = this.doc['description'] || '';
+    this.tags = (this.doc['tags'] || []).join(', ');
     this.updatedAt = new Date(this.doc['updatedAt']);
     this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
   }
@@ -89,20 +82,9 @@ export class StoryModel extends BaseModel {
   encode(): {} {
     let data = <any> {};
     data.title = this.title;
-    data.description = this.description;
     data.shortDescription = this.shortDescription;
-    data.tags = [];
-    if (this.extraTags) {
-      for (let tag of this.extraTags.split(',')) {
-        data.tags.push(tag.trim());
-      }
-    }
-    if (this.genre) {
-      data.tags.push(this.genre);
-    }
-    if (this.subGenre) {
-      data.tags.push(this.subGenre);
-    }
+    data.description = this.description;
+    data.tags = this.splitTags();
     return data;
   }
 
@@ -112,35 +94,6 @@ export class StoryModel extends BaseModel {
     } else {
       return this.account.create('prx:stories', {}, data);
     }
-  }
-
-  parseGenre(tags: string[] = []): string {
-    return tags.find((val) => {
-      return CATEGORIES.indexOf(val) > -1;
-    });
-  }
-
-  parseSubGenre(tags: string[] = []): string {
-    let genre = this.parseGenre(tags);
-    if (genre && SUBCATEGORIES[genre]) {
-      return tags.find((val) => {
-        return SUBCATEGORIES[genre].indexOf(val) > -1;
-      });
-    }
-  }
-
-  parseExtraTags(tags: string[] = []): string {
-    return tags.filter((val) => {
-      for (let cat of CATEGORIES) {
-        if (cat === val) { return false; }
-      }
-      for (let key of Object.keys(SUBCATEGORIES)) {
-        for (let subcat of SUBCATEGORIES[key]) {
-          if (subcat === val) { return false; }
-        }
-      }
-      return true;
-    }).join(', ') || undefined;
   }
 
   setPublished(published: boolean): Observable<boolean> {
@@ -166,6 +119,10 @@ export class StoryModel extends BaseModel {
   get unsavedImage(): ImageModel {
     let img = new ImageModel(this.parent, this.doc, null);
     return img.isStored() && !img.isDestroy ? img : null;
+  }
+
+  splitTags(): string[] {
+    return (this.tags || '').split(',').map(t => t.trim()).filter(t => t);
   }
 
   isV4(): boolean {

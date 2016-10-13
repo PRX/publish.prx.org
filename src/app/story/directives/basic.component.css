@@ -20,3 +20,6 @@ hr {
     width: 40%;
   }
 }
+:host >>> .invalid-explicit >>> publish-audio-version {
+  outline: 5px auto #e32;
+}

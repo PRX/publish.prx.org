@@ -19,6 +19,20 @@ export class ImageModel extends UploadableModel {
     this.initUpload(parent, file);
   }
 
+  stateComplete(status: string): boolean {
+    return status === 'complete';
+  }
+
+  stateError(status: string): string {
+    if (this.status === 'not found') {
+      return 'Unable to find file - please remove and try again';
+    } else if (this.status === 'invalid') {
+      return 'Not a valid image file - please remove and try again';
+    } else if (this.status === 'failed') {
+      return 'Unable to process file - please remove and try again';
+    }
+  }
+
   key() {
     if (this.doc) {
       return `prx.image.${this.doc.profileSubtype}.${this.doc.id}`;
@@ -51,18 +65,21 @@ export class ImageModel extends UploadableModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
+    let create: Observable<HalDoc>;
     if (this.parent.has('prx:images')) {
-      return this.parent.create('prx:images', {}, data);
-    } else if (this.parent.has('prx:image', false)) {
-      return this.parent.create('prx:image', {}, data);
+      create = this.parent.create('prx:images', {}, data);
+    } else if (this.parent.has('prx:image')) {
+      create = this.parent.create('prx:image', {}, data);
+    } else if (this.parent.has('prx:create-image')) {
+      create = this.parent.create('prx:create-image', {}, data);
     } else {
-      return Observable.throw(new Error('Cannot find image link on this resource!'));
+      create = Observable.throw(new Error('Cannot find image link on this resource!'));
     }
-  }
-
-  watchUpload(upload: Upload, startFromBeginning = true) {
-    this.set('isDestroy', false); // TODO: why?
-    super.watchUpload(upload, startFromBeginning);
+    return create.map(doc => {
+      this.setState();
+      this.watchProcess();
+      return doc;
+    });
   }
 
 }

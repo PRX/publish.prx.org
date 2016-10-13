@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { FALSEY } from './base.invalid';
@@ -7,27 +7,40 @@ export abstract class UploadableModel extends BaseModel {
 
   public filename: string;
   public size: number;
+  public status: string;
   public enclosureHref: string;
   public enclosureS3: string;
 
   // state indicators
   public isUploading: boolean;
-  public isError: string;
+  public isUploadError: string;
+  public isProcessing: boolean;
+  public isProcessError: string;
+  public isProcessTimeout: boolean;
+  public isCompleted: boolean;
 
-  // in-progress uploads
+  // in-progress or processing uploads
   public progress: number;
   public uuid: string;
 
-  UPLOAD_SETABLE = ['filename', 'size', 'enclosureHref', 'enclosureS3', 'uuid',
-    'isUploading', 'isError'];
+  UPLOAD_SETABLE = ['filename', 'size', 'status', 'enclosureHref',
+    'enclosureS3', 'uuid', 'isUploading', 'isUploadError'];
 
   UPLOAD_VALIDATORS = {
-    isUploading: [FALSEY('Wait for upload to complete')],
-    isError:     [FALSEY('Resolve upload errors first')]
+    isUploading:   [FALSEY('Wait for upload to complete')],
+    isUploadError: [FALSEY('Resolve upload errors first')]
   };
 
+  UPLOAD_PROCESS_INTERVAL = 2000;
+  UPLOAD_PROCESS_ESTIMATE = 20000;
+  UPLOAD_PROCESS_TIMEOUT = 60000;
+
   private upload: Upload;
-  private progressSub: Subscription;
+  private uploadSub: Subscription;
+  private processSub: Subscription;
+
+  abstract stateComplete(status: string): boolean;
+  abstract stateError(status: string): string;
 
   initUpload(parent?: HalDoc, file?: HalDoc | Upload | string) {
     this.SETABLE = Array.from(new Set(this.SETABLE.concat(this.UPLOAD_SETABLE)));
@@ -47,17 +60,18 @@ export abstract class UploadableModel extends BaseModel {
 
     // local-store info on new uploads
     if (file instanceof Upload) {
-      this.setUpload(file);
-    }
-  }
-
-  setUpload(file: Upload) {
-    this.set('filename', file.name);
-    this.set('size', file.size);
-    this.set('enclosureHref', file.url);
-    this.set('enclosureS3', file.s3url);
-    if (!file.complete) {
-      this.watchUpload(file);
+      this.set('filename', file.name);
+      this.set('size', file.size);
+      this.set('enclosureHref', file.url);
+      this.set('enclosureS3', file.s3url);
+      if (!file.complete) {
+        this.watchUpload(file);
+      }
+    } else if (file instanceof HalDoc) {
+      this.setState();
+      if (this.isProcessing) {
+        this.watchProcess();
+      }
     }
   }
 
@@ -66,13 +80,42 @@ export abstract class UploadableModel extends BaseModel {
     if (startFromBeginning) {
       this.progress = 0;
       this.set('isUploading', true);
-      this.set('isError', null);
+      this.set('isUploadError', null);
     }
-    this.progressSub = upload.progress.subscribe(
+    this.uploadSub = upload.progress.subscribe(
       (pct: number) => { this.progress = pct; },
-      (err: string) => { console.error(err); this.set('isError', err); },
+      (err: string) => { console.error(err); this.set('isUploadError', err); },
       () => { setTimeout(() => { this.completeUpload(); }, 500); }
     );
+  }
+
+  setState() {
+    this.isCompleted = this.stateComplete(this.status);
+    this.isProcessError = this.stateError(this.status);
+    if (this.isProcessTimeout) {
+      this.isProcessError = 'Timed out waiting for processing';
+    }
+    this.isProcessing = !(this.isCompleted || this.isProcessError);
+  }
+
+  watchProcess() {
+    let start = new Date().getTime();
+    this.progress = 0;
+    this.processSub = Observable
+      .interval(this.UPLOAD_PROCESS_INTERVAL)
+      .flatMap(() => this.doc.reload())
+      .map(doc => {
+        let elapsed = new Date().getTime() - start;
+        this.isProcessTimeout = elapsed > this.UPLOAD_PROCESS_TIMEOUT;
+        this.init(this.parent, doc, false);
+        this.setState();
+        return Math.min(elapsed / this.UPLOAD_PROCESS_ESTIMATE, 0.9);
+      })
+      .takeWhile(() => this.isProcessing)
+      .subscribe(
+        pct => this.progress = pct,
+        err => console.error('err', err)
+      );
   }
 
   retryUpload() {
@@ -83,31 +126,40 @@ export abstract class UploadableModel extends BaseModel {
     }
   }
 
+  retryProcessing() {
+    this.status = 'uploading';
+    this.setState();
+    this.doc.update({}).subscribe(() => this.watchProcess());
+  }
+
   completeUpload() {
     this.set('isUploading', false);
     this.unsubscribe();
   }
 
   unsubscribe() {
-    if (this.progressSub) {
-      this.progressSub.unsubscribe();
-      this.progressSub = null;
+    if (this.uploadSub) {
+      this.uploadSub.unsubscribe();
+      this.uploadSub = null;
+    }
+    if (this.processSub) {
+      this.processSub.unsubscribe();
+      this.processSub = null;
     }
   }
 
   decode() {
     this.filename = this.doc['filename'];
     this.size = this.doc['size'];
+    this.status = this.doc['status'];
     this.enclosureHref = this.doc.expand('enclosure');
   }
 
   encode(): {} {
     let data = {};
     if (this.isNew) {
-      // TODO: will the server calculate this for us?
-      // data['filename'] = this.filename;
-      // data['size'] = this.size;
       data['upload'] = this.enclosureS3;
+      data['size'] = this.size; // preserve when saving
     }
     return data;
   }
@@ -119,6 +171,8 @@ export abstract class UploadableModel extends BaseModel {
       this.upload.cancel();
     }
     if (this.isNew) {
+      this.set('isUploading', false);
+      this.set('isUploadError', null);
       this.unstore();
     }
   }

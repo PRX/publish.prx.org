@@ -6,6 +6,8 @@ import { UploadableModel } from './uploadable.model';
 class TestUploadableModel extends UploadableModel {
   SETABLE = ['foobar'];
   VALIDATORS = {foobar: <any[]> []};
+  stateComplete(status) { return status === 'complete'; }
+  stateError(status) { return status === 'errored' ? 'the error message' : null; }
   key() { return 'foo'; }
   related() { return {}; }
   saveNew() { return Observable.of(null); }
@@ -49,37 +51,41 @@ describe('UploadableModel', () => {
 
     it('initializes with existing haldocs', () => {
       spyOn(model, 'init').and.stub();
-      model.initUpload(<any> 'anything', '1234');
-      expect(model.init).toHaveBeenCalledWith('anything', null);
-      model.initUpload(<any> 'anything', upload);
-      expect(model.init).toHaveBeenCalledWith('anything', null);
+      spyOn(model, 'setState').and.stub();
+      spyOn(model, 'watchProcess').and.stub();
       let doc = cms.mock('prx:anything', {id: 1234});
       model.initUpload(<any> 'anything', doc);
       expect(model.init).toHaveBeenCalledWith('anything', doc);
+      expect(model.setState).toHaveBeenCalled();
+      expect(model.watchProcess).not.toHaveBeenCalled();
     });
 
-    it('sets the upload', () => {
-      spyOn(model, 'setUpload').and.stub();
-      model.initUpload(null, '1234');
-      expect(model.setUpload).not.toHaveBeenCalled();
-      model.initUpload(null, upload);
-      expect(model.setUpload).toHaveBeenCalledWith(upload);
+    it('watches processing for incomplete uploads', () => {
+      spyOn(model, 'init').and.stub();
+      spyOn(model, 'setState').and.stub();
+      spyOn(model, 'watchProcess').and.stub();
+      let doc = cms.mock('prx:anything', {id: 1234});
+      model.isProcessing = true;
+      model.initUpload(<any> 'anything', doc);
+      expect(model.init).toHaveBeenCalledWith('anything', doc);
+      expect(model.setState).toHaveBeenCalled();
+      expect(model.watchProcess).toHaveBeenCalled();
     });
-  });
 
-  describe('setUpload', () => {
-    it('sets properties and watches upload', () => {
+    it('sets the upload properties', () => {
       spyOn(model, 'watchUpload').and.stub();
-      model.setUpload(upload);
+      model.initUpload(null, '1234');
+      expect(model.watchUpload).not.toHaveBeenCalled();
+      model.initUpload(null, upload);
+      expect(model.watchUpload).toHaveBeenCalledWith(upload);
       expect(model.filename).toEqual('name.mp3');
       expect(model.size).toEqual(99);
-      expect(model.watchUpload).toHaveBeenCalled();
     });
 
     it('does not watch completed uploads', () => {
       spyOn(model, 'watchUpload').and.stub();
       upload.complete = true;
-      model.setUpload(upload);
+      model.initUpload(null, upload);
       expect(model.watchUpload).not.toHaveBeenCalled();
     });
   });
@@ -89,7 +95,7 @@ describe('UploadableModel', () => {
       model.watchUpload(<any> {progress: Observable.empty()});
       expect(model.progress).toEqual(0);
       expect(model.isUploading).toEqual(true);
-      expect(model.isError).toBeNull();
+      expect(model.isUploadError).toBeNull();
     });
 
     it('watches for progress', () => {
@@ -105,20 +111,92 @@ describe('UploadableModel', () => {
       model.watchUpload(<any> {progress: Observable.throw('woh now')});
       expect(model.progress).toEqual(0);
       expect(model.isUploading).toEqual(true);
-      expect(model.isError).toEqual('woh now');
+      expect(model.isUploadError).toEqual('woh now');
       expect(console.error).toHaveBeenCalled();
+    });
+  });
+
+  describe('setState', () => {
+    it('shows completed', () => {
+      model.status = 'complete';
+      model.setState();
+      expect(model.isCompleted).toEqual(true);
+      expect(model.isProcessError).toEqual(null);
+      expect(model.isProcessing).toEqual(false);
+    });
+
+    it('shows errors', () => {
+      model.status = 'errored';
+      model.setState();
+      expect(model.isCompleted).toEqual(false);
+      expect(model.isProcessError).toEqual('the error message');
+      expect(model.isProcessing).toEqual(false);
+      model.isProcessTimeout = true;
+      model.setState();
+      expect(model.isCompleted).toEqual(false);
+      expect(model.isProcessError).toEqual('Timed out waiting for processing');
+      expect(model.isProcessing).toEqual(false);
+    });
+
+    it('shows processing', () => {
+      model.status = 'whatever';
+      model.setState();
+      expect(model.isCompleted).toEqual(false);
+      expect(model.isProcessError).toEqual(null);
+      expect(model.isProcessing).toEqual(true);
+    });
+  });
+
+  describe('watchProcess', () => {
+    let doc: any, status: string;
+    beforeEach(() => {
+      status = 'whatev';
+      let reload = () => { doc['status'] = status; return Observable.of(doc); };
+      doc = cms.mock('doc', {reload: reload});
+      model.UPLOAD_PROCESS_INTERVAL = 1;
+    });
+
+    it('waits for completion', function(done) {
+      status = 'complete';
+      model.initUpload(<any> 'anything', doc);
+      expect(model.isCompleted).toEqual(false);
+      setTimeout(() => {
+        expect(model.isCompleted).toEqual(true);
+        done();
+      }, 10);
+    });
+
+    it('times out', function(done) {
+      model.initUpload(<any> 'anything', doc);
+      expect(model.isProcessTimeout).toBeFalsy();
+      let theFuture = new Date('2099-01-01');
+      spyOn(window, 'Date').and.returnValue(theFuture);
+      setTimeout(() => {
+        expect(model.isProcessTimeout).toEqual(true);
+        done();
+      }, 10);
     });
   });
 
   it('retries uploads', () => {
     model.initUpload(null, upload);
     model.isUploading = false;
-    model.isError = 'yep';
+    model.isUploadError = 'yep';
     model.progress = 0.5;
     model.retryUpload();
     expect(model.progress).toEqual(0.12);
     expect(model.isUploading).toEqual(true);
-    expect(model.isError).toBeNull();
+    expect(model.isUploadError).toBeNull();
+  });
+
+  it('retries processing', () => {
+    let doc = cms.mock('prx:anything', {id: 1234, status: 'uploaded'});
+    spyOn(doc, 'update').and.returnValue({subscribe: (fn) => fn()});
+    spyOn(model, 'watchProcess').and.stub();
+    model.initUpload(<any> 'anything', doc);
+    model.retryProcessing();
+    expect(doc.update).toHaveBeenCalled();
+    expect(model.watchProcess).toHaveBeenCalled();
   });
 
   it('decodes remote attributes', () => {

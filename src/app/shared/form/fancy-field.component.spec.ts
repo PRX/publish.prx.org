@@ -104,23 +104,40 @@ describe('FancyFieldComponent', () => {
   });
 
   cit('indicates invalid fields', (fix, el, comp) => {
-    let isInvalid = false;
+    let isInvalid = '';
     comp.model = {changed: () => false, invalid: () => isInvalid};
     comp.name = 'foobar';
     fix.detectChanges();
     expect(el).not.toQuery('.field.invalid');
-    isInvalid = true;
+    isInvalid = 'some message foobar something';
     fix.detectChanges();
     expect(el).toQuery('.field.invalid');
+    expect(el).toQueryText('p.error', 'Some message foobar something');
   });
 
   cit('explicitly overrides invalid fieldnames', (fix, el, comp) => {
-    comp.model = {changed: false, invalid: (fld) => fld === 'somethingelse'};
+    comp.model = {changed: false, invalid: (fld) => {
+      return fld === 'somethingelse' ? 'some message foobar something' : '';
+    }};
     fix.detectChanges();
     expect(el).not.toQuery('.field.invalid-explicit');
     comp.invalid = 'somethingelse';
     fix.detectChanges();
     expect(el).toQuery('.field.invalid-explicit');
+    expect(el).toQueryText('p.error', 'Some message foobar something');
+  });
+
+  cit('replaces field names with labels for invalid messages', (fix, el, comp) => {
+    comp.name = 'foobar';
+    comp.model = {changed: () => false, invalid: () => 'some message foobar something'};
+    fix.detectChanges();
+    expect(el).toQueryText('p.error', 'Some message foobar something');
+    comp.label = 'New Label';
+    fix.detectChanges();
+    expect(el).toQueryText('p.error', 'Some message New Label something');
+    comp.invalidlabel = 'Newer Label';
+    fix.detectChanges();
+    expect(el).toQueryText('p.error', 'Some message Newer Label something');
   });
 
 });

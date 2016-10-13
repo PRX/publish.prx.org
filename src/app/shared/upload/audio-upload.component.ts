@@ -5,8 +5,8 @@ import { StoryModel } from '../model';
   selector: 'publish-audio-upload',
   styleUrls: ['audio-upload.component.css'],
   template: `
-    <publish-spinner *ngIf="!story || !story.versions"></publish-spinner>
-    <div *ngIf="story && story.versions">
+    <publish-spinner *ngIf="!story?.versions"></publish-spinner>
+    <div *ngIf="story?.versions">
       <publish-audio-version *ngFor="let v of story.versions" [version]="v">
       </publish-audio-version>
       <div *ngIf="!story.versions.length">

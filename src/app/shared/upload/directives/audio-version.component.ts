@@ -15,14 +15,14 @@ import { UploadService } from '../../../core';
       </header>
       <section [dragula]="id" [dragulaModel]="version.files">
         <publish-audio-file *ngFor="let file of version.files"
-          [audio]="file"></publish-audio-file>
-        <div *ngIf="noAudioFiles" class="empty">
+          [audio]="file" (cancel)="onCancel($event)"></publish-audio-file>
+        <div *ngIf="version.noAudioFiles" class="empty">
           <h4>Upload a file to get started</h4>
         </div>
       </section>
       <footer>
-        <input type="file" id="file" publishFileSelect (file)="addUpload($event)"/>
-        <label class="button" for="file">Upload Files</label>
+        <input type="file" id="audio-file" multiple publishFileSelect (file)="addUpload($event)"/>
+        <label class="button" for="audio-file">Upload Files</label>
       </footer>
     </template>
   `,
@@ -32,7 +32,7 @@ import { UploadService } from '../../../core';
 export class AudioVersionComponent implements OnInit, OnDestroy {
 
   DESCRIPTIONS = {
-    'Main Audio': 'The primary version of your audio that blah blah blah',
+    'Main Audio': 'The primary mp3 version of your story',
     'Piece Audio': 'The standard version of your story you would most like people to hear and buy',
     'Promos': 'The promotional version of your audio'
   };
@@ -50,27 +50,12 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
     return this.version.id ? ('version-' + this.version.id) : 'version-new';
   }
 
-  get noAudioFiles(): boolean {
-    if (this.version.files) {
-      if (this.version.files.length === 0) {
-        return true;
-      } else {
-        return this.version.files.every(f => f.isDestroy === true);
-      }
-    }
-    return false;
-  }
-
   ngOnInit() {
     this.initDragula();
+  }
 
-    // in-progress uploads
-    for (let uuid of this.version.uploadUuids) {
-      let upload = this.uploadService.find(uuid);
-      if (upload) {
-        this.version.watchUpload(upload);
-      }
-    }
+  ngOnDestroy() {
+    this.dragSubscription.unsubscribe();
   }
 
   addUpload(file: File) {
@@ -78,13 +63,8 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
     this.version.addUpload(upload);
   }
 
-  ngOnDestroy() {
-    this.dragSubscription.unsubscribe();
-
-    // stop watching progress
-    for (let file of this.version.files) {
-      if (file.unsubscribe) { file.unsubscribe(); }
-    }
+  onCancel(uuid) {
+    this.version.removeUpload(uuid);
   }
 
   private initDragula() {

@@ -25,6 +25,20 @@ export class HalDoc {
     return match ? match.pop() : null;
   }
 
+  reload(): HalObservable<HalDoc> {
+    let link = this['_links'] ? this['_links']['self'] : null;
+    if (!link) {
+      return <HalObservable<HalDoc>> this.error(`Expected reload link at _links.self - got null`);
+    } else if (link instanceof Array) {
+      return <HalObservable<HalDoc>> this.error(`Expected reload link at _links.self - got array`);
+    } else {
+      return <HalObservable<HalDoc>> this.remote.get(link).map((obj) => {
+        this.setData(obj);
+        return <HalDoc> this;
+      });
+    }
+  }
+
   update(data: any): HalObservable<HalDoc> {
     let link = this['_links'] ? this['_links']['self'] : null;
     if (!link) {
@@ -94,16 +108,11 @@ export class HalDoc {
     }
   }
 
-  has(rel: string, strict = true): boolean {
+  has(rel: string): boolean {
     if (this['_embedded'] && this['_embedded'][rel]) {
       return true;
     } else if (this['_links'] && this['_links'][rel]) {
-      // TODO: temporary hack for has-one images
-      if (strict && rel.match('image')) {
-        return this['_links'][rel]['title'] !== null ? true : false;
-      } else {
-        return true;
-      }
+      return true;
     } else {
       return false;
     }

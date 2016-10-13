@@ -37,6 +37,18 @@ export class FancyFieldComponent {
     return (this.invalidlabel === undefined) ? this.label : this.invalidlabel;
   }
 
+  get formattedInvalid(): string {
+    if (this.invalidFieldName && this.model) {
+      let msg = this.model.invalid(this.invalidFieldName);
+      if (msg) {
+        if (this.invalidFieldLabel) {
+          msg = msg.replace(this.invalidFieldName, this.invalidFieldLabel);
+        }
+        return msg.charAt(0).toUpperCase() + msg.slice(1);
+      }
+    }
+  }
+
   get fieldClasses(): string {
     if (!this.model) { return 'field'; }
     let classes = ['field'];

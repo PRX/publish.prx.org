@@ -4,14 +4,14 @@ import { AuthGuard, DeactivateGuard } from '../shared';
 
 import { StoryComponent }       from './story.component';
 import { StoryHeroComponent }   from './directives/hero.component';
-import { EditComponent }        from './directives/edit.component';
-import { DecorateComponent }    from './directives/decorate.component';
-import { SellComponent }        from './directives/sell.component';
+import { BasicComponent }        from './directives/basic.component';
+import { PodcastComponent }    from './directives/podcast.component';
+import { PlayerComponent }        from './directives/player.component';
 
 const storyChildRoutes = [
-  { path: '',         component: EditComponent },
-  { path: 'decorate', component: DecorateComponent },
-  { path: 'sell',     component: SellComponent }
+  { path: '',        component: BasicComponent },
+  { path: 'podcast', component: PodcastComponent },
+  { path: 'player',  component: PlayerComponent }
 ];
 
 export const storyRoutes: Routes = [
@@ -41,9 +41,9 @@ export const storyRoutes: Routes = [
 export const storyComponents: any[] = [
   StoryComponent,
   StoryHeroComponent,
-  EditComponent,
-  DecorateComponent,
-  SellComponent
+  BasicComponent,
+  PodcastComponent,
+  PlayerComponent
 ];
 
 export const storyProviders: any[] = [];

@@ -11,6 +11,7 @@ export class AudioVersionModel extends BaseModel {
   public label: string;
   public files: AudioFileModel[];
   public uploadUuids: string[] = [];
+  public noAudioFiles = true;
 
   // save in-progress uploads to localstorage
   SETABLE = ['uploadUuids'];
@@ -52,11 +53,15 @@ export class AudioVersionModel extends BaseModel {
         this.set('uploadUuids', this.uploadUuids);
       }
     }
+    this.noAudioFiles = unsavedAudio.every(f => f.isDestroy);
 
     // load existing audio files
     if (this.doc) {
       rels.files = this.doc.followList('prx:audio').map((fileDocs) => {
-        let savedAudio = fileDocs.map((fdoc) => { return new AudioFileModel(this.doc, fdoc); });
+        let savedAudio = fileDocs.map(fdoc => new AudioFileModel(this.doc, fdoc));
+        if (this.noAudioFiles) {
+          this.noAudioFiles = savedAudio.every(f => f.isDestroy);
+        }
         return savedAudio.concat(unsavedAudio);
       });
     } else {
@@ -93,16 +98,33 @@ export class AudioVersionModel extends BaseModel {
 
   invalid(field?: string | string[]): string {
     let invalid = super.invalid(field);
-    if (!field && !invalid && this.files.length === 0) {
+    if (!field && !invalid && this.files.filter(f => !f.isDestroy).length === 0) {
       invalid = 'You must upload at least 1 audio file';
     }
     return invalid;
   }
 
   addUpload(upload: Upload) {
+    this.noAudioFiles = false;
     this.files.push(new AudioFileModel(this.doc, upload));
     this.uploadUuids.push(upload.uuid);
     this.set('uploadUuids', this.uploadUuids);
+  }
+
+  removeUpload(uuid: string) {
+    for (let i = 0; i < this.uploadUuids.length; i++) {
+      if (this.uploadUuids[i] === uuid) {
+        this.uploadUuids.splice(i, 1);
+        this.set('uploadUuids', this.uploadUuids);
+        break;
+      }
+    }
+    for (let i = 0; i < this.files.length; i++) {
+      if (this.files[i].uuid === uuid && this.files[i].isNew) {
+        this.files.splice(i, 1);
+        break;
+      }
+    }
   }
 
   watchUpload(upload: Upload) {

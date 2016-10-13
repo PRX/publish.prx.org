@@ -2,7 +2,6 @@
   <section>
     <header>
       <h2>Your Series</h2>
-      <a class="create" [routerLink]="['/series/new']">New Series &raquo;</a>
       <a *ngIf="totalCount" class="all" [routerLink]="['search', { tab: 'series'}]">View All {{totalCount}} &raquo;</a>
     </header>
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>

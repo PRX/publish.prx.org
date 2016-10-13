@@ -12,6 +12,7 @@ describe('AudioVersionModel', () => {
     spyOn(AudioFileModel.prototype, 'init').and.callFake(function() {
       this.filename = 'foobar';
       this.uuid = 'fake-uuid';
+      this.status = 'complete';
     });
   });
 
@@ -60,12 +61,12 @@ describe('AudioVersionModel', () => {
   describe('related', () => {
 
     it('loads existing audio files', () => {
-      let version = makeVersion({}, [{thing: 'one'}, {thing: 'two'}]);
+      let version = makeVersion({}, [{thing: 'one', status: 'complete'}, {thing: 'two', status: 'complete'}]);
       expect(version.files.length).toEqual(2);
     });
 
     it('loads newly uploaded files', () => {
-      let version = makeVersion({}, [{thing: 'one'}]);
+      let version = makeVersion({}, [{thing: 'one', status: 'complete'}]);
       expect(version.files.length).toEqual(1);
       version.uploadUuids = ['1234'];
       version.related().files.subscribe((files: any[]) => {
@@ -122,7 +123,7 @@ describe('AudioVersionModel', () => {
   describe('watchUpload', () => {
 
     it('lets the file with the matching uuid see the upload', () => {
-      let version = makeVersion({label: 'hello'}, [{uuid: 'fake-uuid'}]);
+      let version = makeVersion({label: 'hello'}, [{uuid: 'fake-uuid', status: 'uploading'}]);
       expect(version.files.length).toEqual(1);
       spyOn(version.files[0], 'watchUpload').and.stub();
       version.watchUpload(<any> {uuid: '1234'});
