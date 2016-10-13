@@ -21,7 +21,7 @@ import { StoryModel } from '../../shared';
 export class StoryListComponent {
   @Input() noStories: boolean;
   @Input() stories: StoryModel[];
-  @Input() isLoaded: boolean[];
+  @Input() isLoaded: boolean;
 
   emptyCards: number[] = [1, 2]; // These are fillers for cheating the flexbox "grid"
 }
