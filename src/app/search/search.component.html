@@ -5,44 +5,37 @@
 
       <publish-search-series
         *ngIf="isOnSeriesTab()"
-        [searchOrderBy]="searchOrderByParam"
-        [searchOrderDesc]="searchOrderDescParam"
         [orderByOptions]="orderByOptionsSeries"
-        (searchSeriesByText)="searchByText($event)"
-        (searchSeriesByGenre)="searchSeriesByGenre($event)"
-        (searchSeriesByOrder)="searchByOrder($event)">
+        [model]="searchSeriesParams"
+        (modelChange)="searchWithParams($event)">
       </publish-search-series>
 
-      <publish-search-story
+      <publish-search-story-form
         *ngIf="isOnStoriesTab()"
-        [searchOrderBy]="searchOrderByParam"
-        [searchOrderDesc]="searchOrderDescParam"
-        [orderByOptions]="orderByOptionsStories"
-        [searchSeriesId]="searchSeriesIdParam"
         [allSeriesIds]="allSeriesIds"
         [allSeries]="allSeries"
-        (searchStoriesByText)="searchByText($event)"
-        (searchStoriesBySeries)="searchStoriesBySeries($event)"
-        (searchStoriesByOrder)="searchByOrder($event)">
-      </publish-search-story>
+        [orderByOptions]="orderByOptionsStories"
+        [model]="searchStoryParams"
+        (modelChange)="searchWithParams($event)">
+      </publish-search-story-form>
 
       <div>
         <button (click)="searchSeriesTab()" class="tab" [ngClass]="{'active': isOnSeriesTab()}" [disabled]="isOnSeriesTab()">Series</button>
         <button (click)="searchStoriesTab()" class="tab" [ngClass]="{'active': isOnStoriesTab()}" [disabled]="isOnStoriesTab()">Stories</button>
 
         <span class="pages">
-          <button *ngIf="totalCount && pages?.length > 1" (click)="search(1, totalCount)" class="btn-link">View All {{totalCount}} &raquo;</button>
+          <button *ngIf="totalCount && pages?.length > 1" (click)="navigateToPagePer(1, totalCount)" class="btn-link">View All {{totalCount}} &raquo;</button>
           <button disabled *ngIf="totalCount && pages?.length === 1" class="btn-link">Viewing {{totalCount > 1 ? 'all ' + totalCount : totalCount}}</button>
         </span>
 
         <span *ngIf="totalCount > 0 && pages?.length > 1" class="pages">
-          <button [disabled]="currentPage === 1" (click)="search(currentPage - 1)" class="btn-link">&lt;</button>
+          <button [disabled]="currentPage === 1" (click)="navigateToPagePer(currentPage - 1)" class="btn-link">&lt;</button>
           <button *ngFor="let page of pages | slice:pagesBegin:pagesEnd;"
                   [disabled]="page === currentPage" [ngClass]="{'active': page === currentPage}"
-                  (click)="search(page)"
+                  (click)="navigateToPagePer(page)"
                   class="btn-link">{{page}}</button>
           <button disabled *ngIf="pages.length > showNumPages" class="btn-link">of {{pages.length}}</button>
-          <button [disabled]="currentPage === pages?.length" (click)="search(currentPage + 1)" class="btn-link">&gt;</button>
+          <button [disabled]="currentPage === pages?.length" (click)="navigateToPagePer(currentPage + 1)" class="btn-link">&gt;</button>
         </span>
       </div>
     </header>

@@ -26,6 +26,13 @@ describe('SearchComponent', () => {
     expect(comp.noResults).toBe(true);
   });
 
+  cit('searches via URL params', (fix, el, comp) => {
+    let params = {tab: 'stories', perPage: 12, orderBy: 'published_at', orderDesc: false, page: 1};
+    spyOn(comp.router, 'navigate');
+    comp.searchWithParams(params);
+    expect(comp.router.navigate).toHaveBeenCalledWith(['search', params]);
+  });
+
   describe('on the stories tab', () => {
 
     let storiesResults = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
