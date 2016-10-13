@@ -37,11 +37,11 @@ describe('AudioVersionComponent', () => {
     comp.version = mockVersion({label: 'Main Audio'});
     fix.detectChanges();
     expect(el).toQueryText('header strong', 'Main Audio');
-    expect(el).toContainText('The primary version');
+    expect(el).toContainText('The primary mp3 version');
   });
 
   cit('shows an indicator when there are no audio files', (fix, el, comp) => {
-    comp.version = mockVersion();
+    comp.version = mockVersion({noAudioFiles: true});
     fix.detectChanges();
     expect(el).toContainText('Upload a file to get started');
   });
@@ -50,13 +50,6 @@ describe('AudioVersionComponent', () => {
     comp.version = mockVersion({files: ['one', 'two', 'three']});
     fix.detectChanges();
     expect(el.queryAll(By.css('publish-audio-file')).length).toEqual(3);
-  });
-
-  cit('finds in-progress uploads', (fix, el, comp) => {
-    comp.version = mockVersion({uploadUuids: ['testuuid']});
-    spyOn(comp.version, 'watchUpload').and.stub;
-    fix.detectChanges();
-    expect(comp.version.watchUpload).toHaveBeenCalledWith('foobar');
   });
 
   cit('adds uploads', (fix, el, comp) => {

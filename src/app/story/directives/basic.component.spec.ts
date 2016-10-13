@@ -1,5 +1,5 @@
 import { cit, create, provide } from '../../../testing';
-import { EditComponent } from './basic.component';
+import { BasicComponent } from './basic.component';
 import { TabService } from '../../shared';
 
 describe('BasicComponent', () => {

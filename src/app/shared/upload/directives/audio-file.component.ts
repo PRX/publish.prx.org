@@ -78,7 +78,7 @@ export class AudioFileComponent implements OnInit, OnDestroy {
   constructor(private uploadService: UploadService) {}
 
   ngOnInit() {
-    if (this.audio.uuid) {
+    if (this.audio && this.audio.uuid) {
       let upload = this.uploadService.find(this.audio.uuid);
       if (upload) {
         this.audio.watchUpload(upload, false);
@@ -99,7 +99,9 @@ export class AudioFileComponent implements OnInit, OnDestroy {
     this.canceled = true;
     setTimeout(() => {
       this.audio.destroy();
-      this.cancel.emit(this.audio.uuid);
+      if (this.audio.uuid) {
+        this.cancel.emit(this.audio.uuid);
+      }
       this.canceled = false;
     }, 1000);
   }

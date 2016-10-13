@@ -1,4 +1,5 @@
 import { cms } from '../../../testing';
+import { Observable } from 'rxjs';
 import { AudioFileModel } from './audio-file.model';
 
 describe('AudioFileModel', () => {
@@ -10,6 +11,7 @@ describe('AudioFileModel', () => {
     if (typeof data === 'string') {
       return new AudioFileModel(versionMock, data);
     } else if (data) {
+      data.status = 'complete';
       fileMock = versionMock.mock('prx:audio', data);
       return new AudioFileModel(versionMock, fileMock);
     } else {
@@ -40,6 +42,7 @@ describe('AudioFileModel', () => {
       let audio = makeFile();
       spyOn(versionMock, 'create').and.callFake((rel: string) => {
         expect(rel).toEqual('prx:audio');
+        return Observable.empty();
       });
       audio.saveNew({hello: 'world'});
       expect(versionMock.create).toHaveBeenCalled();

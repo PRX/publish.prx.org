@@ -45,25 +45,8 @@ describe('StoryModel', () => {
 
     it('parses tags', () => {
       let story = makeStory({tags: ['Foo', 'Arts', 'Bar', 'Food']});
-      expect(story.genre).toEqual('Arts');
-      expect(story.subGenre).toEqual('Food');
-      expect(story.extraTags).toEqual('Foo, Bar');
-    });
-
-    it('allows only a single genre', () => {
-      let story = makeStory({tags: ['Business', 'Arts', 'Education']});
-      expect(story.genre).toEqual('Business');
-      expect(story.subGenre).toEqual('');
-      expect(story.extraTags).toEqual('');
-    });
-
-    it('allows only subGenres of the parent', () => {
-      let story = makeStory({tags: ['Arts', 'Business News']});
-      expect(story.subGenre).toEqual('');
-      story = makeStory({tags: ['Business News']});
-      expect(story.subGenre).toEqual('');
-      story = makeStory({tags: ['Business News', 'Business']});
-      expect(story.subGenre).toEqual('Business News');
+      expect(story.tags).toEqual('Foo, Arts, Bar, Food');
+      expect(story.splitTags()).toEqual(['Foo', 'Arts', 'Bar', 'Food']);
     });
 
   });
@@ -98,7 +81,7 @@ describe('StoryModel', () => {
     });
 
     it('loads images', () => {
-      let images = [{caption: 'something'}, {caption: 'here'}];
+      let images = [{caption: 'something', status: 'complete'}, {caption: 'here', status: 'complete'}];
       let story = makeStory({title: 'foo'}, {images: images});
       expect(story.images.length).toEqual(2);
     });
@@ -117,9 +100,7 @@ describe('StoryModel', () => {
 
     it('combines tag fields', () => {
       let story = makeStory();
-      story.genre = 'Hello';
-      story.subGenre = 'World';
-      story.extraTags = 'And,Some ,   More tags, Go here';
+      story.tags = 'And,Some ,   More tags, Go here  ,Hello, World ,';
       let json = <any> story.encode();
       let tags = json.tags.sort();
       expect(tags).toEqual(['And', 'Go here', 'Hello', 'More tags', 'Some', 'World']);

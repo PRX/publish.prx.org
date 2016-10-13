@@ -70,7 +70,7 @@ export class ImageFileComponent implements OnInit, OnDestroy {
   constructor(private uploadService: UploadService) {}
 
   ngOnInit() {
-    if (this.image.uuid) {
+    if (this.image && this.image.uuid) {
       let upload = this.uploadService.find(this.image.uuid);
       if (upload) {
         this.image.watchUpload(upload, false);
