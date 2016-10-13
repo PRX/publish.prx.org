@@ -9,6 +9,30 @@ publish-image {
   height: 100%;
   display: block;
 }
+.stack {
+  position: absolute;
+  top: 192px;
+}
+.stk-one {
+  background-color: rgba(37,37,37,.55);
+  bottom: -5px;
+  left: 5px;
+  width: 182px;
+}
+.stk-two {
+  background-color: rgba(37,37,37,.4);
+  top: 197px;
+  bottom: -10px;
+  left: 10px;
+  width: 172px;
+}
+.stk-three {
+  background-color: rgba(37,37,37,.25);
+  top: 202px;
+  bottom: -15px;
+  left: 15px;
+  width: 162px;
+}
 .series-link {
   width: 192px;
 }
@@ -52,8 +76,7 @@ h2 {
 h2 a {
   color: inherit;
 }
-
-.episode-count {
+.series-info {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -65,7 +88,7 @@ h2 a {
   font-size: 11px;
   line-height: 18px;
 }
-.episode-count::before {
+.series-info::before {
   content: '';
   display: block;
   height: 71px;
@@ -75,4 +98,10 @@ h2 a {
   right: 0;
   background-color: rgba(37,37,37,.7);
   z-index: -1;
+}
+.episode-count {
+  float: left;
+}
+.updated-at {
+  float: right;
 }
