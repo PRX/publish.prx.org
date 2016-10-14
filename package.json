@@ -29,7 +29,7 @@
     "e2e": "protractor",
     "ci": "karma start karma.conf.js --browsers PhantomJS --no-auto-watch --single-run && codecov",
     "build": "ng build -prod",
-    "serve": "node bin/inlineenv.js && http-server dist -p 4200 -d False -g True --cors"
+    "serve": "node bin/server.js"
   },
   "private": true,
   "dependencies": {
@@ -41,10 +41,13 @@
     "@angular/platform-browser": "2.0.0",
     "@angular/platform-browser-dynamic": "2.0.0",
     "@angular/router": "3.0.0",
+    "connect-gzip-static": "^1.0.0",
     "core-js": "^2.4.1",
     "dotenv": "^2.0.0",
     "evaporate": "^1.5.7",
-    "http-server": "^0.9.0",
+    "express": "^4.14.0",
+    "morgan": "^1.7.0",
+    "newrelic": "^1.31.0",
     "ng2-dragula": "^1.2.1",
     "rxjs": "5.0.0-beta.12",
     "ts-helpers": "^1.1.1",
