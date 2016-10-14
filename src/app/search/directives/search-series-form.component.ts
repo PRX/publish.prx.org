@@ -17,12 +17,13 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
       <p class="left">
         <label [attr.for]="searchGenre">Filter by</label>
         <select id="searchGenre" name="genre" [(ngModel)]="model.genre" (ngModelChange)="modelChange.emit(model)">
+          <option selected disabled value="undefined">Select Genre</option>
           <option *ngFor="let genre of GENRES" [value]="genre">{{genre}}</option>
         </select>
         <select id="searchSubGenre" name="subGenre" [(ngModel)]="model.subGenre" (ngModelChange)="modelChange.emit(model)">
           <option *ngFor="let subgenre of SUBGENRES" [value]="subgenre">{{subgenre}}</option>
         </select>
-        <!-- TODO: there should be a way to clear this, issue #52 -->
+        <button class="btn-link" (click)="clearGenre()"><i class="icon-cancel"></i></button>
       </p>
     
       <p class="right">
@@ -59,6 +60,12 @@ export class SearchSeriesFormComponent implements OnInit {
       .subscribe((text: string) => {
         this.modelChange.emit(this.model);
       });
+  }
+
+  clearGenre() {
+    this.model.genre = undefined;
+    this.model.subGenre = undefined;
+    this.modelChange.emit(this.model);
   }
 
   get GENRES(): string[] {
