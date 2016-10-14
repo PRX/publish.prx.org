@@ -1,6 +1,7 @@
 'use strict';
 const express  = require('express');
 const morgan   = require('morgan');
+const gzip     = require('connect-gzip-static');
 const fs       = require('fs');
 const dotenv   = require('dotenv');
 const newrelic = require('newrelic');
@@ -49,8 +50,17 @@ let indexEnd = indexHtml.split('<head>')[1].replace(/<script.+[dotenv\.js].+$/m,
 
 // serve it!
 let app = express();
-app.use('/', express.static('dist', {index: false}));
 app.use(morgan('combined', { skip: req => req.path.indexOf('.') > -1 }));
+
+// serve static assets and show 404s, but ignore index.html
+let serveStatic = gzip('dist');
+app.use(function(req, res, next) {
+  if (req.path === '/' || req.path === '/index.html') {
+    next();
+  } else {
+    serveStatic(req, res, next);
+  }
+});
 app.use(function fileNotFound(req, res, next) {
   if (req.path.indexOf('.') > -1) {
     res.status(404).send('Not found');
@@ -58,6 +68,8 @@ app.use(function fileNotFound(req, res, next) {
     next();
   }
 });
+
+// plain routes get the index
 app.get('*', function sendIndex(req, res) {
   if (req.headers['x-forwarded-proto'] === 'http') {
     res.redirect(`https://${req.headers['host']}${req.url}`);
