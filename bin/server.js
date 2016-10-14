@@ -50,7 +50,9 @@ let indexEnd = indexHtml.split('<head>')[1].replace(/<script.+[dotenv\.js].+$/m,
 
 // serve it!
 let app = express();
-app.use(morgan('combined', { skip: req => req.path.indexOf('.') > -1 }));
+let lastToken = path => path.substr(path.lastIndexOf('/') + 1).split(/\?|;/)[0];
+let isFile = path => lastToken(path).indexOf('.') > -1;
+app.use(morgan('combined', { skip: req => isFile(req.path) }));
 
 // serve static assets and show 404s, but ignore index.html
 let serveStatic = gzip('dist');
@@ -62,7 +64,7 @@ app.use(function(req, res, next) {
   }
 });
 app.use(function fileNotFound(req, res, next) {
-  if (req.path.indexOf('.') > -1) {
+  if (isFile(req.path)) {
     res.status(404).send('Not found');
   } else {
     next();
