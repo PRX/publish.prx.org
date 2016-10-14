@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { SearchStory } from '../search-story.model';
 
@@ -38,7 +38,7 @@ import { SearchStory } from '../search-story.model';
 `
 })
 
-export class SearchStoryFormComponent {
+export class SearchStoryFormComponent implements OnInit {
   @Input() allSeriesIds: number[];
   @Input() allSeries: any;
   @Input() orderByOptions: any[];

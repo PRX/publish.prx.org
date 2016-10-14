@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { SearchSeries } from '../search-series.model';
 import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
@@ -41,7 +41,7 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
 `
 })
 
-export class SearchSeriesFormComponent {
+export class SearchSeriesFormComponent implements OnInit {
   @Input() orderByOptions: any[];
   @Input() model: SearchSeries;
   @Output() modelChange = new EventEmitter<SearchSeries>();
