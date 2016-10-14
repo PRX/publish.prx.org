@@ -1,8 +1,9 @@
 'use strict';
-const express = require('express');
-const morgan  = require('morgan');
-const fs      = require('fs');
-const dotenv  = require('dotenv');
+const express  = require('express');
+const morgan   = require('morgan');
+const fs       = require('fs');
+const dotenv   = require('dotenv');
+const newrelic = require('newrelic');
 
 // warn if not built
 try {
@@ -43,20 +44,13 @@ jsscript += '};</script>';
 
 // inject into index.html
 let indexHtml = fs.readFileSync(`${__dirname}/../dist/index.html`).toString();
-indexHtml = indexHtml.replace(/<script.+[dotenv\.js|window\.ENV].+$/m, jsscript);
-fs.writeFileSync(`${__dirname}/../dist/index.html`, indexHtml);
+let indexStart = indexHtml.split('<head>')[0] + '<head>';
+let indexEnd = indexHtml.split('<head>')[1].replace(/<script.+[dotenv\.js].+$/m, jsscript);
 
 // serve it!
 let app = express();
+app.use('/', express.static('dist', {index: false}));
 app.use(morgan('combined', { skip: req => req.path.indexOf('.') > -1 }));
-app.use(function redirectHttps(req, res, next) {
-  if (req.headers['x-forwarded-proto'] === 'http') {
-    res.redirect(`https://${req.headers['host']}${req.url}`);
-  } else {
-    next();
-  }
-});
-app.use('/', express.static('dist'));
 app.use(function fileNotFound(req, res, next) {
   if (req.path.indexOf('.') > -1) {
     res.status(404).send('Not found');
@@ -65,7 +59,11 @@ app.use(function fileNotFound(req, res, next) {
   }
 });
 app.get('*', function sendIndex(req, res) {
-  res.setHeader('Content-Type', 'text/html');
-  res.send(indexHtml);
+  if (req.headers['x-forwarded-proto'] === 'http') {
+    res.redirect(`https://${req.headers['host']}${req.url}`);
+  } else {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(indexStart + newrelic.getBrowserTimingHeader() + indexEnd);
+  }
 });
 app.listen(process.env.PORT || 4200);

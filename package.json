@@ -46,6 +46,7 @@
     "evaporate": "^1.5.7",
     "express": "^4.14.0",
     "morgan": "^1.7.0",
+    "newrelic": "^1.31.0",
     "ng2-dragula": "^1.2.1",
     "rxjs": "5.0.0-beta.12",
     "ts-helpers": "^1.1.1",
