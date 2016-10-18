@@ -1,9 +1,26 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DragulaService } from 'ng2-dragula/ng2-dragula';
 import { AudioVersionModel } from '../../model';
 import { UploadService } from '../../../core';
+
+class TempUpload {
+  public checked = false;
+  public src: string;
+  public safeSrc: SafeResourceUrl;
+
+  constructor(public file: File, sanitizer: DomSanitizer) {
+    this.src = URL.createObjectURL(file);
+    this.safeSrc = sanitizer.bypassSecurityTrustResourceUrl(this.src);
+  }
+
+  duration(duration: number = null) {
+    this.checked = true;
+    this.file['duration'] = Math.round(duration);
+    URL.revokeObjectURL(this.src);
+  }
+}
 
 @Component({
   selector: 'publish-audio-version',
@@ -21,10 +38,12 @@ import { UploadService } from '../../../core';
       </div>
     </section>
     <footer>
-      <audio *ngFor="let f of newFiles" #audio [src]="f.safesrc"
-        (canplaythrough)="canPlay(audio,f)" (error)="cannotPlay($event,f)"></audio>
-      <input type="file" id="audio-file" multiple publishFileSelect (file)="addFile($event)"/>
-      <label class="button" for="audio-file">Upload Files</label>
+      <div *ngFor="let f of newFiles">
+        <audio *ngIf="!f.checked" #audio [src]="f.safeSrc"
+          (canplaythrough)="canPlay(audio,f)" (error)="cannotPlay($event,f)"></audio>
+      </div>
+      <input type="file" [id]="id" multiple publishFileSelect (file)="addFile($event)"/>
+      <label class="button" [htmlFor]="id">Upload Files</label>
     </footer>
   `,
   viewProviders: [DragulaService]
@@ -41,7 +60,7 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
   @Input() version: AudioVersionModel;
 
   private dragSubscription: Subscription;
-  private newFiles: File[] = [];
+  private newFiles: TempUpload[] = [];
 
   constructor(
     private uploadService: UploadService,
@@ -50,7 +69,7 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
   ) {}
 
   get id(): any {
-    return this.version.id ? ('version-' + this.version.id) : 'version-new';
+    return this.version.key();
   }
 
   ngOnInit() {
@@ -62,25 +81,20 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
   }
 
   addFile(file: File) {
-    file['tmpsrc'] = URL.createObjectURL(file);
-    file['safesrc'] = this.sanitizer.bypassSecurityTrustResourceUrl(file['tmpsrc']);
-    this.newFiles.push(file);
+    this.newFiles.push(new TempUpload(file, this.sanitizer));
   }
 
-  canPlay(el: HTMLAudioElement, file: File) {
-    file['duration'] = Math.round(el.duration);
-    this.uploadFile(file);
+  canPlay(el: HTMLAudioElement, up: TempUpload) {
+    up.duration(el.duration);
+    this.uploadFile(up.file);
   }
 
-  cannotPlay(e: Error, file: File) {
-    this.uploadFile(file); // TODO: should we mark this as non-audio?
+  cannotPlay(err: Error, up: TempUpload) {
+    up.duration(null); // TODO: should we mark this as non-audio?
+    this.uploadFile(up.file);
   }
 
   uploadFile(file: File) {
-    this.newFiles = this.newFiles.splice(this.newFiles.indexOf(file), 1);
-    URL.revokeObjectURL(file['safesrc']);
-    delete file['tmpsrc'];
-    delete file['safesrc'];
     let upload = this.uploadService.add(file);
     this.version.addUpload(upload);
   }

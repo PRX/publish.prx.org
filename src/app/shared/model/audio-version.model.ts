@@ -12,7 +12,6 @@ export class AudioVersionModel extends BaseModel {
   public label: string;
   public files: AudioFileModel[];
   public uploadUuids: string[] = [];
-  public noAudioFiles = true;
 
   // save in-progress uploads to localstorage
   SETABLE = ['uploadUuids'];
@@ -24,29 +23,29 @@ export class AudioVersionModel extends BaseModel {
   private series: HalDoc;
   private template: HalDoc;
 
-  constructor(series?: HalDoc, story?: HalDoc, audioVersion?: HalDoc) {
+  constructor(params: {series?: HalDoc, story?: HalDoc, template?: HalDoc, version?: HalDoc}) {
     super();
-    this.series = series;
-    this.init(story, audioVersion);
-    if (!audioVersion) {
-      this.set('label', AudioVersionModel.DEFAULT_LABEL);
-    }
-    if (audioVersion && audioVersion.has('prx:audio-version-template')) {
-      audioVersion.follow('prx:audio-version-template').subscribe(tdoc => {
-        this.setTemplate(tdoc);
-      });
-    }
+    this.series = params.series;
+    this.setTemplate(params.template);
+    this.init(params.story, params.version);
   }
 
   setTemplate(template: HalDoc) {
     this.template = template;
-    this.VALIDATORS['files'] = [VERSION_TEMPLATED(template)];
-    this.set('label', template['label'] || AudioVersionModel.DEFAULT_LABEL);
+    if (template) {
+      this.VALIDATORS['files'] = [VERSION_TEMPLATED(template)];
+      this.set('label', template['label'] || AudioVersionModel.DEFAULT_LABEL);
+    } else {
+      this.VALIDATORS['files'] = [VERSION_TEMPLATED()];
+      this.set('label', AudioVersionModel.DEFAULT_LABEL);
+    }
   }
 
   key() {
     if (this.doc) {
       return `prx.audio-version.${this.doc.id}`;
+    } else if (this.template) {
+      return `prx.audio-version.new.template.${this.template.id}`; // new for template
     } else if (this.parent) {
       return `prx.audio-version.new.${this.parent.id}`; // existing story
     } else if (this.series) {
@@ -70,15 +69,11 @@ export class AudioVersionModel extends BaseModel {
         this.set('uploadUuids', this.uploadUuids);
       }
     }
-    this.noAudioFiles = unsavedAudio.every(f => f.isDestroy);
 
     // load existing audio files
     if (this.doc) {
       rels.files = this.doc.followList('prx:audio').map((fileDocs) => {
         let savedAudio = fileDocs.map(fdoc => new AudioFileModel(this.doc, fdoc));
-        if (this.noAudioFiles) {
-          this.noAudioFiles = savedAudio.every(f => f.isDestroy);
-        }
         return savedAudio.concat(unsavedAudio);
       });
     } else {
@@ -103,6 +98,10 @@ export class AudioVersionModel extends BaseModel {
   discard() {
     super.discard();
     this.files.sort((f1, f2) => f1.position - f2.position);
+    if (this.template) {
+      this.setTemplate(this.template);
+      return false; // don't discard
+    }
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
@@ -114,7 +113,6 @@ export class AudioVersionModel extends BaseModel {
   }
 
   addUpload(upload: Upload) {
-    this.noAudioFiles = false;
     this.files.push(new AudioFileModel(this.doc, upload));
     this.uploadUuids.push(upload.uuid);
     this.set('uploadUuids', this.uploadUuids);
@@ -142,6 +140,10 @@ export class AudioVersionModel extends BaseModel {
         file.watchUpload(upload, false);
       }
     }
+  }
+
+  get noAudioFiles(): boolean {
+    return this.files.every(f => f.isDestroy);
   }
 
 }

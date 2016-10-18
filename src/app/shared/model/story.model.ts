@@ -48,14 +48,21 @@ export class StoryModel extends BaseModel {
   }
 
   related() {
-    // defaults for new story
-    let versions = Observable.of([new AudioVersionModel(this.parent)]);
-    let images = this.unsavedImage ? Observable.of([this.unsavedImage]) : Observable.of([]);
+    let versions: Observable<AudioVersionModel[]>;
+    let images: Observable<ImageModel[]>;
 
     // existing story: splice in unsaved image
     if (this.doc) {
-      versions = this.doc.followItems('prx:audio-versions').map(vdocs => {
-        return vdocs.map(vdoc => new AudioVersionModel(this.parent, this.doc, vdoc));
+      versions = this.doc.followItems('prx:audio-versions').flatMap(vdocs => {
+        return Observable.from(vdocs.map(vdoc => {
+          if (vdoc.has('prx:audio-version-template')) {
+            return vdoc.follow('prx:audio-version-template').map(tdoc => {
+              return new AudioVersionModel({story: this.doc, version: vdoc, template: tdoc});
+            });
+          } else {
+            return Observable.of(new AudioVersionModel({story: this.doc, version: vdoc}));
+          }
+        })).concatAll().toArray();
       });
       images = this.doc.followItems('prx:images').map(idocs => {
         let models = idocs.map(idoc => new ImageModel(this.parent, this.doc, idoc));
@@ -66,14 +73,17 @@ export class StoryModel extends BaseModel {
     // new story-in-series with templates: init versions from templates
     if (!this.doc && this.parent && this.parent.count('prx:audio-version-templates')) {
       versions = this.parent.followItems('prx:audio-version-templates').map(tdocs => {
-        return tdocs.map(tdoc => {
-          let version = new AudioVersionModel(this.parent);
-          version.setTemplate(tdoc);
-          return version;
-        });
+        return tdocs.map(tdoc => new AudioVersionModel({series: this.parent, template: tdoc}));
       });
     }
 
+    // defaults
+    if (!versions) {
+      versions = Observable.of([new AudioVersionModel({series: this.parent})]);
+    }
+    if (!images) {
+      images = this.unsavedImage ? Observable.of([this.unsavedImage]) : Observable.of([]);
+    }
     return {images: images, versions: versions};
   }
 

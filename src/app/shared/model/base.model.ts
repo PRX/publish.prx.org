@@ -65,8 +65,8 @@ export abstract class BaseModel {
     if (this.SETABLE.indexOf(field) > -1) {
       this.invalidFields[field] = this.invalidate(field, value);
       this.changedFields[field] = this.checkChanged(field, value);
+      this.store();
     }
-    this.store();
   }
 
   save(): Observable<boolean> {
@@ -123,21 +123,24 @@ export abstract class BaseModel {
     return Observable.from(relatedSavers).concatAll().toArray();
   }
 
-  discard() {
+  removeRelated(model: BaseModel) {
+    this.RELATIONS.forEach(rel => {
+      if (this[rel] === model) {
+        this[rel] = null;
+      } else if (this[rel].indexOf(model) > -1) {
+        this[rel].splice(this[rel].indexOf(model), 1);
+      }
+    });
+  }
+
+  discard(): any {
     this.unstore();
     this.lastStored = null;
     this.isDestroy = false;
     this.init(this.parent, this.doc, false);
     this.getRelated().forEach(model => {
-      model.discard();
-      if (model.isNew) {
-        this.RELATIONS.forEach(rel => {
-          if (this[rel] === model) {
-            this[rel] = null;
-          } else if (this[rel].indexOf(model) > -1) {
-            this[rel].splice(this[rel].indexOf(model), 1);
-          }
-        });
+      if (model.discard() !== false && model.isNew) {
+        this.removeRelated(model);
       }
     });
   }
