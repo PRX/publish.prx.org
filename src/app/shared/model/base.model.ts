@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { HalDoc } from '../../core';
-import { BaseInvalid } from './base.invalid';
+import { BaseInvalid } from './invalid';
 
 interface ValidatorMap { [key: string]: BaseInvalid[]; }
 interface RelatedMap   { [key: string]: Observable<any>; }
@@ -143,42 +143,47 @@ export abstract class BaseModel {
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
-    let fields = (field instanceof Array) ? field : [field];
-    if (!field || field.length < 1) {
-      if (includeRelations) {
-        fields = this.SETABLE.concat(this.RELATIONS);
-      } else {
-        fields = this.SETABLE;
-      }
-    }
-    for (let f of fields) {
+    return this.setableFields(field, includeRelations).some(f => {
       if (this.RELATIONS.indexOf(f) > -1) {
-        for (let model of this.getRelated(f)) {
-          if (model.changed()) { return true; }
-        }
-      } else if (this.changedFields[f]) {
-        return true;
+        return this.getRelated(f).some(m => m.changed());
+      } else {
+        return this.changedFields[f];
       }
-    }
-    return false;
+    });
   }
 
   invalid(field?: string | string[]): string {
-    let fields = (field instanceof Array) ? field : [field];
-    if (!field || field.length < 1) {
-      fields = this.SETABLE.concat(this.RELATIONS);
-    }
+    let fields = this.setableFields(field);
     let invalids: string[] = [];
     for (let f of fields) {
-      if (this.RELATIONS.indexOf(f) > -1) {
-        for (let model of this.getRelated(f)) {
-          if (model.invalid()) { invalids.push(model.invalid()); }
-        }
-      } else if (this.invalidFields[f]) {
+      if (this.RELATIONS.indexOf(f) < 0) {
         invalids.push(this.invalidFields[f]);
+      } else {
+        invalids.push(this.invalidRelated(f));
       }
     }
-    return invalids.length ? invalids.join(', ') : null;
+    return invalids.filter(i => i).join(', ') || null;
+  }
+
+  invalidRelated(rel: string): string {
+    let models = this.getRelated(rel);
+    let invalidMsg = this.invalidate(rel, models);
+    if (invalidMsg) {
+      return invalidMsg; // fast-return first error
+    } else {
+      return models.map(m => m.invalid()).filter(i => i).join(', ') || null;
+    }
+  }
+
+  setableFields(only?: string | string[], includeRelations = true): string[] {
+    let allFields = includeRelations ? this.SETABLE.concat(this.RELATIONS) : this.SETABLE;
+    if (only && typeof only === 'string') {
+      return allFields.indexOf(only) > -1 ? [only] : [];
+    } else if (only && only instanceof Array) {
+      return only.filter(f => allFields.indexOf(f) > -1);
+    } else {
+      return allFields;
+    }
   }
 
   store() {
