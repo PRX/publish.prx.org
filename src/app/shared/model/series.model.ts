@@ -2,7 +2,7 @@ import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
 import { ImageModel } from './image.model';
-import { REQUIRED, LENGTH } from './base.invalid';
+import { REQUIRED, LENGTH } from './invalid';
 
 export class SeriesModel extends BaseModel {
 

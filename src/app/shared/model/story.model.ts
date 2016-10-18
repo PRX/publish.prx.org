@@ -3,7 +3,7 @@ import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioVersionModel } from './audio-version.model';
 import { ImageModel } from './image.model';
-import { REQUIRED, LENGTH } from './base.invalid';
+import { REQUIRED, LENGTH } from './invalid';
 
 export class StoryModel extends BaseModel {
 
@@ -48,25 +48,33 @@ export class StoryModel extends BaseModel {
   }
 
   related() {
+    // defaults for new story
+    let versions = Observable.of([new AudioVersionModel(this.parent)]);
+    let images = this.unsavedImage ? Observable.of([this.unsavedImage]) : Observable.of([]);
+
+    // existing story: splice in unsaved image
     if (this.doc) {
-      return {
-        versions: this.doc.followItems('prx:audio-versions').map((versions) => {
-          return versions.map((vdoc) => {
-            return new AudioVersionModel(this.parent, this.doc, vdoc);
-          });
-        }),
-        images: this.doc.followItems('prx:images').map((images) => {
-          let imageModels = images.map(idoc => new ImageModel(this.parent, this.doc, idoc));
-          if (this.unsavedImage) { imageModels.push(this.unsavedImage); }
-          return imageModels;
-        })
-      };
-    } else {
-      return {
-        versions: Observable.of([new AudioVersionModel(this.parent)]),
-        images: this.unsavedImage ? Observable.of([this.unsavedImage]) : Observable.of([])
-      };
+      versions = this.doc.followItems('prx:audio-versions').map(vdocs => {
+        return vdocs.map(vdoc => new AudioVersionModel(this.parent, this.doc, vdoc));
+      });
+      images = this.doc.followItems('prx:images').map(idocs => {
+        let models = idocs.map(idoc => new ImageModel(this.parent, this.doc, idoc));
+        return this.unsavedImage ? models.concat(this.unsavedImage) : models;
+      });
     }
+
+    // new story-in-series with templates: init versions from templates
+    if (!this.doc && this.parent && this.parent.count('prx:audio-version-templates')) {
+      versions = this.parent.followItems('prx:audio-version-templates').map(tdocs => {
+        return tdocs.map(tdoc => {
+          let version = new AudioVersionModel(this.parent);
+          version.setTemplate(tdoc);
+          return version;
+        });
+      });
+    }
+
+    return {images: images, versions: versions};
   }
 
   decode() {

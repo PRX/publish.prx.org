@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioFileModel } from './audio-file.model';
+import { VERSION_TEMPLATED } from './invalid';
 
 export class AudioVersionModel extends BaseModel {
 
@@ -16,7 +17,12 @@ export class AudioVersionModel extends BaseModel {
   // save in-progress uploads to localstorage
   SETABLE = ['uploadUuids'];
 
+  VALIDATORS = {
+    files: [VERSION_TEMPLATED()]
+  };
+
   private series: HalDoc;
+  private template: HalDoc;
 
   constructor(series?: HalDoc, story?: HalDoc, audioVersion?: HalDoc) {
     super();
@@ -25,6 +31,17 @@ export class AudioVersionModel extends BaseModel {
     if (!audioVersion) {
       this.set('label', AudioVersionModel.DEFAULT_LABEL);
     }
+    if (audioVersion && audioVersion.has('prx:audio-version-template')) {
+      audioVersion.follow('prx:audio-version-template').subscribe(tdoc => {
+        this.setTemplate(tdoc);
+      });
+    }
+  }
+
+  setTemplate(template: HalDoc) {
+    this.template = template;
+    this.VALIDATORS['files'] = [VERSION_TEMPLATED(template)];
+    this.set('label', template['label'] || AudioVersionModel.DEFAULT_LABEL);
   }
 
   key() {
@@ -94,14 +111,6 @@ export class AudioVersionModel extends BaseModel {
     } else {
       return super.changed(field, includeRelations);
     }
-  }
-
-  invalid(field?: string | string[]): string {
-    let invalid = super.invalid(field);
-    if (!field && !invalid && this.files.filter(f => !f.isDestroy).length === 0) {
-      invalid = 'You must upload at least 1 audio file';
-    }
-    return invalid;
   }
 
   addUpload(upload: Upload) {
