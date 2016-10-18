@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DragulaService } from 'ng2-dragula/ng2-dragula';
 import { AudioVersionModel } from '../../model';
@@ -8,23 +9,23 @@ import { UploadService } from '../../../core';
   selector: 'publish-audio-version',
   styleUrls: ['audio-version.component.css'],
   template: `
-    <template [ngIf]="DESCRIPTIONS[version.label]">
-      <header>
-        <strong>{{version.label}}</strong>
-        <span>{{DESCRIPTIONS[version.label]}}</span>
-      </header>
-      <section [dragula]="id" [dragulaModel]="version.files">
-        <publish-audio-file *ngFor="let file of version.files"
-          [audio]="file" (cancel)="onCancel($event)"></publish-audio-file>
-        <div *ngIf="version.noAudioFiles" class="empty">
-          <h4>Upload a file to get started</h4>
-        </div>
-      </section>
-      <footer>
-        <input type="file" id="audio-file" multiple publishFileSelect (file)="addUpload($event)"/>
-        <label class="button" for="audio-file">Upload Files</label>
-      </footer>
-    </template>
+    <header>
+      <strong>{{version.label}}</strong>
+      <span *ngIf="DESCRIPTIONS[version.label]">{{DESCRIPTIONS[version.label]}}</span>
+    </header>
+    <section [dragula]="id" [dragulaModel]="version.files">
+      <publish-audio-file *ngFor="let file of version.files"
+        [audio]="file" (cancel)="onCancel($event)"></publish-audio-file>
+      <div *ngIf="version.noAudioFiles" class="empty">
+        <h4>Upload a file to get started</h4>
+      </div>
+    </section>
+    <footer>
+      <audio *ngFor="let f of newFiles" #audio [src]="f.safesrc"
+        (canplaythrough)="canPlay(audio,f)" (error)="cannotPlay($event,f)"></audio>
+      <input type="file" id="audio-file" multiple publishFileSelect (file)="addFile($event)"/>
+      <label class="button" for="audio-file">Upload Files</label>
+    </footer>
   `,
   viewProviders: [DragulaService]
 })
@@ -40,10 +41,12 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
   @Input() version: AudioVersionModel;
 
   private dragSubscription: Subscription;
+  private newFiles: File[] = [];
 
   constructor(
     private uploadService: UploadService,
-    private dragulaService: DragulaService
+    private dragulaService: DragulaService,
+    private sanitizer: DomSanitizer
   ) {}
 
   get id(): any {
@@ -58,7 +61,26 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
     this.dragSubscription.unsubscribe();
   }
 
-  addUpload(file: File) {
+  addFile(file: File) {
+    file['tmpsrc'] = URL.createObjectURL(file);
+    file['safesrc'] = this.sanitizer.bypassSecurityTrustResourceUrl(file['tmpsrc']);
+    this.newFiles.push(file);
+  }
+
+  canPlay(el: HTMLAudioElement, file: File) {
+    file['duration'] = Math.round(el.duration);
+    this.uploadFile(file);
+  }
+
+  cannotPlay(e: Error, file: File) {
+    this.uploadFile(file); // TODO: should we mark this as non-audio?
+  }
+
+  uploadFile(file: File) {
+    this.newFiles = this.newFiles.splice(this.newFiles.indexOf(file), 1);
+    URL.revokeObjectURL(file['safesrc']);
+    delete file['tmpsrc'];
+    delete file['safesrc'];
     let upload = this.uploadService.add(file);
     this.version.addUpload(upload);
   }

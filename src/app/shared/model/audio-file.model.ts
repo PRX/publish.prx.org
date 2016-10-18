@@ -14,6 +14,9 @@ export class AudioFileModel extends UploadableModel {
   constructor(audioVersion?: HalDoc, file?: HalDoc | Upload | string) {
     super();
     this.initUpload(audioVersion, file);
+    if (file instanceof Upload) {
+      this.set('duration', file.duration);
+    }
   }
 
   stateComplete(status: string): boolean {

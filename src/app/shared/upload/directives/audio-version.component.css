@@ -37,6 +37,9 @@ footer {
   padding: 10px 50px;
   text-align: right;
 }
+footer audio {
+  display: none;
+}
 footer input {
 	width: 0.1px;
 	height: 0.1px;
