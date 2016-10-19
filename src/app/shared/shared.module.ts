@@ -12,11 +12,13 @@ import { HeroComponent } from './hero';
 import { ImageLoaderComponent } from './image';
 import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
-import { AudioFileComponent, AudioUploadComponent, AudioVersionComponent,
-  FileSelectDirective, ImageFileComponent, ImageUploadComponent } from './upload';
+import { AudioButtonComponent, AudioFileComponent, AudioUploadComponent,
+  AudioVersionComponent, FileSelectDirective, ImageFileComponent,
+  ImageUploadComponent } from './upload';
 
 @NgModule({
   declarations: [
+    AudioButtonComponent,
     AudioFileComponent,
     AudioUploadComponent,
     AudioVersionComponent,
