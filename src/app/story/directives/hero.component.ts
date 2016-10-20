@@ -26,7 +26,12 @@ import { StoryModel } from '../../shared';
 
         <template [ngIf]="story.isNew">
           <publish-button [model]="story" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
-          <publish-button [model]="story" visible=1 green=1 (click)="save()">Create</publish-button>
+          <publish-button [model]="story" visible=1 green=1 (click)="save()">Create
+            <div *ngIf="story.invalid()" class="invalid-tip create">
+              <h4>Invalid story</h4>
+              <p>Fill out all required fields</p>
+            </div>
+          </publish-button>
         </template>
 
         <template [ngIf]="!story.isNew">

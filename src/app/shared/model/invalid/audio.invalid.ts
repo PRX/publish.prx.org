@@ -1,5 +1,6 @@
 import { HalDoc } from '../../../core';
 import { AudioFileModel } from '../audio-file.model';
+import { AudioVersionModel } from '../audio-version.model';
 import { DurationPipe } from '../../file';
 import { BaseInvalid } from './base.invalid';
 
@@ -9,8 +10,8 @@ const durationPipe = new DurationPipe();
  * Audio version template validations
  */
 export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
-  return <BaseInvalid> (key: string, files: AudioFileModel[]) => {
-    let undeleted = files.filter(f => !f.isDestroy);
+  return <BaseInvalid> (key: string, version: AudioVersionModel) => {
+    let undeleted = version.files.filter(f => !f.isDestroy);
     let count = undeleted.length;
 
     // segment count

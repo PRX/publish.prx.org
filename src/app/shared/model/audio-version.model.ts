@@ -17,7 +17,7 @@ export class AudioVersionModel extends BaseModel {
   SETABLE = ['uploadUuids'];
 
   VALIDATORS = {
-    files: [VERSION_TEMPLATED()]
+    self: [VERSION_TEMPLATED()]
   };
 
   public series: HalDoc;
@@ -34,10 +34,10 @@ export class AudioVersionModel extends BaseModel {
   setTemplate(template: HalDoc) {
     this.template = template;
     if (template) {
-      this.VALIDATORS['files'] = [VERSION_TEMPLATED(template)];
+      this.VALIDATORS['self'] = [VERSION_TEMPLATED(template)];
       this.set('label', template['label'] || AudioVersionModel.DEFAULT_LABEL);
     } else {
-      this.VALIDATORS['files'] = [VERSION_TEMPLATED()];
+      this.VALIDATORS['self'] = [VERSION_TEMPLATED()];
       this.set('label', AudioVersionModel.DEFAULT_LABEL);
     }
   }

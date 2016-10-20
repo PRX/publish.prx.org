@@ -7,9 +7,14 @@ import { StoryModel } from '../model';
   template: `
     <publish-spinner *ngIf="!story?.versions"></publish-spinner>
 
-    <publish-fancy-field *ngFor="let v of story?.versions" [model]="v" name="files">
+    <div *ngFor="let v of story?.versions" class="version"
+      [class.invalid]="v.invalid()" [class.changed]="v.changed()">
+
       <publish-audio-version [version]="v"></publish-audio-version>
-    </publish-fancy-field>
+
+      <p *ngIf="v.invalid('self')" class="error">{{v.invalid('self') | capitalize}}</p>
+
+    </div>
 
     <div *ngIf="story?.versions.length === 0">
       <h1>You have no audio versions for this story. How did that happen?</h1>
