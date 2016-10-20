@@ -9,3 +9,7 @@ input {
   color: #939393;
   background: #fff;
 }
+
+option[disabled] {
+  display: none;
+}

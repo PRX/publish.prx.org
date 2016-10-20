@@ -61,6 +61,7 @@ export class SearchComponent implements OnInit {
 
   subscribeRouteParams() {
     this.route.params.forEach((params) => {
+      this.clearResults();
       this.selectedTab = params['tab'] || SearchComponent.TAB_STORIES;
       this.currentPage = params['page'] ? +params['page'] : 1;
       if (this.selectedTab === SearchComponent.TAB_STORIES) {
@@ -74,10 +75,9 @@ export class SearchComponent implements OnInit {
   }
 
   searchWithParams(searchParams: any) {
-    this.clearResults();
     let routeParams = {tab: this.selectedTab};
     Object.keys(searchParams).forEach(key => {
-      if (searchParams[key] !== undefined) {
+      if (searchParams[key] !== undefined && searchParams[key] !== 'undefined') {
         routeParams[key] = searchParams[key];
       }
     });
