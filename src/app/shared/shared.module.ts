@@ -6,7 +6,7 @@ import { DragulaModule } from 'ng2-dragula/ng2-dragula';
 
 import { TimeAgoPipe } from './date';
 import { DurationPipe, FileSizePipe } from './file';
-import { ButtonComponent, FancyFieldComponent } from './form';
+import { ButtonComponent, CapitalizePipe, FancyFieldComponent } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { HeroComponent } from './hero';
 import { ImageLoaderComponent } from './image';
@@ -23,6 +23,7 @@ import { AudioButtonComponent, AudioFileComponent, AudioUploadComponent,
     AudioUploadComponent,
     AudioVersionComponent,
     ButtonComponent,
+    CapitalizePipe,
     DurationPipe,
     FancyFieldComponent,
     FileSelectDirective,
