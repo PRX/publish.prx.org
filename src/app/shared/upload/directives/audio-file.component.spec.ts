@@ -7,6 +7,7 @@ describe('AudioFileComponent', () => {
   create(AudioFileComponent, false);
   stubPipe('filesize');
   stubPipe('duration');
+  stubPipe('capitalize');
   provide(UploadService, {find: uuid => uuid === 'testuuid' ? 'foobar' : null});
 
   const mockFile = (data: any = {}): {} => {
@@ -137,6 +138,14 @@ describe('AudioFileComponent', () => {
     spyOn(comp.audio, 'watchUpload').and.stub;
     fix.detectChanges();
     expect(comp.audio.watchUpload).toHaveBeenCalledWith('foobar', false);
+  });
+
+  cit('renders a placeholder', (fix, el, comp) => {
+    comp.placeholder = {label: 'Foobar label', lengthMinimum: 999};
+    fix.detectChanges();
+    expect(el).toQuery('.placeholder');
+    expect(el).toContainText('Foobar label');
+    expect(el).toContainText('greater than 999');
   });
 
 });

@@ -21,19 +21,21 @@ describe('AudioVersionComponent', () => {
 
   const mockVersion = (data = {}): {} => {
     let version = <any> {};
+    version.key = () => 'something-unique';
     version.label = 'Main Audio';
     version.uploadUuids = [];
     version.files = [];
-    version.watchUpload = () => { return; };
-    version.addUpload = (upload: any) => { version.files.push(upload); };
+    version.watchUpload = () => null;
+    version.addUpload = (upload: any) => version.files.push(upload);
     for (let key of Object.keys(data)) { version[key] = data[key]; }
     return version;
   };
 
-  cit('only shows known versions', (fix, el, comp) => {
+  cit('shows version descriptions', (fix, el, comp) => {
     comp.version = mockVersion({label: 'foobar'});
     fix.detectChanges();
-    expect(el).not.toQuery('header strong');
+    expect(el).toQueryText('header strong', 'foobar');
+    expect(el).not.toQuery('header span');
     comp.version = mockVersion({label: 'Main Audio'});
     fix.detectChanges();
     expect(el).toQueryText('header strong', 'Main Audio');
@@ -44,6 +46,12 @@ describe('AudioVersionComponent', () => {
     comp.version = mockVersion({noAudioFiles: true});
     fix.detectChanges();
     expect(el).toContainText('Upload a file to get started');
+  });
+
+  cit('shows upload placeholders', (fix, el, comp) => {
+    comp.version = mockVersion({audioCount: 1, fileTemplates: ['one', 'two', 'three']});
+    fix.detectChanges();
+    expect(el.queryAll(By.css('.placeholder publish-audio-file')).length).toEqual(2);
   });
 
   cit('renders upload files', (fix, el, comp) => {
@@ -57,12 +65,27 @@ describe('AudioVersionComponent', () => {
     fix.detectChanges();
     expect(el.queryAll(By.css('publish-audio-file')).length).toEqual(1);
 
+    spyOn(comp, 'updateFiles').and.stub();
     spyOn(comp.version, 'addUpload').and.callThrough();
-    comp.addUpload('two');
+    comp.uploadFile('two');
     expect(uploadFiles['two']).toEqual('two');
     fix.detectChanges();
     expect(el.queryAll(By.css('publish-audio-file')).length).toEqual(2);
     expect(comp.version.addUpload).toHaveBeenCalledWith('two');
+  });
+
+  cit('orders files and assigns templates', (fix, el, comp) => {
+    const mkfile = (name) => { return {
+      set: function(f, v) { this[f] = v; },
+      setTemplate: function(t) { this['template'] = t; }
+    }; };
+    comp.version = mockVersion({files: [mkfile('one'), mkfile('two')], fileTemplates: ['one']});
+    fix.detectChanges();
+    comp.updateFiles();
+    expect(comp.version.files[0].position).toEqual(1);
+    expect(comp.version.files[1].position).toEqual(2);
+    expect(comp.version.files[0].template).toEqual('one');
+    expect(comp.version.files[1].template).toEqual(undefined);
   });
 
 });

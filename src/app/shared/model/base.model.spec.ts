@@ -80,6 +80,7 @@ describe('BaseModel', () => {
   describe('set', () => {
 
     it('sets and stores the value', () => {
+      base.SETABLE = ['foo'];
       spyOn(base, 'store').and.stub();
       spyOn(base, 'invalidate').and.stub();
       spyOn(base, 'checkChanged').and.stub();

@@ -35,6 +35,8 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
       let got = durationPipe.transform(duration);
       return `total length must be less than ${max} - currently ${got}`;
     }
+
+    return null;
   };
 };
 
@@ -62,5 +64,7 @@ export const FILE_TEMPLATED = (template?: HalDoc): BaseInvalid => {
       let got = durationPipe.transform(file.duration);
       return `length must be less than ${max} - currently ${got}`;
     }
+
+    return null;
   };
 };

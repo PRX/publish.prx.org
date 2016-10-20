@@ -44,7 +44,7 @@ export class AudioButtonComponent {
   @Input() id: string;
   @Output() file = new EventEmitter<CheckedFile>();
 
-  private newFiles: FileChecker[] = [];
+  newFiles: FileChecker[] = [];
 
   constructor(private sanitizer: DomSanitizer) {}
 

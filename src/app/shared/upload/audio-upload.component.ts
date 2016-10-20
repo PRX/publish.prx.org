@@ -16,7 +16,7 @@ import { StoryModel } from '../model';
 
     </div>
 
-    <div *ngIf="story?.versions.length === 0">
+    <div *ngIf="story?.versions?.length === 0">
       <h1>You have no audio versions for this story. How did that happen?</h1>
     </div>
   `

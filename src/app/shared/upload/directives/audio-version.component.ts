@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DragulaService } from 'ng2-dragula/ng2-dragula';
 import { AudioVersionModel } from '../../model';
-import { HalDoc, UploadService } from '../../../core';
+import { UploadService } from '../../../core';
 import { CheckedFile } from './audio-button.component';
 
 @Component({
@@ -45,8 +45,6 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
   @Input() version: AudioVersionModel;
 
   private dragSub: Subscription;
-  // private fileTemplates: HalDoc[] = [];
-  // private uploadSlots: HalDoc[] = [];
 
   constructor(
     private uploadService: UploadService,
@@ -62,7 +60,9 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.dragSub.unsubscribe();
+    if (this.dragSub) {
+      this.dragSub.unsubscribe();
+    }
   }
 
   uploadFile(file: CheckedFile) {

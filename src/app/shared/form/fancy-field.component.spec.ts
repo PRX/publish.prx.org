@@ -1,4 +1,4 @@
-import { cit, contain, By } from '../../../testing';
+import { cit, contain, stubPipe, By } from '../../../testing';
 import { FancyFieldComponent } from './fancy-field.component';
 
 describe('FancyFieldComponent', () => {
@@ -13,6 +13,8 @@ describe('FancyFieldComponent', () => {
       </publish-fancy-field>
     `
   });
+
+  stubPipe('capitalize');
 
   cit('renders a blank story field', (fix, el, comp) => {
     expect(el).toQuery('.field');
@@ -112,7 +114,7 @@ describe('FancyFieldComponent', () => {
     isInvalid = 'some message foobar something';
     fix.detectChanges();
     expect(el).toQuery('.field.invalid');
-    expect(el).toQueryText('p.error', 'Some message foobar something');
+    expect(el).toQueryText('p.error', 'some message foobar something');
   });
 
   cit('explicitly overrides invalid fieldnames', (fix, el, comp) => {
@@ -124,20 +126,20 @@ describe('FancyFieldComponent', () => {
     comp.invalid = 'somethingelse';
     fix.detectChanges();
     expect(el).toQuery('.field.invalid-explicit');
-    expect(el).toQueryText('p.error', 'Some message foobar something');
+    expect(el).toQueryText('p.error', 'some message foobar something');
   });
 
   cit('replaces field names with labels for invalid messages', (fix, el, comp) => {
     comp.name = 'foobar';
     comp.model = {changed: () => false, invalid: () => 'some message foobar something'};
     fix.detectChanges();
-    expect(el).toQueryText('p.error', 'Some message foobar something');
+    expect(el).toQueryText('p.error', 'some message foobar something');
     comp.label = 'New Label';
     fix.detectChanges();
-    expect(el).toQueryText('p.error', 'Some message New Label something');
+    expect(el).toQueryText('p.error', 'some message New Label something');
     comp.invalidlabel = 'Newer Label';
     fix.detectChanges();
-    expect(el).toQueryText('p.error', 'Some message Newer Label something');
+    expect(el).toQueryText('p.error', 'some message Newer Label something');
   });
 
 });
