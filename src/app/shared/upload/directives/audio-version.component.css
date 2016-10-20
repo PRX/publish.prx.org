@@ -37,21 +37,3 @@ footer {
   padding: 10px 50px;
   text-align: right;
 }
-footer audio {
-  display: none;
-}
-footer input {
-	width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
-}
-footer label {
-  padding: 6px 10px;
-  margin-bottom: 0;
-}
-footer input:focus + label, footer label:hover {
-  background-color: #2b7187;
-}

@@ -25,14 +25,41 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
     if (template && template['lengthMinimum'] && duration < template['lengthMinimum']) {
       let min = durationPipe.transform(template['lengthMinimum']);
       let got = durationPipe.transform(duration);
-      return `total duration must be greater than ${min} - currently ${got}`;
+      return `total length must be greater than ${min} - currently ${got}`;
     }
 
     // max duration
     if (template && template['lengthMaximum'] && duration > template['lengthMaximum']) {
       let max = durationPipe.transform(template['lengthMaximum']);
       let got = durationPipe.transform(duration);
-      return `total duration must be less than ${max} - currently ${got}`;
+      return `total length must be less than ${max} - currently ${got}`;
+    }
+  };
+};
+
+/**
+ * Audio file template validations
+ */
+export const FILE_TEMPLATED = (template?: HalDoc): BaseInvalid => {
+  return <BaseInvalid> (key: string, file: AudioFileModel) => {
+
+    // TODO: bad assumption all audio is html5-playable
+    if (!file.duration) {
+      return 'not an audio file';
+    }
+
+    // min duration
+    if (template && template['lengthMinimum'] && file.duration < template['lengthMinimum']) {
+      let min = durationPipe.transform(template['lengthMinimum']);
+      let got = durationPipe.transform(file.duration);
+      return `length must be greater than ${min} - currently ${got}`;
+    }
+
+    // max duration
+    if (template && template['lengthMaximum'] && file.duration > template['lengthMaximum']) {
+      let max = durationPipe.transform(template['lengthMaximum']);
+      let got = durationPipe.transform(file.duration);
+      return `length must be less than ${max} - currently ${got}`;
     }
   };
 };

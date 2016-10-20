@@ -20,8 +20,9 @@ export class AudioVersionModel extends BaseModel {
     files: [VERSION_TEMPLATED()]
   };
 
-  private series: HalDoc;
-  private template: HalDoc;
+  public series: HalDoc;
+  public template: HalDoc;
+  public fileTemplates: HalDoc[] = [];
 
   constructor(params: {series?: HalDoc, story?: HalDoc, template?: HalDoc, version?: HalDoc}) {
     super();
@@ -56,7 +57,8 @@ export class AudioVersionModel extends BaseModel {
   }
 
   related() {
-    let rels = <any> {};
+    let files: Observable<AudioFileModel[]>;
+    const fileSort = (f1, f2) => f1.position - f2.position;
 
     // unsaved/in-progress file uploads
     let unsavedAudio: AudioFileModel[] = [];
@@ -72,14 +74,26 @@ export class AudioVersionModel extends BaseModel {
 
     // load existing audio files
     if (this.doc) {
-      rels.files = this.doc.followList('prx:audio').map((fileDocs) => {
+      files = this.doc.followList('prx:audio').map((fileDocs) => {
         let savedAudio = fileDocs.map(fdoc => new AudioFileModel(this.doc, fdoc));
-        return savedAudio.concat(unsavedAudio);
+        return savedAudio.concat(unsavedAudio).sort(fileSort);
       });
     } else {
-      rels.files = Observable.of(unsavedAudio);
+      files = Observable.of(unsavedAudio.sort(fileSort));
     }
-    return rels;
+
+    // load audio-file-templates (in parallel)
+    if (this.template && this.template.has('prx:audio-file-templates')) {
+      let tpls = this.template.followList('prx:audio-file-templates');
+      files = Observable.forkJoin(files, tpls).map(([models, tdocs]) => {
+        let tidx = 0;
+        this.fileTemplates = tdocs.sort(fileSort);
+        models.forEach(f => f.setTemplate(f.isDestroy ? null : this.fileTemplates[tidx++]));
+        return models;
+      });
+    }
+
+    return {files: files};
   }
 
   decode() {
@@ -88,7 +102,11 @@ export class AudioVersionModel extends BaseModel {
   }
 
   encode(): {} {
-    return {label: this.label};
+    let data = <any> {label: this.label};
+    if (this.isNew && this.template) {
+      data.set_audio_version_template_uri = this.template.expand('self');
+    }
+    return data;
   }
 
   saveNew(data: {}): Observable<HalDoc> {
@@ -143,7 +161,11 @@ export class AudioVersionModel extends BaseModel {
   }
 
   get noAudioFiles(): boolean {
-    return this.files.every(f => f.isDestroy);
+    return this.fileTemplates.length < 1 && this.files.every(f => f.isDestroy);
+  }
+
+  get audioCount(): number {
+    return this.files.filter(f => !f.isDestroy).length;
   }
 
 }

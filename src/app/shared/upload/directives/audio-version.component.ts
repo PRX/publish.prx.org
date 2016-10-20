@@ -1,26 +1,9 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DragulaService } from 'ng2-dragula/ng2-dragula';
 import { AudioVersionModel } from '../../model';
-import { UploadService } from '../../../core';
-
-class TempUpload {
-  public checked = false;
-  public src: string;
-  public safeSrc: SafeResourceUrl;
-
-  constructor(public file: File, sanitizer: DomSanitizer) {
-    this.src = URL.createObjectURL(file);
-    this.safeSrc = sanitizer.bypassSecurityTrustResourceUrl(this.src);
-  }
-
-  duration(duration: number = null) {
-    this.checked = true;
-    this.file['duration'] = Math.round(duration);
-    URL.revokeObjectURL(this.src);
-  }
-}
+import { HalDoc, UploadService } from '../../../core';
+import { CheckedFile } from './audio-button.component';
 
 @Component({
   selector: 'publish-audio-version',
@@ -30,20 +13,22 @@ class TempUpload {
       <strong>{{version.label}}</strong>
       <span *ngIf="DESCRIPTIONS[version.label]">{{DESCRIPTIONS[version.label]}}</span>
     </header>
-    <section [dragula]="id" [dragulaModel]="version.files">
-      <publish-audio-file *ngFor="let file of version.files"
-        [audio]="file" (cancel)="onCancel($event)"></publish-audio-file>
+    <section>
+      <div [dragula]="id" [dragulaModel]="version.files" class="uploads">
+        <publish-audio-file *ngFor="let file of version.files" [audio]="file"
+          (cancel)="onCancel($event)">
+        </publish-audio-file>
+      </div>
+      <div class="placeholder" *ngFor="let tpl of version.fileTemplates; let i = index">
+        <publish-audio-file *ngIf="i >= version.audioCount" [placeholder]="tpl">
+        </publish-audio-file>
+      </div>
       <div *ngIf="version.noAudioFiles" class="empty">
         <h4>Upload a file to get started</h4>
       </div>
     </section>
     <footer>
-      <div *ngFor="let f of newFiles">
-        <audio *ngIf="!f.checked" #audio [src]="f.safeSrc"
-          (canplaythrough)="canPlay(audio,f)" (error)="cannotPlay($event,f)"></audio>
-      </div>
-      <input type="file" [id]="id" multiple publishFileSelect (file)="addFile($event)"/>
-      <label class="button" [htmlFor]="id">Upload Files</label>
+      <publish-audio-button [id]="id" (file)="uploadFile($event)"></publish-audio-button>
     </footer>
   `,
   viewProviders: [DragulaService]
@@ -59,13 +44,13 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
 
   @Input() version: AudioVersionModel;
 
-  private dragSubscription: Subscription;
-  private newFiles: TempUpload[] = [];
+  private dragSub: Subscription;
+  // private fileTemplates: HalDoc[] = [];
+  // private uploadSlots: HalDoc[] = [];
 
   constructor(
     private uploadService: UploadService,
-    private dragulaService: DragulaService,
-    private sanitizer: DomSanitizer
+    private dragulaService: DragulaService
   ) {}
 
   get id(): any {
@@ -77,48 +62,39 @@ export class AudioVersionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.dragSubscription.unsubscribe();
+    this.dragSub.unsubscribe();
   }
 
-  addFile(file: File) {
-    this.newFiles.push(new TempUpload(file, this.sanitizer));
-  }
-
-  canPlay(el: HTMLAudioElement, up: TempUpload) {
-    up.duration(el.duration);
-    this.uploadFile(up.file);
-  }
-
-  cannotPlay(err: Error, up: TempUpload) {
-    up.duration(null); // TODO: should we mark this as non-audio?
-    this.uploadFile(up.file);
-  }
-
-  uploadFile(file: File) {
+  uploadFile(file: CheckedFile) {
     let upload = this.uploadService.add(file);
     this.version.addUpload(upload);
+    this.updateFiles();
   }
 
   onCancel(uuid) {
     this.version.removeUpload(uuid);
+    this.updateFiles();
+  }
+
+  updateFiles() {
+    let tidx = 0, position = 1;
+    this.version.files.forEach(file => {
+      if (file.isDestroy) {
+        file.setTemplate(null);
+      } else {
+        file.set('position', position++);
+        file.setTemplate(this.version.fileTemplates[tidx++]);
+      }
+    });
   }
 
   private initDragula() {
     this.dragulaService.setOptions(this.id, {
-      moves: function (el: Element, source: Element, handle: Element) {
+      moves: (el: Element, source: Element, handle: Element) => {
         return handle.classList.contains('drag-handle');
       }
     });
-
-    // update positions for visible (non-canceled) audio-files
-    this.dragSubscription = this.dragulaService.dropModel.subscribe((args: any[]) => {
-      let position = 1;
-      for (let file of this.version.files) {
-        if (!file.isDestroy) {
-          file.set('position', position++);
-        }
-      }
-    });
+    this.dragSub = this.dragulaService.dropModel.subscribe(() => this.updateFiles());
   }
 
 }

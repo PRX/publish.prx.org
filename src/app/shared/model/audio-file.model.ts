@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
 import { UploadableModel } from './uploadable.model';
+import { FILE_TEMPLATED } from './invalid';
 
 export class AudioFileModel extends UploadableModel {
 
@@ -11,11 +12,29 @@ export class AudioFileModel extends UploadableModel {
 
   SETABLE = ['label', 'duration', 'position', 'isDestroy'];
 
+  VALIDATORS = {
+    self: [FILE_TEMPLATED()]
+  };
+
+  public template: HalDoc;
+
   constructor(audioVersion?: HalDoc, file?: HalDoc | Upload | string) {
     super();
     this.initUpload(audioVersion, file);
     if (file instanceof Upload) {
       this.set('duration', file.duration);
+    }
+  }
+
+  setTemplate(template: HalDoc) {
+    this.template = template;
+    if (template) {
+      this.set('label', template['label']);
+      this.VALIDATORS['self'] = [FILE_TEMPLATED(template)];
+    } else {
+      let segLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(this.position - 1) % 26];
+      this.set('label', `Segment ${segLetter}`);
+      this.VALIDATORS['self'] = [FILE_TEMPLATED()];
     }
   }
 

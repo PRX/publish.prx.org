@@ -159,7 +159,9 @@ export abstract class BaseModel {
     let fields = this.setableFields(field);
     let invalids: string[] = [];
     for (let f of fields) {
-      if (this.RELATIONS.indexOf(f) < 0) {
+      if (f === 'self') {
+        invalids.push(this.invalidate('self', this));
+      } else if (this.RELATIONS.indexOf(f) < 0) {
         invalids.push(this.invalidFields[f]);
       } else {
         invalids.push(this.invalidRelated(f));
@@ -179,7 +181,8 @@ export abstract class BaseModel {
   }
 
   setableFields(only?: string | string[], includeRelations = true): string[] {
-    let allFields = includeRelations ? this.SETABLE.concat(this.RELATIONS) : this.SETABLE;
+    let allFields = this.SETABLE.concat('self');
+    if (includeRelations) { allFields = allFields.concat(this.RELATIONS); }
     if (only && typeof only === 'string') {
       return allFields.indexOf(only) > -1 ? [only] : [];
     } else if (only && only instanceof Array) {
