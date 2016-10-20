@@ -1,9 +1,25 @@
 /**
- * Extra story data
+ * Podcast settings
  */
-hr {
-  width: 100%;
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #ccc;
-  margin: 0 0 30px;
+.version header {
+  background-color: #B8B8B8;
+  padding: 16px 14px;
+}
+.version header strong {
+  color: #222;
+  font-size: 17px;
+  font-weight: 600;
+  vertical-align: middle;
+  margin-right: 14px;
+}
+.version section {
+  background: #fff;
+  border-bottom: 1px solid #DDD;
+  border-top: 1px solid #DDD;
+  margin-top: -1px;
+  margin-bottom: 30px;
+  padding: 18px 22px 0;
+}
+.version:last-child section {
+  margin-bottom: 0;
 }
