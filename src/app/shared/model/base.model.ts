@@ -156,6 +156,9 @@ export abstract class BaseModel {
   }
 
   invalid(field?: string | string[]): string {
+    if (this.isDestroy) {
+      return null; // don't care if it's invalid
+    }
     let fields = this.setableFields(field);
     let invalids: string[] = [];
     for (let f of fields) {

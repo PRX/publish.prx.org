@@ -21,6 +21,11 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
       return 'upload at least 1 segment';
     }
 
+    // wait for uploads to complete
+    if (!version.files.every(f => !f.isUploading)) {
+      return 'wait for uploads to complete';
+    }
+
     // min duration
     let duration = undeleted.map(f => f.duration || 0).reduce((a, b) => a + b);
     if (template && template['lengthMinimum'] && duration < template['lengthMinimum']) {

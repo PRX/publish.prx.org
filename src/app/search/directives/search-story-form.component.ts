@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { SearchStory } from '../search-story.model';
 
@@ -15,11 +15,12 @@ import { SearchStory } from '../search-story.model';
       <div class="form-group">
         <p class="left">
           <label [attr.for]="searchSeries">Filter by Series</label>
-          <select id="searchSeries" name="series" 
+          <select id="searchSeries" name="series"
             [(ngModel)]="model.seriesId" (ngModelChange)="modelChange.emit(model)">
+            <option selected disabled value="undefined">Select Series</option>
             <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId]?.title || 'No Series'}}</option>
           </select>
-          <!-- TODO: there should be a way to clear this, issue #52 -->
+          <button class="btn-link" (click)="clearSeries()"><i class="icon-cancel"></i></button>
         </p>
       
         <p class="right">
@@ -38,7 +39,7 @@ import { SearchStory } from '../search-story.model';
 `
 })
 
-export class SearchStoryFormComponent {
+export class SearchStoryFormComponent implements OnInit {
   @Input() allSeriesIds: number[];
   @Input() allSeries: any;
   @Input() orderByOptions: any[];
@@ -59,5 +60,10 @@ export class SearchStoryFormComponent {
       .subscribe((text: string) => {
         this.modelChange.emit(this.model);
       });
+  }
+
+  clearSeries() {
+    this.model.seriesId = undefined;
+    this.modelChange.emit(this.model);
   }
 }
