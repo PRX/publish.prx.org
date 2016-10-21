@@ -29,5 +29,5 @@
     <select *ngIf="select" [id]="name" disabled=true></select>
   </template>
 
-  <p *ngIf="formattedInvalid && !small" class="error">{{formattedInvalid}}</p>
+  <p *ngIf="formattedInvalid && !small" class="error">{{formattedInvalid | capitalize}}</p>
 </div>

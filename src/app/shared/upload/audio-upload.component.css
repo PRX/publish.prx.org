@@ -9,9 +9,21 @@ h2 {
   font-size: 20px;
   font-weight: 600;
 }
-publish-audio-version {
+.version {
   margin-bottom: 30px;
 }
-publish-audio-version:last-child {
+.version:last-child {
   margin-bottom: 0;
+}
+.version.invalid.changed publish-audio-version {
+  outline: 5px auto #e32;
+}
+p.error {
+  display: none;
+  text-align: left;
+  margin-top: 6px;
+  color: #e32;
+}
+.version.changed p.error {
+  display: block;
 }

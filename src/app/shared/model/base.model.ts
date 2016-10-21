@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { HalDoc } from '../../core';
-import { BaseInvalid } from './base.invalid';
+import { BaseInvalid } from './invalid';
 
 interface ValidatorMap { [key: string]: BaseInvalid[]; }
 interface RelatedMap   { [key: string]: Observable<any>; }
@@ -65,8 +65,8 @@ export abstract class BaseModel {
     if (this.SETABLE.indexOf(field) > -1) {
       this.invalidFields[field] = this.invalidate(field, value);
       this.changedFields[field] = this.checkChanged(field, value);
+      this.store();
     }
-    this.store();
   }
 
   save(): Observable<boolean> {
@@ -123,62 +123,76 @@ export abstract class BaseModel {
     return Observable.from(relatedSavers).concatAll().toArray();
   }
 
-  discard() {
+  removeRelated(model: BaseModel) {
+    this.RELATIONS.forEach(rel => {
+      if (this[rel] === model) {
+        this[rel] = null;
+      } else if (this[rel].indexOf(model) > -1) {
+        this[rel].splice(this[rel].indexOf(model), 1);
+      }
+    });
+  }
+
+  discard(): any {
     this.unstore();
     this.lastStored = null;
     this.isDestroy = false;
     this.init(this.parent, this.doc, false);
     this.getRelated().forEach(model => {
-      model.discard();
-      if (model.isNew) {
-        this.RELATIONS.forEach(rel => {
-          if (this[rel] === model) {
-            this[rel] = null;
-          } else if (this[rel].indexOf(model) > -1) {
-            this[rel].splice(this[rel].indexOf(model), 1);
-          }
-        });
+      if (model.discard() !== false && model.isNew) {
+        this.removeRelated(model);
       }
     });
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
-    let fields = (field instanceof Array) ? field : [field];
-    if (!field || field.length < 1) {
-      if (includeRelations) {
-        fields = this.SETABLE.concat(this.RELATIONS);
-      } else {
-        fields = this.SETABLE;
-      }
-    }
-    for (let f of fields) {
+    return this.setableFields(field, includeRelations).some(f => {
       if (this.RELATIONS.indexOf(f) > -1) {
-        for (let model of this.getRelated(f)) {
-          if (model.changed()) { return true; }
-        }
-      } else if (this.changedFields[f]) {
-        return true;
+        return this.getRelated(f).some(m => m.changed());
+      } else {
+        return this.changedFields[f];
       }
-    }
-    return false;
+    });
   }
 
   invalid(field?: string | string[]): string {
-    let fields = (field instanceof Array) ? field : [field];
-    if (!field || field.length < 1) {
-      fields = this.SETABLE.concat(this.RELATIONS);
+    if (this.isDestroy) {
+      return null; // don't care if it's invalid
     }
+    let fields = this.setableFields(field);
     let invalids: string[] = [];
     for (let f of fields) {
-      if (this.RELATIONS.indexOf(f) > -1) {
-        for (let model of this.getRelated(f)) {
-          if (model.invalid()) { invalids.push(model.invalid()); }
-        }
-      } else if (this.invalidFields[f]) {
+      if (f === 'self') {
+        invalids.push(this.invalidate('self', this));
+      } else if (this.RELATIONS.indexOf(f) < 0) {
         invalids.push(this.invalidFields[f]);
+      } else {
+        invalids.push(this.invalidRelated(f));
       }
     }
-    return invalids.length ? invalids.join(', ') : null;
+    return invalids.filter(i => i).join(', ') || null;
+  }
+
+  invalidRelated(rel: string): string {
+    let models = this.getRelated(rel);
+    let invalidMsg = this.invalidate(rel, models);
+    if (invalidMsg) {
+      return invalidMsg; // fast-return first error
+    } else {
+      return models.map(m => m.invalid()).filter(i => i).join(', ') || null;
+    }
+  }
+
+  setableFields(only?: string | string[], includeRelations = true): string[] {
+    let allFields = this.SETABLE.concat('self');
+    if (includeRelations) { allFields = allFields.concat(this.RELATIONS); }
+    if (only && typeof only === 'string') {
+      return allFields.indexOf(only) > -1 ? [only] : [];
+    } else if (only && only instanceof Array) {
+      return only.filter(f => allFields.indexOf(f) > -1);
+    } else {
+      return allFields;
+    }
   }
 
   store() {

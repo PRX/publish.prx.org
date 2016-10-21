@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioFileModel } from './audio-file.model';
+import { VERSION_TEMPLATED } from './invalid';
 
 export class AudioVersionModel extends BaseModel {
 
@@ -11,18 +12,32 @@ export class AudioVersionModel extends BaseModel {
   public label: string;
   public files: AudioFileModel[];
   public uploadUuids: string[] = [];
-  public noAudioFiles = true;
 
   // save in-progress uploads to localstorage
   SETABLE = ['uploadUuids'];
 
-  private series: HalDoc;
+  VALIDATORS = {
+    self: [VERSION_TEMPLATED()]
+  };
 
-  constructor(series?: HalDoc, story?: HalDoc, audioVersion?: HalDoc) {
+  public series: HalDoc;
+  public template: HalDoc;
+  public fileTemplates: HalDoc[] = [];
+
+  constructor(params: {series?: HalDoc, story?: HalDoc, template?: HalDoc, version?: HalDoc}) {
     super();
-    this.series = series;
-    this.init(story, audioVersion);
-    if (!audioVersion) {
+    this.series = params.series;
+    this.setTemplate(params.template);
+    this.init(params.story, params.version);
+  }
+
+  setTemplate(template: HalDoc) {
+    this.template = template;
+    if (template) {
+      this.VALIDATORS['self'] = [VERSION_TEMPLATED(template)];
+      this.set('label', template['label'] || AudioVersionModel.DEFAULT_LABEL);
+    } else {
+      this.VALIDATORS['self'] = [VERSION_TEMPLATED()];
       this.set('label', AudioVersionModel.DEFAULT_LABEL);
     }
   }
@@ -30,6 +45,8 @@ export class AudioVersionModel extends BaseModel {
   key() {
     if (this.doc) {
       return `prx.audio-version.${this.doc.id}`;
+    } else if (this.template) {
+      return `prx.audio-version.new.template.${this.template.id}`; // new for template
     } else if (this.parent) {
       return `prx.audio-version.new.${this.parent.id}`; // existing story
     } else if (this.series) {
@@ -40,7 +57,8 @@ export class AudioVersionModel extends BaseModel {
   }
 
   related() {
-    let rels = <any> {};
+    let files: Observable<AudioFileModel[]>;
+    const fileSort = (f1, f2) => f1.position - f2.position;
 
     // unsaved/in-progress file uploads
     let unsavedAudio: AudioFileModel[] = [];
@@ -53,21 +71,29 @@ export class AudioVersionModel extends BaseModel {
         this.set('uploadUuids', this.uploadUuids);
       }
     }
-    this.noAudioFiles = unsavedAudio.every(f => f.isDestroy);
 
     // load existing audio files
     if (this.doc) {
-      rels.files = this.doc.followList('prx:audio').map((fileDocs) => {
+      files = this.doc.followList('prx:audio').map((fileDocs) => {
         let savedAudio = fileDocs.map(fdoc => new AudioFileModel(this.doc, fdoc));
-        if (this.noAudioFiles) {
-          this.noAudioFiles = savedAudio.every(f => f.isDestroy);
-        }
-        return savedAudio.concat(unsavedAudio);
+        return savedAudio.concat(unsavedAudio).sort(fileSort);
       });
     } else {
-      rels.files = Observable.of(unsavedAudio);
+      files = Observable.of(unsavedAudio.sort(fileSort));
     }
-    return rels;
+
+    // load audio-file-templates (in parallel)
+    if (this.template && this.template.has('prx:audio-file-templates')) {
+      let tpls = this.template.followList('prx:audio-file-templates');
+      files = Observable.forkJoin(files, tpls).map(([models, tdocs]) => {
+        let tidx = 0;
+        this.fileTemplates = tdocs.sort(fileSort);
+        models.forEach(f => f.setTemplate(f.isDestroy ? null : this.fileTemplates[tidx++]));
+        return models;
+      });
+    }
+
+    return {files: files};
   }
 
   decode() {
@@ -76,7 +102,11 @@ export class AudioVersionModel extends BaseModel {
   }
 
   encode(): {} {
-    return {label: this.label};
+    let data = <any> {label: this.label};
+    if (this.isNew && this.template) {
+      data.set_audio_version_template_uri = this.template.expand('self');
+    }
+    return data;
   }
 
   saveNew(data: {}): Observable<HalDoc> {
@@ -86,6 +116,10 @@ export class AudioVersionModel extends BaseModel {
   discard() {
     super.discard();
     this.files.sort((f1, f2) => f1.position - f2.position);
+    if (this.template) {
+      this.setTemplate(this.template);
+      return false; // don't discard
+    }
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
@@ -96,16 +130,7 @@ export class AudioVersionModel extends BaseModel {
     }
   }
 
-  invalid(field?: string | string[]): string {
-    let invalid = super.invalid(field);
-    if (!field && !invalid && this.files.filter(f => !f.isDestroy).length === 0) {
-      invalid = 'You must upload at least 1 audio file';
-    }
-    return invalid;
-  }
-
   addUpload(upload: Upload) {
-    this.noAudioFiles = false;
     this.files.push(new AudioFileModel(this.doc, upload));
     this.uploadUuids.push(upload.uuid);
     this.set('uploadUuids', this.uploadUuids);
@@ -133,6 +158,14 @@ export class AudioVersionModel extends BaseModel {
         file.watchUpload(upload, false);
       }
     }
+  }
+
+  get noAudioFiles(): boolean {
+    return this.fileTemplates.length < 1 && this.files.every(f => f.isDestroy);
+  }
+
+  get audioCount(): number {
+    return this.files.filter(f => !f.isDestroy).length;
   }
 
 }

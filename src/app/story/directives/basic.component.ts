@@ -22,7 +22,7 @@ import { StoryModel, TabService } from '../../shared';
 
       <hr/>
 
-      <publish-fancy-field [model]="story" label="Audio Files" required invalid="versions">
+      <publish-fancy-field label="Audio Files" required>
         <publish-audio-upload [story]="story"></publish-audio-upload>
       </publish-fancy-field>
 

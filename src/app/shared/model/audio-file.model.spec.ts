@@ -19,6 +19,29 @@ describe('AudioFileModel', () => {
     }
   };
 
+  describe('setTemplate', () => {
+
+    it('grabs the label from the template', () => {
+      let file = makeFile(null);
+      file.setTemplate(<any> {label: 'hello world'});
+      expect(file.label).toEqual('hello world');
+    });
+
+    it('resets the validators', () => {
+      let file = makeFile(null);
+      file.VALIDATORS['self'] = null;
+      file.setTemplate(<any> {});
+      expect(file.VALIDATORS['self'].length).toEqual(1);
+    });
+
+    it('has a default label per position', () => {
+      let file = makeFile({position: 8});
+      file.setTemplate(null);
+      expect(file.label).toEqual('Segment H');
+    });
+
+  });
+
   describe('key', () => {
 
     it('uses the id for the key', () => {

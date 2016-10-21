@@ -44,7 +44,7 @@ export class FancyFieldComponent {
         if (this.invalidFieldLabel) {
           msg = msg.replace(this.invalidFieldName, this.invalidFieldLabel);
         }
-        return msg.charAt(0).toUpperCase() + msg.slice(1);
+        return msg;
       }
     }
   }

@@ -1,7 +1,7 @@
 import { Subscription, Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
-import { FALSEY } from './base.invalid';
+import { FALSEY } from './invalid';
 
 export abstract class UploadableModel extends BaseModel {
 
