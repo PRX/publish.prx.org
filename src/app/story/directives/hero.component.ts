@@ -72,7 +72,7 @@ export class StoryHeroComponent implements OnInit, OnChanges {
 
   updateBanner() {
     if (this.story) {
-      if (this.story.isNew && this.story.parent.isa('series')) {
+      if (this.story.isNew && this.story.parent && this.story.parent.isa('series')) {
         this.series = this.story.parent;
       } else if (!this.story.isNew && this.story.doc.has('prx:series')) {
         this.story.doc.follow('prx:series').subscribe(e => this.series = e);
