@@ -10,11 +10,12 @@ export class AudioVersionModel extends BaseModel {
 
   public id: number;
   public label: string;
+  public explicit: string;
   public files: AudioFileModel[];
   public uploadUuids: string[] = [];
 
   // save in-progress uploads to localstorage
-  SETABLE = ['uploadUuids'];
+  SETABLE = ['uploadUuids', 'label', 'explicit'];
 
   VALIDATORS = {
     self: [VERSION_TEMPLATED()]
@@ -99,10 +100,13 @@ export class AudioVersionModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.label = this.doc['label'];
+    this.explicit = (this.doc['explicit'] === 'yes') ? 'Yes' : 'Clean';
   }
 
   encode(): {} {
-    let data = <any> {label: this.label};
+    let data = <any> {};
+    data.label = this.label;
+    data.explicit = (this.explicit === 'Yes') ? 'yes' : 'clean';
     if (this.isNew && this.template) {
       data.set_audio_version_template_uri = this.template.expand('self');
     }
