@@ -24,7 +24,7 @@ export abstract class UploadableModel extends BaseModel {
   public uuid: string;
 
   UPLOAD_SETABLE = ['filename', 'size', 'status', 'enclosureHref',
-    'enclosureS3', 'uuid', 'isUploading', 'isUploadError'];
+    'enclosureS3', 'uuid', 'isUploading', 'isUploadError', 'isDestroy'];
 
   UPLOAD_VALIDATORS = {
     isUploading:   [FALSEY('Wait for upload to complete')],
@@ -153,6 +153,13 @@ export abstract class UploadableModel extends BaseModel {
     this.size = this.doc['size'];
     this.status = this.doc['status'];
     this.enclosureHref = this.doc.expand('enclosure');
+
+    // localstored fields that will never go to the api
+    this.enclosureS3 = '';
+    this.uuid = '';
+    this.isUploading = false;
+    this.isUploadError = '';
+    this.isDestroy = false;
   }
 
   encode(): {} {

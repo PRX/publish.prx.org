@@ -9,7 +9,7 @@ export class ImageModel extends UploadableModel {
   public caption: string = '';
   public credit: string = '';
 
-  SETABLE = ['caption', 'credit', 'isDestroy'];
+  SETABLE = ['caption', 'credit'];
 
   private grandparent: HalDoc;
 
