@@ -35,7 +35,9 @@ export class AudioVersionModel extends BaseModel {
   }
 
   setLabel() {
-    if (this.template) {
+    if (this.doc && this.doc['label']) {
+      this.set('label', this.doc['label']); // probably already set to this
+    } else if (this.template) {
       this.set('label', this.template['label'] || AudioVersionModel.DEFAULT_LABEL);
     } else {
       this.set('label', AudioVersionModel.DEFAULT_LABEL);
@@ -60,7 +62,6 @@ export class AudioVersionModel extends BaseModel {
     const fileSort = (f1, f2) => f1.position - f2.position;
 
     let newAudio: AudioFileModel[] = [];
-    console.log('uploadUuids', this.uploadUuids);
     let validUuids = this.uploadUuids.filter(uuid => {
       let audio = new AudioFileModel(this.doc, uuid);
       if (audio.filename) {
