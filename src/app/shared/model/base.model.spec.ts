@@ -259,27 +259,26 @@ describe('BaseModel', () => {
       let theKey = 'some-storage-key';
       spyOn(base, 'key').and.callFake(() => theKey);
 
-      // no changes
-      base.store();
+      // not persisted
+      base.SETABLE = ['someattribute'];
       base.someattribute = 'new';
-      base.unstore();
-      expect(base.someattribute).toEqual('new');
+      base.store();
+      expect(Object.keys(localStorage).length).toEqual(0);
 
-      // overwrite when settable
+      // changed fields persisted
       base.changedFields['someattribute'] = true;
       base.store();
+      expect(Object.keys(localStorage).length).toEqual(1);
+
+      // overwrites
       base.someattribute = 'newer yet';
-      base.restore();
-      expect(base.someattribute).toEqual('newer yet');
-      base.SETABLE = ['someattribute'];
       base.restore();
       expect(base.someattribute).toEqual('new');
 
-      // clear
-      base.someattribute = 'newest of all';
-      base.unstore();
-      base.restore();
-      expect(base.someattribute).toEqual('newest of all');
+      // clears when not changed
+      base.changedFields['someattribute'] = false;
+      base.store();
+      expect(Object.keys(localStorage).length).toEqual(0);
     });
 
   });
