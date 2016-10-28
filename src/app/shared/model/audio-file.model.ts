@@ -10,7 +10,7 @@ export class AudioFileModel extends UploadableModel {
   public duration: number;
   public position: number;
 
-  SETABLE = ['label', 'duration', 'position', 'isDestroy'];
+  SETABLE = ['label', 'duration', 'position'];
 
   VALIDATORS = {
     self: [FILE_TEMPLATED()]

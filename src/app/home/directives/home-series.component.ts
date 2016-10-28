@@ -67,7 +67,7 @@ export class HomeSeriesComponent implements OnInit {
 
     this.series.followItems('prx:stories', {per: limit, filters: 'v4'}).subscribe((stories) => {
       this.storyLoaders = null;
-      this.stories = [new StoryModel(this.series)];
+      this.stories = [new StoryModel(this.series, null, false)];
       for (let story of stories) {
         this.stories.push(new StoryModel(this.series, story, false));
       }
@@ -88,7 +88,7 @@ export class HomeSeriesComponent implements OnInit {
       // parent result total is embedded in child total
       this.count = storyDocs.length ? storyDocs[0].total() : 0;
 
-      this.stories = [new StoryModel(accountDoc)];
+      this.stories = [new StoryModel(accountDoc, null, false)];
       for (let story of storyDocs) {
         this.stories.push(new StoryModel(accountDoc, story, false));
       }

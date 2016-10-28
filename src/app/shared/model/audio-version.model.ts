@@ -9,13 +9,13 @@ export class AudioVersionModel extends BaseModel {
   static DEFAULT_LABEL = 'Main Audio';
 
   public id: number;
+  public uploads: string = '';
   public label: string;
   public explicit: string;
   public files: AudioFileModel[];
-  public uploadUuids: string[] = [];
 
   // save in-progress uploads to localstorage
-  SETABLE = ['uploadUuids', 'label', 'explicit'];
+  SETABLE = ['uploads', 'label', 'explicit'];
 
   VALIDATORS = {
     self: [VERSION_TEMPLATED()]
@@ -28,17 +28,18 @@ export class AudioVersionModel extends BaseModel {
   constructor(params: {series?: HalDoc, story?: HalDoc, template?: HalDoc, version?: HalDoc}) {
     super();
     this.series = params.series;
-    this.setTemplate(params.template);
+    this.template = params.template;
+    this.VALIDATORS['self'] = [VERSION_TEMPLATED(params.template)];
     this.init(params.story, params.version);
+    this.setLabel();
   }
 
-  setTemplate(template: HalDoc) {
-    this.template = template;
-    if (template) {
-      this.VALIDATORS['self'] = [VERSION_TEMPLATED(template)];
-      this.set('label', template['label'] || AudioVersionModel.DEFAULT_LABEL);
+  setLabel() {
+    if (this.doc && this.doc['label']) {
+      this.set('label', this.doc['label']); // probably already set to this
+    } else if (this.template) {
+      this.set('label', this.template['label'] || AudioVersionModel.DEFAULT_LABEL);
     } else {
-      this.VALIDATORS['self'] = [VERSION_TEMPLATED()];
       this.set('label', AudioVersionModel.DEFAULT_LABEL);
     }
   }
@@ -58,47 +59,43 @@ export class AudioVersionModel extends BaseModel {
   }
 
   related() {
-    let files: Observable<AudioFileModel[]>;
     const fileSort = (f1, f2) => f1.position - f2.position;
 
-    // unsaved/in-progress file uploads
-    let unsavedAudio: AudioFileModel[] = [];
-    for (let i = 0; i < this.uploadUuids.length; i++) {
-      let audio = new AudioFileModel(this.doc, this.uploadUuids[i]);
+    let newAudio: AudioFileModel[] = [];
+    let validUuids = this.uploadUuids.filter(uuid => {
+      let audio = new AudioFileModel(this.doc, uuid);
       if (audio.filename) {
-        unsavedAudio.push(audio);
-      } else {
-        this.uploadUuids.splice(i, 1); // remove deleted audio
-        this.set('uploadUuids', this.uploadUuids);
+        newAudio.push(audio);
+        return true;
       }
-    }
+    });
+    this.set('uploads', validUuids.join(','));
 
-    // load existing audio files
-    if (this.doc) {
-      files = this.doc.followList('prx:audio').map((fileDocs) => {
-        let savedAudio = fileDocs.map(fdoc => new AudioFileModel(this.doc, fdoc));
-        return savedAudio.concat(unsavedAudio).sort(fileSort);
+    let savedFiles: Observable<AudioFileModel[]> = Observable.of(newAudio);
+    if (this.doc && this.doc.has('prx:audio')) {
+      savedFiles = this.doc.followList('prx:audio').map(fdocs => {
+        return fdocs.map(fdoc => new AudioFileModel(this.doc, fdoc))
+                    .concat(newAudio).sort(fileSort);
       });
-    } else {
-      files = Observable.of(unsavedAudio.sort(fileSort));
     }
 
-    // load audio-file-templates (in parallel)
+    let fileTemplates: Observable<HalDoc[]> = Observable.of([]);
     if (this.template && this.template.has('prx:audio-file-templates')) {
-      let tpls = this.template.followList('prx:audio-file-templates');
-      files = Observable.forkJoin(files, tpls).map(([models, tdocs]) => {
-        let tidx = 0;
-        this.fileTemplates = tdocs.sort(fileSort);
-        models.forEach(f => f.setTemplate(f.isDestroy ? null : this.fileTemplates[tidx++]));
-        return models;
-      });
+      fileTemplates = this.template.followList('prx:audio-file-templates');
     }
 
+    let files = Observable.forkJoin(savedFiles, fileTemplates).map(([models, tdocs]) => {
+      let tidx = 0;
+      this.fileTemplates = tdocs.sort(fileSort);
+      models.forEach(f => f.setTemplate(f.isDestroy ? null : this.fileTemplates[tidx++]));
+      return models;
+    });
     return {files: files};
   }
 
   decode() {
     this.id = this.doc['id'];
+    this.uploads = '';
     this.label = this.doc['label'];
     this.explicit = (this.doc['explicit'] === 'yes') ? 'Yes' : 'Clean';
   }
@@ -120,10 +117,8 @@ export class AudioVersionModel extends BaseModel {
   discard() {
     super.discard();
     this.files.sort((f1, f2) => f1.position - f2.position);
-    if (this.template) {
-      this.setTemplate(this.template);
-      return false; // don't discard
-    }
+    this.setLabel();
+    return false; // don't discard
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
@@ -135,18 +130,18 @@ export class AudioVersionModel extends BaseModel {
   }
 
   addUpload(upload: Upload) {
-    this.files.push(new AudioFileModel(this.doc, upload));
-    this.uploadUuids.push(upload.uuid);
-    this.set('uploadUuids', this.uploadUuids);
+    let audio = new AudioFileModel(this.doc, upload);
+    audio.set('position', this.files.length + 1);
+    this.files.push(audio);
+    let uuids = this.uploadUuids.concat(upload.uuid);
+    this.set('uploads', uuids.sort().join(','));
   }
 
   removeUpload(uuid: string) {
-    for (let i = 0; i < this.uploadUuids.length; i++) {
-      if (this.uploadUuids[i] === uuid) {
-        this.uploadUuids.splice(i, 1);
-        this.set('uploadUuids', this.uploadUuids);
-        break;
-      }
+    let uuids = this.uploadUuids;
+    if (uuids.indexOf(uuid) > -1) {
+      uuids.splice(uuids.indexOf(uuid), 1);
+      this.set('uploads', uuids.sort().join(','));
     }
     for (let i = 0; i < this.files.length; i++) {
       if (this.files[i].uuid === uuid && this.files[i].isNew) {
@@ -170,6 +165,10 @@ export class AudioVersionModel extends BaseModel {
 
   get audioCount(): number {
     return this.files.filter(f => !f.isDestroy).length;
+  }
+
+  get uploadUuids(): string[] {
+    return this.uploads.split(',').filter(u => u);
   }
 
 }

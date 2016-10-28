@@ -199,11 +199,13 @@ export abstract class BaseModel {
     this.lastStored = new Date();
     if (window && window.localStorage && this.key()) {
       let changed = {};
-      for (let f of Object.keys(this.changedFields)) {
-        changed[f] = this[f];
+      this.SETABLE.filter(f => this.changedFields[f]).forEach(f => changed[f] = this[f]);
+      if (Object.keys(changed).length > 0) {
+        changed['lastStored'] = this.lastStored;
+        window.localStorage.setItem(this.key(), JSON.stringify(changed));
+      } else {
+        window.localStorage.removeItem(this.key());
       }
-      changed['lastStored'] = this.lastStored;
-      window.localStorage.setItem(this.key(), JSON.stringify(changed));
     }
   }
 

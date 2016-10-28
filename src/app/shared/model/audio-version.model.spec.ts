@@ -36,20 +36,14 @@ describe('AudioVersionModel', () => {
       expect(version.label).toEqual('Main Audio');
     });
 
-  });
-
-  describe('setTemplate', () => {
-
     it('grabs the label from the template', () => {
+      templateMock.label = 'hello world';
       let version = makeVersion(null);
-      version.setTemplate(<any> {label: 'hello world'});
       expect(version.label).toEqual('hello world');
     });
 
-    it('resets the validators', () => {
+    it('sets the validators', () => {
       let version = makeVersion(null);
-      version.VALIDATORS['self'] = null;
-      version.setTemplate(<any> {});
       expect(version.VALIDATORS['self'].length).toEqual(1);
     });
 
@@ -95,7 +89,7 @@ describe('AudioVersionModel', () => {
     it('loads newly uploaded files', () => {
       let version = makeVersion({}, [{thing: 'one', status: 'complete'}]);
       expect(version.files.length).toEqual(1);
-      version.uploadUuids = ['1234'];
+      version.uploads = '1234';
       version.related().files.subscribe((files: any[]) => {
         expect(files.length).toEqual(2);
       });
