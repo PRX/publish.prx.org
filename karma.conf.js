@@ -33,7 +33,17 @@ module.exports = function (config) {
       config: './angular-cli.json',
       environment: 'dev'
     },
-    reporters: ['spec', 'karma-remap-istanbul'],
+    reporters: process.env.CODECOV
+              ? ['spec', 'karma-remap-istanbul']
+              : ['spec'],
+    specReporter: {
+      maxLogLines: 5,
+      suppressErrorSummary: true,
+      suppressFailed: false,
+      suppressPassed: false,
+      suppressSkipped: true,
+      showSpecTiming: false
+    },
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
