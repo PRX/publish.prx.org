@@ -1,10 +1,10 @@
-import { PublishprxorgPage } from './app.po';
+import { PublishPrxOrgPage } from './app.po';
 
-describe('publishprxorg App', function() {
-  let page: PublishprxorgPage;
+describe('publish.prx.org App', function() {
+  let page: PublishPrxOrgPage;
 
   beforeEach(() => {
-    page = new PublishprxorgPage();
+    page = new PublishPrxOrgPage();
   });
 
   it('should display message saying app works', () => {
