@@ -1,7 +1,7 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
-import { REQUIRED, LENGTH } from './invalid';
+import { REQUIRED, LENGTH, VERSION_LENGTH } from './invalid';
 import { AudioFileTemplateModel } from './audio-file-template.model';
 
 export class AudioVersionTemplateModel extends BaseModel {
@@ -15,13 +15,13 @@ export class AudioVersionTemplateModel extends BaseModel {
   SETABLE = ['label', 'lengthMinimum', 'lengthMaximum'];
 
   VALIDATORS = {
-    label: [REQUIRED(), LENGTH(3)]
+    label: [REQUIRED(), LENGTH(3)],
+    lengthMinimum: [VERSION_LENGTH(this)],
+    lengthMaximum: [VERSION_LENGTH(this)]
   };
 
   constructor(series: HalDoc, versionTemplate?: HalDoc, loadRelated = true) {
     super();
-    this.VALIDATORS['lengthMinimum'] = [(k: string, v: any) => this.validateMinimum(v)];
-    this.VALIDATORS['lengthMaximum'] = [(k: string, v: any) => this.validateMaximum(v)];
     this.init(series, versionTemplate, loadRelated);
   }
 
@@ -62,40 +62,6 @@ export class AudioVersionTemplateModel extends BaseModel {
 
   saveNew(data: {}): Observable<HalDoc> {
     return this.parent.create('prx:audio-version-templates', {}, data);
-  }
-
-  validateMinimum(value: any, checkMax = true): string {
-    if (checkMax) {
-      this.invalidFields['lengthMaximum'] = this.validateMaximum(this.lengthMaximum, false);
-    }
-    if (this.lengthMaximum === null && value === null) {
-      return null; // allow unset
-    } else if (value === null) {
-      return 'Must set a minimum';
-    } else if (isNaN(parseInt(value, 10))) {
-      return 'Minimum is not a number';
-    } else if (value < 1) {
-      return 'Minimum must be greater than 0';
-    } else if (value >= this.lengthMaximum) {
-      return 'Minimum must be less than maximum';
-    }
-  }
-
-  validateMaximum(value: any, checkMin = true): string {
-    if (checkMin) {
-      this.invalidFields['lengthMinimum'] = this.validateMinimum(this.lengthMinimum, false);
-    }
-    if (this.lengthMinimum === null && value === null) {
-      return null; // allow unset
-    } else if (value === null) {
-      return 'Must set a maximum';
-    } else if (isNaN(parseInt(value, 10))) {
-      return 'Maximum is not a number';
-    } else if (value < 1) {
-      return 'Maximum must be greater than 0';
-    } else if (value <= this.lengthMinimum) {
-      return 'Maximum must be greater than minimum';
-    }
   }
 
   invalid(field?: string | string[]): string {

@@ -9,21 +9,22 @@ import { SeriesModel, TabService } from '../../shared';
 
       <div *ngFor="let v of series.versionTemplates" class="version">
 
-        <publish-fancy-field [model]="v" textinput=true name="label" label="Version Label" required>
+        <publish-fancy-field textinput required [model]="v" name="label" label="Version Label">
         </publish-fancy-field>
 
-        <publish-fancy-field [model]="v" label="Total Length" class="length" invalid="lengthAny">
-          <div class="fancy-hint">The total length of all audio in this version, in seconds.</div>
-          <publish-fancy-field [model]="v" name="lengthMinimum" label="Minimum" number=true small=true inline=true>
+        <publish-fancy-field class="length" [model]="v" label="Total length in seconds" invalid="lengthAny">
+          <publish-fancy-field number small inline hideinvalid [model]="v" name="lengthMinimum" label="Minimum">
           </publish-fancy-field>
-          <publish-fancy-field [model]="v" name="lengthMaximum" label="Maximum" number=true small=true inline=true>
+          <publish-fancy-field number small inline hideinvalid [model]="v" name="lengthMaximum" label="Maximum">
           </publish-fancy-field>
         </publish-fancy-field>
 
-        <publish-fancy-field [model]="v" label="Audio Segments">
-
-          <b>No Segments</b>
-
+        <publish-fancy-field label="Audio Segments">
+          <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t">
+          </publish-file-template>
+          <div *ngIf="!v.fileTemplates.length" class="empty">
+            <h4>No segments defined</h4>
+          </div>
         </publish-fancy-field>
 
       </div>

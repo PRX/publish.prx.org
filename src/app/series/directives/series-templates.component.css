@@ -18,3 +18,13 @@
 .length >>> input {
   max-width: 80px;
 }
+.empty {
+  border: 1px solid #ccc;
+  text-align: center;
+}
+.empty h4 {
+  padding: 20px 0;
+  color: #bbb;
+  font-size: 20px;
+  font-weight: 600;
+}

@@ -7,6 +7,7 @@ import { SeriesBasicComponent } from './directives/series-basic.component';
 import { SeriesImageComponent } from './directives/series-image.component';
 import { SeriesTemplatesComponent } from './directives/series-templates.component';
 import { SeriesAdvancedComponent } from './directives/series-advanced.component';
+import { FileTemplateComponent } from './directives/file-template.component';
 
 const seriesChildRoutes = [
   { path: '',          component: SeriesBasicComponent },
@@ -35,7 +36,8 @@ export const seriesComponents: any[] = [
   SeriesBasicComponent,
   SeriesImageComponent,
   SeriesTemplatesComponent,
-  SeriesAdvancedComponent
+  SeriesAdvancedComponent,
+  FileTemplateComponent
 ];
 
 export const seriesProviders: any[] = [];
