@@ -1,0 +1,20 @@
+/**
+ * Series version/file templates
+ */
+.version {
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 22px;
+}
+.version:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.length >>> publish-fancy-field {
+  display: inline-block;
+  width: auto;
+  margin-right: 10px;
+}
+.length >>> input {
+  max-width: 80px;
+}

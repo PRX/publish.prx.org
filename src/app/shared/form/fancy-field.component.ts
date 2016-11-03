@@ -18,11 +18,13 @@ export class FancyFieldComponent {
 
   // Form field options
   @Input() textinput: boolean;
+  @Input() number: boolean;
   @Input() textarea: boolean;
   @Input() select: string[];
   @Input() label: string;
   @Input() invalidlabel: string;
   @Input() small: boolean;
+  @Input() inline: boolean;
   @Input() required: boolean;
 
   get changedFieldName(): string {
@@ -50,12 +52,14 @@ export class FancyFieldComponent {
   }
 
   get fieldClasses(): string {
-    if (!this.model) { return 'field'; }
     let classes = ['field'];
-    let changed = this.changedFieldName && this.model.changed(this.changedFieldName);
-    let invalid = this.invalidFieldName && this.model.invalid(this.invalidFieldName);
+    if (this.small) { classes.push('small'); }
+    if (this.inline) { classes.push('inline'); }
+    if (!this.model) { return classes.join(' '); }
 
     // explicit changed/invalid inputs get different classes
+    let changed = this.changedFieldName && this.model.changed(this.changedFieldName);
+    let invalid = this.invalidFieldName && this.model.invalid(this.invalidFieldName);
     if (changed) {
       classes.push(this.name ? 'changed' : 'changed-explicit');
     }
