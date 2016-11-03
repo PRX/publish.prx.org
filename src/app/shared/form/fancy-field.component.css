@@ -15,6 +15,7 @@
   display: -webkit-flex;
   display: flex;
   margin-bottom: 0;
+  margin-top: 3px;
 }
 h3 {
   font-size: 24px;

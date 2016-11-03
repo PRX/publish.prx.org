@@ -15,17 +15,36 @@ export class FancyFieldComponent {
   @Input() name: string;
   @Input() changed: string;
   @Input() invalid: string;
-
-  // Form field options
-  @Input() textinput: boolean;
-  @Input() number: boolean;
-  @Input() textarea: boolean;
-  @Input() select: string[];
   @Input() label: string;
   @Input() invalidlabel: string;
-  @Input() small: boolean;
-  @Input() inline: boolean;
-  @Input() required: boolean;
+  @Input() hideinvalid: boolean;
+
+  // Form field types (intercepted with defaults)
+  type: string;
+  _select: string[];
+  @Input()
+  set textinput(any: any) { this.type = 'textinput'; }
+  @Input()
+  set number(any: any) { this.type = 'number'; }
+  @Input()
+  set textarea(any: any) { this.type = 'textarea'; }
+  @Input()
+  set select(opts: string[]) { this.type = 'select'; this._select = opts || []; }
+  get select() { return this._select; }
+
+  // Field attributes
+  _small = false;
+  _inline = false;
+  _required = null;
+  @Input()
+  set small(small: boolean) { this._small = !(small === false); }
+  get small() { return this._small; }
+  @Input()
+  set inline(inline: boolean) { this._inline = !(inline === false); }
+  get inline() { return this._inline; }
+  @Input()
+  set required(required: boolean) { this._required = (required === false) ? null : true; }
+  get required() { return this._required; }
 
   get changedFieldName(): string {
     return (this.changed === undefined) ? this.name : this.changed;
@@ -40,7 +59,7 @@ export class FancyFieldComponent {
   }
 
   get formattedInvalid(): string {
-    if (this.invalidFieldName && this.model) {
+    if (this.invalidFieldName && this.model && this.hideinvalid === undefined) {
       let msg = this.model.invalid(this.invalidFieldName);
       if (msg) {
         if (this.invalidFieldLabel) {
