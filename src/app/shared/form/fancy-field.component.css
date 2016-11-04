@@ -2,7 +2,9 @@
  * Form fields
  */
 :host {
+  display: block;
   width: 100%;
+  position: relative;
 }
 .field {
   margin-bottom: 30px;

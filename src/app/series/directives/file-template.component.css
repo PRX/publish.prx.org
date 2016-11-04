@@ -1,7 +1,7 @@
 /**
  * Audio file templates
  */
-:host {
+div {
   display: block;
   padding: 16px 24px 0;
   border: 1px solid #ccc;

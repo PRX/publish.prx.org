@@ -39,6 +39,10 @@ export abstract class BaseModel {
     this.isNew = self ? false : true;
     if (self) {
       this.decode();
+    } else if (this.original) {
+      for (let key of Object.keys(this.original)) {
+        this[key] = this.original[key];
+      }
     }
 
     // get remote values, before overlaying localstorage
@@ -146,6 +150,9 @@ export abstract class BaseModel {
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
+    if (this.isDestroy) {
+      return true;
+    }
     return this.setableFields(field, includeRelations).some(f => {
       if (this.RELATIONS.indexOf(f) > -1) {
         return this.getRelated(f).some(m => m.changed());

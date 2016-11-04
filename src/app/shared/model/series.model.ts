@@ -8,9 +8,9 @@ import { REQUIRED, LENGTH } from './invalid';
 export class SeriesModel extends BaseModel {
 
   public id: number;
-  public title: string;
-  public description: string;
-  public shortDescription: string;
+  public title: string = '';
+  public description: string = '';
+  public shortDescription: string = '';
   public createdAt: Date;
   public updatedAt: Date;
   public images: ImageModel[] = [];
@@ -57,6 +57,8 @@ export class SeriesModel extends BaseModel {
       templates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
         return tdocs.map(t => new AudioVersionTemplateModel(this.doc, t));
       });
+    } else if (this.unsavedVersionTemplate) {
+      templates = Observable.of([this.unsavedVersionTemplate]);
     }
 
     return {
@@ -107,6 +109,11 @@ export class SeriesModel extends BaseModel {
   get unsavedImage(): ImageModel {
     let img = new ImageModel(this.parent, this.doc, null);
     return img.isStored() && !img.isDestroy ? img : null;
+  }
+
+  get unsavedVersionTemplate(): AudioVersionTemplateModel {
+    let tpl = new AudioVersionTemplateModel(this.doc, null);
+    return tpl.isStored() && !tpl.isDestroy ? tpl : null;
   }
 
   isV4(): boolean {

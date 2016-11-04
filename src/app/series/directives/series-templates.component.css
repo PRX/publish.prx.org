@@ -23,8 +23,23 @@
   text-align: center;
 }
 .empty h4 {
-  padding: 20px 0;
+  padding: 74px 0;
   color: #bbb;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
+}
+.add-version {
+  margin-top: 6px;
+}
+.actions {
+  position: absolute;
+  top: 6px;
+  right: 0;
+}
+.actions a {
+  cursor: pointer;
+  margin-left: 6px;
+}
+.actions a:hover, .actions a:focus {
+  text-decoration: underline;
 }
