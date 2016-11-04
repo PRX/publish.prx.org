@@ -122,7 +122,12 @@ export abstract class BaseModel {
       } else {
         model.parent = this.doc;
       }
-      return model.save();
+      return model.save().map(saved => {
+        if (saved && model.isDestroy) {
+          this.removeRelated(model);
+        }
+        return saved;
+      });
     });
     return Observable.from(relatedSavers).concatAll().toArray();
   }
