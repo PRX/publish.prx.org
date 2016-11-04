@@ -39,10 +39,6 @@ export abstract class BaseModel {
     this.isNew = self ? false : true;
     if (self) {
       this.decode();
-    } else if (this.original) {
-      for (let key of Object.keys(this.original)) {
-        this[key] = this.original[key];
-      }
     }
 
     // get remote values, before overlaying localstorage
@@ -146,6 +142,11 @@ export abstract class BaseModel {
     this.unstore();
     this.lastStored = null;
     this.isDestroy = false;
+    if (!this.doc && this.original) {
+     for (let key of Object.keys(this.original)) {
+       this[key] = this.original[key];
+     }
+   }
     this.init(this.parent, this.doc, false);
     this.getRelated().forEach(model => {
       if (model.discard() !== false && model.isNew) {

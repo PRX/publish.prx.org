@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { BaseModel } from '../model/base.model';
 
+const isset = (val: any): boolean => val !== false && val !== undefined;
+
 @Component({
   selector: 'publish-fancy-field',
   styleUrls: ['fancy-field.component.css'],
@@ -37,13 +39,13 @@ export class FancyFieldComponent {
   _inline = false;
   _required = null;
   @Input()
-  set small(small: boolean) { this._small = !(small === false); }
+  set small(small: boolean) { this._small = isset(small); }
   get small() { return this._small; }
   @Input()
-  set inline(inline: boolean) { this._inline = !(inline === false); }
+  set inline(inline: boolean) { this._inline = isset(inline); }
   get inline() { return this._inline; }
   @Input()
-  set required(required: boolean) { this._required = (required === false) ? null : true; }
+  set required(required: boolean) { this._required = isset(required) ? true : null; }
   get required() { return this._required; }
 
   get changedFieldName(): string {
