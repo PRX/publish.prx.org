@@ -179,6 +179,16 @@ describe('BaseModel', () => {
       expect(secondSaved).toEqual(false);
     });
 
+    it('removeds destroyed child models', () => {
+      base.doc = <any> {update: null};
+      spyOn(base.doc, 'update').and.returnValue(Observable.of({foo: 'bar'}));
+      spyOn(base, 'init').and.stub();
+      base.RELATIONS = ['foo'];
+      base['foo'] = [{changed: () => true, save: () => Observable.of(true), isDestroy: true}];
+      base.save().subscribe();
+      expect(base['foo'].length).toEqual(0);
+    });
+
   });
 
   describe('changed', () => {
@@ -216,6 +226,13 @@ describe('BaseModel', () => {
       expect(base.changed(null, false)).toBeFalsy();
     });
 
+    it('counts destroys as changed', () => {
+      expect(base.changed()).toBeFalsy();
+      base.isDestroy = true;
+      expect(base.changed()).toBeTruthy();
+      expect(base.changed('foo')).toBeTruthy();
+    });
+
   });
 
   describe('invalid', () => {
@@ -251,6 +268,17 @@ describe('BaseModel', () => {
       expect(base.invalid()).toEqual('yeah sure');
     });
 
+    it('doesnt care about invalid for destroyed models', () => {
+      base.SETABLE = ['one'];
+      base.VALIDATORS = {one: [() => 'bad']};
+      base.set('one', 'anything');
+      expect(base.invalid('one')).toEqual('bad');
+      expect(base.invalid()).toBeTruthy();
+      base.isDestroy = true;
+      expect(base.invalid('one')).toBeNull();
+      expect(base.invalid()).toBeNull();
+    });
+
   });
 
   describe('storage', () => {
@@ -279,6 +307,35 @@ describe('BaseModel', () => {
       base.changedFields['someattribute'] = false;
       base.store();
       expect(Object.keys(localStorage).length).toEqual(0);
+    });
+
+  });
+
+  describe('discard', () => {
+
+    it('discards changes and re-inits', () => {
+      base.SETABLE = ['someattribute'];
+      base.init();
+      base.isDestroy = true;
+      base.lastStored = new Date();
+      base.someattribute = 'different value';
+      base.discard();
+      expect(base.isDestroy).toEqual(false);
+      expect(base.lastStored).toBeNull();
+      expect(base.someattribute).toEqual('somevalue');
+    });
+
+    it('discards child models and removes new records', () => {
+      base.RELATIONS = ['foo'];
+      base['foo'] = [
+        {id: 1, isNew: true, discard: () => true},
+        {id: 2, isNew: true, discard: () => false},
+        {id: 3, isNew: false, discard: () => true}
+      ];
+      base.discard();
+      expect(base['foo'].length).toEqual(2);
+      expect(base['foo'][0].id).toEqual(2);
+      expect(base['foo'][1].id).toEqual(3);
     });
 
   });

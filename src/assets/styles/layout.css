@@ -44,6 +44,9 @@ a {
   color: #368aa2;
   text-decoration: none;
 }
+a:focus, a:hover {
+  color: #2b7187;
+}
 a:active {
   color: #2b7187;
 }

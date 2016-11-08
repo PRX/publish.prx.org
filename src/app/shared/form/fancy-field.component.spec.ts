@@ -6,8 +6,8 @@ describe('FancyFieldComponent', () => {
   contain(FancyFieldComponent, {
     template: `
       <publish-fancy-field [model]="model" [name]="name" [changed]="changed" [invalid]="invalid"
-        [textinput]="textinput" [textarea]="textarea" [select]="select" [label]="label"
-        [invalidlabel]="invalidlabel" [small]="small" [required]="required">
+        [textinput]="textinput" [number]="number" [textarea]="textarea" [select]="select"
+        [label]="label" [invalidlabel]="invalidlabel" [small]="small" [required]="required">
         <div class="fancy-hint" *ngIf="hint">{{hint}}</div>
         <h1 *ngIf="nested">{{nested}}</h1>
       </publish-fancy-field>
@@ -65,6 +65,15 @@ describe('FancyFieldComponent', () => {
     fix.detectChanges();
     expect(el).toQueryAttr('input', 'id', 'foobar');
     expect(el).toQueryAttr('input', 'value', 'some value');
+  });
+
+  cit('can have a number field', (fix, el, comp) => {
+    comp.model = {foobar: 'some value', changed: () => false, invalid: () => false};
+    comp.name = 'foobar';
+    comp.number = true;
+    fix.detectChanges();
+    expect(el).toQueryAttr('input', 'type', 'number');
+    expect(el).not.toQueryAttr('input', 'type', 'text');
   });
 
   cit('can have a text area', (fix, el, comp) => {

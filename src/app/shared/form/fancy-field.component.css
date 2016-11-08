@@ -2,13 +2,22 @@
  * Form fields
  */
 :host {
+  display: block;
   width: 100%;
+  position: relative;
 }
 .field {
   margin-bottom: 30px;
 }
 .field.small {
   margin-bottom: 20px;
+}
+.field.inline {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  margin-bottom: 0;
+  margin-top: 3px;
 }
 h3 {
   font-size: 24px;
@@ -22,6 +31,10 @@ h4 {
   font-weight: 400;
   margin-bottom: 6px;
   color: #343434;
+}
+.inline h4 {
+  margin-top: 6px;
+  margin-right: 12px;
 }
 label[required]::after {
   content: '*';

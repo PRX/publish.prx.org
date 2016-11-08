@@ -2,17 +2,19 @@ import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
 import { ImageModel } from './image.model';
+import { AudioVersionTemplateModel } from './audio-version-template.model';
 import { REQUIRED, LENGTH } from './invalid';
 
 export class SeriesModel extends BaseModel {
 
   public id: number;
-  public title: string;
-  public description: string;
-  public shortDescription: string;
+  public title: string = '';
+  public description: string = '';
+  public shortDescription: string = '';
   public createdAt: Date;
   public updatedAt: Date;
   public images: ImageModel[] = [];
+  public versionTemplates: AudioVersionTemplateModel[] = [];
 
   SETABLE = ['title', 'description', 'shortDescription'];
 
@@ -37,6 +39,8 @@ export class SeriesModel extends BaseModel {
 
   related() {
     let images = Observable.of([]);
+    let templates = Observable.of([]);
+
     if (this.doc && this.doc.has('prx:image')) {
       images = this.doc.follow('prx:image').map(idoc => {
         let imageModels = [new ImageModel(this.parent, this.doc, idoc)];
@@ -48,8 +52,18 @@ export class SeriesModel extends BaseModel {
     } else if (this.unsavedImage) {
       images = Observable.of([this.unsavedImage]);
     }
+
+    if (this.doc && this.doc.count('prx:audio-version-templates')) {
+      templates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
+        return tdocs.map(t => new AudioVersionTemplateModel(this.doc, t));
+      });
+    } else if (this.unsavedVersionTemplate) {
+      templates = Observable.of([this.unsavedVersionTemplate]);
+    }
+
     return {
-      images: images
+      images: images,
+      versionTemplates: templates
     };
   }
 
@@ -95,6 +109,11 @@ export class SeriesModel extends BaseModel {
   get unsavedImage(): ImageModel {
     let img = new ImageModel(this.parent, this.doc, null);
     return img.isStored() && !img.isDestroy ? img : null;
+  }
+
+  get unsavedVersionTemplate(): AudioVersionTemplateModel {
+    let tpl = new AudioVersionTemplateModel(this.doc, null);
+    return tpl.isStored() && !tpl.isDestroy ? tpl : null;
   }
 
   isV4(): boolean {

@@ -159,13 +159,13 @@ button.btn-link {
   background: 0 0 transparent;
 }
 button.btn-link:hover, button.btn-link:focus {
-  color: #f59f51;
+  color: #2b7187;
 }
 button.btn-link[disabled] {
   color: #a3a3a3;
 }
 button.btn-link.active {
-  color: #f59f51;
+  color: #2b7187;
 }
 
 button.delete {

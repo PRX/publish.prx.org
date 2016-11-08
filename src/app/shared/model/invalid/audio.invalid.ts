@@ -15,8 +15,11 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
     let count = undeleted.length;
 
     // segment count
-    if (template && template['segmentCount'] && count !== template['segmentCount']) {
-      return `you must upload ${template['segmentCount']} segments (got ${count})`;
+    if (template && template.count('prx:audio-file-templates')) {
+      let segments = template.count('prx:audio-file-templates');
+      if (count !== segments) {
+        return `you must upload ${segments} segments (got ${count})`;
+      }
     } else if (count < 1) {
       return 'upload at least 1 segment';
     }

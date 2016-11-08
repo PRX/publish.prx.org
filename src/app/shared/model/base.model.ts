@@ -118,7 +118,12 @@ export abstract class BaseModel {
       } else {
         model.parent = this.doc;
       }
-      return model.save();
+      return model.save().map(saved => {
+        if (saved && model.isDestroy) {
+          this.removeRelated(model);
+        }
+        return saved;
+      });
     });
     return Observable.from(relatedSavers).concatAll().toArray();
   }
@@ -137,6 +142,11 @@ export abstract class BaseModel {
     this.unstore();
     this.lastStored = null;
     this.isDestroy = false;
+    if (!this.doc && this.original) {
+     for (let key of Object.keys(this.original)) {
+       this[key] = this.original[key];
+     }
+   }
     this.init(this.parent, this.doc, false);
     this.getRelated().forEach(model => {
       if (model.discard() !== false && model.isNew) {
@@ -146,6 +156,9 @@ export abstract class BaseModel {
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
+    if (this.isDestroy) {
+      return true;
+    }
     return this.setableFields(field, includeRelations).some(f => {
       if (this.RELATIONS.indexOf(f) > -1) {
         return this.getRelated(f).some(m => m.changed());
