@@ -1,0 +1,82 @@
+.audio {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #DDD;
+  border-top: 1px solid #DDD;
+  margin-top: -1px;
+  padding: 18px 22px;
+}
+.audio.changed {
+  outline: 5px auto #f09b4c;
+}
+.audio.canceled {
+  animation: fade-out 0.5s 1;
+  -webkit-animation: fade-out 0.5s 1;
+  animation-fill-mode: forwards;
+  animation-delay: 0.5s;
+  -webkit-animation-delay: 0.5s;
+  -webkit-animation-fill-mode: forwards;
+}
+@keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+@-webkit-keyframes fade-out { from { opacity :1; } to { opacity :0; } }
+
+.reorder {order: 1; flex-basis: 100%;}
+.cancel {order: 2; flex-basis: 100%;}
+.main {order: 3; flex-basis: 100%;}
+@media screen and (min-width:600px) {
+  .audio {flex-wrap: nowrap;}
+  .reorder {order: 1; flex-basis: 70px;}
+  .cancel {order: 3; flex-basis: 50px;}
+  .main {order: 2; flex-basis: 1;}
+}
+
+.reorder i {
+  font-size: 30px;
+  cursor: move;
+}
+.cancel {
+  text-align: right;
+}
+.cancel i {
+  font-size: 22px;
+  cursor: pointer;
+}
+.reorder i, .cancel i {
+  color: #368AA2;
+}
+.reorder i:hover, .reorder i:focus, .cancel i:hover, .cancel i:focus {
+  color: #2b7187;
+}
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+.main .type {
+  border: 1px solid #DDDDDD;
+  padding: 6px 10px;
+  min-width: 160px;
+  position: relative;
+}
+.main .type i {
+  position: absolute;
+  right: 5px;
+  top: 7px;
+  color: #DDDDDD;
+}
+.main .info {
+  flex-grow: 1;
+  border: 1px solid #DDDDDD;
+  border-left: 0 none;
+  padding: 6px 10px;
+}
+.main .info .extra {
+  margin-left: 6px;
+}

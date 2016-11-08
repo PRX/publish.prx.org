@@ -1,0 +1,36 @@
+:host {
+  text-align: left;
+  display: block;
+}
+header {
+  background-color: #B8B8B8;
+  padding: 16px 14px;
+}
+header strong {
+  color: #222;
+  font-size: 17px;
+  font-weight: 600;
+  vertical-align: middle;
+  margin-right: 14px;
+}
+header span {
+  color: #444;
+  font-size: 14px;
+  vertical-align: middle;
+}
+.empty {
+  background: #fff;
+  text-align: center;
+  border-bottom: 1px solid #DDD;
+}
+.empty h4 {
+  color: #CCC;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 108px;
+}
+footer {
+  background: #FFF;
+  padding: 10px 50px;
+  text-align: right;
+}

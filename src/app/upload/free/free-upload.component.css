@@ -1,0 +1,8 @@
+/* for dragula */
+:host.gu-transit .audio {
+  background: none;
+  outline: none;
+}
+:host.gu-transit .reorder, :host.gu-transit .cancel {
+  opacity: 0.3;
+}
