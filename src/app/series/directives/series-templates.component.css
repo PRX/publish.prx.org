@@ -36,10 +36,6 @@
   top: 6px;
   right: 0;
 }
-.actions a {
-  cursor: pointer;
+.actions button {
   margin-left: 6px;
-}
-.actions a:hover, .actions a:focus {
-  text-decoration: underline;
 }

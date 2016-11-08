@@ -16,7 +16,7 @@ import {
         <div *ngIf="!v.isDestroy" class="version">
           <publish-fancy-field textinput required [model]="v" name="label" label="Version Label">
             <div class="actions">
-              <a (click)="removeVersion(v)"><i class="icon-cancel"></i>Remove Template</a>
+              <button class="btn-link" (click)="removeVersion(v)"><i class="icon-cancel"></i>Remove Template</button>
             </div>
           </publish-fancy-field>
 
@@ -29,8 +29,8 @@ import {
 
           <publish-fancy-field label="Audio Segments">
             <div class="actions">
-              <a *ngIf="canAddFile(v)" (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</a>
-              <a *ngIf="canRemoveFile(v)" (click)="removeFile(v)"><i class="icon-cancel"></i>Remove Segment</a>
+              <button class="btn-link" *ngIf="canAddFile(v)" (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
+              <button class="btn-link" *ngIf="canRemoveFile(v)" (click)="removeFile(v)"><i class="icon-cancel"></i>Remove Segment</button>
             </div>
             <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t">
             </publish-file-template>

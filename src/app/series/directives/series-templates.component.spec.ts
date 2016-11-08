@@ -32,7 +32,7 @@ describe('SeriesTemplatesComponent', () => {
     comp.series = {versionTemplates: [{fileTemplates: []}]};
     fix.detectChanges();
     expect(el).toQuery('[label="Version Label"]');
-    el.query(By.css('.actions a')).nativeElement.click();
+    el.query(By.css('.actions button')).nativeElement.click();
     fix.detectChanges();
     expect(el).not.toQuery('[label="Version Label"]');
   });
