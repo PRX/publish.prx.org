@@ -24,11 +24,15 @@ export class AudioVersionModel extends BaseModel {
   public series: HalDoc;
   public template: HalDoc;
   public fileTemplates: HalDoc[] = [];
+  public hasFileTemplates: boolean = false;
 
   constructor(params: {series?: HalDoc, story?: HalDoc, template?: HalDoc, version?: HalDoc}) {
     super();
     this.series = params.series;
     this.template = params.template;
+    if (this.template) {
+      this.hasFileTemplates = this.template.count('prx:audio-file-templates') ? true : false;
+    }
     this.VALIDATORS['self'] = [VERSION_TEMPLATED(params.template)];
     this.init(params.story, params.version);
     this.setLabel();
@@ -82,6 +86,9 @@ export class AudioVersionModel extends BaseModel {
     let fileTemplates: Observable<HalDoc[]> = Observable.of([]);
     if (this.template && this.template.has('prx:audio-file-templates')) {
       fileTemplates = this.template.followList('prx:audio-file-templates');
+      this.hasFileTemplates = this.template.count('prx:audio-file-templates') ? true : false;
+    } else {
+      this.hasFileTemplates = false;
     }
 
     let files = Observable.forkJoin(savedFiles, fileTemplates).map(([models, tdocs]) => {
