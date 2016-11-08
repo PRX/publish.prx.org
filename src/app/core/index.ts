@@ -4,4 +4,4 @@ export { CoreModule } from './core.module';
 export { AuthService, AuthUrls } from './auth';
 export { CmsService, HalDoc } from './cms';
 export { ModalService } from './modal';
-export { Upload, UploadService } from './upload';
+export { Upload, UploadService, UUID } from './upload';
