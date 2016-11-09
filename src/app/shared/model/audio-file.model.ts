@@ -9,6 +9,7 @@ export class AudioFileModel extends UploadableModel {
   public label: string;
   public duration: number;
   public position: number;
+  public canceled: boolean;
 
   SETABLE = ['label', 'duration', 'position'];
 

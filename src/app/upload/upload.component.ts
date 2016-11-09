@@ -10,8 +10,8 @@ import { AudioVersionModel } from '../shared';
       <span *ngIf="DESCRIPTIONS[version.label]">{{DESCRIPTIONS[version.label]}}</span>
     </header>
 
-    <section>
-      <div *ngIf="version.hasFileTemplates" class="uploads">
+    <section *ngIf="version.hasFileTemplates">
+      <div class="uploads">
         <publish-templated-upload *ngFor="let t of version.fileTemplates; let i = index"
           [template]="t" [file]="version.files[i]" [version]="version"></publish-templated-upload>
         <template ngFor let-f [ngForOf]="version.files" let-i="index">
@@ -19,18 +19,22 @@ import { AudioVersionModel } from '../shared';
             [file]="version.files[i]" [version]="version"></publish-illegal-upload>
         </template>
       </div>
-      <div *ngIf="!version.hasFileTemplates" class="uploads" [publishFreeReorder]="version.files">
-        <div *ngIf="version.noAudioFiles" class="empty">
-          <h4>Upload a file to get started</h4>
-        </div>
-        <publish-free-upload *ngFor="let f of version.files"
-          [file]="f" [version]="version"></publish-free-upload>
-      </div>
     </section>
 
-    <footer *ngIf="!version.hasFileTemplates">
-      <publish-audio-input multiple=true></publish-audio-input>
-    </footer>
+    <template [ngIf]="!version.hasFileTemplates">
+      <section>
+        <div class="uploads" [publishFreeReorder]="version.files">
+          <div *ngIf="version.noAudioFiles" class="empty">
+            <h4 (click)="upinput.click()">Upload a file to get started</h4>
+          </div>
+          <publish-free-upload *ngFor="let f of version.files"
+            [file]="f" [version]="version"></publish-free-upload>
+        </div>
+      </section>
+      <footer>
+        <publish-audio-input #upinput multiple=true></publish-audio-input>
+      </footer>
+    </template>
   `
 })
 

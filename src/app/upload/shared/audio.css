@@ -51,6 +51,9 @@
 .reorder i:hover, .reorder i:focus, .cancel i:hover, .cancel i:focus {
   color: #2b7187;
 }
+.audio.canceled .reorder i, .audio.canceled .cancel i {
+  display: none;
+}
 
 .main {
   display: flex;

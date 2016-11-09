@@ -5,9 +5,9 @@ import { AudioVersionModel, AudioFileModel } from '../../shared';
   selector: 'publish-free-upload',
   styleUrls: ['../shared/audio.css', 'free-upload.component.css'],
   template: `
-    <div *ngIf="!file.isDestroy" class="audio" [class.changed]="file.changed()">
+    <div *ngIf="!file.isDestroy" class="audio" [class.changed]="file.changed()" [class.canceled]="file.canceled">
       <div class="reorder">
-        <i *ngIf="!canceled" class="icon-menu drag-handle"></i>
+        <i class="icon-menu drag-handle"></i>
       </div>
 
       <div class="main">
@@ -19,10 +19,11 @@ import { AudioVersionModel, AudioFileModel } from '../../shared';
           <span *ngIf="file.duration" class="size">({{file.duration | duration}})</span>
           <span *ngIf="!file.duration && file.size" class="size">({{file.size | filesize}})</span>
         </div>
+        <publish-audio-state [file]="file"></publish-audio-state>
       </div>
 
       <div class="cancel">
-        <i *ngIf="!canceled" class="icon-cancel" (click)="onCancel($event)"></i>
+        <i class="icon-cancel" [publishAudioCancel]="file" [version]="version"></i>
       </div>
     </div>
   `

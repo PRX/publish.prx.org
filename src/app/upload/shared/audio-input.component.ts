@@ -32,7 +32,7 @@ export class AudioInputComponent {
   }
 
   click() {
-    this.el.nativeElement.getElementById(this.uuid).click();
+    this.el.nativeElement.getElementsByTagName('input')[0].click();
   }
 
   addFile(file: File) {

@@ -6,7 +6,7 @@ import { SharedModule } from '../shared';
 import { UploadComponent } from './upload.component';
 import { FreeReorderDirective, FreeUploadComponent } from './free';
 import { IllegalUploadComponent } from './illegal';
-import { AudioInputComponent } from './shared';
+import { AudioCancelDirective, AudioInputComponent, AudioStateComponent } from './shared';
 import { TemplatedUploadComponent } from './templated';
 
 @NgModule({
@@ -15,7 +15,9 @@ import { TemplatedUploadComponent } from './templated';
     FreeReorderDirective,
     FreeUploadComponent,
     IllegalUploadComponent,
+    AudioCancelDirective,
     AudioInputComponent,
+    AudioStateComponent,
     TemplatedUploadComponent
   ],
   exports: [

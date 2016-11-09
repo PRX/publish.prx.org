@@ -39,9 +39,21 @@ export class FreeReorderDirective extends DragulaDirective implements OnInit, On
     let position = 1;
     this.publishFreeReorder.forEach(file => {
       if (!file.isDestroy) {
-        file.set('position', position++);
+        this.setPosition(file, position++);
       }
     });
+  }
+
+  setPosition(file: AudioFileModel, position: number) {
+    file.set('position', position);
+    if (this.usesDefaultLabels) {
+      let segLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(position - 1) % 26];
+      file.set('label', `Segment ${segLetter}`);
+    }
+  }
+
+  get usesDefaultLabels(): boolean {
+    return this.publishFreeReorder.every(f => f.label.match(/Segment [A-Z]/) ? true : false);
   }
 
 }
