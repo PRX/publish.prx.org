@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AudioVersionModel } from '../shared';
+import { CheckedFile } from '../shared';
 
 @Component({
   selector: 'publish-upload',
@@ -23,7 +24,7 @@ import { AudioVersionModel } from '../shared';
 
     <template [ngIf]="!version.hasFileTemplates">
       <section>
-        <div class="uploads" [publishFreeReorder]="version.files">
+        <div class="uploads" [publishFreeReorder]="version">
           <div *ngIf="version.noAudioFiles" class="empty">
             <h4 (click)="upinput.click()">Upload a file to get started</h4>
           </div>
@@ -32,7 +33,7 @@ import { AudioVersionModel } from '../shared';
         </div>
       </section>
       <footer>
-        <publish-audio-input #upinput multiple=true></publish-audio-input>
+        <publish-audio-input #upinput multiple=true [version]="version"></publish-audio-input>
       </footer>
     </template>
   `

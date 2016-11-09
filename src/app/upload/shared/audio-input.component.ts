@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, Input, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { UUID } from '../../core';
+import { UUID, UploadService } from '../../core';
+import { AudioVersionModel } from '../../shared';
 import { CheckedFile, FileChecker } from './audio-checker';
 
 @Component({
@@ -21,13 +22,17 @@ export class AudioInputComponent {
 
   @Input() multiple = null;
 
-  @Output() file = new EventEmitter<CheckedFile>();
+  @Input() version: AudioVersionModel;
 
   uuid: string;
 
   newFiles: FileChecker[] = [];
 
-  constructor(private el: ElementRef, private sanitizer: DomSanitizer) {
+  constructor(
+    private el: ElementRef,
+    private sanitizer: DomSanitizer,
+    private uploadService: UploadService
+  ) {
     this.uuid = UUID.UUID();
   }
 
@@ -41,12 +46,17 @@ export class AudioInputComponent {
 
   canPlay(el: HTMLAudioElement, checker: FileChecker) {
     checker.check(el.duration);
-    this.file.emit(checker.file);
+    this.uploadFile(checker.file);
   }
 
   cannotPlay(err: Error, checker: FileChecker) {
     checker.check(null);
-    this.file.emit(checker.file);
+    this.uploadFile(checker.file);
+  }
+
+  uploadFile(file: CheckedFile) {
+    let upload = this.uploadService.add(file);
+    this.version.addUpload(upload);
   }
 
 }

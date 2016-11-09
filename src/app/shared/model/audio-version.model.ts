@@ -138,8 +138,9 @@ export class AudioVersionModel extends BaseModel {
 
   addUpload(upload: Upload) {
     let audio = new AudioFileModel(this.doc, upload);
-    audio.set('position', this.files.length + 1);
     this.files.push(audio);
+    this.refreshPositions();
+
     let uuids = this.uploadUuids.concat(upload.uuid);
     this.set('uploads', uuids.sort().join(','));
   }
@@ -156,6 +157,22 @@ export class AudioVersionModel extends BaseModel {
         break;
       }
     }
+  }
+
+  refreshPositions() {
+    let position = 1;
+    let defaultLabels = this.files.every(f => {
+      return !f.label || !!f.label.match(/Segment [A-Z]/);
+    });
+    this.files.forEach(f => {
+      if (!f.isDestroy) {
+        f.set('position', position++);
+        if (defaultLabels) {
+          let segLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(f.position - 1) % 26];
+          f.set('label', `Segment ${segLetter}`);
+        }
+      }
+    });
   }
 
   watchUpload(upload: Upload) {
