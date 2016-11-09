@@ -1,6 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, HostBinding, OnInit } from '@angular/core';
 import { AudioVersionModel } from '../shared';
-import { CheckedFile } from '../shared';
 
 @Component({
   selector: 'publish-upload',
@@ -33,6 +32,7 @@ import { CheckedFile } from '../shared';
         </div>
       </section>
       <footer>
+        <p *ngIf="versionInvalid" class="error">{{this.version.invalid('self') | capitalize}}</p>
         <publish-audio-input #upinput multiple=true [version]="version"></publish-audio-input>
       </footer>
     </template>
@@ -50,6 +50,18 @@ export class UploadComponent implements OnInit {
     'Piece Audio': 'The standard version of your story you would most like people to hear and buy',
     'Promos': 'The promotional version of your audio'
   };
+
+  @HostBinding('class.changed') get versionChanged(): boolean {
+    if (this.version) {
+      return this.version.audioCount !== this.version.files.length;
+    } else {
+      return false;
+    }
+  }
+
+  @HostBinding('class.invalid') get versionInvalid(): boolean {
+    return this.version.changed() && !!this.version.invalid('self');
+  }
 
   ngOnInit() {
     if (this.version && this.DESCRIPTIONS[this.version.label]) {
