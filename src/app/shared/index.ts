@@ -9,4 +9,3 @@ export * from './image';
 export * from './model';
 export * from './spinner';
 export * from './tab';
-export * from './upload';

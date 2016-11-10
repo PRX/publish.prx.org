@@ -4,14 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { TimeAgoPipe } from './date';
-import { DurationPipe, FileSizePipe } from './file';
+import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
 import { ButtonComponent, CapitalizePipe, FancyFieldComponent } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { HeroComponent } from './hero';
-import { ImageLoaderComponent } from './image';
+import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
 import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
-import { FileSelectDirective, ImageFileComponent, ImageUploadComponent } from './upload';
 
 @NgModule({
   declarations: [
