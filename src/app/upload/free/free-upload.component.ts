@@ -13,7 +13,8 @@ import { AudioVersionModel, AudioFileModel } from '../../shared';
 
       <div class="main">
         <div class="type">
-          <span>{{file.label}}</span>
+          <input type="text" [ngModel]="file.label" (ngModelChange)="labelChange($event)"
+            [class.changed]="file.changed('label')" [class.invalid]="file.invalid('label')"/>
         </div>
         <div class="info">
           <span>{{file.filename}}</span>
@@ -34,5 +35,9 @@ export class FreeUploadComponent {
 
   @Input() version: AudioVersionModel;
   @Input() file: AudioFileModel;
+
+  labelChange(value: string) {
+    this.file.set('label', value);
+  }
 
 }
