@@ -1,0 +1,11 @@
+.state {
+  flex-basis: 100%;
+  width: 100%;
+  padding-top: 10px;
+}
+.state p {
+  color: #E32E32;
+  padding-right: 10px;
+  font-size: 14px;
+  font-weight: bold;
+}

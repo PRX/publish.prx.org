@@ -1,6 +1,6 @@
 import { Component, Input, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { UUID, UploadService } from '../../core';
+import { UUID, UploadService, HalDoc } from '../../core';
 import { AudioVersionModel } from '../../shared';
 import { CheckedFile, FileChecker } from './audio-checker';
 
@@ -14,7 +14,8 @@ import { CheckedFile, FileChecker } from './audio-checker';
     </div>
     <input type="file" accept="audio/mpeg" publishFileSelect [id]="uuid"
       [attr.multiple]="multiple" (file)="addFile($event)"/>
-    <label class="button" [htmlFor]="uuid">Upload Files</label>
+    <label *ngIf="multiple" class="button" [htmlFor]="uuid">Upload Files</label>
+    <label *ngIf="!multiple" class="button" [htmlFor]="uuid">Upload File</label>
   `
 })
 
@@ -23,6 +24,8 @@ export class AudioInputComponent {
   @Input() multiple = null;
 
   @Input() version: AudioVersionModel;
+
+  @Input() position: number;
 
   uuid: string;
 
@@ -56,7 +59,7 @@ export class AudioInputComponent {
 
   uploadFile(file: CheckedFile) {
     let upload = this.uploadService.add(file);
-    this.version.addUpload(upload);
+    this.version.addUpload(upload, this.position);
   }
 
 }

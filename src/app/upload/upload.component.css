@@ -42,11 +42,17 @@ p.error {
   font-weight: bold;
 }
 footer {
+  display: flex;
   background: #FFF;
-  padding: 10px 50px;
-  text-align: right;
+  padding: 0 50px;
 }
-footer p.error {
-  float: left;
-  padding-top: 6px;
+footer.templated {
+  padding: 0 23px;
+}
+footer p {
+  flex: 1;
+  margin: 16px 0;
+}
+footer publish-audio-input {
+  margin: 10px 0 10px auto;
 }

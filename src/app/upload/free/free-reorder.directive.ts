@@ -26,7 +26,7 @@ export class FreeReorderDirective extends DragulaDirective implements OnInit, On
       }
     });
     this.dragSub = this.myDragula.dropModel.subscribe(() => {
-      this.publishFreeReorder.refreshPositions();
+      this.publishFreeReorder.reassign();
     });
     super.ngOnInit();
   }

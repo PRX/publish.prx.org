@@ -13,6 +13,9 @@
 .audio.changed {
   outline: 5px auto #f09b4c;
 }
+.audio.invalid {
+  outline: 5px auto #e32;
+}
 .audio.canceled {
   animation: fade-out 0.5s 1;
   -webkit-animation: fade-out 0.5s 1;

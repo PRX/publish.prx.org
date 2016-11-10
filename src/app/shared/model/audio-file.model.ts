@@ -30,11 +30,10 @@ export class AudioFileModel extends UploadableModel {
   setTemplate(template: HalDoc) {
     this.template = template;
     if (template) {
+      this.set('position', template['position']);
       this.set('label', template['label']);
       this.VALIDATORS['self'] = [FILE_TEMPLATED(template)];
     } else {
-      let segLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(this.position - 1) % 26];
-      this.set('label', `Segment ${segLetter}`);
       this.VALIDATORS['self'] = [FILE_TEMPLATED()];
     }
   }

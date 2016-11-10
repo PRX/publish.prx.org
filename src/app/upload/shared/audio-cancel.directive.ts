@@ -16,9 +16,7 @@ export class AudioCancelDirective {
     this.publishAudioCancel.canceled = true;
     setTimeout(() => {
       this.publishAudioCancel.destroy();
-      if (this.publishAudioCancel.uuid) {
-        this.version.removeUpload(this.publishAudioCancel.uuid);
-      }
+      this.version.removeUpload(this.publishAudioCancel);
       this.publishAudioCancel.canceled = false;
     }, this.DELAY);
   }

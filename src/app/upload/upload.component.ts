@@ -1,5 +1,6 @@
 import { Component, Input, HostBinding, OnInit } from '@angular/core';
-import { AudioVersionModel } from '../shared';
+import { HalDoc } from '../core';
+import { AudioFileModel, AudioVersionModel } from '../shared';
 
 @Component({
   selector: 'publish-upload',
@@ -12,36 +13,40 @@ import { AudioVersionModel } from '../shared';
 
     <section *ngIf="version.hasFileTemplates">
       <div class="uploads">
-        <publish-templated-upload *ngFor="let t of version.fileTemplates; let i = index"
-          [template]="t" [file]="version.files[i]" [version]="version"></publish-templated-upload>
-        <template ngFor let-f [ngForOf]="version.files" let-i="index">
-          <publish-illegal-upload *ngIf="version.fileTemplates.length && !version.fileTemplates[i]"
-            [file]="version.files[i]" [version]="version"></publish-illegal-upload>
+        <template ngFor let-ft [ngForOf]="version.filesAndTemplates">
+          <publish-templated-upload *ngIf="ft.tpl" [template]="ft.tpl"
+            [file]="ft.file" [version]="version"></publish-templated-upload>
+          <publish-illegal-upload *ngIf="!ft.tpl" [file]="ft.file"
+            [version]="version"></publish-illegal-upload>
         </template>
       </div>
     </section>
 
-    <template [ngIf]="!version.hasFileTemplates">
-      <section>
-        <div class="uploads" [publishFreeReorder]="version">
-          <div *ngIf="version.noAudioFiles" class="empty">
-            <h4 (click)="upinput.click()">Upload a file to get started</h4>
-          </div>
-          <publish-free-upload *ngFor="let f of version.files"
-            [file]="f" [version]="version"></publish-free-upload>
+    <section *ngIf="!version.hasFileTemplates">
+      <div class="uploads" [publishFreeReorder]="version">
+        <div *ngIf="version.noAudioFiles" class="empty">
+          <h4 (click)="upinput.click()">Upload a file to get started</h4>
         </div>
-      </section>
-      <footer>
-        <p *ngIf="versionInvalid" class="error">{{this.version.invalid('self') | capitalize}}</p>
-        <publish-audio-input #upinput multiple=true [version]="version"></publish-audio-input>
-      </footer>
-    </template>
+        <publish-free-upload *ngFor="let f of version.files"
+          [file]="f" [version]="version"></publish-free-upload>
+      </div>
+    </section>
+
+    <footer [class.templated]="version.hasFileTemplates">
+      <p *ngIf="versionInvalid" class="error">{{this.version.invalid('self') | capitalize}}</p>
+      <publish-audio-input *ngIf="!version.hasFileTemplates" #upinput
+        multiple=true [version]="version"></publish-audio-input>
+    </footer>
   `
 })
 
 export class UploadComponent implements OnInit {
 
   @Input() version: AudioVersionModel;
+
+  templatedFiles: { file: AudioFileModel; template: HalDoc; }[] = [];
+
+  illegalFiles: AudioFileModel[] = [];
 
   versionDescription: string;
 
