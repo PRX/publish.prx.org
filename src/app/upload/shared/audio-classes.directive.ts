@@ -15,11 +15,11 @@ export class AudioClassesDirective implements DoCheck {
     if (this.publishAudioClasses.canceled) {
       this.stateClasses += ' canceled';
     }
-    if (this.publishAudioClasses.changed()) {
+    if (this.publishAudioClasses.changed() && !this.publishAudioClasses.invalid()) {
       this.stateClasses += ' changed';
     }
-    if (this.publishAudioClasses.invalid()) {
-      this.stateClasses += ' invalid';
+    if (this.publishAudioClasses.isUploading) {
+      this.stateClasses += ' changed';
     }
   }
 

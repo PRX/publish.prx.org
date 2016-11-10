@@ -11,10 +11,16 @@
   padding: 18px 22px;
 }
 .audio.changed {
-  outline: 5px auto #f09b4c;
+  box-shadow: inset 0px 0px 3px 3px #f09b4c;
+  -webkit-box-shadow: inset 0px 0px 3px 3px #f09b4c;
+  -moz-box-shadow: inset 0px 0px 3px 3px #f09b4c;
+  -o-box-shadow: inset 0px 0px 3px 3px #f09b4c;
 }
 .audio.invalid {
-  outline: 5px auto #e32;
+  box-shadow: inset 0px 0px 3px 3px #e32;
+  -webkit-box-shadow: inset 0px 0px 3px 3px #e32;
+  -moz-box-shadow: inset 0px 0px 3px 3px #e32;
+  -o-box-shadow: inset 0px 0px 3px 3px #e32;
 }
 .audio.canceled {
   animation: fade-out 0.5s 1;

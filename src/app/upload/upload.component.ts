@@ -1,4 +1,4 @@
-import { Component, Input, HostBinding, OnInit } from '@angular/core';
+import { Component, Input, HostBinding, OnInit, DoCheck } from '@angular/core';
 import { HalDoc } from '../core';
 import { AudioFileModel, AudioVersionModel } from '../shared';
 
@@ -33,14 +33,14 @@ import { AudioFileModel, AudioVersionModel } from '../shared';
     </section>
 
     <footer [class.templated]="version.hasFileTemplates">
-      <p *ngIf="versionInvalid" class="error">{{this.version.invalid('self') | capitalize}}</p>
+      <p *ngIf="invalidMessage" class="error">{{invalidMessage | capitalize}}</p>
       <publish-audio-input *ngIf="!version.hasFileTemplates" #upinput
         multiple=true [version]="version"></publish-audio-input>
     </footer>
   `
 })
 
-export class UploadComponent implements OnInit {
+export class UploadComponent implements OnInit, DoCheck {
 
   @Input() version: AudioVersionModel;
 
@@ -56,17 +56,11 @@ export class UploadComponent implements OnInit {
     'Promos': 'The promotional version of your audio'
   };
 
-  @HostBinding('class.changed') get versionChanged(): boolean {
-    if (this.version) {
-      return this.version.audioCount !== this.version.files.length;
-    } else {
-      return false;
-    }
-  }
+  @HostBinding('class.changed') changedClass = false;
 
-  @HostBinding('class.invalid') get versionInvalid(): boolean {
-    return this.version.changed() && !!this.version.invalid('self');
-  }
+  @HostBinding('class.invalid') invalidClass = false;
+
+  invalidMessage: string = null;
 
   ngOnInit() {
     if (this.version && this.DESCRIPTIONS[this.version.label]) {
@@ -74,6 +68,32 @@ export class UploadComponent implements OnInit {
     } else {
       this.versionDescription = this.DESCRIPTIONS.DEFAULT;
     }
+  }
+
+  ngDoCheck() {
+    this.changedClass = false;
+    this.invalidClass = false;
+    this.invalidMessage = null;
+    if (this.version) {
+      if (this.version.invalid('files')) {
+        this.invalidClass = this.versionUploadedInvalid();
+      } else if (this.version.invalid('self') && this.version.changed()) {
+        this.invalidClass = true;
+        this.invalidMessage = this.version.invalid('self');
+      } else if (this.version.changed('files')) {
+        this.changedClass = !this.versionUndeletedHaveChanged();
+      } else if (this.version.changed(null, false)) {
+        this.changedClass = true; // version itself changed, not files
+      }
+    }
+  }
+
+  versionUploadedInvalid(): boolean {
+    return this.version.files.filter(f => !f.isUploading).some(f => !!f.invalid());
+  }
+
+  versionUndeletedHaveChanged(): boolean {
+    return this.version.files.filter(f => !f.isDestroy).some(f => f.changed());
   }
 
 }
