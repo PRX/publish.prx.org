@@ -2,7 +2,7 @@ import { cms } from '../../../testing';
 import { AudioVersionModel } from './audio-version.model';
 import { AudioFileModel } from './audio-file.model';
 
-fdescribe('AudioVersionModel', () => {
+describe('AudioVersionModel', () => {
 
   let seriesMock: any, storyMock: any, versionMock: any, templateMock: any;
   beforeEach(() => {
