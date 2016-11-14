@@ -75,6 +75,7 @@ export class AudioVersionModel extends BaseModel {
       }
     });
     this.set('uploads', validUuids.join(','));
+    newAudio = newAudio.sort(fileSort);
 
     let files: Observable<AudioFileModel[]> = Observable.of(newAudio);
     if (this.doc && this.doc.has('prx:audio')) {
