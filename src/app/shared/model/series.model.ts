@@ -3,6 +3,7 @@ import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
 import { ImageModel } from './image.model';
 import { AudioVersionTemplateModel } from './audio-version-template.model';
+import { AudioFileTemplateModel } from './audio-file-template.model';
 import { REQUIRED, LENGTH } from './invalid';
 
 export class SeriesModel extends BaseModel {
@@ -27,6 +28,14 @@ export class SeriesModel extends BaseModel {
   constructor(account: HalDoc, series?: HalDoc, loadRelated = true) {
     super();
     this.init(account, series, loadRelated);
+    if (this.isNew && !this.changed()) {
+      let versionTpl = new AudioVersionTemplateModel(account);
+      let fileTpl = new AudioFileTemplateModel(null, null, 1);
+      versionTpl.set('label', 'Podcast Audio');
+      fileTpl.set('label', 'Main Segment');
+      versionTpl.fileTemplates.push(fileTpl);
+      this.versionTemplates.push(versionTpl);
+    }
   }
 
   key() {
