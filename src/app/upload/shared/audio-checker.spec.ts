@@ -7,14 +7,14 @@ describe('AudioChecker', () => {
   };
 
   it('creates a safe object url', () => {
-    let f = new File(['blah'], 'blah.txt');
+    let f: any = new Blob();
     let checker = new FileChecker(f, mockSanitizer);
     expect(checker.checked).toEqual(false);
     expect(checker.src).toEqual('sanitized!');
   });
 
   it('sets duration', () => {
-    let f = new File(['blah'], 'blah.txt');
+    let f: any = new Blob();
     let checker = new FileChecker(f, mockSanitizer);
     checker.check(10);
     expect(checker.checked).toEqual(true);

@@ -9,7 +9,7 @@ describe('AudioInputComponent', () => {
   provide(UploadService, {add: () => null});
 
   cit('adds audio elements', (fix, el, comp) => {
-    let file = new File(['blah'], 'blah.txt');
+    let file: any = new Blob();
     comp.addFile(file);
     expect(comp.newFiles.length).toEqual(1);
     expect(comp.newFiles[0].checked).toEqual(false);
