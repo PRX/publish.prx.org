@@ -1,6 +1,6 @@
 import { Component, Input, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { UUID, UploadService, HalDoc } from '../../core';
+import { UUID, UploadService } from '../../core';
 import { AudioVersionModel } from '../../shared';
 import { CheckedFile, FileChecker } from './audio-checker';
 

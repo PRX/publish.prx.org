@@ -6,7 +6,7 @@ import { AudioFileModel, AudioVersionModel } from '../../shared';
 })
 export class AudioCancelDirective {
 
-  DELAY = 1000;
+  @Input() delay = 1000;
 
   @Input() publishAudioCancel: AudioFileModel;
 
@@ -18,7 +18,7 @@ export class AudioCancelDirective {
       this.publishAudioCancel.destroy();
       this.version.removeUpload(this.publishAudioCancel);
       this.publishAudioCancel.canceled = false;
-    }, this.DELAY);
+    }, this.delay);
   }
 
 }

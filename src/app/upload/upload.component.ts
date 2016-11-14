@@ -1,6 +1,5 @@
 import { Component, Input, HostBinding, OnInit, DoCheck } from '@angular/core';
-import { HalDoc } from '../core';
-import { AudioFileModel, AudioVersionModel } from '../shared';
+import { AudioVersionModel } from '../shared';
 
 @Component({
   selector: 'publish-upload',
@@ -8,7 +7,7 @@ import { AudioFileModel, AudioVersionModel } from '../shared';
   template: `
     <header>
       <strong>{{version.label}}</strong>
-      <span *ngIf="DESCRIPTIONS[version.label]">{{DESCRIPTIONS[version.label]}}</span>
+      <span>{{versionDescription}}</span>
     </header>
 
     <section *ngIf="version.hasFileTemplates">
@@ -43,10 +42,6 @@ import { AudioFileModel, AudioVersionModel } from '../shared';
 export class UploadComponent implements OnInit, DoCheck {
 
   @Input() version: AudioVersionModel;
-
-  templatedFiles: { file: AudioFileModel; template: HalDoc; }[] = [];
-
-  illegalFiles: AudioFileModel[] = [];
 
   versionDescription: string;
 
