@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
 import { UploadableModel } from './uploadable.model';
-import { FILE_TEMPLATED } from './invalid';
+import { REQUIRED, FILE_TEMPLATED } from './invalid';
 
 export class AudioFileModel extends UploadableModel {
 
@@ -9,10 +9,12 @@ export class AudioFileModel extends UploadableModel {
   public label: string;
   public duration: number;
   public position: number;
+  public canceled: boolean;
 
   SETABLE = ['label', 'duration', 'position'];
 
   VALIDATORS = {
+    label: [REQUIRED()],
     self: [FILE_TEMPLATED()]
   };
 
@@ -29,11 +31,10 @@ export class AudioFileModel extends UploadableModel {
   setTemplate(template: HalDoc) {
     this.template = template;
     if (template) {
+      this.set('position', template['position']);
       this.set('label', template['label']);
       this.VALIDATORS['self'] = [FILE_TEMPLATED(template)];
     } else {
-      let segLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(this.position - 1) % 26];
-      this.set('label', `Segment ${segLetter}`);
       this.VALIDATORS['self'] = [FILE_TEMPLATED()];
     }
   }

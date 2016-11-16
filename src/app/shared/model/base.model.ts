@@ -118,8 +118,9 @@ export abstract class BaseModel {
       } else {
         model.parent = this.doc;
       }
+      let wasDestroy = model.isDestroy;
       return model.save().map(saved => {
-        if (saved && model.isDestroy) {
+        if (saved && wasDestroy) {
           this.removeRelated(model);
         }
         return saved;

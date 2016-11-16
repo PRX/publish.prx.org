@@ -24,11 +24,16 @@ export class AudioVersionModel extends BaseModel {
   public series: HalDoc;
   public template: HalDoc;
   public fileTemplates: HalDoc[] = [];
+  public hasFileTemplates: boolean = false;
+  public filesAndTemplates: {tpl: HalDoc, file: AudioFileModel}[] = [];
 
   constructor(params: {series?: HalDoc, story?: HalDoc, template?: HalDoc, version?: HalDoc}) {
     super();
     this.series = params.series;
     this.template = params.template;
+    if (this.template) {
+      this.hasFileTemplates = this.template.count('prx:audio-file-templates') ? true : false;
+    }
     this.VALIDATORS['self'] = [VERSION_TEMPLATED(params.template)];
     this.init(params.story, params.version);
     this.setLabel();
@@ -70,26 +75,25 @@ export class AudioVersionModel extends BaseModel {
       }
     });
     this.set('uploads', validUuids.join(','));
+    newAudio = newAudio.sort(fileSort);
 
-    let savedFiles: Observable<AudioFileModel[]> = Observable.of(newAudio);
+    let files: Observable<AudioFileModel[]> = Observable.of(newAudio);
     if (this.doc && this.doc.has('prx:audio')) {
-      savedFiles = this.doc.followList('prx:audio').map(fdocs => {
+      files = this.doc.followList('prx:audio').map(fdocs => {
         return fdocs.map(fdoc => new AudioFileModel(this.doc, fdoc))
                     .concat(newAudio).sort(fileSort);
       });
     }
 
-    let fileTemplates: Observable<HalDoc[]> = Observable.of([]);
-    if (this.template && this.template.has('prx:audio-file-templates')) {
-      fileTemplates = this.template.followList('prx:audio-file-templates');
+    // optionally load-and-assign file templates
+    if (this.hasFileTemplates) {
+      let tpls = this.template.followList('prx:audio-file-templates');
+      files = Observable.forkJoin(files, tpls).map(([models, tdocs]) => {
+        this.fileTemplates = tdocs.sort(fileSort);
+        return models;
+      }).finally(() => this.reassign());
     }
 
-    let files = Observable.forkJoin(savedFiles, fileTemplates).map(([models, tdocs]) => {
-      let tidx = 0;
-      this.fileTemplates = tdocs.sort(fileSort);
-      models.forEach(f => f.setTemplate(f.isDestroy ? null : this.fileTemplates[tidx++]));
-      return models;
-    });
     return {files: files};
   }
 
@@ -118,6 +122,7 @@ export class AudioVersionModel extends BaseModel {
     super.discard();
     this.files.sort((f1, f2) => f1.position - f2.position);
     this.setLabel();
+    this.reassign();
     return false; // don't discard
   }
 
@@ -129,24 +134,80 @@ export class AudioVersionModel extends BaseModel {
     }
   }
 
-  addUpload(upload: Upload) {
+  addUpload(upload: Upload, position?: number) {
     let audio = new AudioFileModel(this.doc, upload);
-    audio.set('position', this.files.length + 1);
-    this.files.push(audio);
+    if (position) {
+      audio.set('position', position);
+      for (let i = 0; i <= this.files.length; i++) {
+        if (!this.files[i] || this.files[i].position >= audio.position) {
+          this.files.splice(i, 0, audio);
+          break;
+        }
+      }
+    } else {
+      this.files.push(audio);
+    }
+    this.reassign();
+
     let uuids = this.uploadUuids.concat(upload.uuid);
     this.set('uploads', uuids.sort().join(','));
   }
 
-  removeUpload(uuid: string) {
-    let uuids = this.uploadUuids;
-    if (uuids.indexOf(uuid) > -1) {
-      uuids.splice(uuids.indexOf(uuid), 1);
-      this.set('uploads', uuids.sort().join(','));
+  removeUpload(file: AudioFileModel) {
+    if (file.isNew) {
+      if (this.files.indexOf(file) > -1) {
+        this.files.splice(this.files.indexOf(file), 1);
+      }
     }
-    for (let i = 0; i < this.files.length; i++) {
-      if (this.files[i].uuid === uuid && this.files[i].isNew) {
-        this.files.splice(i, 1);
-        break;
+    if (file.uuid) {
+      let uuids = this.uploadUuids;
+      if (uuids.indexOf(file.uuid) > -1) {
+        uuids.splice(uuids.indexOf(file.uuid), 1);
+        this.set('uploads', uuids.sort().join(','));
+      }
+    }
+    this.reassign();
+  }
+
+  reassign() {
+    if (this.hasFileTemplates) {
+      this.assignTemplates();
+    } else {
+      this.assignPositions();
+    }
+  }
+
+  assignPositions() {
+    let position = 1;
+    let defaultLabels = this.files.every(f => {
+      return !f.label || !!f.label.match(/Segment [A-Z]/);
+    });
+    this.files.forEach(f => {
+      if (!f.isDestroy) {
+        f.set('position', position++);
+        if (defaultLabels) {
+          let segLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(f.position - 1) % 26];
+          f.set('label', `Segment ${segLetter}`);
+        }
+      }
+    });
+  }
+
+  assignTemplates() {
+    if (this.files && this.fileTemplates) {
+      this.filesAndTemplates = [];
+      for (let t of this.fileTemplates) {
+        this.filesAndTemplates.push({file: null, tpl: t});
+      }
+      for (let f of this.files.filter(f => !f.isDestroy)) {
+        let ft = this.filesAndTemplates.find(ft => ft.tpl && ft.tpl['position'] === f.position);
+        if (ft) {
+          f.setTemplate(ft.tpl);
+          ft.file = f;
+        } else {
+          f.setTemplate(null);
+          this.filesAndTemplates.push({file: f, tpl: null});
+        }
       }
     }
   }

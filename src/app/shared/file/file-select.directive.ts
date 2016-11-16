@@ -15,6 +15,10 @@ export class FileSelectDirective {
     }
   }
 
+  @HostListener('click') onClick(): void {
+    this.element.nativeElement.value = null;
+  }
+
   getFiles(): any[] {
     return this.element.nativeElement.files;
   }

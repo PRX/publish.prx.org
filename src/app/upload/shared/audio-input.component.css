@@ -12,6 +12,7 @@ input {
 label {
   padding: 6px 10px;
   margin-bottom: 0;
+  white-space: nowrap;
 }
 input:focus + label, label:hover {
   background-color: #2b7187;

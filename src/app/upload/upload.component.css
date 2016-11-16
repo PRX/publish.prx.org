@@ -2,6 +2,12 @@
   text-align: left;
   display: block;
 }
+:host.changed {
+  outline: 5px auto #f09b4c;
+}
+:host.invalid {
+  outline: 5px auto #e32;
+}
 header {
   background-color: #B8B8B8;
   padding: 16px 14px;
@@ -18,9 +24,6 @@ header span {
   font-size: 14px;
   vertical-align: middle;
 }
-.loading {
-  position: relative;
-}
 .empty {
   background: #fff;
   text-align: center;
@@ -31,9 +34,25 @@ header span {
   font-size: 20px;
   font-weight: 600;
   line-height: 108px;
+  cursor: default;
+}
+p.error {
+  color: #E32E32;
+  font-size: 14px;
+  font-weight: bold;
 }
 footer {
+  display: flex;
   background: #FFF;
-  padding: 10px 50px;
-  text-align: right;
+  padding: 0 50px;
+}
+footer.templated {
+  padding: 0 23px;
+}
+footer p {
+  flex: 1;
+  margin: 16px 0;
+}
+footer publish-audio-input {
+  margin: 10px 0 10px auto;
 }

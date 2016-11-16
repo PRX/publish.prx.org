@@ -10,10 +10,13 @@ describe('AudioVersionModel', () => {
     seriesMock = cms.mock('prx:series', {id: 'the-series-id'});
     storyMock = cms.mock('prx:story', {id: 'the-story-id'});
     templateMock = cms.mock('prx:audio-version-template', {id: 'the-template-id'});
-    spyOn(AudioFileModel.prototype, 'init').and.callFake(function() {
+    spyOn(AudioFileModel.prototype, 'init').and.callFake(function(parent, file) {
       this.filename = 'foobar';
       this.uuid = 'fake-uuid';
       this.status = 'complete';
+      this.label = (file && file.label) ? file.label : undefined;
+      this.position = (file && file.position) ? file.position : undefined;
+      this.isDestroy = (file && file.isDestroy) ? true : false;
     });
   });
 
@@ -100,6 +103,17 @@ describe('AudioVersionModel', () => {
       let version = makeVersion(null);
       expect(version.template).toBeTruthy();
       expect(version.fileTemplates.length).toEqual(2);
+      expect(version.hasFileTemplates).toEqual(true);
+    });
+
+    it('assigns templates to files', () => {
+      templateMock.mockList('prx:audio-file-templates', [{position: 1}, {position: 3}, {position: 2}]);
+      let version = makeVersion({}, [{position: 2}, {position: 1, isDestroy: true}, {position: 4}]);
+      expect(version.filesAndTemplates.length).toEqual(4);
+      expect(version.filesAndTemplates[0].file).toBeNull();
+      expect(version.filesAndTemplates[1].file).not.toBeNull();
+      expect(version.filesAndTemplates[2].file).toBeNull();
+      expect(version.filesAndTemplates[3].tpl).toBeNull();
     });
 
   });
@@ -158,6 +172,32 @@ describe('AudioVersionModel', () => {
       expect(version.files[0].watchUpload).not.toHaveBeenCalled();
       version.watchUpload(<any> {uuid: 'fake-uuid'});
       expect(version.files[0].watchUpload).toHaveBeenCalled();
+    });
+
+  });
+
+  describe('assignPositions', () => {
+
+    it('sets positions and labels', () => {
+      let version = makeVersion({}, [{}, {isDestroy: true}, {}]);
+      version.assignPositions();
+      expect(version.files[0].position).toEqual(1);
+      expect(version.files[0].label).toEqual('Segment A');
+      expect(version.files[1].position).toBeUndefined();
+      expect(version.files[1].label).toBeUndefined();
+      expect(version.files[2].position).toEqual(2);
+      expect(version.files[2].label).toEqual('Segment B');
+    });
+
+    it('does not set labels if non default', () => {
+      let version = makeVersion({}, [{label: 'foobar'}, {isDestroy: true}, {}]);
+      version.assignPositions();
+      expect(version.files[0].position).toEqual(1);
+      expect(version.files[0].label).toEqual('foobar');
+      expect(version.files[1].position).toBeUndefined();
+      expect(version.files[1].label).toBeUndefined();
+      expect(version.files[2].position).toEqual(2);
+      expect(version.files[2].label).toBeUndefined();
     });
 
   });

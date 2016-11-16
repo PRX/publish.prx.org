@@ -1,0 +1,30 @@
+.main .type {
+  padding: 0;
+  border: none;
+}
+.type input {
+  background: #fff;
+  border: 1px solid #DDDDDD;
+  color: #676767;
+}
+.type input:focus {
+  border: 1px solid #676767;
+  color: #000;
+}
+.type input.changed {
+  border: 1px solid #f09b4c;
+  outline: 1px solid #f09b4c;
+}
+.type input.invalid {
+  border: 1px solid #e32;
+  outline: 1px solid #e32;
+}
+
+/* for dragula */
+:host.gu-transit .audio {
+  background: none;
+  outline: none;
+}
+:host.gu-transit .reorder, :host.gu-transit .cancel {
+  opacity: 0.3;
+}

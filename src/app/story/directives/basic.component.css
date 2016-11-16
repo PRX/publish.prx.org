@@ -7,19 +7,9 @@ hr {
   border-bottom: 1px solid #ccc;
   margin: 0 0 30px;
 }
-.uploads-box {
-  border: 4px solid purple;
-  height: 300px;
-  text-align: center;
-  line-height: 300px;
-  color: purple;
+publish-upload {
+  margin-bottom: 30px;
 }
-@media screen and (min-width: 768px) {
-  .span-fields > * {
-    display: inline-block;
-    width: 40%;
-  }
-}
-:host >>> .invalid-explicit >>> publish-audio-version {
-  outline: 5px auto #e32;
+publish-upload:last-child {
+  margin-bottom: 0;
 }

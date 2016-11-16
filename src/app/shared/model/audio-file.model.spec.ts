@@ -34,12 +34,6 @@ describe('AudioFileModel', () => {
       expect(file.VALIDATORS['self'].length).toEqual(1);
     });
 
-    it('has a default label per position', () => {
-      let file = makeFile({position: 8});
-      file.setTemplate(null);
-      expect(file.label).toEqual('Segment H');
-    });
-
   });
 
   describe('key', () => {

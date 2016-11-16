@@ -23,7 +23,11 @@ import { StoryModel, TabService } from '../../shared';
       <hr/>
 
       <publish-fancy-field label="Audio Files" required>
-        <publish-audio-upload [story]="story"></publish-audio-upload>
+        <publish-spinner *ngIf="!story?.versions"></publish-spinner>
+        <publish-upload *ngFor="let v of story?.versions" [version]="v"></publish-upload>
+        <h1 *ngIf="story?.versions?.length === 0">
+          You have no audio versions for this story. How did that happen?
+        </h1>
       </publish-fancy-field>
 
       <publish-fancy-field label="Cover Image">
