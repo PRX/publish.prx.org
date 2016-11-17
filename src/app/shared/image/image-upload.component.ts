@@ -9,7 +9,7 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
     <publish-spinner *ngIf="model && !model?.images"></publish-spinner>
 
     <div *ngIf="noImages" class="new-image">
-      <p class="size">{{minWidth}}x{{minHeight}} px</p>
+      <p class="size">Minimum size: {{minWidth}}x{{minHeight}} px</p>
       <input type="file" id="image-file" publishFileSelect (file)="addUpload($event)"/>
       <label class="button" for="image-file">Add Image</label>
     </div>

@@ -22,9 +22,10 @@ export class StoryModel extends BaseModel {
   SETABLE = ['title', 'shortDescription', 'description', 'tags'];
 
   VALIDATORS = {
-    title:            [REQUIRED(), LENGTH(10)],
-    shortDescription: [REQUIRED(), LENGTH(10)],
-    description:      [LENGTH(10)]
+    title:            [REQUIRED()],
+    shortDescription: [REQUIRED()],
+    description:      [LENGTH(10)],
+    tags:             [REQUIRED()]
   };
 
   constructor(seriesOrAccount: HalDoc, story?: HalDoc, loadRelated = true) {

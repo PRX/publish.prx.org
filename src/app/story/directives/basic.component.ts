@@ -30,13 +30,13 @@ import { StoryModel, TabService } from '../../shared';
         </h1>
       </publish-fancy-field>
 
-      <publish-fancy-field label="Cover Image">
-        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400></publish-image-upload>
+      <publish-fancy-field label="Cover Image" required>
+        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400 ></publish-image-upload>
       </publish-fancy-field>
 
       <hr/>
 
-      <publish-fancy-field [model]="story" textinput="true" name="tags">
+      <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories" required>
         <div class="fancy-hint">A comma-separated list of tags relevant to your story.</div>
       </publish-fancy-field>
 
