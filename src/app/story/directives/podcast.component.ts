@@ -30,7 +30,7 @@ export class PodcastComponent implements OnDestroy {
   story: StoryModel;
   tabSub: Subscription;
 
-  OPTIONS = ['Yes', 'No'];
+  OPTIONS = ['Explicit', 'Clean'];
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.story = s);
