@@ -56,7 +56,6 @@ export class Upload {
   public uuid: string;
   public name: string;
   public size: number;
-  public duration: number;
   public path: string;
   public url: string;
   public s3url: string;
@@ -73,7 +72,6 @@ export class Upload {
     this.uuid = UUID.UUID();
     this.name = file.name;
     this.size = file.size;
-    this.duration = file['duration'];
     this.path = [Env.BUCKET_FOLDER, this.uuid, file.name.replace(/[^a-z0-9\.]+/gi, '_')].join('/');
     this.url = '//s3.amazonaws.com/' + Env.BUCKET_NAME + '/' + this.path;
     this.s3url = 's3://' + Env.BUCKET_NAME + '/' + this.path;

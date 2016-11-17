@@ -35,7 +35,7 @@ export abstract class UploadableModel extends BaseModel {
   UPLOAD_PROCESS_ESTIMATE = 20000;
   UPLOAD_PROCESS_TIMEOUT = 60000;
 
-  private upload: Upload;
+  upload: Upload;
   private uploadSub: Subscription;
   private processSub: Subscription;
 

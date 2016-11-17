@@ -7,11 +7,15 @@ export class AudioFileModel extends UploadableModel {
 
   public id: number;
   public label: string;
-  public duration: number;
   public position: number;
+  public format: string;
+  public duration: number;
+  public bitrate: number;
+  public frequency: number;
+
   public canceled: boolean;
 
-  SETABLE = ['label', 'duration', 'position'];
+  SETABLE = ['label', 'position', 'format', 'duration', 'bitrate', 'frequency'];
 
   VALIDATORS = {
     label: [REQUIRED()],
@@ -23,9 +27,6 @@ export class AudioFileModel extends UploadableModel {
   constructor(audioVersion?: HalDoc, file?: HalDoc | Upload | string) {
     super();
     this.initUpload(audioVersion, file);
-    if (file instanceof Upload) {
-      this.set('duration', file.duration);
-    }
   }
 
   setTemplate(template: HalDoc) {

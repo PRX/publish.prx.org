@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
+import { PlayerService } from './audio';
 import { AuthComponent, AuthService } from './auth';
 import { CmsService } from './cms';
 import { FooterComponent } from './footer';
@@ -37,6 +38,7 @@ import { MimeTypeService, UploadService } from './upload';
     CmsService,
     MimeTypeService,
     ModalService,
+    PlayerService,
     UploadService
   ]
 })
