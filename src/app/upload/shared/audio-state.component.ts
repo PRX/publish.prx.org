@@ -24,6 +24,7 @@ import { AudioFileModel } from '../../shared';
         <div class="meter">
           <span [style.width.%]="file.progress * 100"></span>
         </div>
+        <p *ngIf="file.invalid('self')" class="error">{{file.invalid('self') | capitalize}}</p>
       </div>
 
       <div *ngSwitchCase="'process-errored'">

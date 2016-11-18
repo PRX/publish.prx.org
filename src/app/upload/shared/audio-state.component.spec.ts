@@ -30,11 +30,19 @@ describe('AudioStateComponent', () => {
   });
 
   cit('states uploading', (fix, el, comp) => {
-    comp.file = {isUploading: true};
+    comp.file = {isUploading: true, invalid: () => false};
     fix.detectChanges();
     expect(comp.fileState).toEqual('uploading');
     expect(el).toContainText('Uploading');
     expect(el).toQuery('.meter');
+  });
+
+  cit('states uploading with invalid message', (fix, el, comp) => {
+    comp.file = {isUploading: true, invalid: () => 'something is bad'};
+    fix.detectChanges();
+    expect(comp.fileState).toEqual('uploading');
+    expect(el).toContainText('Uploading');
+    expect(el).toContainText('something is bad');
   });
 
   cit('states process errors', (fix, el, comp) => {
