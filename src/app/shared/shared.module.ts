@@ -12,6 +12,8 @@ import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from '
 import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
 
+import { HoverDirective } from './hover';
+
 @NgModule({
   declarations: [
     ButtonComponent,
@@ -26,7 +28,8 @@ import { TabComponent } from './tab';
     ImageUploadComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    HoverDirective
   ],
   exports: [
     CommonModule,
@@ -42,7 +45,8 @@ import { TabComponent } from './tab';
     ImageUploadComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    HoverDirective
   ],
   imports: [
     CommonModule,
