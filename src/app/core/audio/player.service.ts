@@ -34,11 +34,11 @@ export class PlayerService {
 
       let data = <PlaybackMetadata> {progress: 0};
       player.on('duration', d => {
-        data.duration = Math.round(d / 1000);
+        data.duration = d;
         sub.next(data);
       });
       player.on('progress', p => {
-        data.progress = Math.round(p / 1000);
+        data.progress = p;
         sub.next(data);
       });
       player.on('end', () => sub.complete());
@@ -54,14 +54,12 @@ export class PlayerService {
 
   seek(percent: number) {
     if (this.playingData && this.playingData.duration) {
-      this.playingPlayer.seek(this.playingData.duration * percent * 1000);
+      this.playingPlayer.seek(this.playingData.duration * percent);
     }
   }
 
   stop() {
-    if (this.playing) {
-      this.playing.complete();
-    }
+    if (this.playing) this.playing.complete();
   }
 
   checkFile(file: File): Observable<AudioMetadata> {
@@ -70,7 +68,7 @@ export class PlayerService {
       let asset = AV.Asset.fromFile(file);
       let update = () => {
         if (asset.duration) {
-          data.duration = Math.round(asset.duration / 1000);
+          data.duration = asset.duration;
         }
         if (asset.format) {
           data.format = asset.format.formatID;

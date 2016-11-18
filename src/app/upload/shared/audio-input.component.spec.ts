@@ -38,13 +38,13 @@ describe('AudioInputComponent', () => {
 
   cit('sets audio file fields', (fix, el, comp) => {
     comp.version = makeVersion();
-    let data = {format: 'fm', duration: 'dr', bitrate: 'br', frequency: 1234};
+    let data = {format: 'fm', duration: 5501, bitrate: 'br', frequency: 'fr'};
     spyOn(comp.player, 'checkFile').and.returnValue(Observable.of(data));
     comp.addFile(<any> 'some-file');
     expect(comp.version.file.format).toEqual('fm');
-    expect(comp.version.file.duration).toEqual('dr');
+    expect(comp.version.file.duration).toEqual(6);
     expect(comp.version.file.bitrate).toEqual('br');
-    expect(comp.version.file.frequency).toEqual(1234);
+    expect(comp.version.file.frequency).toEqual('fr');
   });
 
   cit('uploads single', (fix, el, comp) => {

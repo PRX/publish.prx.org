@@ -24,7 +24,7 @@ describe('PlayerService', () => {
       });
       let data: any;
       let sub = service.play('some-href').subscribe(d => data = d);
-      expect(data.duration).toEqual(5);
+      expect(data.duration).toEqual(5000);
       expect(sub.closed).toEqual(false);
     });
 
@@ -34,7 +34,7 @@ describe('PlayerService', () => {
       });
       let data: any;
       let sub = service.play('some-href').subscribe(d => data = d);
-      expect(data.progress).toEqual(2);
+      expect(data.progress).toEqual(2000);
       expect(sub.closed).toEqual(false);
     });
 

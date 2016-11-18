@@ -38,7 +38,7 @@ export class AudioInputComponent {
       let upload = this.uploadService.add(file);
       let audio = this.version.addUpload(upload, this.position);
       audio.set('format', data.format);
-      audio.set('duration', data.duration);
+      audio.set('duration', Math.round(data.duration / 1000));
       audio.set('bitrate', data.bitrate);
       audio.set('frequency', data.frequency);
     });
