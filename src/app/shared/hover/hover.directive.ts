@@ -9,27 +9,35 @@ export class HoverDirective {
   constructor(
     private el: ElementRef,
     private renderer: Renderer
-  ) { }
+  ) {  }
 
   @Input('hover-tip') tipText: string;
 
   @HostListener('mouseenter') onMouseEnter() {
-    this.showTip(this.tipText || "");
+    if (this.hasTip()) this.showTip(this.tipText);
   }
 
   @HostListener('mouseleave') onMouseLeave() {
-    this.removeText();
+    if (this.hasTip()) this.removeTip();
   }
 
   private showTip(text: string) {
-    this.renderer.createText(this.firstChild(), text);
+    let tipField = this.firstChild();
+    this.renderer.createText(tipField, text);
+    this.renderer.setElementClass(tipField, 'displayed', true);
   }
 
-  private removeText() {
-    this.renderer.setText(this.firstChild(), "");
+  private removeTip() {
+    let tipField = this.firstChild();
+    this.renderer.setText(tipField, "");
+    this.renderer.setElementClass(tipField, 'displayed', false);
   }
 
   private firstChild() {
     return this.el.nativeElement.children[0];
+  }
+
+  private hasTip () {
+    return typeof this.tipText !== "undefined";
   }
 }

@@ -79,20 +79,6 @@ select[disabled] {
   background: #efefef;
 }
 
-.hover-tip {
-  height: 35px;
-  width: 100%;
-  text-align: right;
-  position: absolute;
-}
-
-.hover-tip > p {
-  height: 100%;
-  width: 65%;
-  position: absolute;
-  overflow-x: scroll;
-  right: 0;
-}
 
 /**
  * Valid/changed indicators
