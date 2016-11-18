@@ -9,7 +9,7 @@ import { StoryModel } from '../../shared';
   styleUrls: ['home-series.component.css'],
   template: `
     <header *ngIf="noseries">
-      <section [hover-tip]="'These are your stories not associated with any Series.'" class="hover-tip">
+      <section [publishHoverTip]="'These are your stories not associated with any Series.'" class="hover-tip">
         <p></p>
       </section>
       <h2>Your Standalone Stories</h2>

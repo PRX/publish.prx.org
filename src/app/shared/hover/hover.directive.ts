@@ -1,24 +1,24 @@
 import { Directive, ElementRef, HostListener, Input, Renderer } from '@angular/core';
 
 @Directive({
-   selector: '[hover-tip]'
+   selector: '[publishHoverTip]'
  })
 
 export class HoverDirective {
+
+  @Input() publishHoverTip: string;
 
   constructor(
     private el: ElementRef,
     private renderer: Renderer
   ) {  }
 
-  @Input('hover-tip') tipText: string;
-
   @HostListener('mouseenter') onMouseEnter() {
-    if (this.hasTip()) this.showTip(this.tipText);
+    if (this.hasTip()) { this.showTip(this.publishHoverTip); }
   }
 
   @HostListener('mouseleave') onMouseLeave() {
-    if (this.hasTip()) this.removeTip();
+    if (this.hasTip()) { this.removeTip(); }
   }
 
   private showTip(text: string) {
@@ -29,7 +29,7 @@ export class HoverDirective {
 
   private removeTip() {
     let tipField = this.firstChild();
-    this.renderer.setText(tipField, "");
+    this.renderer.setText(tipField, '');
     this.renderer.setElementClass(tipField, 'displayed', false);
   }
 
@@ -38,6 +38,6 @@ export class HoverDirective {
   }
 
   private hasTip () {
-    return typeof this.tipText !== "undefined";
+    return typeof this.publishHoverTip !== 'undefined';
   }
 }
