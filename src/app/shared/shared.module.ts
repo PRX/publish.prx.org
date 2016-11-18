@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { TimeAgoPipe } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
-import { ButtonComponent, CapitalizePipe, FancyFieldComponent } from './form';
+import { ButtonComponent, CapitalizePipe, FancyFieldComponent, WysiwygComponent } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
@@ -26,7 +26,8 @@ import { TabComponent } from './tab';
     ImageUploadComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    WysiwygComponent
   ],
   exports: [
     CommonModule,
@@ -42,7 +43,8 @@ import { TabComponent } from './tab';
     ImageUploadComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    WysiwygComponent
   ],
   imports: [
     CommonModule,

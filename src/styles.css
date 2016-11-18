@@ -7,3 +7,6 @@
 @import '/assets/styles/layout.css';
 @import '/assets/styles/loading.css';
 @import '/assets/fontello/css/fontello.css';
+@import '/assets/prosemirror/prosemirror.css';
+@import '/assets/prosemirror/menu.css';
+@import '/assets/prosemirror/style.css';
