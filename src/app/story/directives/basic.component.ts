@@ -5,10 +5,9 @@ import { StoryModel, TabService } from '../../shared';
 @Component({
   styleUrls: ['basic.component.css'],
   template: `
-  <p hover-tip> Is this yellow? </p>
     <form *ngIf="story">
 
-      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title" required>
+      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title" tiptext="this is a tip! this is a tip! this is a tip! this is a tip! this is a tip! this is a tip! this is a tip! this is a tip!" required>
         <div class="fancy-hint">Write a short, Tweetable title like a newspaper headline.</div>
       </publish-fancy-field>
 

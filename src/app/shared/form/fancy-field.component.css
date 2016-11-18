@@ -79,6 +79,21 @@ select[disabled] {
   background: #efefef;
 }
 
+.hover-tip {
+  z-index: -1;
+  height: 35px;
+  width: 100%;
+  text-align: right;
+  position: absolute;
+}
+
+.hover-tip > p {
+  z-index: 0;
+  width: 65%;
+  position: absolute;
+  right: 0;
+}
+
 /**
  * Valid/changed indicators
  */
