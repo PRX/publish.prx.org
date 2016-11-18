@@ -80,7 +80,6 @@ select[disabled] {
 }
 
 .hover-tip {
-  z-index: -1;
   height: 35px;
   width: 100%;
   text-align: right;
@@ -88,9 +87,10 @@ select[disabled] {
 }
 
 .hover-tip > p {
-  z-index: 0;
+  height: 100%;
   width: 65%;
   position: absolute;
+  overflow-x: scroll;
   right: 0;
 }
 

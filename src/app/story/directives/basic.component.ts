@@ -7,7 +7,7 @@ import { StoryModel, TabService } from '../../shared';
   template: `
     <form *ngIf="story">
 
-      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title" tiptext="this is a tip! this is a tip! this is a tip! this is a tip! this is a tip! this is a tip! this is a tip! this is a tip!" required>
+      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title" tiptext="This will show up in the \'Name\' column on iTunes." required>
         <div class="fancy-hint">Write a short, Tweetable title like a newspaper headline.</div>
       </publish-fancy-field>
 
@@ -15,7 +15,7 @@ import { StoryModel, TabService } from '../../shared';
         <div class="fancy-hint">A first impression; think of this as the single-item lead of a piece.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field [model]="story" textarea="true" name="description" label="Description">
+      <publish-fancy-field [model]="story" textarea="true" name="description" label="Description" tiptext="This will show up in the \'Description\' column on iTunes.">
         <div class="fancy-hint">A full description of your piece including keywords, names
           of interviewees, places and topics.</div>
       </publish-fancy-field>
@@ -36,8 +36,8 @@ import { StoryModel, TabService } from '../../shared';
 
       <hr/>
 
-      <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories" required>
-        <div class="fancy-hint">A comma-separated list of tags relevant to your story. These will be used to help listeners discover your story.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories" tiptext="These will be used to help listeners discover your story." required>
+        <div class="fancy-hint">A comma-separated list of tags relevant to your story.</div>
       </publish-fancy-field>
 
     </form>
