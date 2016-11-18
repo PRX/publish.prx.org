@@ -14,7 +14,7 @@ button {
   height: 0;
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
-  border-left: 12px solid #DDD;
+  border-left: 12px solid #CCC;
 }
 .play:hover, .play:active {
   border-left-color: #676767;
@@ -28,6 +28,16 @@ button {
 .pause:hover, .pause:active {
   border-left-color: #2b7187;
   border-right-color: #2b7187;
+}
+.pause.loading {
+  border-color: #CCC;
+}
+.pause.loading:hover, .pause.loading:active {
+  border-color: #676767;
+}
+p.loading {
+  color: #CCC;
+  margin-right: 10px;
 }
 .error {
   flex: 1;

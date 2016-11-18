@@ -43,19 +43,25 @@ describe('AudioPlayerComponent', () => {
     comp.file = {enclosureHref: 'some-href'};
     comp.play();
     expect(comp.progress).toEqual(0);
-    expect(comp.playing).toEqual(true);
+    expect(comp.loading).toEqual(true);
+    expect(comp.playing).toEqual(false);
     data.next({duration: 10, progress: 5});
     expect(comp.progress).toEqual(0.5);
+    expect(comp.loading).toEqual(false);
+    expect(comp.playing).toEqual(true);
     data.complete();
     expect(comp.progress).toEqual(0);
+    expect(comp.loading).toEqual(false);
     expect(comp.playing).toEqual(false);
   });
 
   cit('stops playing', (fix, el, comp) => {
+    comp.loading = true;
     comp.playing = true;
     comp.progress = 0.8;
     comp.stop();
     expect(comp.progress).toEqual(0);
+    expect(comp.loading).toEqual(false);
     expect(comp.playing).toEqual(false);
   });
 

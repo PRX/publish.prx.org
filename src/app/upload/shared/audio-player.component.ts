@@ -9,7 +9,7 @@ import { AudioFileModel } from '../../shared';
   template: `
     <p *ngIf="error" class="error">{{error}}</p>
 
-    <button *ngIf="!playing" class="play" (click)="play()"></button>
+    <button *ngIf="!playing && !loading" class="play" (click)="play()"></button>
 
     <div #scrubber *ngIf="playing" class="scrubber"
       (mousedown)="scrub('down', $event)"
@@ -19,11 +19,15 @@ import { AudioFileModel } from '../../shared';
       <div *ngIf="!dragging" class="position" [style.left.%]="progress * 100"></div>
     </div>
     <button *ngIf="playing" class="pause" (click)="stop()"></button>
+
+    <p *ngIf="loading" class="loading">Loading...</p>
+    <button *ngIf="loading" class="pause loading" (click)="stop()"></button>
   `
 })
 
 export class AudioPlayerComponent implements OnDestroy {
 
+  loading = false;
   playing = false;
   dragging = false;
   progress = 0.0;
@@ -60,7 +64,8 @@ export class AudioPlayerComponent implements OnDestroy {
   play() {
     if (this.playable) {
       this.error = null;
-      this.playing = true;
+      this.playing = false;
+      this.loading = true;
       this.sub = this.player.play(this.playable).subscribe(
         data => this.updateProgress(data),
         err => this.showError(err),
@@ -75,6 +80,7 @@ export class AudioPlayerComponent implements OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+    this.loading = false;
     this.playing = false;
     this.progress = 0;
     this.ref.detectChanges(); // playback 'done' doesn't fire by default
@@ -95,6 +101,8 @@ export class AudioPlayerComponent implements OnDestroy {
 
   private updateProgress(data: PlaybackMetadata) {
     if (!this.dragging) {
+      this.playing = data.progress > 0;
+      this.loading = !this.playing;
       if (data.duration && data.progress) {
         this.progress = data.progress / data.duration;
       } else if (this.file.duration && data.progress) {
@@ -106,6 +114,7 @@ export class AudioPlayerComponent implements OnDestroy {
   }
 
   private showError(err: any) {
+    this.loading = false;
     this.playing = false;
     this.dragging = false;
     this.error = err.message || `${err}`;
