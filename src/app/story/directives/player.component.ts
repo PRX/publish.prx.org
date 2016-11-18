@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { StoryModel, TabService } from '../../shared';
 import { DomSanitizer } from '@angular/platform-browser';
 
-
 @Component({
   styleUrls: ['player.component.css'],
   template: `
@@ -68,7 +67,6 @@ export class PlayerComponent implements OnDestroy {
     }
   }
 
-
   get paramString() {
     let str: string[] = [];
 
@@ -117,6 +115,4 @@ export class PlayerComponent implements OnDestroy {
     return encodeURIComponent(str)
       .replace(/[!'()*]/g, (c) => (`%${c.charCodeAt(0).toString(16)}`));
   }
-
-
 }

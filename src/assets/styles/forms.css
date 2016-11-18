@@ -204,7 +204,6 @@ input[type=checkbox].updown-toggle + label {
   border-top: 0px;
 }
 
-
 /* Hover Tool Tip */
 .hover-tip {
   height: 30px;
@@ -226,7 +225,6 @@ input[type=checkbox].updown-toggle + label {
   bottom: 0;
   z-index: -1;
   padding: 5px;
-
 }
 
 .hover-tip > p.displayed {
