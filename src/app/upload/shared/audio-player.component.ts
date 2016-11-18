@@ -1,5 +1,4 @@
 import { Component, Input, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { Http } from '@angular/http';
 import { Subscription } from 'rxjs';
 import { PlayerService, PlaybackMetadata } from '../../core';
 import { AudioFileModel } from '../../shared';
@@ -35,11 +34,7 @@ export class AudioPlayerComponent implements OnDestroy {
 
   @ViewChild('scrubber') scrubber;
 
-  constructor(
-    private http: Http,
-    private player: PlayerService,
-    private ref: ChangeDetectorRef
-  ) {}
+  constructor(private player: PlayerService, private ref: ChangeDetectorRef) {}
 
   get scrubberWidth() {
     return this.scrubber.nativeElement.offsetWidth;
