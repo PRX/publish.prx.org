@@ -74,8 +74,12 @@ export class PlayerService {
         }
         if (asset.format) {
           data.format = asset.format.formatID;
+          // TODO: format doesn't actually include data, so this never works
           if (data.format === 'mp3' && asset.format.layer === 2) {
             data.format = 'mp2';
+          }
+          if (data.format === 'mp3' && file.name.match(/\.mp2$/)) {
+            data.format = 'mp2'; // temporary hack
           }
           data.bitrate = asset.format.bitrate;
           data.frequency = asset.format.sampleRate;

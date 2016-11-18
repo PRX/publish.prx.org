@@ -50,6 +50,13 @@ describe('AudioInvalid', () => {
 
   describe('FILE_TEMPLATED', () => {
 
+    it('only accepts mp3 files', () => {
+      let invalid = FILE_TEMPLATED();
+      expect(invalid('', {format: 'mp2'})).toMatch('not an mp3');
+      expect(invalid('', {format: 'm4a'})).toMatch('not an mp3');
+      expect(invalid('', {format: 'mp3', duration: 1})).toBeNull();
+    });
+
     it('requires a duration', () => {
       let invalid = FILE_TEMPLATED();
       expect(invalid('', {})).toMatch('not an audio file');
