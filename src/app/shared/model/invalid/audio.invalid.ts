@@ -54,7 +54,9 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
 export const FILE_TEMPLATED = (template?: HalDoc): BaseInvalid => {
   return <BaseInvalid> (key: string, file: AudioFileModel) => {
 
-    // TODO: bad assumption all audio is html5-playable
+    if (file.format && file.format !== 'mp3') {
+      return 'not an mp3 file';
+    }
     if (!file.duration) {
       return 'not an audio file';
     }

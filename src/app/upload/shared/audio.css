@@ -64,7 +64,7 @@
   display: none;
 }
 
-.main {
+.main, .info {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -77,18 +77,15 @@
   min-width: 160px;
   position: relative;
 }
-.main .type i {
-  position: absolute;
-  right: 5px;
-  top: 7px;
-  color: #DDDDDD;
-}
 .main .info {
   flex-grow: 1;
   border: 1px solid #DDDDDD;
   border-left: 0 none;
   padding: 6px 10px;
 }
-.main .info .extra {
-  margin-left: 6px;
+.main .info span, .main .info publish-audio-duration {
+  margin-right: 6px;
+}
+.main .info publish-audio-player {
+  flex-grow: 1;
 }

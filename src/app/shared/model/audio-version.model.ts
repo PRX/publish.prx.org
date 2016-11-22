@@ -134,7 +134,7 @@ export class AudioVersionModel extends BaseModel {
     }
   }
 
-  addUpload(upload: Upload, position?: number) {
+  addUpload(upload: Upload, position?: number): AudioFileModel {
     let audio = new AudioFileModel(this.doc, upload);
     if (position) {
       audio.set('position', position);
@@ -151,6 +151,7 @@ export class AudioVersionModel extends BaseModel {
 
     let uuids = this.uploadUuids.concat(upload.uuid);
     this.set('uploads', uuids.sort().join(','));
+    return audio;
   }
 
   removeUpload(file: AudioFileModel) {
