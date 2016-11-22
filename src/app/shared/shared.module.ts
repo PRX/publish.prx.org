@@ -23,13 +23,13 @@ import { HoverDirective } from './hover';
     FileSelectDirective,
     FileSizePipe,
     HeroComponent,
+    HoverDirective,
     ImageFileComponent,
     ImageLoaderComponent,
     ImageUploadComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe,
-    HoverDirective
+    TimeAgoPipe
   ],
   exports: [
     CommonModule,
@@ -41,12 +41,12 @@ import { HoverDirective } from './hover';
     FileSelectDirective,
     FileSizePipe,
     HeroComponent,
+    HoverDirective,
     ImageLoaderComponent,
     ImageUploadComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe,
-    HoverDirective
+    TimeAgoPipe
   ],
   imports: [
     CommonModule,

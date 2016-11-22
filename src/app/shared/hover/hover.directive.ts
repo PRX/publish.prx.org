@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input, Renderer } from '@angular/core';
+import { Directive, ElementRef, HostListener, HostBinding, Input, Renderer } from '@angular/core';
 
 @Directive({
    selector: '[publishHoverTip]'
@@ -7,6 +7,7 @@ import { Directive, ElementRef, HostListener, Input, Renderer } from '@angular/c
 export class HoverDirective {
 
   @Input() publishHoverTip: string;
+  @HostBinding('class.hover-tip') true;
 
   constructor(
     private el: ElementRef,
