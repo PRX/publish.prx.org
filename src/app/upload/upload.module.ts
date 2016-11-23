@@ -7,7 +7,7 @@ import { UploadComponent } from './upload.component';
 import { FreeReorderDirective, FreeUploadComponent } from './free';
 import { IllegalUploadComponent } from './illegal';
 import { AudioCancelDirective, AudioClassesDirective, AudioDurationComponent,
-         AudioInputComponent, AudioStateComponent } from './shared';
+         AudioInputComponent, AudioPlayerComponent, AudioStateComponent } from './shared';
 import { TemplatedUploadComponent } from './templated';
 
 @NgModule({
@@ -20,6 +20,7 @@ import { TemplatedUploadComponent } from './templated';
     AudioClassesDirective,
     AudioDurationComponent,
     AudioInputComponent,
+    AudioPlayerComponent,
     AudioStateComponent,
     TemplatedUploadComponent
   ],

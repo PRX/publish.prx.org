@@ -18,6 +18,7 @@ import {
         <div class="info">
           <span>{{file.filename}}</span>
           <publish-audio-duration [file]="file"></publish-audio-duration>
+          <publish-audio-player [file]="file"></publish-audio-player>
         </div>
         <publish-audio-state [file]="file"></publish-audio-state>
       </div>
