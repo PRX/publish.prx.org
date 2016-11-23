@@ -65,6 +65,10 @@ export class PlayerComponent implements OnDestroy {
       let firstAudio = this.story.versions[0].files.find(file => !file.isDestroy);
       if (firstAudio) { this.audioUrl = firstAudio.enclosureHref; }
     }
+
+    if (this.story.doc._links['prx:series']) {
+      this.subscriptionUrl = this.story.doc._links['prx:series'].href;
+    }
   }
 
   get paramString() {
@@ -74,6 +78,7 @@ export class PlayerComponent implements OnDestroy {
     str.push(`ts=${this.encode(this.subtitle)}`);
     str.push(`ua=${this.encode(this.audioUrl)}`);
     str.push(`ui=${this.encode(this.imageUrl)}`);
+    str.push(`us=${this.encode(this.subscriptionUrl)}`);
     return str.join('&');
   }
 
@@ -93,7 +98,6 @@ export class PlayerComponent implements OnDestroy {
   copy(el: any) {
     const sel = el.dataset.copytarget;
     const inp = document.querySelector(sel);
-
     if (inp && inp.select) {
       inp.select();
 
