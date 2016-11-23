@@ -20,7 +20,7 @@ import { StoryModel, TabService } from '../../shared';
           of interviewees, places and topics.</div>
       </publish-fancy-field>
       
-      <publish-wysiwyg *ngIf="story" [model]="story" name="description"></publish-wysiwyg>
+      <publish-wysiwyg *ngIf="story && story?.images" [model]="story" name="description" [images]="story.images"></publish-wysiwyg>
 
       <hr/>
 

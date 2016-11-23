@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Inject, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Inject, ElementRef } from '@angular/core';
 import { wrapIn, setBlockType, chainCommands, newlineInCode, toggleMark, baseKeymap } from 'prosemirror-commands';
 import { blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
   inputRules,allInputRules } from 'prosemirror-inputrules';
@@ -11,6 +11,7 @@ import { MenuBarEditorView, toggleMarkItem, icons,
 import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { EditorState, Plugin } from 'prosemirror-state';
 import { BaseModel } from '../model/base.model';
+import { ImageModel } from '../model/image.model';
 
 class Field {
   options: any;
@@ -22,7 +23,7 @@ class Field {
 
   validate(value) {
     if (!value && this.options.required)
-      return "Required field";
+      return 'Required field';
     return this.validateType(value) || (this.options.validate && this.options.validate(value))
   }
 
@@ -33,11 +34,11 @@ class Field {
 
 class TextField extends Field {
   render() {
-    let input = document.createElement("input");
-    input.type = "text";
+    let input = document.createElement('input');
+    input.type = 'text';
     input.placeholder = this.options.label;
-    input.value = this.options.value || "";
-    input.autocomplete = "off";
+    input.value = this.options.value || '';
+    input.autocomplete = 'off';
     return input;
   }
 }
@@ -47,9 +48,10 @@ class TextField extends Field {
   template: ``
 })
 
-export class WysiwygComponent implements OnInit {
+export class WysiwygComponent implements OnInit, OnChanges {
   @Input() model: BaseModel;
   @Input() name: string;
+  @Input() images: ImageModel[];
 
   el: ElementRef;
   view: MenuBarEditorView;
@@ -60,19 +62,38 @@ export class WysiwygComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.model[this.name]) {
-      this.state = EditorState.create({
-        doc: defaultMarkdownParser.parse(this.model[this.name]),
-        plugins: this.buildMenuItemsPlugin()
-      });
-      this.view = new MenuBarEditorView(this.el.nativeElement, {
-        state: this.state,
-        onAction: (action) => {
-          this.view.updateState(this.view.editor.state.applyAction(action));
-          this.model.set(this.name, defaultMarkdownSerializer.serialize(this.view.editor.state.doc));
-        }
-      });
+    if (this.model) {
+      this.state = EditorState.create(this.stateConfig());
+      this.view = new MenuBarEditorView(this.el.nativeElement, this.viewProps());
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    let changed = changes['images'].currentValue.length > 0 &&
+      changes['images'].currentValue.every((val, index) => {
+        return changes['images'].previousValue.length < index || val !== changes['images'].previousValue[index];
+      });
+    if (this.state && this.view && changed) {
+      this.state.reconfigure(this.stateConfig());
+      this.view.update(this.viewProps());// TODO um, this doesn't update the menu with an Insert Image even though it's being added
+    }
+  }
+
+  viewProps() {
+    return {
+      state: this.state,
+      onAction: (action) => {
+        this.view.updateState(this.view.editor.state.applyAction(action));
+        this.model.set(this.name, defaultMarkdownSerializer.serialize(this.view.editor.state.doc));
+      }
+    };
+  }
+
+  stateConfig() {
+    return {
+      doc: defaultMarkdownParser.parse(this.model[this.name] ? this.model[this.name] : ''),
+      plugins: this.buildMenuItemsPlugin()
+    };
   }
 
   cmdItem(cmd, options) {
@@ -109,7 +130,7 @@ export class WysiwygComponent implements OnInit {
 
   linkItem(markType) {
     return this.markItem(markType, {
-      title: "Add or remove link",
+      title: 'Add or remove link',
       icon: icons.link,
       run: (state, onAction, view) => {
         if (this.markActive(state, markType)) {
@@ -117,10 +138,10 @@ export class WysiwygComponent implements OnInit {
           return true
         }
         this.openPrompt({
-          title: "Create a link",
+          title: 'Create a link',
           fields: {
             href: new TextField({
-              label: "Link target",
+              label: 'Link target',
               required: true,
               clean: (val) => {
                 if (!/^https?:\/\//i.test(val))
@@ -128,14 +149,26 @@ export class WysiwygComponent implements OnInit {
                 return val
               }
             }),
-            title: new TextField({label: "Title"})
+            title: new TextField({label: 'Title'})
           },
-          callback(attrs) {
+          callback: (attrs) => {
             toggleMark(markType, attrs)(view.state, view.props.onAction)
           }
         })
       }
     })
+  }
+
+  get noImages(): boolean {
+    if (this.images) {
+      this.images = this.images.filter(img => !(img.isNew && img.isDestroy));
+      if (this.images.length === 0) {
+        return true;
+      } else if (this.images.every(img => img.isDestroy)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   canInsert(state, nodeType, attrs = undefined) {
@@ -147,76 +180,62 @@ export class WysiwygComponent implements OnInit {
     return false
   }
 
-  insertImageItem(nodeType) {
+  insertImageItem(nodeType, image: ImageModel) {
+    let attrs = {src: image.enclosureHref, title: image.caption, alt: image.credit};
     return new MenuItem({
-      title: "Insert image",
-      label: "Image",
+      title: 'Insert image',
+      label: image ? image.filename : 'No images',
       select: (state) => {return this.canInsert(state, nodeType)},
-      run(state, _, view) {
-        let {node, from, to} = state.selection, attrs = nodeType && node && node.type == nodeType && node.attrs
-        this.openPrompt({
-          title: "Insert image",
-          fields: {
-            src: new TextField({label: "Location", required: true, value: attrs && attrs.src}),
-            title: new TextField({label: "Title", value: attrs && attrs.title}),
-            alt: new TextField({
-              label: "Description",
-              value: attrs ? attrs.title : state.doc.textBetween(from, to, " ")
-            })
-          },
-          // FIXME this (and similar uses) won't have the current state
-          // when it runs, leading to problems in, for example, a
-          // collaborative setup
-          callback(attrs) {
-            view.props.onAction(view.state.tr.replaceSelectionWith(nodeType.createAndFill(attrs)).action())
-          }
-        })
+      run: (state, _, view) => {
+        view.props.onAction(view.state.tr.replaceSelectionWith(nodeType.createAndFill(attrs)).action())
       }
     })
   }
 
-  openPrompt(options) {
-    const prefix = "ProseMirror-prompt";
+  /////////
+  // TODO: needs to go
+  openPrompt(options) {// errors use a modal, maybe can re-use instead of this prompt
+    const prefix = 'ProseMirror-prompt';
 
-    let wrapper = document.body.appendChild(document.createElement("div"));
+    let wrapper = document.body.appendChild(document.createElement('div'));
     wrapper['className'] = prefix;
 
     let mouseOutside = e => {
       if (!wrapper.contains(e.target)) close()
     };
-    setTimeout(() => window.addEventListener("mousedown", mouseOutside), 50);
+    setTimeout(() => window.addEventListener('mousedown', mouseOutside), 50);
     let close = () => {
-      window.removeEventListener("mousedown", mouseOutside)
+      window.removeEventListener('mousedown', mouseOutside)
       if (wrapper.parentNode) wrapper.parentNode.removeChild(wrapper)
     };
 
     let domFields = [];
     for (let name in options.fields) domFields.push(options.fields[name].render())
 
-    let submitButton = document.createElement("button");
-    submitButton.type = "submit";
-    submitButton.className = prefix + "-submit";
-    submitButton.textContent = "OK";
-    let cancelButton = document.createElement("button");
-    cancelButton.type = "button";
-    cancelButton.className = prefix + "-cancel";
-    cancelButton.textContent = "Cancel";
-    cancelButton.addEventListener("click", close);
+    let submitButton = document.createElement('button');
+    submitButton.type = 'submit';
+    submitButton.className = prefix + '-submit';
+    submitButton.textContent = 'OK';
+    let cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.className = prefix + '-cancel';
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', close);
 
-    let form = wrapper.appendChild(document.createElement("form"));
-    if (options.title) form.appendChild(document.createElement("h5")).textContent = options.title;
+    let form = wrapper.appendChild(document.createElement('form'));
+    if (options.title) form.appendChild(document.createElement('h5')).textContent = options.title;
     domFields.forEach(field => {
-      form.appendChild(document.createElement("div")).appendChild(field);
+      form.appendChild(document.createElement('div')).appendChild(field);
     })
-    let buttons = form.appendChild(document.createElement("div"));
-    buttons['className'] = prefix + "-buttons";
+    let buttons = form.appendChild(document.createElement('div'));
+    buttons['className'] = prefix + '-buttons';
     buttons.appendChild(submitButton);
-    buttons.appendChild(document.createTextNode(" "));
+    buttons.appendChild(document.createTextNode(' '));
     buttons.appendChild(cancelButton);
 
     let box = wrapper['getBoundingClientRect']();
-    wrapper['style']['top'] = ((window.innerHeight - box.height) / 2) + "px";
-    wrapper['style']['left'] = ((window.innerWidth - box.width) / 2) + "px";
+    wrapper['style']['top'] = ((window.innerHeight - box.height) / 2) + 'px';
+    wrapper['style']['left'] = ((window.innerWidth - box.width) / 2) + 'px';
 
     let submit = () => {
       let params = this.getValues(options.fields, domFields);
@@ -226,12 +245,12 @@ export class WysiwygComponent implements OnInit {
       }
     }
 
-    form.addEventListener("submit", e => {
+    form.addEventListener('submit', e => {
       e.preventDefault()
       submit()
     })
 
-    form.addEventListener("keydown", e => {
+    form.addEventListener('keydown', e => {
       if (e['keyCode'] == 27) {
         e.preventDefault()
         close()
@@ -266,16 +285,17 @@ export class WysiwygComponent implements OnInit {
   reportInvalid(dom, message) {
     // FIXME this is awful and needs a lot more work
     let parent = dom.parentNode
-    let msg = parent.appendChild(document.createElement("div"))
-    msg.style.left = (dom.offsetLeft + dom.offsetWidth + 2) + "px"
-    msg.style.top = (dom.offsetTop - 5) + "px"
-    msg.className = "ProseMirror-invalid"
+    let msg = parent.appendChild(document.createElement('div'))
+    msg.style.left = (dom.offsetLeft + dom.offsetWidth + 2) + 'px'
+    msg.style.top = (dom.offsetTop - 5) + 'px'
+    msg.className = 'ProseMirror-invalid'
     msg.textContent = message
     setTimeout(() => parent.removeChild(msg), 1500)
   }
+  //////////////////
 
   buildKeymap(schema, mapKeys = undefined) {
-    const mac = typeof navigator != "undefined" ? /Mac/.test(navigator.platform) : false;
+    const mac = typeof navigator != 'undefined' ? /Mac/.test(navigator.platform) : false;
     let keys = {}, type
     function bind(key, cmd) {
       if (mapKeys) {
@@ -287,41 +307,41 @@ export class WysiwygComponent implements OnInit {
     }
 
     if (type = schema.marks.strong)
-      bind("Mod-b", toggleMark(type))
+      bind('Mod-b', toggleMark(type))
     if (type = schema.marks.em)
-      bind("Mod-i", toggleMark(type))
+      bind('Mod-i', toggleMark(type))
     if (type = schema.marks.code)
-      bind("Mod-`", toggleMark(type))
+      bind('Mod-`', toggleMark(type))
 
     if (type = schema.nodes.bullet_list)
-      bind("Shift-Ctrl-8", wrapInList(type))
+      bind('Shift-Ctrl-8', wrapInList(type))
     if (type = schema.nodes.ordered_list)
-      bind("Shift-Ctrl-9", wrapInList(type))
+      bind('Shift-Ctrl-9', wrapInList(type))
     if (type = schema.nodes.blockquote)
-      bind("Ctrl->", wrapIn(type))
+      bind('Ctrl->', wrapIn(type))
     if (type = schema.nodes.hard_break) {
       let br = type, cmd = chainCommands(newlineInCode, (state, onAction) => {
         onAction(state.tr.replaceSelectionWith(br.create()).scrollAction())
         return true
       })
-      bind("Mod-Enter", cmd)
-      bind("Shift-Enter", cmd)
-      if (mac) bind("Ctrl-Enter", cmd)
+      bind('Mod-Enter', cmd)
+      bind('Shift-Enter', cmd)
+      if (mac) bind('Ctrl-Enter', cmd)
     }
     if (type = schema.nodes.list_item) {
-      bind("Enter", splitListItem(type))
-      bind("Mod-[", liftListItem(type))
-      bind("Mod-]", sinkListItem(type))
+      bind('Enter', splitListItem(type))
+      bind('Mod-[', liftListItem(type))
+      bind('Mod-]', sinkListItem(type))
     }
     if (type = schema.nodes.paragraph)
-      bind("Shift-Ctrl-0", setBlockType(type))
+      bind('Shift-Ctrl-0', setBlockType(type))
     if (type = schema.nodes.code_block)
-      bind("Shift-Ctrl-\\", setBlockType(type))
+      bind('Shift-Ctrl-\\', setBlockType(type))
     if (type = schema.nodes.heading)
-      for (let i = 1; i <= 6; i++) bind("Shift-Ctrl-" + i, setBlockType(type, {level: i}))
+      for (let i = 1; i <= 6; i++) bind('Shift-Ctrl-' + i, setBlockType(type, {level: i}))
     if (type = schema.nodes.horizontal_rule) {
       let hr = type
-      bind("Mod-_", (state, onAction) => {
+      bind('Mod-_', (state, onAction) => {
         onAction(state.tr.replaceSelectionWith(hr.create()).scrollAction())
         return true
       })
@@ -344,51 +364,55 @@ export class WysiwygComponent implements OnInit {
     let r = {};
 
     if (schema.marks.strong)
-      r['toggleStrong'] = this.markItem(schema.marks.strong, {title: "Toggle strong style", icon: icons.strong});
+      r['toggleStrong'] = this.markItem(schema.marks.strong, {title: 'Toggle strong style', icon: icons.strong});
     if (schema.marks.em)
-      r['toggleEm'] = this.markItem(schema.marks.em, {title: "Toggle emphasis", icon: icons.em});
+      r['toggleEm'] = this.markItem(schema.marks.em, {title: 'Toggle emphasis', icon: icons.em});
     if (schema.marks.code) // this one is bonus
-      r['toggleCode'] = this.markItem(schema.marks.code, {title: "Toggle code font", icon: icons.code});
+      r['toggleCode'] = this.markItem(schema.marks.code, {title: 'Toggle code font', icon: icons.code});
     if (schema.marks.link)
       r['toggleLink'] = this.linkItem(schema.marks.link);
-    if (schema.nodes.image)
-      r['insertImage'] = this.insertImageItem(schema.nodes.image);
+    if (schema.nodes.image && !this.noImages) {
+      r['insertImage'] = this.insertImageItem(schema.nodes.image, this.images[0]);
+      for (let i = 1; i <= this.images.length; i++) {
+        r['insertImage' + i] = this.insertImageItem(schema.nodes.image, this.images[i - 1]);
+      }
+    }
     if (schema.nodes.bullet_list)// lists are bonus
       r['wrapBulletList'] = this.wrapListItem(schema.nodes.bullet_list, {
-        title: "Wrap in bullet list",
+        title: 'Wrap in bullet list',
         icon: icons.bulletList
       });
     if (schema.nodes.ordered_list)// bonus
       r['wrapOrderedList'] = this.wrapListItem(schema.nodes.ordered_list, {
-        title: "Wrap in ordered list",
+        title: 'Wrap in ordered list',
         icon: icons.orderedList
       });
     if (schema.nodes.blockquote)// bonus
       r['wrapBlockQuote'] = wrapItem(schema.nodes.blockquote, {
-        title: "Wrap in block quote",
+        title: 'Wrap in block quote',
         icon: icons.blockquote
       });
     if (schema.nodes.paragraph)
       r['makeParagraph'] = blockTypeItem(schema.nodes.paragraph, {
-        title: "Change to paragraph",
-        label: "Plain"
+        title: 'Change to paragraph',
+        label: 'Plain'
       });
     if (schema.nodes.code_block)// bonus
       r['makeCodeBlock'] = blockTypeItem(schema.nodes.code_block, {
-        title: "Change to code block",
-        label: "Code"
+        title: 'Change to code block',
+        label: 'Code'
       });
     if (schema.nodes.heading)
       for (let i = 1; i <= 6; i++)
-        r["makeHead" + i] = blockTypeItem(schema.nodes.heading, {
-          title: "Change to heading " + i,
-          label: "Level " + i,
+        r['makeHead' + i] = blockTypeItem(schema.nodes.heading, {
+          title: 'Change to heading ' + i,
+          label: 'Level ' + i,
           attrs: {level: i}
         })
     if (schema.nodes.horizontal_rule) {// bonus
       r['insertHorizontalRule'] = new MenuItem({
-        title: "Insert horizontal rule",
-        label: "Horizontal rule",
+        title: 'Insert horizontal rule',
+        label: 'Horizontal rule',
         select: (state) => {
           return this.canInsert(state, schema.nodes.horizontal_rule)
         },
@@ -397,10 +421,10 @@ export class WysiwygComponent implements OnInit {
     }
 
     let cut = arr => arr.filter(x => x);
-    r['insertMenu'] = new Dropdown(cut([r['insertImage'], r['insertHorizontalRule']]), {label: "Insert"})
+    r['insertMenu'] = new Dropdown(cut([r['insertImage'], r['insertHorizontalRule']]), {label: 'Insert'})
     r['typeMenu'] = new Dropdown(cut([r['makeParagraph'], r['makeCodeBlock'], r['makeHead1'] && new DropdownSubmenu(cut([
       r['makeHead1'], r['makeHead2'], r['makeHead3'], r['makeHead4'], r['makeHead5'], r['makeHead6']
-    ]), {label: "Heading"})]), {label: "Type..."});
+    ]), {label: 'Heading'})]), {label: 'Type...'});
 
     r['inlineMenu'] = [cut([r['toggleStrong'], r['toggleEm'], r['toggleCode'], r['toggleLink']]), [r['insertMenu']]];
     r['blockMenu'] = [cut([r['typeMenu'], r['wrapBulletList'], r['wrapOrderedList'], r['wrapBlockQuote'], joinUpItem,
