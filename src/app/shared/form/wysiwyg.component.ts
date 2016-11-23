@@ -3,7 +3,7 @@ import { wrapIn, setBlockType, chainCommands, newlineInCode, toggleMark, baseKey
 import { blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
   inputRules,allInputRules } from 'prosemirror-inputrules';
 import { keymap } from 'prosemirror-keymap';
-import { schema, defaultMarkdownParser } from 'prosemirror-markdown';
+import { schema, defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { MenuBarEditorView, toggleMarkItem, icons,
   MenuItem, Dropdown, DropdownSubmenu,
   wrapItem, blockTypeItem, joinUpItem, liftItem,
@@ -64,12 +64,12 @@ export class WysiwygComponent implements OnInit {
       this.state = EditorState.create({
         doc: defaultMarkdownParser.parse(this.model[this.name]),
         plugins: this.buildMenuItemsPlugin()
-        //plugins: exampleSetup({schema})
       });
       this.view = new MenuBarEditorView(this.el.nativeElement, {
         state: this.state,
         onAction: (action) => {
           this.view.updateState(this.view.editor.state.applyAction(action));
+          this.model.set(this.name, defaultMarkdownSerializer.serialize(this.view.editor.state.doc));
         }
       });
     }
