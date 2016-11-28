@@ -69,13 +69,10 @@ export class WysiwygComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    let changed = changes['images'].currentValue.length > 0 &&
-      changes['images'].currentValue.every((val, index) => {
-        return changes['images'].previousValue.length < index || val !== changes['images'].previousValue[index];
-      });
+    let changed = changes['images'].currentValue.length !== changes['images'].previousValue.length;
     if (this.state && this.view && changed) {
-      this.state.reconfigure(this.stateConfig());
-      this.view.update(this.viewProps());// TODO um, this doesn't update the menu with an Insert Image even though it's being added
+      this.state = this.state.reconfigure(this.stateConfig());
+      this.view.update(this.viewProps());
     }
   }
 
@@ -180,11 +177,11 @@ export class WysiwygComponent implements OnInit, OnChanges {
     return false
   }
 
-  insertImageItem(nodeType, image: ImageModel) {
+  insertImageItem(nodeType, image: ImageModel, label: string) {
     let attrs = {src: image.enclosureHref, title: image.caption, alt: image.credit};
     return new MenuItem({
       title: 'Insert image',
-      label: image ? image.filename : 'No images',
+      label,
       select: (state) => {return this.canInsert(state, nodeType)},
       run: (state, _, view) => {
         view.props.onAction(view.state.tr.replaceSelectionWith(nodeType.createAndFill(attrs)).action())
@@ -372,9 +369,9 @@ export class WysiwygComponent implements OnInit, OnChanges {
     if (schema.marks.link)
       r['toggleLink'] = this.linkItem(schema.marks.link);
     if (schema.nodes.image && !this.noImages) {
-      r['insertImage'] = this.insertImageItem(schema.nodes.image, this.images[0]);
-      for (let i = 1; i <= this.images.length; i++) {
-        r['insertImage' + i] = this.insertImageItem(schema.nodes.image, this.images[i - 1]);
+      r['insertImage'] = this.insertImageItem(schema.nodes.image, this.images[0], 'Image: ' + this.images[0].filename);
+      for (let i = 0; i < this.images.length; i++) {
+        r['insertImage' + i] = this.insertImageItem(schema.nodes.image, this.images[i], this.images[i].filename);
       }
     }
     if (schema.nodes.bullet_list)// lists are bonus
@@ -421,7 +418,13 @@ export class WysiwygComponent implements OnInit, OnChanges {
     }
 
     let cut = arr => arr.filter(x => x);
-    r['insertMenu'] = new Dropdown(cut([r['insertImage'], r['insertHorizontalRule']]), {label: 'Insert'})
+    if (this.images && this.images.length > 1) {
+      let imageSubs = Object.keys(r).filter(key => key.match(/insertImage+/)).map(key => r[key]);
+      let imageSubMenu = new DropdownSubmenu(imageSubs, {label: 'Image'});
+      r['insertMenu'] = new Dropdown(cut([imageSubMenu, r['insertHorizontalRule']]), {label: 'Insert'})
+    } else {
+      r['insertMenu'] = new Dropdown(cut([r['insertImage'], r['insertHorizontalRule']]), {label: 'Insert'})
+    }
     r['typeMenu'] = new Dropdown(cut([r['makeParagraph'], r['makeCodeBlock'], r['makeHead1'] && new DropdownSubmenu(cut([
       r['makeHead1'], r['makeHead2'], r['makeHead3'], r['makeHead4'], r['makeHead5'], r['makeHead6']
     ]), {label: 'Heading'})]), {label: 'Type...'});
