@@ -27,8 +27,8 @@ import { PromptComponent } from './prompt.component';
         <input type="text" name="title" [(ngModel)]="linkTitle"/>
       </p>
       <p class="modal-footer">
-        <button (click)="createLink()">Ok</button>
-        <button class="btn-link" (click)="prompt.hide()">Cancel</button>
+        <button (click)="createLink()">Okay</button>
+        <button (click)="prompt.hide()">Cancel</button>
       </p>
     </publish-prompt>
   `

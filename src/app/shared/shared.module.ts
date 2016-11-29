@@ -5,12 +5,13 @@ import { RouterModule } from '@angular/router';
 
 import { TimeAgoPipe } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
-import { ButtonComponent, CapitalizePipe, FancyFieldComponent, PromptComponent, WysiwygComponent } from './form';
+import { ButtonComponent, CapitalizePipe, FancyFieldComponent } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
 import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
+import { PromptComponent, WysiwygComponent } from './wysiwyg';
 
 @NgModule({
   declarations: [

@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'publish-prompt',
   template: `
   <div *ngIf="visible" class="overlay"></div>
-  <div class="modal" tabindex="-1" [ngClass]="{'in': visibleAnimate}"
+  <div class="modal" tabindex="-1"
        [ngStyle]="{'display': visible ? 'flex' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
     <header>
       <ng-content select=".modal-header"></ng-content>
