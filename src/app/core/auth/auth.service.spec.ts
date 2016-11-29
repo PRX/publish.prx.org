@@ -1,6 +1,6 @@
 import { AuthService } from './auth.service';
 
-describe('AuthService', () => {
+fdescribe('AuthService', () => {
 
   let auth = new AuthService();
 
@@ -19,6 +19,21 @@ describe('AuthService', () => {
     let currentToken = 'nothing';
     auth.token.subscribe((token) => { currentToken = token; });
     expect(currentToken).toEqual('something');
+  });
+
+  it('refreshes and waits for a new token', () => {
+    auth.setToken('something');
+
+    let currentToken = 'nothing';
+    let refreshToken = 'nothing';
+    auth.token.subscribe(token => currentToken = token);
+    auth.refreshToken().subscribe(token => refreshToken = token);
+    expect(currentToken).toEqual('something');
+    expect(refreshToken).toEqual('nothing');
+
+    auth.setToken('somethingelse');
+    expect(currentToken).toEqual('somethingelse');
+    expect(refreshToken).toEqual('somethingelse');
   });
 
 });
