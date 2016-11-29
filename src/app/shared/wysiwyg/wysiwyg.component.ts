@@ -20,16 +20,17 @@ import { PromptComponent } from './prompt.component';
     <div #contentEditable></div>
     <publish-prompt #prompt>
       <h1 class="modal-header">Link to</h1>
-      <p class="modal-body">
-        <label>URL</label>
-        <input type="text" name="url" [(ngModel)]="linkURL"/>
+      <div class="modal-body">
+        <label>URL<span class="error" [ngStyle]="{display: isURLInvalid() ? 'inline' : 'none'}">*</span></label>
+        <input type="text" name="url" #url [(ngModel)]="linkURL" required/>
         <label>Title</label>
         <input type="text" name="title" [(ngModel)]="linkTitle"/>
-      </p>
-      <p class="modal-footer">
+        <p class="error" [ngStyle]="{display: isURLInvalid() ? 'block' : 'none'}">URL is required</p>
+      </div>
+      <div class="modal-footer">
         <button (click)="createLink()">Okay</button>
         <button (click)="prompt.hide()">Cancel</button>
-      </p>
+      </div>
     </publish-prompt>
   `
 })
@@ -43,6 +44,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   view: MenuBarEditorView;
 
   @ViewChild('prompt') private prompt: PromptComponent;
+  @ViewChild('url') private url: ElementRef;
   linkURL: string;
   linkTitle: string;
 
@@ -122,15 +124,24 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
     return this.cmdItem(wrapInList(nodeType, options.attrs), options);
   }
 
+  isURLInvalid() {
+    return this.url.nativeElement.className.indexOf('ng-invalid') > -1 &&
+      this.url.nativeElement.className.indexOf('ng-dirty') > -1;
+  }
+
   createLink() {
-    let url = this.linkURL;
-    if (!/^https?:\/\//i.test(url)) {
-      url = 'http://' + url;
+    if (!this.isURLInvalid() && this.linkURL && this.linkURL.length > 0) {
+      let url = this.linkURL;
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'http://' + url;
+      }
+      toggleMark(schema.marks.link, {
+        href: url,
+        title: this.linkTitle
+      })(this.view.editor.state, this.view.props.onAction);
+      this.prompt.hide();
+      this.linkURL = this.linkTitle = '';
     }
-    // TODO: validation/required
-    toggleMark(schema.marks.link, {href: url, title: this.linkTitle})(this.view.editor.state, this.view.props.onAction);
-    this.prompt.hide();
-    this.linkURL = this.linkTitle = '';
   }
 
   linkItem(markType) {

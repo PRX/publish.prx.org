@@ -38,6 +38,20 @@ header >>> h1 {
 section {
   flex-grow: 1;
 }
+/*
+ * projected content must be styled with deep selectors
+ */
+section >>> .modal-body {
+  font-size: 14px;
+  line-height: 22px;
+  margin-top: 10px;
+}
+section >>> input.ng-dirty.ng-invalid {
+  outline: 5px auto #e32;
+}
+section >>> .error {
+  color: #e32;
+}
 footer {
   text-align: right;
 }
@@ -51,13 +65,4 @@ footer >>> button:last-child {
 footer >>> button:last-child:hover {
   color: #fff;
   background-color: #f59f51;
-}
-
-/*
- * projected content must be styled with deep selectors
- */
-section >>> p {
-  font-size: 14px;
-  line-height: 22px;
-  margin-top: 10px;
 }
