@@ -63,3 +63,11 @@ declare namespace AV {
     stop();
   }
 }
+
+declare module 'prosemirror-commands';
+declare module 'prosemirror-inputrules';
+declare module 'prosemirror-keymap';
+declare module 'prosemirror-markdown';
+declare module 'prosemirror-menu';
+declare module 'prosemirror-state';
+declare module 'prosemirror-schema-list';
