@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Inject, ElementRef } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'publish-prompt',
   template: `
   <div *ngIf="visible" class="overlay"></div>
-  <div class="modal" tabindex="-1" [ngStyle]="{'display': visible ? 'flex' : 'none'}">
+  <div class="modal" tabindex="-1" [ngClass]="{'in': visibleAnimate}"
+       [ngStyle]="{'display': visible ? 'flex' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
     <header>
       <ng-content select=".modal-header"></ng-content>
     </header>
@@ -21,12 +22,15 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges, Inject, ElementRef 
 export class PromptComponent {
 
   public visible = false;
+  private visibleAnimate = false;
 
   public show(): void {
     this.visible = true;
+    setTimeout(() => this.visibleAnimate = true);
   }
 
   public hide(): void {
+    this.visibleAnimate = false;
     setTimeout(() => this.visible = false, 300);
   }
 }
