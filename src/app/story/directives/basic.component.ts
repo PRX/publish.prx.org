@@ -15,11 +15,9 @@ import { StoryModel, TabService } from '../../shared';
         <div class="fancy-hint">A first impression; think of this as the single-item lead of a piece.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field [model]="story" textarea="true" name="description" label="Description">
-        <div class="fancy-hint">A full description of your piece including keywords, names
-          of interviewees, places and topics.</div>
-      </publish-fancy-field>
-      
+      <h3><label for="description">Description</label></h3>
+      <p class="hint">A full description of your piece including keywords, names
+        of interviewees, places and topics.</p>
       <publish-wysiwyg *ngIf="story && story?.images" [model]="story" name="description" [images]="story.images"></publish-wysiwyg>
 
       <hr/>
