@@ -66,7 +66,7 @@ export class PlayerComponent implements OnDestroy {
       if (firstAudio) { this.audioUrl = firstAudio.enclosureHref; }
     }
 
-    if (this.story.doc._links['prx:series']) {
+    if (this.story.doc && this.story.doc._links['prx:series']) {
       this.subscriptionUrl = this.story.doc._links['prx:series'].href;
     }
   }
