@@ -1,6 +1,6 @@
 import { AuthService } from './auth.service';
 
-fdescribe('AuthService', () => {
+describe('AuthService', () => {
 
   let auth = new AuthService();
 

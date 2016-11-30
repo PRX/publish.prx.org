@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.isLoaded = false;
-    this.cms.follow('prx:authorization').subscribe(auth => {
+    this.cms.auth.subscribe(auth => {
       this.auth = auth;
 
       // only load v4 series

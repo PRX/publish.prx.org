@@ -44,7 +44,7 @@ export class SearchComponent implements OnInit {
               private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.cms.follow('prx:authorization').subscribe((auth) => {
+    this.cms.auth.subscribe((auth) => {
       this.auth = auth;
 
       this.allSeriesIds = [-1];

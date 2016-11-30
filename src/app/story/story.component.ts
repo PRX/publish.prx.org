@@ -49,13 +49,12 @@ export class StoryComponent implements OnInit {
   }
 
   loadStory() {
-    let auth = this.cms.follow('prx:authorization');
     if (this.id) {
-      auth.follow('prx:story', {id: this.id}).subscribe(s => this.setStory(null, s));
+      this.cms.auth.follow('prx:story', {id: this.id}).subscribe(s => this.setStory(null, s));
     } else if (this.seriesId) {
-      auth.follow('prx:series', {id: this.seriesId}).subscribe(s => this.setStory(s, null));
+      this.cms.auth.follow('prx:series', {id: this.seriesId}).subscribe(s => this.setStory(s, null));
     } else {
-      auth.follow('prx:default-account').subscribe(a => this.setStory(a, null));
+      this.cms.account.subscribe(a => this.setStory(a, null));
     }
   }
 
