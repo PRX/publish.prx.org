@@ -4,7 +4,7 @@ import { HalRemote } from './halremote';
 
 class MockRemote extends HalRemote {
   constructor(private getData = {}) {
-    super(null, 'http://thehost', 'thetoken');
+    super(null, 'http://thehost', Observable.of('thetoken'));
   }
   get(link: any, params: {} = null): Observable<{}> {
     let key = link['href'];

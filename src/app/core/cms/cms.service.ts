@@ -12,6 +12,7 @@ export class CmsService {
 
   private replayToken: ReplaySubject<string>;
   private replayRoot: ReplaySubject<{}>;
+  private refreshToken: () => Observable<string>;
 
   constructor(private http: Http) {
     this.replayToken = new ReplaySubject<string>(1);
@@ -23,8 +24,9 @@ export class CmsService {
     return this.replayToken;
   }
 
-  setToken(token: string) {
+  setToken(token: string, refreshToken?: any) {
     this.replayToken.next(token);
+    this.refreshToken = refreshToken;
   }
 
   get root(): HalObservable<HalDoc> {
@@ -33,14 +35,18 @@ export class CmsService {
         if (!token) {
           return Observable.throw(new Error(`Unauthorized`));
         } else {
-          return Observable.of(new HalDoc(obj, this.getRemote(token)));
+          return Observable.of(new HalDoc(obj, this.getRemote(true)));
         }
       });
     });
   }
 
+  get auth(): HalObservable<HalDoc> {
+    return this.follow('prx:authorization');
+  }
+
   get account(): HalObservable<HalDoc> {
-    return this.follow('prx:authorization').follow('prx:default-account');
+    return this.auth.follow('prx:default-account');
   }
 
   follow(rel: string, params: {} = null): HalObservable<HalDoc> {
@@ -62,14 +68,18 @@ export class CmsService {
   }
 
   protected getCmsRoot(): void {
-    this.getRemote().get(<HalLink> {href: '/api/v1'}).subscribe(
+    this.getRemote(false).get(<HalLink> {href: '/api/v1'}).subscribe(
       (obj) => { this.replayRoot.next(obj); },
       (err) => { this.replayRoot.error(err); }
     );
   }
 
-  protected getRemote(token: string = null): HalRemote {
-    return new HalRemote(this.http, Env.CMS_HOST, token);
+  protected getRemote(useToken: boolean): HalRemote {
+    if (useToken) {
+      return new HalRemote(this.http, Env.CMS_HOST, this.token, this.refreshToken);
+    } else {
+      return new HalRemote(this.http, Env.CMS_HOST);
+    }
   }
 
 }

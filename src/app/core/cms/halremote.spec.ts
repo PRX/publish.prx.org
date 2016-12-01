@@ -1,7 +1,8 @@
 import { Http, Response, ResponseOptions, RequestOptions } from '@angular/http';
-import { MockBackend} from '@angular/http/testing';
-import { Observable} from 'rxjs';
+import { MockBackend } from '@angular/http/testing';
+import { Observable, ReplaySubject } from 'rxjs';
 import { HalRemote } from './halremote';
+import { HalRemoteCache } from './halremote.cache';
 import { HalLink } from './hallink';
 
 describe('HalRemote', () => {
@@ -11,10 +12,14 @@ describe('HalRemote', () => {
     return new Response(new ResponseOptions({body: JSON.stringify(data), status}));
   };
 
-  let remote: HalRemote, link: HalLink;
+  let remote: HalRemote, link: HalLink, token: ReplaySubject<string>;
   beforeEach(() => {
     link = <HalLink> {href: '/foobar'};
-    remote = new HalRemote(mockHttp, 'http://thehost', 'thetoken');
+    token = new ReplaySubject<string>(1);
+    token.next('thetoken');
+    let nextToken = () => token.next('nexttoken') || token;
+    remote = new HalRemote(mockHttp, 'http://thehost', token, nextToken);
+    HalRemoteCache.clear();
   });
 
   describe('expand', () => {
@@ -48,26 +53,49 @@ describe('HalRemote', () => {
       });
       link.href = '/{foo}';
       link.templated = true;
-      remote.get(link, {foo: 'somewhere'});
+      remote.get(link, {foo: 'somewhere'}).subscribe();
       expect(mockHttp.get).toHaveBeenCalled();
     });
 
-    it('caches for a short time', () => {
-      let count = 0;
+    it('caches values for a short time', () => {
+      let httpCount = 0;
       spyOn(mockHttp, 'get').and.callFake((url: any, options: any) => {
-        return Observable.of(mockResponse({count: count++}));
+        return Observable.of(mockResponse({count: httpCount++}));
       });
 
       let completed = 0;
-      remote.get(link).subscribe((data: any) => {
-        expect(data.count).toEqual(0);
-        completed++;
-      });
-      remote.get(link).subscribe((data: any) => {
-        expect(data.count).toEqual(0);
-        completed++;
-      });
+      remote.get(link).subscribe(data => completed++);
+      expect(httpCount).toEqual(1);
+      expect(completed).toEqual(1);
+
+      remote.get(link).subscribe(data => completed++);
+      expect(httpCount).toEqual(1);
       expect(completed).toEqual(2);
+
+      HalRemoteCache.clear();
+      remote.get(link).subscribe(data => completed++);
+      expect(httpCount).toEqual(2);
+      expect(completed).toEqual(3);
+    });
+
+    it('caches in-flight observables', function(done) {
+      let httpCount = 0;
+      spyOn(mockHttp, 'get').and.callFake((url: any, options: any) => {
+        return Observable.of(mockResponse({count: httpCount++})).delay(100);
+      });
+
+      let completed = 0;
+      remote.get(link).subscribe(data => completed++);
+      remote.get(link).subscribe(data => completed++);
+      remote.get(link).subscribe(data => completed++);
+
+      expect(httpCount).toEqual(1);
+      expect(completed).toEqual(0);
+      setTimeout(() => {
+        expect(httpCount).toEqual(1);
+        expect(completed).toEqual(3);
+        done();
+      }, 200);
     });
 
   });
@@ -84,8 +112,44 @@ describe('HalRemote', () => {
         return Observable.empty();
       });
       link.href = '/foobar';
-      remote.post(link, {}, {hello: 'world'});
+      remote.post(link, {}, {hello: 'world'}).subscribe();
       expect(mockHttp.post).toHaveBeenCalled();
+    });
+
+  });
+
+  describe('retries', () => {
+
+    it('retries 401s after getting a new token', () => {
+      let httpCount = 0;
+      spyOn(mockHttp, 'get').and.callFake((url: any, options: any) => {
+        if (httpCount > 0) {
+          expect(options.headers.get('Authorization')).toEqual('Bearer nexttoken');
+          return Observable.of(mockResponse({count: httpCount++}));
+        } else {
+          expect(options.headers.get('Authorization')).toEqual('Bearer thetoken');
+          return Observable.of(mockResponse({count: httpCount++}, 401));
+        }
+      });
+
+      let completed = 0, errored = 0;
+      remote.get(link).subscribe(data => completed++, err => errored++);
+      expect(httpCount).toEqual(2);
+      expect(completed).toEqual(1);
+      expect(errored).toEqual(0);
+    });
+
+    it('retries 401 responses only once before erroring', () => {
+      let httpCount = 0;
+      spyOn(mockHttp, 'get').and.callFake((url: any, options: any) => {
+        return Observable.of(mockResponse({count: httpCount++}, 401));
+      });
+
+      let completed = 0, errored = 0;
+      remote.get(link).subscribe(data => completed++, err => errored++);
+      expect(httpCount).toEqual(2);
+      expect(completed).toEqual(0);
+      expect(errored).toEqual(1);
     });
 
   });

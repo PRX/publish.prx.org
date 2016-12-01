@@ -47,22 +47,28 @@ export class HalRemoteCache {
     if (Env.CMS_TTL === 0) {
       return valObservable;
     }
-    this.OBSERVABLES[key] = valObservable.share();
-    this.OBSERVABLES[key].subscribe(
-      (val: any) => {
-        if (Env.CMS_USE_LOCALSTORAGE && window && window.localStorage) {
-          window.localStorage.setItem(key, JSON.stringify(val));
-          window.localStorage.setItem(`expires.${key}`, JSON.stringify(new Date().getTime()));
-        } else {
-          this.VALUES[key] = val;
-          this.EXPIRES[key] = new Date().getTime();
-        }
-        setTimeout(() => { delete this.OBSERVABLES[key]; }, 0);
-      },
-      (err: any) => {
-        setTimeout(() => { this.del(key); }, 0);
+
+    // monitor observable for value
+    let gotValue = false;
+    this.OBSERVABLES[key] = valObservable.share().map(val => {
+      gotValue = true;
+      if (Env.CMS_USE_LOCALSTORAGE && window && window.localStorage) {
+        window.localStorage.setItem(key, JSON.stringify(val));
+        window.localStorage.setItem(`expires.${key}`, JSON.stringify(new Date().getTime()));
+      } else {
+        this.VALUES[key] = val;
+        this.EXPIRES[key] = new Date().getTime();
       }
-    );
+      return val;
+    }).finally(() => {
+      if (gotValue) {
+        delete this.OBSERVABLES[key];
+        // setTimeout(() => { delete this.OBSERVABLES[key]; }, 0);
+      } else {
+        this.del(key);
+        // setTimeout(() => { this.del(key); }, 0);
+      }
+    });
     return this.OBSERVABLES[key];
   }
 
