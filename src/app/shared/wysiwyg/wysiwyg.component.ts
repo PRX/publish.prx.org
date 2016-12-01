@@ -1,3 +1,5 @@
+/// <reference path="./prosemirror.d.ts"/>
+
 import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, ElementRef, ViewChild } from '@angular/core';
 import { wrapIn, setBlockType, chainCommands, newlineInCode, toggleMark, baseKeymap } from 'prosemirror-commands';
 import { blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
