@@ -65,7 +65,9 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.view.editor.destroy();
+    if (this.view) {
+      this.view.editor.destroy();
+    }
   }
 
   viewProps(state) {
@@ -293,7 +295,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
     if (schema.marks.link) {
       r['toggleLink'] = this.linkItem(schema.marks.link);
     }
-    if (schema.nodes.image && !this.noImages) {
+    if (schema.nodes.image && this.images && !this.noImages) {
       r['insertImage'] = this.insertImageItem(schema.nodes.image, this.images[0], 'Image: ' + this.images[0].filename);
       for (let i = 0; i < this.images.length; i++) {
         r['insertImage' + i] = this.insertImageItem(schema.nodes.image, this.images[i], this.images[i].filename);
@@ -373,6 +375,9 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
       keymap(this.buildKeymap(schema)),
       keymap(baseKeymap)
     ];
+    // seems odd but testing throws this error: RangeError: Adding different instances of a keyed plugin (plugin$)
+    deps[0].key = 'inputRules';
+    deps[1].key = 'mdKeymap';
 
     return deps.concat(new Plugin({
       props: {

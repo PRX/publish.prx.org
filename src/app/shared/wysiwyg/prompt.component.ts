@@ -26,7 +26,7 @@ export class PromptComponent {
 
   public show(): void {
     this.visible = true;
-    setTimeout(() => this.visibleAnimate = true);
+    this.visibleAnimate = true;
   }
 
   public hide(): void {
