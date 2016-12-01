@@ -10,9 +10,10 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
 
     <div *ngIf="noImages" class="new-image">
       <p class="size">{{minWidth}}x{{minHeight}} px</p>
-      <input type="file" id="image-file" publishFileSelect (file)="addUpload($event)"/>
+      <input type="file" id="image-file" publishFileSelect (file)="addUpload($event)" ngClass="{'invalid': this.imgError}"/>
       <label class="button" for="image-file">Add Image</label>
     </div>
+    <p *ngIf="imgError" class="error">{{imgError}}</p>
 
     <div *ngIf="model && model.images">
       <publish-image-file *ngFor="let i of model.images" [image]="i"></publish-image-file>
@@ -24,6 +25,9 @@ export class ImageUploadComponent {
   @Input() model: StoryModel|SeriesModel;
   @Input() minWidth = 200;
   @Input() minHeight = 200;
+
+  private imgError: string;
+  reader: FileReader = new FileReader();
 
   constructor(private uploadService: UploadService) {}
 
@@ -40,7 +44,27 @@ export class ImageUploadComponent {
   }
 
   addUpload(file: File) {
-    let upload = this.uploadService.add(file);
-    this.model.images.push(new ImageModel(this.model.parent, this.model.doc, upload));
+    //let reader = new FileReader();
+
+    this.reader.onloadstart = () => {
+      this.imgError = '';
+    };
+
+    this.reader.onerror = () => {
+      this.imgError = 'Error uploading image';
+    };
+
+    this.reader.onloadend = () => {
+      let img = new Image();
+      img.src = this.reader.result;
+      if (img.width < this.minWidth || img.height < this.minHeight) {
+        this.imgError = `The image provided is only ${img.width}x${img.height} px but should be at least ${this.minWidth}x${this.minHeight} px`;
+      } else {
+        let upload = this.uploadService.add(file);
+        this.model.images.push(new ImageModel(this.model.parent, this.model.doc, upload));
+      }
+    };
+
+    this.reader.readAsDataURL(file);
   }
 }
