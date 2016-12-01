@@ -34,11 +34,10 @@ export class SeriesComponent implements OnInit {
   }
 
   loadSeries() {
-    let auth = this.cms.follow('prx:authorization');
     if (this.id) {
-      auth.follow('prx:series', {id: this.id}).subscribe(s => this.setSeries(null, s));
+      this.cms.auth.follow('prx:series', {id: this.id}).subscribe(s => this.setSeries(null, s));
     } else {
-      auth.follow('prx:default-account').subscribe(a => this.setSeries(a, null));
+      this.cms.account.subscribe(a => this.setSeries(a, null));
     }
   }
 

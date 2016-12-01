@@ -13,7 +13,13 @@ export class AppComponent {
   constructor(authService: AuthService, cmsService: CmsService) {
     authService.token.subscribe((token) => {
       if (token) {
-        cmsService.setToken(token);
+        let refresher: any;
+        cmsService.setToken(token, cb => {
+          if (!refresher) {
+            refresher = authService.refreshToken();
+          }
+          return refresher;
+        });
       }
       this.loggedIn = token ? true : false;
     });
