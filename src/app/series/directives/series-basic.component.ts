@@ -11,7 +11,7 @@ import { SeriesModel, TabService } from '../../shared';
       </publish-fancy-field>
 
       <publish-fancy-field textinput required [model]="series" name="shortDescription" label="Teaser">
-        <div class="fancy-hint">A first impression for your series.</div>
+        <div class="fancy-hint">A short description of your series.</div>
       </publish-fancy-field>
 
       <publish-fancy-field textarea [model]="series" name="description" label="Description">

@@ -46,7 +46,7 @@ export class UploadComponent implements OnInit, DoCheck {
   versionDescription: string;
 
   DESCRIPTIONS = {
-    'DEFAULT': 'The primary mp3 version of your story',
+    'DEFAULT': 'The audio files for your piece, in mp3 format.',
     'Piece Audio': 'The standard version of your story you would most like people to hear and buy',
     'Promos': 'The promotional version of your audio'
   };
