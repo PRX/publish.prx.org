@@ -6,10 +6,8 @@ import { blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, heading
   inputRules,allInputRules } from 'prosemirror-inputrules';
 import { keymap } from 'prosemirror-keymap';
 import { schema, defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
-import { MenuBarEditorView, toggleMarkItem, icons,
-  MenuItem, Dropdown, DropdownSubmenu,
-  wrapItem, blockTypeItem, joinUpItem, liftItem,
-  selectParentNodeItem} from 'prosemirror-menu';
+import { MenuBarEditorView, icons, MenuItem, Dropdown, DropdownSubmenu,
+  wrapItem, blockTypeItem, joinUpItem, liftItem} from 'prosemirror-menu';
 import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { EditorState, Plugin } from 'prosemirror-state';
 import { BaseModel } from '../model/base.model';
