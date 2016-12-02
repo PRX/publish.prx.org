@@ -37,7 +37,7 @@ import { StoryModel, TabService } from '../../shared';
       <hr/>
 
       <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories" required>
-        <div class="fancy-hint">A comma-separated list of tags relevant to your story.</div>
+        <div class="fancy-hint">A comma-separated list of tags relevant to your story. These will be used to help listeners discover your story.</div>
       </publish-fancy-field>
 
     </form>

@@ -7,7 +7,7 @@ import { SeriesModel, TabService } from '../../shared';
   template: `
     <form *ngIf="series">
       <publish-fancy-field textinput required [model]="series" name="title" label="Series Title">
-        <div class="fancy-hint">A short headline to describe this series.</div>
+        <div class="fancy-hint">What's the name of your series?</div>
       </publish-fancy-field>
 
       <publish-fancy-field textinput required [model]="series" name="shortDescription" label="Teaser">
@@ -15,7 +15,7 @@ import { SeriesModel, TabService } from '../../shared';
       </publish-fancy-field>
 
       <publish-fancy-field textarea [model]="series" name="description" label="Description">
-        <div class="fancy-hint">A longer version of your teaser.</div>
+        <div class="fancy-hint">A full description of your series.</div>
       </publish-fancy-field>
     </form>
   `

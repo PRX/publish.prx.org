@@ -80,7 +80,7 @@ export class StoryComponent implements OnInit {
       let thatsOkay = new Subject<boolean>();
       this.modal.prompt(
         'Unsaved changes',
-        'This story has unsaved changes - they will be saved locally when you return here',
+        'This story has unsaved changes. To make the changes permanent, please click \'Cancel\' and then \'Save\'. Otherwise, you can click \'Okay\' and your changes will be stored temporarily in your browser\'s history.',
         (okay: boolean) => { thatsOkay.next(okay); thatsOkay.complete(); }
       );
       return thatsOkay;

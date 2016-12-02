@@ -8,7 +8,7 @@ import { StoryModel, TabService } from '../../shared';
     <form *ngIf="story">
 
       <publish-fancy-field label="Explicit" required=1>
-        <div class="fancy-hint">Does any of your podcast audio contain explicit material?</div>
+        <div class="fancy-hint">In accordance with <a href="https://help.apple.com/itc/podcasts_connect/#/itc1723472cb">the requirements for iTunes podcast content</a>, does any of your podcast audio contain explicit material?</div>
 
         <div *ngFor="let v of story.versions" class="version">
           <header>
