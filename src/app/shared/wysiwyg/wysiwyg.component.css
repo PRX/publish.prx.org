@@ -1,0 +1,30 @@
+div >>> .ProseMirror-content {
+  padding: 10px 8px;
+  min-height: 200px;
+  background-color: white;
+  font: 99% sans-serif;
+  color: #939393;
+}
+
+div >>> .ProseMirror-menubar-wrapper {
+  border: 1px solid #e6e6e6;
+}
+
+div >>> .ProseMirror-content:focus {
+  color: #000;
+  outline: none;
+}
+
+div.changed {
+  outline: 5px auto #f09b4c;
+}
+
+div.invalid {
+  margin-top: 6px;
+  outline: 5px auto #e32;
+}
+
+.error {
+  margin-top: 6px;
+  color: #e32;
+}

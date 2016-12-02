@@ -5,7 +5,8 @@ import { Component } from '@angular/core';
   template: `
   <div *ngIf="visible" class="overlay"></div>
   <div class="modal" tabindex="-1"
-       [ngStyle]="{'display': visible ? 'flex' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
+       [style.display]="visible ? 'flex' : 'none'"
+       [style.opacity]="visibleAnimate ? 1 : 0">
     <header>
       <ng-content select=".modal-header"></ng-content>
     </header>

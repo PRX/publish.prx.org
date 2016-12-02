@@ -17,22 +17,24 @@ import { PromptComponent } from './prompt.component';
 @Component({
   selector: 'publish-wysiwyg',
   template: `
-    <div #contentEditable></div>
+    <div #contentEditable [class.changed]="changed" [class.invalid]="invalid"></div>
+    <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
     <publish-prompt #prompt>
       <h1 class="modal-header">Link to</h1>
       <div class="modal-body">
-        <label>URL<span class="error" [ngStyle]="{display: isURLInvalid() ? 'inline' : 'none'}">*</span></label>
-        <input type="text" name="url" #url [(ngModel)]="linkURL" required/>
+        <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
+        <input type="text" name="url" [(ngModel)]="linkURL" #url="ngModel" required/>
         <label>Title</label>
         <input type="text" name="title" [(ngModel)]="linkTitle"/>
-        <p class="error" [ngStyle]="{display: isURLInvalid() ? 'block' : 'none'}">URL is required</p>
+        <p class="error" [style.display]="isURLInvalid() ? 'block' : 'none'">URL is required</p>
       </div>
       <div class="modal-footer">
         <button (click)="createLink()">Okay</button>
         <button (click)="prompt.hide()">Cancel</button>
       </div>
     </publish-prompt>
-  `
+  `,
+  styleUrls: ['wysiwyg.component.css']
 })
 
 export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
@@ -87,6 +89,14 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
     };
   }
 
+  get changed(): boolean {
+    return this.model.changed(this.name, false);
+  }
+
+  get invalid(): string {
+    return this.model.invalid(this.name);
+  }
+
   cmdItem(cmd, options) {
     let passedOptions = {
       label: options.title,
@@ -127,8 +137,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   isURLInvalid() {
-    return this.url.nativeElement.className.indexOf('ng-invalid') > -1 &&
-      this.url.nativeElement.className.indexOf('ng-dirty') > -1;
+    return this.url.invalid && this.url.dirty;
   }
 
   createLink() {
