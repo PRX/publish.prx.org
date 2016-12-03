@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
@@ -28,10 +28,11 @@ import { PromptComponent } from './prompt.component';
   styleUrls: ['wysiwyg.component.css']
 })
 
-export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
+export class WysiwygComponent implements OnInit, OnDestroy {
   @Input() model: BaseModel;
   @Input() name: string;
   @Input() images: ImageModel[];
+  setModelValue: string;
 
   @ViewChild('contentEditable') private el: ElementRef;
   editor: ProseMirrorMarkdownEditor;
@@ -43,21 +44,21 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     if (this.model) {
-      let pmImages = this.mapImages();
       this.editor = new ProseMirrorMarkdownEditor(this.el,
                                                   this.model[this.name],
-                                                  pmImages,
+                                                  this.mapImages(),
                                                   this.setModel.bind(this),
                                                   this.promptForLink.bind(this));
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // once images are loaded and if images are added/removed from story, array length should change
     let changed = changes['images'].currentValue.length !== changes['images'].previousValue.length;
     if (this.editor && changed) {
-      let pmImages = this.mapImages();
-      this.editor.update(pmImages);
+      this.editor.update(this.mapImages());
+    }
+    if (this.editor && this.setModelValue !== this.model[this.name]) {
+      this.editor.resetEditor();
     }
   }
 
@@ -73,6 +74,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setModel(value: string) {
+    this.setModelValue = value.slice(0);
     this.model.set(this.name, value);
   }
 

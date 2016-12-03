@@ -18,14 +18,14 @@ describe('WysiwygComponent', () => {
     expect(el).toContainText('bold text');
   });
 
-  cit('adds image option once images have been loaded', (fix, el, comp) => {
+  cit('updates the editor once images have been loaded', (fix, el, comp) => {
     let initialState = '';
     comp.name = 'description';
     comp.model = new StoryModel(undefined, new HalDoc({description: initialState}), false);
-    spyOn(comp, 'insertImageItem');
+    spyOn(comp.editor, 'update');
     comp.images = [{filename: 'TestImage.jpg'}];
     fix.detectChanges();
-    expect(comp.insertImageItem).toHaveBeenCalled();
+    expect(comp.editor.update).toHaveBeenCalled();
   });
 
   cit('doesn\'t add empty links', (fix, el, comp) => {
