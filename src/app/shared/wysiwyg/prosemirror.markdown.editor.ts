@@ -1,9 +1,9 @@
 import { ElementRef } from '@angular/core';
 /// <reference path="./prosemirror.d.ts"/>
-import { wrapIn, setBlockType, chainCommands, newlineInCode, toggleMark, baseKeymap } from 'prosemirror-commands';
+import { wrapIn, setBlockType, chainCommands, newlineInCode, toggleMark, baseKeymap } from 'prosemirror-commands/commands';
 import { blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
   inputRules,allInputRules } from 'prosemirror-inputrules';
-import { keymap } from 'prosemirror-keymap';
+import { keymap } from 'prosemirror-keymap/keymap';
 import { schema, defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { MenuBarEditorView, icons, MenuItem, Dropdown, DropdownSubmenu,
   wrapItem, blockTypeItem, joinUpItem, liftItem} from 'prosemirror-menu';
