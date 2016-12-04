@@ -1,16 +1,5 @@
 import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, ElementRef, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { wrapIn, setBlockType, chainCommands, newlineInCode, toggleMark, baseKeymap } from 'prosemirror-commands/commands';
-import { blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
-  inputRules,allInputRules } from 'prosemirror-inputrules';
-import { keymap } from 'prosemirror-keymap/keymap';
-import { schema, defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
-import { MenuBarEditorView, icons,
-  MenuItem, Dropdown, DropdownSubmenu,
-  wrapItem, blockTypeItem, joinUpItem, liftItem,
-  selectParentNodeItem} from 'prosemirror-menu';
-import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
-import { EditorState, Plugin } from 'prosemirror-state';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
 import { ProseMirrorMarkdownEditor, ProseMirrorImage } from './prosemirror.markdown.editor';
