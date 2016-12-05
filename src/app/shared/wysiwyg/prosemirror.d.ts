@@ -1,3 +1,9 @@
+declare module 'prosemirror-commands' {
+  export { isWordChar, charCategory } from 'prosemirror-commands/char';
+  export { autoJoin, baseKeymap, chainCommands, createParagraphNear, deleteCharAfter, deleteCharBefore, deleteSelection, deleteWordAfter, deleteWordBefore, joinBackward, joinDown, joinForward, joinUp, lift, liftEmptyBlock, moveBackward, moveForward, newlineInCode, selectParentNode, setBlockType, splitBlock, toggleMark, wrapIn } from 'prosemirror-commands/commands';
+  export { ios, mac } from 'prosemirror-commands/platform';
+}
+
 declare module 'prosemirror-commands/char' {
   function isWordChar(ch: any): boolean;
   export { isWordChar }
@@ -61,12 +67,20 @@ declare module 'prosemirror-commands/platform' {
   export { ios }
 }
 
+declare module 'prosemirror-keymap' {
+  export { keymap } from 'prosemirror-keymap/keymap';
+}
+
 declare module 'prosemirror-keymap/keymap' {
   const keymap: any;
   export { keymap }
 }
 
 // incomplete
+declare module 'prosemirror-history' {
+  export { HistoryState, history } from 'prosemirror-history/history';
+}
+
 declare module 'prosemirror-history/history' {
   class HistoryState {
     constructor(done: any, undone: any, prevMap: any, prevTime: any);
