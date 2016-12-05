@@ -29,7 +29,6 @@ export class ImageUploadComponent {
 
   get noImages(): boolean {
     if (this.model && this.model.images) {
-      this.model.images = this.model.images.filter(img => !(img.isNew && img.isDestroy));
       if (this.model.images.length === 0) {
         return true;
       } else if (this.model.images.every(img => img.isDestroy)) {

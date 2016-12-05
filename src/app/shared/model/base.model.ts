@@ -158,7 +158,7 @@ export abstract class BaseModel {
 
   changed(field?: string | string[], includeRelations = true): boolean {
     if (this.isDestroy) {
-      return true;
+      return this.isNew ? false : true;
     }
     return this.setableFields(field, includeRelations).some(f => {
       if (this.RELATIONS.indexOf(f) > -1) {

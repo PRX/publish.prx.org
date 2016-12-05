@@ -26,12 +26,6 @@ describe('ImageUploadComponent', () => {
     expect(comp.model.images.length).toEqual(1);
   });
 
-  cit('savagely removes new destroyed images', (fix, el, comp) => {
-    comp.model = {images: [{isDestroy: true, isNew: true}]};
-    expect(comp.noImages).toEqual(true);
-    expect(comp.model.images.length).toEqual(0);
-  });
-
   cit('adds an image', (fix, el, comp) => {
     comp.model = {images: []};
     comp.addUpload({});
