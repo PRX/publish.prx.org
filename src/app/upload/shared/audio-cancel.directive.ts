@@ -1,4 +1,5 @@
 import { Directive, Input, HostListener } from '@angular/core';
+import { ModalService } from '../../core';
 import { AudioFileModel, AudioVersionModel } from '../../shared';
 
 @Directive({
@@ -12,7 +13,21 @@ export class AudioCancelDirective {
 
   @Input() version: AudioVersionModel;
 
+  constructor(private modal: ModalService) {}
+
   @HostListener('click') onClick() {
+    if (this.publishAudioCancel.isUploading) {
+      this.cancelAndDestroy();
+    } else {
+      this.modal.prompt(
+        'Really delete audio file?',
+        'This operation cannot be undone',
+        (okay: boolean) => okay && this.cancelAndDestroy()
+      );
+    }
+  }
+
+  cancelAndDestroy() {
     this.publishAudioCancel.canceled = true;
     setTimeout(() => {
       this.publishAudioCancel.destroy();
