@@ -105,3 +105,6 @@
   font-size: 14px;
   font-weight: bold;
 }
+.canceled .info p {
+  color: #E32E32;
+}

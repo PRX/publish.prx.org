@@ -6,6 +6,9 @@
   padding-top: 110px;
   text-align: center;
 }
+.new-image.changed {
+  outline: 5px auto #f09b4c;
+}
 .new-image p {
   font-size: 14px;
   line-height: 16px;

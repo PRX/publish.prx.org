@@ -8,7 +8,7 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
   template: `
     <publish-spinner *ngIf="model && !model?.images"></publish-spinner>
 
-    <div *ngIf="noImages" class="new-image">
+    <div *ngIf="noImages" class="new-image" [class.changed]="model.changed('images')">
       <p class="size">{{minWidth}}x{{minHeight}} px</p>
       <input type="file" id="image-file" publishFileSelect (file)="addUpload($event)"/>
       <label class="button" for="image-file">Add Image</label>
