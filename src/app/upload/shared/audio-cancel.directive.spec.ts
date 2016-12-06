@@ -1,6 +1,6 @@
 import { cit, create, direct, provide, By } from '../../../testing';
 import { Component } from '@angular/core';
-import { ModalService } from '../../core'
+import { ModalService } from '../../core';
 import { AudioCancelDirective } from './audio-cancel.directive';
 
 @Component({
