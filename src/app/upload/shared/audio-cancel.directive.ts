@@ -21,7 +21,7 @@ export class AudioCancelDirective {
     } else {
       this.modal.prompt(
         'Really delete audio file?',
-        'This operation cannot be undone',
+        'This action cannot be undone.',
         (okay: boolean) => okay && this.cancelAndDestroy()
       );
     }
