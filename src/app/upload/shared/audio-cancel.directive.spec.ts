@@ -17,7 +17,7 @@ const getDirective = (el): AudioCancelDirective => {
   return cancelEl.injector.get(AudioCancelDirective);
 };
 
-fdescribe('AudioCancelDirective', () => {
+describe('AudioCancelDirective', () => {
 
   create(MiniComponent, false);
 
