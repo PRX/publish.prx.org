@@ -9,7 +9,7 @@ import { StoryModel } from '../../shared';
   styleUrls: ['home-series.component.css'],
   template: `
     <header *ngIf="noseries">
-      <section [publishHoverTip]="'tooltip tbd'">
+      <section [publishHoverTip]="'These are your Stories not associated with any existing Series.'">
         <p></p>
       </section>
       <h2>Your Standalone Stories</h2>

@@ -7,18 +7,19 @@ import { StoryModel, TabService } from '../../shared';
   template: `
     <form *ngIf="story">
 
-      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title" tiptext="Tooltip tbd" required>
-        <div class="fancy-hint">Write a short, Tweetable title like a newspaper headline.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title"
+      tiptext="Think newspaper headline." required>
+        <div class="fancy-hint">Write a short, Tweetable title.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field [model]="story" textinput="true" name="shortDescription" label="Teaser" tiptext="Tooltip tbd" required>
-        <div class="fancy-hint">Provide a short description for your piece listing.
-        Think of this as a first impression for your piece.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="shortDescription" label="Teaser"
+      tiptext="Think of this as a first impression for your piece." required>
+        <div class="fancy-hint">Provide a short description for your piece listing.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field [model]="story" textarea="true" name="description" label="Description" tiptext="Tooltip tbd" required>
-        <div class="fancy-hint">Provide a full description of your piece
-        including keywords, names of interviewees, places and topics.</div>
+      <publish-fancy-field [model]="story" textarea="true" name="description" label="Description"
+      tiptext="Include keywords, names of interviewees, places and topics." required>
+        <div class="fancy-hint">Provide a full description of your piece.</div>
       </publish-fancy-field>
 
       <hr/>
@@ -38,7 +39,8 @@ import { StoryModel, TabService } from '../../shared';
 
       <hr/>
 
-      <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories" tiptext="Tooltip tbd" >
+      <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories"
+      tiptext="More is better!" >
         <div class="fancy-hint">A comma-separated list of tags relevant to the content of your piece.</div>
       </publish-fancy-field>
 
