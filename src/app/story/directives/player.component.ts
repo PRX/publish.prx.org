@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { StoryModel, TabService } from '../../shared';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -22,8 +22,8 @@ import { DomSanitizer } from '@angular/platform-browser';
         <p>You can embed this player on your own site by including the following <code>iframe</code> tag.</p>
 
         <div class="embed-code">
-          <input type="text" [value]="iframeHtml(200, 650)" id="share-embed-small" readonly>
-          <button (click)="copy(small)" data-copytarget="#share-embed-small" #small>Copy</button>
+          <input type="text" [value]="iframeHtml(200, 650)" #shareEmbedSmall readonly>
+          <button (click)="copy(small)" data-copytarget="#shareEmbedSmall" #small>Copy</button>
         </div>
 
     </div>
@@ -31,6 +31,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 
 export class PlayerComponent implements OnDestroy {
+  @ViewChild('shareEmbedSmall') private inputEl: ElementRef;
   private title: string;
   private subtitle: string;
   private audioUrl: string;
@@ -66,8 +67,8 @@ export class PlayerComponent implements OnDestroy {
       if (firstAudio) { this.audioUrl = firstAudio.enclosureHref; }
     }
 
-    if (this.story.doc && this.story.doc._links['prx:series']) {
-      this.subscriptionUrl = this.story.doc._links['prx:series'].href;
+    if (this.story.doc && this.story.doc['_links']['prx:series']) {
+      this.subscriptionUrl = this.story.doc['_links']['prx:series'].href;
     }
   }
 
@@ -96,8 +97,7 @@ export class PlayerComponent implements OnDestroy {
   }
 
   copy(el: any) {
-    const sel = el.dataset.copytarget;
-    const inp = document.querySelector(sel);
+    const inp = this.inputEl.nativeElement;
     if (inp && inp.select) {
       inp.select();
 
