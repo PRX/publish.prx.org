@@ -4,9 +4,7 @@ import { Component } from '@angular/core';
   selector: 'publish-prompt',
   template: `
   <div *ngIf="visible" class="overlay"></div>
-  <div class="modal" tabindex="-1"
-       [style.display]="visible ? 'flex' : 'none'"
-       [style.opacity]="visibleAnimate ? 1 : 0">
+  <div *ngIf="visible" class="modal" tabindex="-1">
     <header>
       <ng-content select=".modal-header"></ng-content>
     </header>
@@ -23,15 +21,12 @@ import { Component } from '@angular/core';
 export class PromptComponent {
 
   public visible = false;
-  private visibleAnimate = false;
 
   public show(): void {
     this.visible = true;
-    this.visibleAnimate = true;
   }
 
   public hide(): void {
-    this.visibleAnimate = false;
     setTimeout(() => this.visible = false, 300);
   }
 }
