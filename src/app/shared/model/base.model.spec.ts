@@ -226,11 +226,19 @@ describe('BaseModel', () => {
       expect(base.changed(null, false)).toBeFalsy();
     });
 
-    it('counts destroys as changed', () => {
+    it('counts existing destroys as changed', () => {
       expect(base.changed()).toBeFalsy();
       base.isDestroy = true;
       expect(base.changed()).toBeTruthy();
       expect(base.changed('foo')).toBeTruthy();
+    });
+
+    it('counts new destroys as unchanged', () => {
+      expect(base.changed()).toBeFalsy();
+      base.isDestroy = true;
+      base.isNew = true;
+      expect(base.changed()).toBeFalsy();
+      expect(base.changed('foo')).toBeFalsy();
     });
 
   });
