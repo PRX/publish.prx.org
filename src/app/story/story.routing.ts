@@ -23,7 +23,7 @@ export const storyRoutes: Routes = [
     children: storyChildRoutes
   },
   {
-    path: 'story/new/:series_id',
+    path: 'story/new/:seriesId',
     component: StoryComponent,
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],

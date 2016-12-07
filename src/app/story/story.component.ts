@@ -39,7 +39,7 @@ export class StoryComponent implements OnInit {
   ngOnInit() {
     this.route.params.forEach(params => {
       this.id = +params['id'];
-      this.seriesId = +params['series_id'];
+      this.seriesId = +params['seriesId'];
       this.base = '/story/' + (this.id || 'new');
       if (this.seriesId) {
         this.base += `/${this.seriesId}`;

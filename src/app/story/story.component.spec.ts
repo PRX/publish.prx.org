@@ -40,7 +40,7 @@ describe('StoryComponent', () => {
   });
 
   cit('renders a new story in a series', (fix, el, comp) => {
-    activatedRoute.testParams = {series_id: 5678};
+    activatedRoute.testParams = {seriesId: 5678};
     fix.detectChanges();
     expect(comp.id).toBeFalsy();
     expect(comp.seriesId).toEqual(5678);
