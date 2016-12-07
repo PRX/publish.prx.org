@@ -76,7 +76,7 @@ export class StoryComponent implements OnInit {
   }
 
   canDeactivate(next: any, prev: any): boolean | Observable<boolean> {
-    if (this.story && this.story.changed()) {
+    if (this.story && this.story.changed() && !this.story.isDestroy) {
       let thatsOkay = new Subject<boolean>();
       this.modal.prompt(
         'Unsaved changes',
