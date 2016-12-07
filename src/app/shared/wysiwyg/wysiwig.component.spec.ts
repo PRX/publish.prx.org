@@ -10,31 +10,23 @@ describe('WysiwygComponent', () => {
   stubPipe('capitalize');
 
   cit('shows markdown formatted as html', (fix, el, comp) => {
-    let initialState = '**bold text**';
+    let initialState = {description: '**bold text**'};
     comp.name = 'description';
-    comp.model = new StoryModel(undefined, new HalDoc({description: initialState}), false);
+    comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
+    comp.images = [];
     fix.detectChanges();
     expect(el.query(By.css('strong'))).toBeDefined();
     expect(el).toContainText('bold text');
   });
 
-  cit('updates the editor once images have been loaded', (fix, el, comp) => {
-    let initialState = '';
-    comp.name = 'description';
-    comp.model = new StoryModel(undefined, new HalDoc({description: initialState}), false);
-    spyOn(comp.editor, 'update');
-    comp.images = [{filename: 'TestImage.jpg'}];
-    fix.detectChanges();
-    expect(comp.editor.update).toHaveBeenCalled();
-  });
-
   cit('doesn\'t add empty links', (fix, el, comp) => {
-    let initialState = 'initial state';
+    let initialState = {description: 'initial state'};
     comp.name = 'description';
-    comp.model = new StoryModel(undefined, new HalDoc({description: initialState}), false);
+    comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
+    comp.images = [];
     fix.detectChanges();
     comp.linkURL = '';
     comp.createLink();
-    expect(comp.model[comp.name]).toEqual(initialState);
+    expect(comp.model[comp.name]).toEqual(initialState.description);
   });
 });

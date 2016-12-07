@@ -18,8 +18,8 @@ export class ProseMirrorImage {
 
 export class ProseMirrorMarkdownEditor {
 
-  private view: MenuBarEditorView;
-  private initialState: EditorState;
+  view: MenuBarEditorView;
+  initialState: EditorState;
 
   constructor(private el: ElementRef,
               private value: string,
