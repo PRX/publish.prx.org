@@ -65,7 +65,7 @@ export class HalRemote {
   private httpRequest(method: string, href: string, body?: string, allowRetry = true): Observable<Response> {
     return this.httpOptions(body ? true : false)
       .flatMap(opts => {
-        if (body) {
+        if (method === 'put' || method === 'post') {
           return this.http[method](href, body, opts);
         } else {
           return this.http[method](href, opts);
