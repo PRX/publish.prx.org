@@ -19,8 +19,8 @@ import { AuthService, AuthUrls } from '../core';
 
 export class LoginComponent {
 
-  private iframeUrl: SafeResourceUrl;
-  private errorMsg: string;
+  iframeUrl: SafeResourceUrl;
+  errorMsg: string;
   private isInitialLoad: boolean = true;
 
   constructor(

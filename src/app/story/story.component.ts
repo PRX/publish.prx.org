@@ -24,10 +24,10 @@ import { StoryModel } from '../shared';
 
 export class StoryComponent implements OnInit {
 
-  private id: number;
-  private base: string;
-  private seriesId: number;
-  private story: StoryModel;
+  id: number;
+  base: string;
+  seriesId: number;
+  story: StoryModel;
 
   constructor(
     private cms: CmsService,
@@ -80,7 +80,9 @@ export class StoryComponent implements OnInit {
       let thatsOkay = new Subject<boolean>();
       this.modal.prompt(
         'Unsaved changes',
-        'This story has unsaved changes. To make the changes permanent, please click \'Cancel\' and then \'Save\'. Otherwise, you can click \'Okay\' and your changes will be stored temporarily in your browser\'s history.',
+        `This story has unsaved changes. To make the changes permanent, please
+         click 'Cancel' and then 'Save'. Otherwise, you can click 'Okay' and
+         your changes will be stored temporarily in your browser\'s history.`,
         (okay: boolean) => { thatsOkay.next(okay); thatsOkay.complete(); }
       );
       return thatsOkay;

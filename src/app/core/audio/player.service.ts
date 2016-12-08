@@ -59,7 +59,9 @@ export class PlayerService {
   }
 
   stop() {
-    if (this.playing) this.playing.complete();
+    if (this.playing) {
+      this.playing.complete();
+    }
   }
 
   checkFile(file: File): Observable<AudioMetadata> {
