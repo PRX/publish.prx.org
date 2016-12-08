@@ -8,7 +8,7 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
   template: `
     <publish-spinner *ngIf="model && !model?.images"></publish-spinner>
 
-    <div *ngIf="noImages" class="new-image" [class.changed]="model.changed('images')">
+    <div *ngIf="noImages" class="new-image" [class.changed]="model.changed('images')" [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
       <p class="size">{{minWidth}}x{{minHeight}} px</p>
       <input type="file" id="image-file" publishFileSelect (file)="addUpload($event)" ngClass="{'invalid': this.imgError}"/>
       <label class="button" for="image-file">Add Image</label>
@@ -16,7 +16,7 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
     <p *ngIf="imgError" class="error">{{imgError}}</p>
 
     <div *ngIf="model && model.images">
-      <publish-image-file *ngFor="let i of model.images" [image]="i"></publish-image-file>
+      <publish-image-file *ngFor="let i of model.images" [image]="i" [width]="thumbnailWidth" [height]="thumbnailHeight"></publish-image-file>
     </div>
   `
 })
@@ -42,9 +42,19 @@ export class ImageUploadComponent {
     return false;
   }
 
-  addUpload(file: File) {
-    //let reader = new FileReader();
+  get thumbnailWidth(): string {
+    let width = '200px';
+    if (this.minWidth !== this.minHeight) {
+      width = `${200 * this.minWidth/this.minHeight}px`;
+    }
+    return width;
+  }
 
+  get thumbnailHeight(): string {
+    return '200px';
+  }
+
+  addUpload(file: File) {
     this.reader.onloadstart = () => {
       this.imgError = '';
     };
