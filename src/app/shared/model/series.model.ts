@@ -20,9 +20,9 @@ export class SeriesModel extends BaseModel {
   SETABLE = ['title', 'description', 'shortDescription'];
 
   VALIDATORS = {
-    title:            [REQUIRED(), LENGTH(10)],
+    title:            [REQUIRED()],
     description:      [LENGTH(10)],
-    shortDescription: [REQUIRED(), LENGTH(10)]
+    shortDescription: [REQUIRED()]
   };
 
   constructor(account: HalDoc, series?: HalDoc, loadRelated = true) {

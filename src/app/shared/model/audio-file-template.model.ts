@@ -16,7 +16,7 @@ export class AudioFileTemplateModel extends BaseModel {
   SETABLE = ['position', 'label', 'lengthMinimum', 'lengthMaximum'];
 
   VALIDATORS = {
-    label: [REQUIRED(), LENGTH(3)],
+    label: [REQUIRED()],
     lengthMinimum: [FILE_LENGTH(this)],
     lengthMaximum: [FILE_LENGTH(this)]
   };

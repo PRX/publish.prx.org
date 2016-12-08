@@ -7,17 +7,23 @@ import { StoryModel, TabService } from '../../shared';
   template: `
     <form *ngIf="story">
 
-      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title" required>
-        <div class="fancy-hint">Write a short, Tweetable title like a newspaper headline.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title"
+      tiptext="Think newspaper headline." required>
+        <div class="fancy-hint">Write a short, Tweetable title.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field [model]="story" textinput="true" name="shortDescription" label="Teaser" required>
-        <div class="fancy-hint">A first impression; think of this as the single-item lead of a piece.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="shortDescription" label="Teaser"
+      tiptext="Think of this as a first impression for your piece." required>
+        <div class="fancy-hint">Provide a short description for your piece listing.</div>
       </publish-fancy-field>
 
-      <h3><label for="description">Description</label></h3>
-      <p class="hint">A full description of your piece including keywords, names
-        of interviewees, places and topics.</p>
+      <h3>
+        <section [publishHoverTip]="'Include keywords, names of interviewees, places and topics'">
+          <p></p>
+        </section>
+        <label for="description">Description</label>
+      </h3>
+      <p class="hint">A full description of your piece.</p>
       <publish-wysiwyg *ngIf="story" [model]="story" name="description" [images]="story.images"></publish-wysiwyg>
 
       <hr/>
@@ -31,13 +37,15 @@ import { StoryModel, TabService } from '../../shared';
       </publish-fancy-field>
 
       <publish-fancy-field label="Cover Image">
-        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400></publish-image-upload>
+      <div class="fancy-hint">Provide an image for your piece, if desired.</div>
+        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400 ></publish-image-upload>
       </publish-fancy-field>
 
       <hr/>
 
-      <publish-fancy-field [model]="story" textinput="true" name="tags">
-        <div class="fancy-hint">A comma-separated list of tags relevant to your story.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories"
+      tiptext="More is better!" >
+        <div class="fancy-hint">A comma-separated list of tags relevant to the content of your piece.</div>
       </publish-fancy-field>
 
     </form>

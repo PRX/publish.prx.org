@@ -88,10 +88,10 @@ export class HomeStoryComponent implements OnInit {
       this.statusText = 'Draft';
     } else if (this.story.changed()) {
       this.statusClass = 'status unsaved';
-      this.statusText = 'Edited';
+      this.statusText = 'Unsaved Changes';
     } else if (!this.story.publishedAt) {
       this.statusClass = 'status unpublished';
-      this.statusText = 'Unpublished';
+      this.statusText = 'Private';
     }
   }
 

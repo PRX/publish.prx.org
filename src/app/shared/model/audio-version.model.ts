@@ -101,13 +101,13 @@ export class AudioVersionModel extends BaseModel {
     this.id = this.doc['id'];
     this.uploads = '';
     this.label = this.doc['label'];
-    this.explicit = (this.doc['explicit'] === 'yes') ? 'Yes' : 'Clean';
+    this.explicit = (this.doc['explicit'] === 'yes') ? 'Explicit' : 'Clean';
   }
 
   encode(): {} {
     let data = <any> {};
     data.label = this.label;
-    data.explicit = (this.explicit === 'Yes') ? 'yes' : 'clean';
+    data.explicit = (this.explicit === 'Explicit') ? 'yes' : 'clean';
     if (this.isNew && this.template) {
       data.set_audio_version_template_uri = this.template.expand('self');
     }
