@@ -7,7 +7,7 @@ import { UploadService } from '../../../core';
   styleUrls: ['image-file.component.css'],
   template: `
     <div *ngIf="!image.isDestroy" class="image-file" [class.canceled]="canceled">
-      <div class="thumbnail" [class.changed]="image.isNew" [style.width]="width" [style.height]="height">
+      <div class="thumbnail" [class.changed]="image.isNew" [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
 
         <div *ngIf="canceled && image.isUploading" class="uploading errored">
           <p *ngIf="image.isUploading">Upload Canceled</p>
@@ -47,7 +47,7 @@ import { UploadService } from '../../../core';
 
       </div>
 
-      <div *ngIf="canceled && !image.isUploading" class="info" [style.width]="width" [style.height]="height">
+      <div *ngIf="canceled && !image.isUploading" class="info" [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
         <p *ngIf="image.isUploading">Upload Canceled</p>
         <p *ngIf="!image.isUploading">File Deleted</p>
       </div>
@@ -66,8 +66,8 @@ export class ImageFileComponent implements OnInit, OnDestroy {
   canceled: boolean;
 
   @Input() image: ImageModel;
-  @Input() width: string;
-  @Input() height: string;
+  @Input() thumbnailWidth: string;
+  @Input() thumbnailHeight: string;
 
   constructor(private uploadService: UploadService) {}
 

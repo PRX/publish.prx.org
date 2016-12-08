@@ -16,7 +16,7 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
     <p *ngIf="imgError" class="error">{{imgError}}</p>
 
     <div *ngIf="model && model.images">
-      <publish-image-file *ngFor="let i of model.images" [image]="i" [width]="thumbnailWidth" [height]="thumbnailHeight"></publish-image-file>
+      <publish-image-file *ngFor="let i of model.images" [image]="i" [thumbnailWidth]="thumbnailWidth" [thumbnailHeight]="thumbnailHeight"></publish-image-file>
     </div>
   `
 })
@@ -26,6 +26,7 @@ export class ImageUploadComponent {
   @Input() minWidth = 200;
   @Input() minHeight = 200;
 
+  private thumbnailHeight = '200px';
   private imgError: string;
   reader: FileReader = new FileReader();
 
@@ -48,10 +49,6 @@ export class ImageUploadComponent {
       width = `${200 * this.minWidth/this.minHeight}px`;
     }
     return width;
-  }
-
-  get thumbnailHeight(): string {
-    return '200px';
   }
 
   addUpload(file: File) {
