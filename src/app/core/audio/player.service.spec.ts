@@ -1,67 +1,82 @@
+import { Observable } from 'rxjs';
 import { PlayerService } from './player.service';
+import { UnsupportedFileError } from './playback';
+
+class FakePlayback {
+  playing = false;
+  playingErr = null;
+  progress = 0;
+  play(): any {
+    this.playing = true;
+    return this.playingErr ? Observable.throw(this.playingErr) : Observable.of(true);
+  }
+  seek(p: number) { this.progress = p; }
+  stop() { this.playing = false; }
+}
+
+class FakeValidation {
+  validate(): any {
+    return Observable.of('the-validation');
+  }
+}
 
 describe('PlayerService', () => {
 
   let service = new PlayerService();
 
-  describe('play', () => {
+  let aurora: FakePlayback, native: FakePlayback, valid: FakeValidation;
+  beforeEach(() => {
+    aurora = new FakePlayback();
+    native = new FakePlayback();
+    valid = new FakeValidation();
+    spyOn(service, 'auroraPlayback').and.callFake(function() { return this.playback = aurora; });
+    spyOn(service, 'nativePlayback').and.callFake(function() { return this.playback = native; });
+    spyOn(service, 'auroraValidation').and.returnValue(valid);
+  });
 
-    let player: any;
-    beforeEach(() => {
-      player = {on: (name, fn) => null, play: () => null, stop: () => null};
-      window['AV'] = {Player: {fromFile: () => player, fromURL: () => player}};
-    });
+  it('plays and stops the native player', () => {
+    service.play('some-href').subscribe();
+    expect(native.playing).toBeTruthy();
+    expect(aurora.playing).toBeFalsy();
+    service.stop();
+    expect(native.playing).toBeFalsy();
+    expect(aurora.playing).toBeFalsy();
+  });
 
-    it('plays a file', () => {
-      spyOn(player, 'play').and.stub();
-      service.play('some-href').subscribe();
-      expect(player.play).toHaveBeenCalled();
-    });
+  it('falls back to the aurora player', () => {
+    native.playingErr = new UnsupportedFileError('bad file!');
+    service.play('some-href').subscribe();
+    expect(native.playing).toBeTruthy();
+    expect(aurora.playing).toBeTruthy();
+    service.stop();
+    expect(native.playing).toBeTruthy();
+    expect(aurora.playing).toBeFalsy();
+  });
 
-    it('listens for the duration', () => {
-      spyOn(player, 'on').and.callFake((name, fn) => {
-        if (name === 'duration') { fn(5000); }
-      });
-      let data: any;
-      let sub = service.play('some-href').subscribe(d => data = d);
-      expect(data.duration).toEqual(5000);
-      expect(sub.closed).toEqual(false);
-    });
+  it('throws non playback errors from the native player', () => {
+    native.playingErr = new Error('something else went wrong');
+    let err: any;
+    service.play('some-href').subscribe(
+      () => { throw new Error('expected an error'); },
+      e => err = e
+    );
+    expect(native.playing).toBeTruthy();
+    expect(aurora.playing).toBeFalsy();
+    expect(err.message).toEqual('something else went wrong');
+  });
 
-    it('follows progress', () => {
-      spyOn(player, 'on').and.callFake((name, fn) => {
-        if (name === 'progress') { fn(2000); }
-      });
-      let data: any;
-      let sub = service.play('some-href').subscribe(d => data = d);
-      expect(data.progress).toEqual(2000);
-      expect(sub.closed).toEqual(false);
-    });
+  it('seeks the player', () => {
+    service.seek(0.5);
+    expect(native.progress).toEqual(0);
+    service.play('some-href').subscribe();
+    service.seek(0.5);
+    expect(native.progress).toEqual(0.5);
+  });
 
-    it('completes at the end of file', () => {
-      spyOn(player, 'on').and.callFake((name, fn) => {
-        if (name === 'end') { fn(); }
-      });
-      let sub = service.play('some-href').subscribe();
-      expect(sub.closed).toEqual(true);
-    });
-
-    it('stops the player on unsubscribe', () => {
-      spyOn(player, 'stop').and.stub();
-      let sub = service.play('some-href').subscribe();
-      expect(player.stop).not.toHaveBeenCalled();
-      sub.unsubscribe();
-      expect(player.stop).toHaveBeenCalled();
-    });
-
-    it('stops when playing another file', () => {
-      spyOn(player, 'stop').and.stub();
-      service.play('some-href').subscribe();
-      expect(player.stop).not.toHaveBeenCalled();
-      service.play('other-href').subscribe();
-      expect(player.stop).toHaveBeenCalled();
-    });
-
+  it('checks file format', () => {
+    let validation = null;
+    service.checkFile(<any> 'the-file').subscribe(v => validation = v);
+    expect(validation).toEqual('the-validation');
   });
 
 });

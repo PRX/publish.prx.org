@@ -12,11 +12,7 @@ export class NativePlayback implements AudioPlayback {
   private playable = false;
 
   constructor(src: File | string) {
-    if (typeof(src) === 'string') {
-      this.el = document.createElement('audio');
-      this.el.setAttribute('src', src);
-      this.el.addEventListener('playable', () => this.playable = true);
-    }
+    this.el = this.build(src);
     this.data = <PlaybackMetadata> {progress: 0};
   }
 
@@ -63,6 +59,17 @@ export class NativePlayback implements AudioPlayback {
   stop() {
     if (this.sub) {
       this.sub.complete();
+    }
+  }
+
+  private build(src: File | string): HTMLAudioElement {
+    if (typeof(src) === 'string') {
+      let el = document.createElement('audio');
+      el.setAttribute('src', src);
+      el.addEventListener('playable', () => this.playable = true);
+      return el;
+    } else {
+      return null;
     }
   }
 
