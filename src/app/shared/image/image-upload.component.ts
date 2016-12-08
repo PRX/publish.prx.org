@@ -8,7 +8,7 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
   template: `
     <publish-spinner *ngIf="model && !model?.images"></publish-spinner>
 
-    <div *ngIf="noImages" class="new-image">
+    <div *ngIf="noImages" class="new-image" [class.changed]="model.changed('images')">
       <p class="size">{{minWidth}}x{{minHeight}} px</p>
       <input type="file" id="image-file" publishFileSelect (file)="addUpload($event)" ngClass="{'invalid': this.imgError}"/>
       <label class="button" for="image-file">Add Image</label>
@@ -33,7 +33,6 @@ export class ImageUploadComponent {
 
   get noImages(): boolean {
     if (this.model && this.model.images) {
-      this.model.images = this.model.images.filter(img => !(img.isNew && img.isDestroy));
       if (this.model.images.length === 0) {
         return true;
       } else if (this.model.images.every(img => img.isDestroy)) {

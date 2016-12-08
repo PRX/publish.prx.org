@@ -11,6 +11,7 @@ import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
 import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
+import { PromptComponent, WysiwygComponent } from './wysiwyg';
 
 @NgModule({
   declarations: [
@@ -24,9 +25,11 @@ import { TabComponent } from './tab';
     ImageFileComponent,
     ImageLoaderComponent,
     ImageUploadComponent,
+    PromptComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    WysiwygComponent
   ],
   exports: [
     CommonModule,
@@ -40,9 +43,11 @@ import { TabComponent } from './tab';
     HeroComponent,
     ImageLoaderComponent,
     ImageUploadComponent,
+    PromptComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    WysiwygComponent
   ],
   imports: [
     CommonModule,
