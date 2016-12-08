@@ -13,6 +13,8 @@ import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
 import { PromptComponent, WysiwygComponent } from './wysiwyg';
 
+import { HoverDirective } from './hover';
+
 @NgModule({
   declarations: [
     ButtonComponent,
@@ -22,6 +24,7 @@ import { PromptComponent, WysiwygComponent } from './wysiwyg';
     FileSelectDirective,
     FileSizePipe,
     HeroComponent,
+    HoverDirective,
     ImageFileComponent,
     ImageLoaderComponent,
     ImageUploadComponent,
@@ -41,6 +44,7 @@ import { PromptComponent, WysiwygComponent } from './wysiwyg';
     FileSelectDirective,
     FileSizePipe,
     HeroComponent,
+    HoverDirective,
     ImageLoaderComponent,
     ImageUploadComponent,
     PromptComponent,

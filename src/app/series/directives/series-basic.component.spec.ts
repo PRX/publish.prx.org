@@ -14,9 +14,9 @@ describe('SeriesBasicComponent', () => {
     fix.detectChanges();
 
     expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(3);
-    expect(el).toContainText('short headline');
-    expect(el).toContainText('first impression');
-    expect(el).toContainText('longer version');
+    expect(el).toContainText('name of your series');
+    expect(el).toContainText('short description');
+    expect(el).toContainText('full description');
   });
 
 });

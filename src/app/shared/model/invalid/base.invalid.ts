@@ -8,7 +8,7 @@ export interface BaseInvalid {
 export const REQUIRED = (): BaseInvalid => {
   return <BaseInvalid> (key: string, value: any) => {
     if (!value || value.length < 1) {
-      return `${key} is required`;
+      return `${key} is a required field`;
     } else {
       return null;
     }

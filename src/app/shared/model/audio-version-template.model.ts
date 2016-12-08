@@ -15,7 +15,7 @@ export class AudioVersionTemplateModel extends BaseModel {
   SETABLE = ['label', 'lengthMinimum', 'lengthMaximum'];
 
   VALIDATORS = {
-    label: [REQUIRED(), LENGTH(3)],
+    label: [REQUIRED()],
     lengthMinimum: [VERSION_LENGTH(this)],
     lengthMaximum: [VERSION_LENGTH(this)]
   };

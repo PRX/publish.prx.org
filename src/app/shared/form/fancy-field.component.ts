@@ -18,6 +18,7 @@ export class FancyFieldComponent {
   @Input() changed: string;
   @Input() invalid: string;
   @Input() label: string;
+  @Input() tiptext: string;
   @Input() invalidlabel: string;
   @Input() hideinvalid: boolean;
 
