@@ -11,6 +11,7 @@ import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
 import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
+import { PromptComponent, WysiwygComponent } from './wysiwyg';
 
 import { HoverDirective } from './hover';
 
@@ -27,9 +28,11 @@ import { HoverDirective } from './hover';
     ImageFileComponent,
     ImageLoaderComponent,
     ImageUploadComponent,
+    PromptComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    WysiwygComponent
   ],
   exports: [
     CommonModule,
@@ -44,9 +47,11 @@ import { HoverDirective } from './hover';
     HoverDirective,
     ImageLoaderComponent,
     ImageUploadComponent,
+    PromptComponent,
     SpinnerComponent,
     TabComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    WysiwygComponent
   ],
   imports: [
     CommonModule,

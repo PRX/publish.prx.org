@@ -17,10 +17,14 @@ import { StoryModel, TabService } from '../../shared';
         <div class="fancy-hint">Provide a short description for your piece listing.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field [model]="story" textarea="true" name="description" label="Description"
-      tiptext="Include keywords, names of interviewees, places and topics." required>
-        <div class="fancy-hint">Provide a full description of your piece.</div>
-      </publish-fancy-field>
+      <h3>
+        <section [publishHoverTip]="'Include keywords, names of interviewees, places and topics'">
+          <p></p>
+        </section>
+        <label for="description">Description</label>
+      </h3>
+      <p class="hint">A full description of your piece.</p>
+      <publish-wysiwyg *ngIf="story" [model]="story" name="description" [images]="story.images"></publish-wysiwyg>
 
       <hr/>
 
