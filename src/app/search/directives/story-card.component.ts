@@ -87,7 +87,7 @@ export class StoryCardComponent implements OnInit {
 
     if (!this.story.publishedAt) {
       this.statusClass = 'status unpublished';
-      this.statusText = 'Unpublished';
+      this.statusText = 'Private';
     }
   }
 

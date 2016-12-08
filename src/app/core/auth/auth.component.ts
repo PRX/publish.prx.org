@@ -13,7 +13,7 @@ import { AuthUrls } from './auth.urls';
 
 export class AuthComponent implements OnDestroy {
 
-  private authUrl: SafeResourceUrl;
+  authUrl: SafeResourceUrl;
   private sub: Subscription;
 
   constructor(

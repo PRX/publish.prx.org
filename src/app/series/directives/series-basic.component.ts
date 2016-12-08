@@ -6,16 +6,16 @@ import { SeriesModel, TabService } from '../../shared';
   styleUrls: [],
   template: `
     <form *ngIf="series">
-      <publish-fancy-field textinput required [model]="series" name="title" label="Series Title">
-        <div class="fancy-hint">A short headline to describe this series.</div>
+      <publish-fancy-field textinput required [model]="series" name="title" label="Series Title" required>
+        <div class="fancy-hint">What's the name of your series?</div>
       </publish-fancy-field>
 
-      <publish-fancy-field textinput required [model]="series" name="shortDescription" label="Teaser">
-        <div class="fancy-hint">A first impression for your series.</div>
+      <publish-fancy-field textinput required [model]="series" name="shortDescription" label="Teaser" required>
+        <div class="fancy-hint">A short description of your series.</div>
       </publish-fancy-field>
 
       <publish-fancy-field textarea [model]="series" name="description" label="Description">
-        <div class="fancy-hint">A longer version of your teaser.</div>
+        <div class="fancy-hint">A full description of your series.</div>
       </publish-fancy-field>
     </form>
   `

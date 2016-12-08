@@ -1,3 +1,4 @@
+/* tslint:disable */
 declare module 'prosemirror-commands' {
   export { isWordChar, charCategory } from 'prosemirror-commands/char';
   export { autoJoin, baseKeymap, chainCommands, createParagraphNear, deleteCharAfter, deleteCharBefore, deleteSelection, deleteWordAfter, deleteWordBefore, joinBackward, joinDown, joinForward, joinUp, lift, liftEmptyBlock, moveBackward, moveForward, newlineInCode, selectParentNode, setBlockType, splitBlock, toggleMark, wrapIn } from 'prosemirror-commands/commands';
