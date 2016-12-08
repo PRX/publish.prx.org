@@ -24,10 +24,10 @@ import { StoryModel } from '../shared';
 
 export class StoryComponent implements OnInit {
 
-  private id: number;
-  private base: string;
-  private seriesId: number;
-  private story: StoryModel;
+  id: number;
+  base: string;
+  seriesId: number;
+  story: StoryModel;
 
   constructor(
     private cms: CmsService,

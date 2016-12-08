@@ -1,7 +1,7 @@
 import { ElementRef } from '@angular/core';
 import { wrapIn, setBlockType, chainCommands, newlineInCode, toggleMark, baseKeymap } from 'prosemirror-commands';
 import { blockQuoteRule, orderedListRule, bulletListRule, codeBlockRule, headingRule,
-  inputRules,allInputRules } from 'prosemirror-inputrules';
+  inputRules, allInputRules } from 'prosemirror-inputrules';
 import { keymap } from 'prosemirror-keymap';
 import { schema, defaultMarkdownParser, defaultMarkdownSerializer } from 'prosemirror-markdown';
 import { MenuBarEditorView, icons, MenuItem, Dropdown, DropdownSubmenu,
@@ -235,7 +235,7 @@ export class ProseMirrorMarkdownEditor {
       result.push(codeBlockRule(schema.nodes.code_block));
     }
     if (schema.nodes.heading) {
-      result.push(headingRule(schema.nodes.heading, 6))
+      result.push(headingRule(schema.nodes.heading, 6));
     }
     return result;
   }
@@ -305,7 +305,7 @@ export class ProseMirrorMarkdownEditor {
         title: 'Insert horizontal rule',
         label: 'Horizontal rule',
         select: (state) => {
-          return this.canInsert(state, schema.nodes.horizontal_rule)
+          return this.canInsert(state, schema.nodes.horizontal_rule);
         },
         run: (state, onAction) => {
           onAction(state.tr.replaceSelectionWith(schema.nodes.horizontal_rule.create()).action());

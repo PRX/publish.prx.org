@@ -25,8 +25,8 @@ import { ModalService, ModalState } from './modal.service';
 
 export class ModalComponent {
 
-  private shown: boolean;
-  private state: ModalState;
+  shown: boolean;
+  state: ModalState;
 
   constructor(modalService: ModalService, ref: ChangeDetectorRef) {
     modalService.state.subscribe((state) => {

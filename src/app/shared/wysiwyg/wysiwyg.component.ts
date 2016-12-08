@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, OnDestroy, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
@@ -28,7 +28,7 @@ import { PromptComponent } from './prompt.component';
   styleUrls: ['wysiwyg.component.css']
 })
 
-export class WysiwygComponent implements OnInit, OnDestroy {
+export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() model: BaseModel;
   @Input() name: string;
   @Input() images: ImageModel[];
@@ -37,7 +37,7 @@ export class WysiwygComponent implements OnInit, OnDestroy {
   @ViewChild('contentEditable') private el: ElementRef;
   editor: ProseMirrorMarkdownEditor;
 
-  @ViewChild('prompt') private prompt: PromptComponent;
+  @ViewChild('prompt') prompt: PromptComponent;
   @ViewChild('url') private url: NgModel;
   linkURL: string;
   linkTitle: string;
