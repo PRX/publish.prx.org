@@ -87,7 +87,7 @@ describe('ImageUploadComponent', () => {
   });
 
   cit('ignores deleted images', (fix, el, comp) => {
-    comp.model = {images: [{isDestroy: false}]};
+    comp.model = {images: [{isDestroy: false}], changed: () => true};
     expect(comp.noImages).toEqual(false);
     expect(comp.model.images.length).toEqual(1);
     comp.model = {images: [{isDestroy: true}]};
@@ -96,12 +96,24 @@ describe('ImageUploadComponent', () => {
   });
 
   cit('adds an image', (fix, el, comp, done) => {
-    comp.model = {images: []};
+    comp.model = {images: [], changed: () => true};
     comp.addUpload(dataURItoBlob(imageDataURI));
     comp.reader.addEventListener('loadend', () => {
       fix.detectChanges();
       expect(el).not.toContainText('Add Image');
       expect(el).toQuery('publish-image-file');
+      done();
+    });
+  });
+
+  cit('won\'t add an image that doesn\'t meet min width and height specifications', (fix, el, comp, done) => {
+    comp.model = {images: [], changed: () => true};
+    comp.minWidth = comp.minHeight = 1400;
+    comp.addUpload(dataURItoBlob(imageDataURI));
+    comp.reader.addEventListener('loadend', () => {
+      fix.detectChanges();
+      expect(el).toContainText(`should be at least ${comp.minWidth}x${comp.minHeight} px`);
+      expect(comp.model.images.length).toEqual(0);
       done();
     });
   });
