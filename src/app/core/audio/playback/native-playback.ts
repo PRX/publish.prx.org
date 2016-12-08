@@ -40,7 +40,7 @@ export class NativePlayback implements AudioPlayback {
         if (this.playable) {
           sub.error(new Error('Unknown native playback error'));
         } else {
-          sub.error(new Error('Playback of this filetype not supported'));
+          sub.error(new UnsupportedFileError('Playback of this filetype not supported'));
         }
       });
 
