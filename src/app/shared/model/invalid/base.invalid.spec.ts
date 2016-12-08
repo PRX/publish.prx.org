@@ -5,14 +5,14 @@ describe('BaseInvalid', () => {
   describe('REQUIRED', () => {
 
     it('checks for existence', () => {
-      expect(REQUIRED()('fldname', null)).toMatch('is required');
-      expect(REQUIRED()('fldname', false)).toMatch('is required');
+      expect(REQUIRED()('fldname', null)).toMatch('is a required field');
+      expect(REQUIRED()('fldname', false)).toMatch('is a required field');
       expect(REQUIRED()('fldname', true)).toBeNull();
     });
 
     it('checks for length', () => {
-      expect(REQUIRED()('fldname', [])).toMatch('is required');
-      expect(REQUIRED()('fldname', '')).toMatch('is required');
+      expect(REQUIRED()('fldname', [])).toMatch('is a required field');
+      expect(REQUIRED()('fldname', '')).toMatch('is a required field');
       expect(REQUIRED()('fldname', [true])).toBeNull();
     });
 

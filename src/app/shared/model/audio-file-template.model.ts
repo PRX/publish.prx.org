@@ -1,7 +1,7 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
-import { REQUIRED, LENGTH, FILE_LENGTH } from './invalid';
+import { REQUIRED, FILE_LENGTH } from './invalid';
 
 export class AudioFileTemplateModel extends BaseModel {
 
@@ -16,7 +16,7 @@ export class AudioFileTemplateModel extends BaseModel {
   SETABLE = ['position', 'label', 'lengthMinimum', 'lengthMaximum'];
 
   VALIDATORS = {
-    label: [REQUIRED(), LENGTH(3)],
+    label: [REQUIRED()],
     lengthMinimum: [FILE_LENGTH(this)],
     lengthMaximum: [FILE_LENGTH(this)]
   };
