@@ -30,6 +30,7 @@ export class UploadService {
       aws_url: this.awsUrl,
       bucket: this.bucketName,
       cloudfront: this.useCloudfront,
+      onlyRetryForSameFileName: true,
       logging: false
     });
   }
