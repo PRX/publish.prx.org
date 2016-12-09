@@ -44,7 +44,7 @@
     "connect-gzip-static": "^1.0.0",
     "core-js": "^2.4.1",
     "dotenv": "^2.0.0",
-    "evaporate": "^1.5.8",
+    "evaporate": "^1.6.3",
     "express": "^4.14.0",
     "express-http-proxy": "^0.10.1",
     "morgan": "^1.7.0",
