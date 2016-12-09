@@ -26,8 +26,8 @@ export class ImageUploadComponent {
   @Input() minWidth = 200;
   @Input() minHeight = 200;
 
-  private thumbnailHeight = '200px';
-  private imgError: string;
+  thumbnailHeight = '200px';
+  imgError: string;
   reader: FileReader = new FileReader();
 
   constructor(private uploadService: UploadService) {}
