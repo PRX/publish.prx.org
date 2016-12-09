@@ -1,6 +1,4 @@
 .new-image {
-  height: 200px;
-  width: 266px;
   background: #fff;
   border: 2px #ccc dashed;
   padding-top: 110px;
@@ -30,4 +28,13 @@
 }
 .new-image input:focus + label, .new-image label:hover {
   background-color: #2b7187;
+}
+
+.invalid {
+  outline: 5px auto #e32;
+}
+
+p.error {
+  margin-top: 6px;
+  color: #e32;
 }

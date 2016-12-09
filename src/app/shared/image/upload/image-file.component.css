@@ -17,8 +17,6 @@
 @-webkit-keyframes fade-out { from { opacity :1; } to { opacity :0; } }
 
 .thumbnail {
-  width: 266px;
-  min-height: 200px;
   margin-right: 20px;
   position: relative;
 }
@@ -26,8 +24,7 @@
   outline: 5px auto #f09b4c;
 }
 .thumbnail .uploading {
-  width: 100%;
-  height: 200px;
+  height: 100%;
   background: #fff;
   border: 2px #ccc dashed;
   padding-top: 110px;
@@ -58,7 +55,7 @@
 }
 .thumbnail publish-image {
   display: block;
-  height: 200px;
+  height: 100%;
   width: 100%;
   background-color: #fff;
   border: 2px #ccc solid;
