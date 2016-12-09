@@ -26,7 +26,7 @@ export class ImageUploadComponent {
   @Input() minWidth = 200;
   @Input() minHeight = 200;
 
-  thumbnailHeight = '200px';
+  thumbnailHeight = '220px';
   imgError: string;
   reader: FileReader = new FileReader();
 
@@ -44,9 +44,9 @@ export class ImageUploadComponent {
   }
 
   get thumbnailWidth(): string {
-    let width = '200px';
+    let width = '220px';
     if (this.minWidth !== this.minHeight) {
-      width = `${200 * this.minWidth/this.minHeight}px`;
+      width = `${220 * this.minWidth/this.minHeight}px`;
     }
     return width;
   }
