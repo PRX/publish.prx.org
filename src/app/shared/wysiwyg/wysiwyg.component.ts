@@ -34,7 +34,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() content: string;
   @Input() changed: boolean;
   @Input() images: ImageModel[];
-  setModelValue: string;
+  setModelValue = '';
 
   @ViewChild('contentEditable') private el: ElementRef;
   editor: ProseMirrorMarkdownEditor;
@@ -51,7 +51,6 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
                                                   this.mapImages(),
                                                   this.setModel.bind(this),
                                                   this.promptForLink.bind(this));
-      this.setModelValue = this.content.slice();
     }
   }
 

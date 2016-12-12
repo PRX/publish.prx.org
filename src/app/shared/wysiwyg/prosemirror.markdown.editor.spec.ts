@@ -21,7 +21,7 @@ describe('ProseMirrorMarkdownEditor', () => {
   describe('constructor', () => {
     it('should save initial state', () => {
       let pmEditor = createProseMirrorMarkdownEditor();
-      expect(pmEditor.initialState).toBeDefined();
+      expect(pmEditor.savedState).toBeDefined();
     });
 
     it('should create MenuBarEditorView', () => {
@@ -50,11 +50,11 @@ describe('ProseMirrorMarkdownEditor', () => {
 
   describe('resetEditor', () => {
     let pmEditor;
-    let initialState;
+    let savedState;
 
     beforeEach(function () {
       pmEditor = createProseMirrorMarkdownEditor();
-      initialState = pmEditor.initialState;
+      savedState = pmEditor.savedState;
     });
 
     afterEach(function () {
@@ -64,7 +64,7 @@ describe('ProseMirrorMarkdownEditor', () => {
     it('should update view state', () => {
       spyOn(pmEditor.view, 'updateState');
       pmEditor.resetEditor();
-      expect(pmEditor.view.updateState).toHaveBeenCalledWith(initialState);
+      expect(pmEditor.view.updateState).toHaveBeenCalledWith(savedState);
     });
   });
 });

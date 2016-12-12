@@ -12,7 +12,7 @@ describe('BasicComponent', () => {
     edit.story = null;
     fix.detectChanges();
     expect(el).not.toQuery('form');
-    edit.story = {};
+    edit.story = {changed: () => false};
     fix.detectChanges();
     expect(el).toQuery('form');
   });
@@ -20,7 +20,7 @@ describe('BasicComponent', () => {
   cit('shows the basic story edit fields', (fix, el, comp) => {
     expect(el).not.toQuery('publish-fancy-field');
     expect(el).not.toQuery('publish-wysiwyg');
-    comp.story = {images: []};
+    comp.story = {images: [], changed: () => false};
     fix.detectChanges();
 
     expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(5);
@@ -32,7 +32,7 @@ describe('BasicComponent', () => {
   });
 
   cit('shows warning if no audio versions', (fix, el, comp) => {
-    comp.story = {versions: []};
+    comp.story = {versions: [], changed: () => false};
     fix.detectChanges();
 
     expect(el).toContainText('You have no audio versions for this story');
