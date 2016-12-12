@@ -24,7 +24,8 @@ import { StoryModel, TabService } from '../../shared';
         <label for="description">Description</label>
       </h3>
       <p class="hint">A full description of your piece.</p>
-      <publish-wysiwyg *ngIf="story" [model]="story" name="description" [images]="story.images"></publish-wysiwyg>
+      <publish-wysiwyg *ngIf="story" [model]="story" name="description" [content]="story.description" [images]="story.images" 
+        [changed]="descriptionChanged"></publish-wysiwyg>
 
       <hr/>
 
@@ -65,4 +66,7 @@ export class BasicComponent implements OnDestroy {
     this.tabSub.unsubscribe();
   }
 
+  get descriptionChanged(): boolean {
+    return this.story && this.story.changed('description', false);
+  }
 }

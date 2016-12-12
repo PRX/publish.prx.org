@@ -13,6 +13,7 @@ describe('WysiwygComponent', () => {
     let initialState = {description: '**bold text**'};
     comp.name = 'description';
     comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
+    comp.content = comp.model[comp.name];
     comp.images = [];
     fix.detectChanges();
     expect(el.query(By.css('strong'))).toBeDefined();
@@ -23,6 +24,7 @@ describe('WysiwygComponent', () => {
     let initialState = {description: 'initial state'};
     comp.name = 'description';
     comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
+    comp.content = comp.model[comp.name];
     comp.images = [];
     fix.detectChanges();
     comp.linkURL = '';
