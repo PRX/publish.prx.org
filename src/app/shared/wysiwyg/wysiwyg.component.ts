@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, OnDestroy, ElementRef, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
@@ -31,6 +31,8 @@ import { PromptComponent } from './prompt.component';
 export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() model: BaseModel;
   @Input() name: string;
+  @Input() content: string;
+  @Input() changed: boolean;
   @Input() images: ImageModel[];
   setModelValue: string;
 
@@ -45,20 +47,27 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     if (this.model) {
       this.editor = new ProseMirrorMarkdownEditor(this.el,
-                                                  this.model[this.name],
+                                                  this.content,
                                                   this.mapImages(),
                                                   this.setModel.bind(this),
                                                   this.promptForLink.bind(this));
+      this.setModelValue = this.content.slice();
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    let changed = changes['images'].currentValue.length !== changes['images'].previousValue.length;
-    if (this.editor && changed) {
-      this.editor.update(this.mapImages());
-    }
-    if (this.editor && this.setModelValue !== this.model[this.name]) {
-      this.editor.resetEditor();
+    if (this.editor) {
+      let imagesChanged = changes['images'] && changes['images'].currentValue.length !== changes['images'].previousValue.length;
+      if (imagesChanged) {
+        this.editor.update(this.mapImages());
+        this.editor.setSavedState();
+      }
+
+      if (this.setModelValue !== this.model[this.name]) {
+        this.editor.resetEditor();
+      } else if (!this.changed) {
+        this.editor.setSavedState();
+      }
     }
   }
 
@@ -74,12 +83,10 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setModel(value: string) {
-    this.setModelValue = value.slice(0);
-    this.model.set(this.name, value);
-  }
-
-  get changed(): boolean {
-    return this.model.changed(this.name, false);
+    if (this.setModelValue.valueOf() !== value.valueOf()) {
+      this.setModelValue = value.slice(0);
+      this.model.set(this.name, value);
+    }
   }
 
   get invalid(): string {

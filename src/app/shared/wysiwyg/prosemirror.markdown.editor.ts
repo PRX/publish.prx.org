@@ -19,15 +19,15 @@ export class ProseMirrorImage {
 export class ProseMirrorMarkdownEditor {
 
   view: MenuBarEditorView;
-  initialState: EditorState;
+  savedState: EditorState;
 
   constructor(private el: ElementRef,
               private value: string,
               private images: ProseMirrorImage[],
               private setModel: Function,
               private promptForLink: Function) {
-    this.initialState = EditorState.create(this.stateConfig());
-    this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(this.initialState));
+    this.savedState = EditorState.create(this.stateConfig());
+    this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(this.savedState));
   }
 
   update(images: ProseMirrorImage[]) {
@@ -37,7 +37,11 @@ export class ProseMirrorMarkdownEditor {
   }
 
   resetEditor() {
-    this.view.updateState(this.initialState);
+    this.view.updateState(this.savedState);
+  }
+
+  setSavedState() {
+    this.savedState = this.view.editor.state;
   }
 
   destroy() {
