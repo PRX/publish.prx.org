@@ -10,7 +10,8 @@ import { PromptComponent } from './prompt.component';
   template: `
     <div #contentEditable [class.changed]="changed" [class.invalid]="invalid"></div>
     <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
-    <publish-prompt #prompt>
+    
+    <publish-prompt #prompt *ngIf="!editor?.isSelectionEmpty()">
       <h1 class="modal-header">Link to</h1>
       <div class="modal-body">
         <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
@@ -22,6 +23,15 @@ import { PromptComponent } from './prompt.component';
       <div class="modal-footer">
         <button (click)="createLink()">Okay</button>
         <button (click)="prompt.hide()">Cancel</button>
+      </div>
+    </publish-prompt>
+    <publish-prompt #prompt *ngIf="editor?.isSelectionEmpty()">
+      <h1 class="modal-header">Warning</h1>
+      <div class="modal-body" *ngIf="editor?.isSelectionEmpty()">
+        <p class="error">Please select text to create link</p>
+      </div>
+      <div class="modal-footer">
+        <button (click)="prompt.hide()">Okay</button>
       </div>
     </publish-prompt>
   `,
@@ -93,7 +103,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   isURLInvalid() {
-    return this.url.invalid && this.url.dirty;
+    return this.url && this.url.invalid && this.url.dirty;
   }
 
   promptForLink() {
