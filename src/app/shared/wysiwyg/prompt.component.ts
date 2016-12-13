@@ -27,6 +27,6 @@ export class PromptComponent {
   }
 
   public hide(): void {
-    setTimeout(() => this.visible = false, 300);
+    this.visible = false;
   }
 }

@@ -48,6 +48,10 @@ export class ProseMirrorMarkdownEditor {
     this.view.editor.destroy();
   }
 
+  isSelectionEmpty() {
+    return this.view.editor.state.selection.empty;
+  }
+
   viewProps(state: any) {
     return {
       state,
