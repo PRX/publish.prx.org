@@ -17,6 +17,11 @@ import { SeriesModel, TabService } from '../../shared';
       <p class="hint">A full description of your series.</p>
       <publish-wysiwyg *ngIf="series" [model]="series" name="description" [content]="series.description" [images]="series.images" 
         [changed]="descriptionChanged"></publish-wysiwyg>
+        
+      <publish-fancy-field label="Series Image">
+        <div class="fancy-hint">This image will be used as the cover image for your series.</div>
+        <publish-image-upload [model]="series"></publish-image-upload>
+      </publish-fancy-field>
     </form>
   `,
   styleUrls: ['./series-basic.component.css']

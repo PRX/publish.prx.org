@@ -10,13 +10,21 @@ describe('SeriesBasicComponent', () => {
 
   cit('shows the basic series edit fields', (fix, el, comp) => {
     expect(el).not.toQuery('publish-fancy-field');
-    comp.series = {};
+    comp.series = {changed: () => false};
     fix.detectChanges();
 
     expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(3);
     expect(el).toContainText('name of your series');
     expect(el).toContainText('short description');
     expect(el).toContainText('full description');
+  });
+
+  cit('renders an image uploader', (fix, el, comp) => {
+    expect(el).not.toQuery('publish-image-upload');
+    comp.series = {changed: () => false};
+    fix.detectChanges();
+    expect(el).toQuery('publish-image-upload');
+    expect(el).toContainText('cover image');
   });
 
 });
