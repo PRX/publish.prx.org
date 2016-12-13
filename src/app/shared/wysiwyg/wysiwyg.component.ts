@@ -27,7 +27,7 @@ import { PromptComponent } from './prompt.component';
     </publish-prompt>
     <publish-prompt #prompt *ngIf="editor?.isSelectionEmpty()">
       <h1 class="modal-header">Warning</h1>
-      <div class="modal-body" *ngIf="editor?.isSelectionEmpty()">
+      <div class="modal-body">
         <p class="error">Please select text to create link</p>
       </div>
       <div class="modal-footer">
