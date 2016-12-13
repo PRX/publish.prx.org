@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { SeriesModel, TabService } from '../../shared';
 
 @Component({
-  styleUrls: [],
   template: `
     <form *ngIf="series">
       <publish-fancy-field textinput required [model]="series" name="title" label="Series Title" required>
@@ -14,11 +13,18 @@ import { SeriesModel, TabService } from '../../shared';
         <div class="fancy-hint">A short description of your series.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field textarea [model]="series" name="description" label="Description">
-        <div class="fancy-hint">A full description of your series.</div>
+      <h3><label for="description">Description</label></h3>
+      <p class="hint">A full description of your series.</p>
+      <publish-wysiwyg [model]="series" name="description" [content]="series.description" [images]="series.images" 
+        [changed]="descriptionChanged"></publish-wysiwyg>
+        
+      <publish-fancy-field label="Series Image">
+        <div class="fancy-hint">This image will be used as the cover image for your series.</div>
+        <publish-image-upload [model]="series"></publish-image-upload>
       </publish-fancy-field>
     </form>
-  `
+  `,
+  styleUrls: ['./series-basic.component.css']
 })
 
 export class SeriesBasicComponent implements OnDestroy {
@@ -34,4 +40,7 @@ export class SeriesBasicComponent implements OnDestroy {
     this.tabSub.unsubscribe();
   }
 
+  get descriptionChanged(): boolean {
+    return this.series && this.series.changed('description', false);
+  }
 }

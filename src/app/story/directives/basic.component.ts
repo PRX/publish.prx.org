@@ -24,7 +24,7 @@ import { StoryModel, TabService } from '../../shared';
         <label for="description">Description</label>
       </h3>
       <p class="hint">A full description of your piece.</p>
-      <publish-wysiwyg *ngIf="story" [model]="story" name="description" [content]="story.description" [images]="story.images" 
+      <publish-wysiwyg [model]="story" name="description" [content]="story.description" [images]="story.images" 
         [changed]="descriptionChanged"></publish-wysiwyg>
 
       <hr/>
