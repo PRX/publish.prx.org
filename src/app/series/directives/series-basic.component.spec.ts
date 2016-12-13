@@ -8,7 +8,7 @@ describe('SeriesBasicComponent', () => {
 
   provide(TabService);
 
-  cit('does not render until the story is loaded', (fix, el, comp) => {
+  cit('does not render until the series is loaded', (fix, el, comp) => {
     expect(el).not.toQuery('publish-fancy-field');
     expect(el).not.toQuery('publish-wysiwyg');
     comp.series = {changed: () => false};
