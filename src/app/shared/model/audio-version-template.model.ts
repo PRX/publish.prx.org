@@ -38,7 +38,7 @@ export class AudioVersionTemplateModel extends BaseModel {
   related() {
     let files: Observable<AudioFileTemplateModel[]>;
     if (this.doc) {
-      files = this.doc.followList('prx:audio-file-templates').map(ftdocs => {
+      files = this.doc.followItems('prx:audio-file-templates').map(ftdocs => {
         let saved = ftdocs.map(ft => new AudioFileTemplateModel(this.parent, this.doc, ft));
         let unsaved = this.findUnsavedFiles(saved.length + 1);
         return saved.concat(unsaved);

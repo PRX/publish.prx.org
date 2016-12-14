@@ -87,7 +87,7 @@ export class AudioVersionModel extends BaseModel {
 
     // optionally load-and-assign file templates
     if (this.hasFileTemplates) {
-      let tpls = this.template.followList('prx:audio-file-templates');
+      let tpls = this.template.followItems('prx:audio-file-templates');
       files = Observable.forkJoin(files, tpls).map(([models, tdocs]) => {
         this.fileTemplates = tdocs.sort(fileSort);
         return models;
