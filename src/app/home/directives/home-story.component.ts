@@ -1,6 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-
-import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
 
 @Component({
@@ -15,7 +13,7 @@ import { StoryModel } from '../../shared';
     </template>
     <template [ngIf]="!isPlusSign">
       <a [routerLink]="editLink">
-        <publish-image [src]="storyImage" [imageDoc]="storyImageDoc"></publish-image>
+        <publish-image [src]="storyImage" ></publish-image>
       </a>
       <h2>
         <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>
@@ -35,8 +33,6 @@ export class HomeStoryComponent implements OnInit {
   editLink: any[];
 
   storyId: number;
-  storyImage: string;
-  storyImageDoc: HalDoc;
   storyTitle: string;
   storyUpdated: Date;
 
@@ -55,13 +51,6 @@ export class HomeStoryComponent implements OnInit {
       }
     } else {
       this.editLink = ['/story', this.story.id];
-    }
-
-    // TODO: draft audios - to be removed
-    if (this.story.isNew) {
-      this.storyImage = this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
-    } else {
-      this.storyImageDoc = this.story.doc;// TODO: loading related now, so do we want doc or href?
     }
 
     if (this.story.isNew) {
@@ -95,4 +84,11 @@ export class HomeStoryComponent implements OnInit {
     return duration;
   }
 
+  get storyImage(): string {
+    if (this.story.isNew) {
+      return this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
+    } else {
+      return this.story.images.length > 0 ? this.story.images[0].enclosureHref : '';
+    }
+  }
 }
