@@ -17,6 +17,11 @@ describe('NavUserComponent', () => {
     auth.mock('prx:default-account', {name: 'TheAccountName'});
   });
 
+  cit('displays the account image', (fix, el, comp) => {
+    expect(el).toQuery('.publish-image');
+    expect(findComponent(el, 'publish-navuser').userImageDoc).not.toBeNull;
+  });
+
   cit('displays the account name', (fix, el, comp) => {
     expect(el).toQueryText('.name', 'TheAccountName');
     expect(findComponent(el, 'publish-navuser').userName).toEqual('TheAccountName');

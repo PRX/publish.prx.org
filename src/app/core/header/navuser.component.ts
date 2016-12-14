@@ -15,6 +15,8 @@ import { HalDoc } from '../../core';
           <span class="name">{{userName}}</span>
           <ng-content select=".user-loaded"></ng-content>
         </a>
+        <publish-image *ngIf="userImageDoc" class="user-loaded" [imageDoc]="userImageDoc"></publish-image>
+
       </template>
       <div *ngIf="!userName" class="spin-holder">
         <ng-content select=".user-loading"></ng-content>
