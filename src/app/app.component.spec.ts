@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { cit, create, provide } from '../testing';
+import { cit, create, provide, By } from '../testing';
 import { AppComponent } from './app.component';
 
 import { AuthService } from './core/auth/auth.service';
@@ -23,10 +23,19 @@ describe('AppComponent', () => {
   cit('only shows header links when logged in', (fix, el, comp) => {
     comp.loggedIn = true;
     fix.detectChanges();
-    expect(el).toQuery('publish-navitem');
+    expect(el.queryAll(By.css('publish-navitem')).length).toEqual(3);
     comp.loggedIn = false;
     fix.detectChanges();
     expect(el).not.toQuery('publish-navitem');
+  });
+
+  cit('shows user info when logged in', (fix, el, comp) => {
+    comp.loggedIn = true;
+    fix.detectChanges();
+    expect(el).toQuery('publish-navuser');
+    comp.loggedIn = false;
+    fix.detectChanges();
+    expect(el).not.toQuery('publish-navuser');
   });
 
   cit('ties together auth and cms', (fix, el, comp) => {
