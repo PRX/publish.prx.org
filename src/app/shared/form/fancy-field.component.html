@@ -16,13 +16,13 @@
   </div>
 
   <template [ngIf]="model">
-    <input *ngIf="type == 'textinput'" [id]="name" type="text" [disabled]="!model"
+    <input *ngIf="type == 'textinput'" [id]="name" type="text"
       [ngModel]="model[name]" (ngModelChange)="onChange($event)"/>
-    <input *ngIf="type == 'number'" [id]="name" type="number" [disabled]="!model"
+    <input *ngIf="type == 'number'" [id]="name" type="number"
       [ngModel]="model[name]" (ngModelChange)="onChange($event)"/>
-    <textarea *ngIf="type == 'textarea'" [id]="name" [disabled]="!model"
+    <textarea *ngIf="type == 'textarea'" [id]="name"
       [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"></textarea>
-    <select *ngIf="type == 'select'" [id]="name" [disabled]="!model"
+    <select *ngIf="type == 'select'" [id]="name"
       [(ngModel)]="model[name]" (ngModelChange)="onChange($event)">
       <option *ngFor="let opt of select" [value]="opt">{{opt}}</option>
     </select>
