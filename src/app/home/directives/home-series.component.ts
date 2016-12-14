@@ -91,9 +91,9 @@ export class HomeSeriesComponent implements OnInit {
       // parent result total is embedded in child total
       this.count = storyDocs.length ? storyDocs[0].total() : 0;
 
-      this.stories = [new StoryModel(accountDoc, null, false)];
+      this.stories = [new StoryModel(accountDoc, null, true)];
       for (let story of storyDocs) {
-        this.stories.push(new StoryModel(accountDoc, story, false));
+        this.stories.push(new StoryModel(accountDoc, story, true));
       }
       this.storyLoaders = null;
     });
