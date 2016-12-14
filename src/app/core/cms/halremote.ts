@@ -11,10 +11,20 @@ export class HalRemote {
 
   constructor(
     private http: Http,
-    private host: string,
+    public host: string,
     private token?: Observable<string>,
     private refreshToken?: () => Observable<string>
   ) {}
+
+  switchHost(link?: HalLink): HalRemote {
+    let absoluteLink = link && link.href && link.href.match(/^http(s)?:\/\//);
+    if (absoluteLink && !link.href.startsWith(this.host)) {
+      let newHost = link.href.match(/^http(s)?:\/\/[^\/]+/)[0];
+      return new HalRemote(this.http, newHost, this.token, this.refreshToken);
+    } else {
+      return this;
+    }
+  }
 
   expand(link: HalLink, params: {} = null): string {
     if (!link || !link.href) {
