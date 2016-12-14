@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { BaseModel } from '../model/base.model';
 
 const isset = (val: any): boolean => val !== false && val !== undefined;
@@ -12,6 +12,7 @@ const isset = (val: any): boolean => val !== false && val !== undefined;
 export class FancyFieldComponent {
 
   @Input() model: BaseModel;
+  @Output() change = new EventEmitter<any>();
 
   // Name of model attribute, and optional explicit changed/invalid bindings
   @Input() name: string;
@@ -95,6 +96,7 @@ export class FancyFieldComponent {
     if (this.name) {
       this.model.set(this.name, value);
     }
+    this.change.emit(value);
   }
 
 }
