@@ -4,6 +4,7 @@ import { BaseModel } from './base.model';
 import { ImageModel } from './image.model';
 import { AudioVersionTemplateModel } from './audio-version-template.model';
 import { AudioFileTemplateModel } from './audio-file-template.model';
+import { DistributionModel } from './distribution.model';
 import { REQUIRED, LENGTH } from './invalid';
 
 export class SeriesModel extends BaseModel {
@@ -16,6 +17,7 @@ export class SeriesModel extends BaseModel {
   public updatedAt: Date;
   public images: ImageModel[] = [];
   public versionTemplates: AudioVersionTemplateModel[] = [];
+  public distributions: DistributionModel[] = [];
 
   SETABLE = ['title', 'description', 'shortDescription'];
 
@@ -49,6 +51,7 @@ export class SeriesModel extends BaseModel {
   related() {
     let images = Observable.of([]);
     let templates = Observable.of([]);
+    let distributions = Observable.of([]);
 
     if (this.doc && this.doc.has('prx:image')) {
       images = this.doc.follow('prx:image').map(idoc => {
@@ -64,15 +67,26 @@ export class SeriesModel extends BaseModel {
 
     if (this.doc && this.doc.count('prx:audio-version-templates')) {
       templates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
-        return tdocs.map(t => new AudioVersionTemplateModel(this.doc, t));
+        return tdocs.map(t => new AudioVersionTemplateModel(this.doc, t))
+                    .concat(this.unsavedVersionTemplate).filter(t => t);
       });
     } else if (this.unsavedVersionTemplate) {
       templates = Observable.of([this.unsavedVersionTemplate]);
     }
 
+    if (this.doc && this.doc.count('prx:distributions')) {
+      distributions = this.doc.followItems('prx:distributions').map(ddocs => {
+        return ddocs.map(d => new DistributionModel(this.doc, d))
+                    .concat(this.unsavedDistribution).filter(d => d);
+      });
+    } else if (this.unsavedDistribution) {
+      distributions = Observable.of([this.unsavedDistribution]);
+    }
+
     return {
       images: images,
-      versionTemplates: templates
+      versionTemplates: templates,
+      distributions: distributions
     };
   }
 
@@ -123,6 +137,11 @@ export class SeriesModel extends BaseModel {
   get unsavedVersionTemplate(): AudioVersionTemplateModel {
     let tpl = new AudioVersionTemplateModel(this.doc, null);
     return tpl.isStored() && !tpl.isDestroy ? tpl : null;
+  }
+
+  get unsavedDistribution(): DistributionModel {
+    let dist = new DistributionModel(this.doc, null);
+    return dist.isStored() && !dist.isDestroy ? dist : null;
   }
 
   isV4(): boolean {
