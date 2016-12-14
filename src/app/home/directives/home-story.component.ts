@@ -33,13 +33,11 @@ export class HomeStoryComponent implements OnInit {
   @Input() story: StoryModel;
 
   editLink: any[];
-  isPlusSign: boolean;
 
   storyId: number;
   storyImage: string;
   storyImageDoc: HalDoc;
   storyTitle: string;
-  storyDuration: number;
   storyUpdated: Date;
 
   statusClass: string;
@@ -47,7 +45,6 @@ export class HomeStoryComponent implements OnInit {
 
   ngOnInit() {
     this.storyId = this.story.id;
-    this.isPlusSign = this.story.isNew && !this.story.isStored();
     this.storyTitle = this.story.title;
     this.storyUpdated = this.story.lastStored || this.story.updatedAt;
 
@@ -60,27 +57,11 @@ export class HomeStoryComponent implements OnInit {
       this.editLink = ['/story', this.story.id];
     }
 
-    // TODO: draft audios
+    // TODO: draft audios - to be removed
     if (this.story.isNew) {
       this.storyImage = this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
-      this.storyDuration = 0;
     } else {
-      this.storyImageDoc = this.story.doc;
-      if (this.story.doc.has('prx:audio')) {
-        this.story.doc.followItems('prx:audio').subscribe((audios) => {
-          if (!audios || audios.length < 1) {
-            this.storyDuration = 0;
-          } else {
-            this.storyDuration = audios.map((audio) => {
-              return audio['duration'] || 0;
-            }).reduce((prevDuration, currDuration) => {
-              return prevDuration + currDuration;
-            });
-          }
-        });
-      } else {
-        this.storyDuration = 0;
-      }
+      this.storyImageDoc = this.story.doc;// TODO: loading related now, so do we want doc or href?
     }
 
     if (this.story.isNew) {
@@ -93,6 +74,25 @@ export class HomeStoryComponent implements OnInit {
       this.statusClass = 'status unpublished';
       this.statusText = 'Private';
     }
+  }
+
+  get isPlusSign(): boolean {
+    return this.story.isNew && !this.story.isStored()
+      && !this.story.unsavedImage && this.story.versions.length === 0;
+  }
+
+  get storyDuration(): number {
+    let duration = 0;
+    if (this.story.versions && this.story.versions.length > 0) {
+      if (this.story.versions[0].files.length > 0) {
+        duration = this.story.versions[0].files.map((audio) => {
+          return audio['duration'] || 0;
+        }).reduce((prevDuration, currDuration) => {
+          return prevDuration + currDuration;
+        });
+      }
+    }
+    return duration;
   }
 
 }

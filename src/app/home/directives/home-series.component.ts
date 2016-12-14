@@ -70,9 +70,9 @@ export class HomeSeriesComponent implements OnInit {
 
     this.series.followItems('prx:stories', {per: limit, filters: 'v4'}).subscribe((stories) => {
       this.storyLoaders = null;
-      this.stories = [new StoryModel(this.series, null, false)];
+      this.stories = [new StoryModel(this.series, null, true)];
       for (let story of stories) {
-        this.stories.push(new StoryModel(this.series, story, false));
+        this.stories.push(new StoryModel(this.series, story, true));
       }
     });
   }
