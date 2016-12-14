@@ -99,7 +99,7 @@ describe('AudioVersionModel', () => {
     });
 
     it('loads audio templates', () => {
-      templateMock.mockList('prx:audio-file-templates', ['one', 'two']);
+      templateMock.mockItems('prx:audio-file-templates', ['one', 'two']);
       let version = makeVersion(null);
       expect(version.template).toBeTruthy();
       expect(version.fileTemplates.length).toEqual(2);
@@ -107,7 +107,7 @@ describe('AudioVersionModel', () => {
     });
 
     it('assigns templates to files', () => {
-      templateMock.mockList('prx:audio-file-templates', [{position: 1}, {position: 3}, {position: 2}]);
+      templateMock.mockItems('prx:audio-file-templates', [{position: 1}, {position: 3}, {position: 2}]);
       let version = makeVersion({}, [{position: 2}, {position: 1, isDestroy: true}, {position: 4}]);
       expect(version.filesAndTemplates.length).toEqual(4);
       expect(version.filesAndTemplates[0].file).toBeNull();
