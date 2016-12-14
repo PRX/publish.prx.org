@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { SearchSeries } from '../search-series.model';
-import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
+import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/itunes.categories';
 
 @Component({
   selector: 'publish-search-series',
@@ -9,10 +9,10 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
   template: `
   <form>
     <div class="form-group">
-      <input name="text" [(ngModel)]="model.text" (ngModelChange)="searchTextChange(model.text)"  
+      <input name="text" [(ngModel)]="model.text" (ngModelChange)="searchTextChange(model.text)"
         placeholder="search by title or description"/>
     </div>
-    
+
     <div class="form-group">
       <p class="left">
         <label [attr.for]="searchGenre">Filter by</label>
@@ -25,17 +25,17 @@ import { CATEGORIES, SUBCATEGORIES } from '../../shared/model/story.categories';
         </select>
         <button class="btn-link" (click)="clearGenre()"><i class="icon-cancel"></i></button>
       </p>
-    
+
       <p class="right">
         <label [attr.for]="orderBy">Order by</label>
         <select id="orderBy" name="orderBy" [(ngModel)]="model.orderBy" (ngModelChange)="modelChange.emit(model)">
           <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
         </select>
-    
-        <input class="updown-toggle" name="orderDesc" type="checkbox" id="order" 
+
+        <input class="updown-toggle" name="orderDesc" type="checkbox" id="order"
           [(ngModel)]="model.orderDesc" (ngModelChange)="modelChange.emit(model)"/>
         <label for="order"></label>
-    
+
       </p>
     </div>
   </form>
