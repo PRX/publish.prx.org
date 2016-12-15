@@ -1,6 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-
-import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
 
 @Component({
@@ -15,7 +13,7 @@ import { StoryModel } from '../../shared';
     </template>
     <template [ngIf]="!isPlusSign">
       <a [routerLink]="editLink">
-        <publish-image [src]="storyImage" [imageDoc]="storyImageDoc"></publish-image>
+        <publish-image [src]="storyImage" ></publish-image>
       </a>
       <h2>
         <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>
@@ -33,13 +31,9 @@ export class HomeStoryComponent implements OnInit {
   @Input() story: StoryModel;
 
   editLink: any[];
-  isPlusSign: boolean;
 
   storyId: number;
-  storyImage: string;
-  storyImageDoc: HalDoc;
   storyTitle: string;
-  storyDuration: number;
   storyUpdated: Date;
 
   statusClass: string;
@@ -47,7 +41,6 @@ export class HomeStoryComponent implements OnInit {
 
   ngOnInit() {
     this.storyId = this.story.id;
-    this.isPlusSign = this.story.isNew && !this.story.isStored();
     this.storyTitle = this.story.title;
     this.storyUpdated = this.story.lastStored || this.story.updatedAt;
 
@@ -58,29 +51,6 @@ export class HomeStoryComponent implements OnInit {
       }
     } else {
       this.editLink = ['/story', this.story.id];
-    }
-
-    // TODO: draft audios
-    if (this.story.isNew) {
-      this.storyImage = this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
-      this.storyDuration = 0;
-    } else {
-      this.storyImageDoc = this.story.doc;
-      if (this.story.doc.has('prx:audio')) {
-        this.story.doc.followItems('prx:audio').subscribe((audios) => {
-          if (!audios || audios.length < 1) {
-            this.storyDuration = 0;
-          } else {
-            this.storyDuration = audios.map((audio) => {
-              return audio['duration'] || 0;
-            }).reduce((prevDuration, currDuration) => {
-              return prevDuration + currDuration;
-            });
-          }
-        });
-      } else {
-        this.storyDuration = 0;
-      }
     }
 
     if (this.story.isNew) {
@@ -95,4 +65,29 @@ export class HomeStoryComponent implements OnInit {
     }
   }
 
+  get isPlusSign(): boolean {
+    return this.story.isNew && !this.story.changed();
+  }
+
+  get storyDuration(): number {
+    let duration = 0;
+    if (this.story.versions && this.story.versions.length > 0) {
+      if (this.story.versions[0].files.length > 0) {
+        duration = this.story.versions[0].files.filter((audio) => !audio.isDestroy).map((audio) => {
+          return audio['duration'] || 0;
+        }).reduce((prevDuration, currDuration) => {
+          return prevDuration + currDuration;
+        });
+      }
+    }
+    return duration;
+  }
+
+  get storyImage(): string {
+    if (this.story.isNew) {
+      return this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
+    } else {
+      return this.story.images.length > 0 ? this.story.images[0].enclosureHref : '';
+    }
+  }
 }
