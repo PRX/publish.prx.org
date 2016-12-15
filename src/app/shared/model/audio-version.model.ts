@@ -11,7 +11,7 @@ export class AudioVersionModel extends BaseModel {
   public id: number;
   public uploads: string = '';
   public label: string;
-  public explicit: string;
+  public explicit: string = '';
   public files: AudioFileModel[];
 
   // save in-progress uploads to localstorage
@@ -101,13 +101,33 @@ export class AudioVersionModel extends BaseModel {
     this.id = this.doc['id'];
     this.uploads = '';
     this.label = this.doc['label'];
-    this.explicit = (this.doc['explicit'] === 'yes') ? 'Explicit' : 'Clean';
+    switch (this.doc['explicit']) {
+      case 'yes':
+        this.explicit = 'Explicit';
+        break;
+      case 'clean':
+        this.explicit = 'Clean';
+        break;
+      default:
+        this.explicit = '';
+        break;
+    }
   }
 
   encode(): {} {
     let data = <any> {};
     data.label = this.label;
-    data.explicit = (this.explicit === 'Explicit') ? 'yes' : 'clean';
+    switch (this.explicit) {
+      case 'Explicit':
+        data.explicit = 'yes';
+        break;
+      case 'Clean':
+        data.explicit = 'clean';
+        break;
+      default:
+        data.explicit = '';
+        break;
+    }
     if (this.isNew && this.template) {
       data.set_audio_version_template_uri = this.template.expand('self');
     }
@@ -127,7 +147,7 @@ export class AudioVersionModel extends BaseModel {
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
-    if (this.isNew && this.files.length === 0 && this.explicit === undefined) {
+    if (this.isNew && this.files.length === 0 && !this.explicit) {
       return false;
     } else {
       return super.changed(field, includeRelations);

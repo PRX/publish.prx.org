@@ -120,9 +120,13 @@ describe('AudioVersionModel', () => {
 
   describe('encode', () => {
 
-    it('really only cares about the label', () => {
-      let version = makeVersion({label: 'foobar'});
+    it('sets label and translates explicit', () => {
+      let version = makeVersion({label: 'foobar', explicit: 'clean'});
       expect(version.encode()).toEqual({label: 'foobar', explicit: 'clean'});
+      version = makeVersion({label: 'foobar', explicit: 'yes'});
+      expect(version.encode()).toEqual({label: 'foobar', explicit: 'yes'});
+      version = makeVersion({label: 'foobar', explicit: ''});
+      expect(version.encode()).toEqual({label: 'foobar', explicit: ''});
     });
 
   });
