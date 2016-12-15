@@ -46,6 +46,7 @@ describe('SeriesComponent', () => {
     auth.mock('prx:series', {}).mockItems('prx:stories', [{}, {}, {}]);
     fix.detectChanges();
     expect(el).toContainText('3 Stories');
+    expect(el).toQueryAttr('div.extras a', 'href', '/search;tab=stories;seriesId=99');
   });
 
   cit('refuses to edit v3 series', (fix, el, comp) => {
