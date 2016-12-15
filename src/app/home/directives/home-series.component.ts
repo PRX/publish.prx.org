@@ -19,7 +19,11 @@ import { StoryModel } from '../../shared';
       <a href="#">
         <publish-image [imageDoc]="logoDoc"></publish-image>
       </a>
-      <p class="count">{{count}} Stories</p>
+      <p class="count">
+        <span *ngIf="count === 0">0 Stories</span>
+        <span *ngIf="count > 9">Showing 9 of </span>
+        <a *ngIf="count > 0" [routerLink]="['search', { tab: 'stories', seriesId: id }]">{{count}} Stories</a>
+      </p>
       <h1><a [routerLink]="['series', id]">{{title}}</a></h1>
       <p class="updated">Last updated {{updated | timeago}}</p>
     </header>
