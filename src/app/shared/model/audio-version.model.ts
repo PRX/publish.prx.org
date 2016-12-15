@@ -127,7 +127,7 @@ export class AudioVersionModel extends BaseModel {
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
-    if (this.isNew && this.files.length === 0) {
+    if (this.isNew && this.files.length === 0 && this.explicit === undefined) {
       return false;
     } else {
       return super.changed(field, includeRelations);

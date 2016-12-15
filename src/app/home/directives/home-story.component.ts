@@ -66,8 +66,7 @@ export class HomeStoryComponent implements OnInit {
   }
 
   get isPlusSign(): boolean {
-    return this.story.isNew && !this.story.isStored()
-      && !this.story.unsavedImage && this.story.versions.length === 0;
+    return this.story.isNew && !this.story.changed();
   }
 
   get storyDuration(): number {
