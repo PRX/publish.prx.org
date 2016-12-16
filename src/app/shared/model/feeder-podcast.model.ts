@@ -46,7 +46,7 @@ export class FeederPodcastModel extends BaseModel {
 
   decode() {
     this.id = this.doc['id'];
-    this.previewUrl = this.doc.expand('self').replace(/api\/v1\//, '');
+    this.previewUrl = (this.doc.expand('self') || '').replace(/api\/v1\//, '');
     this.publishedUrl = this.doc['publishedUrl'];
     this.explicit = this.doc['explicit'] || '';
     if (this.explicit) {
