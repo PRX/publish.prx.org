@@ -8,6 +8,7 @@ export class DistributionModel extends BaseModel {
 
   id: number;
   kind: string = '';
+  url: string = '';
 
   // external resources -> explicitly loaded by loadExternal
   podcast: FeederPodcastModel;
@@ -34,14 +35,17 @@ export class DistributionModel extends BaseModel {
   }
 
   related() {
-    return {
-      podcast: Observable.of(new FeederPodcastModel(this.parent, this.doc))
-    };
+    let podcast = Observable.of(null);
+    if (this.isNew) {
+      podcast = Observable.of(new FeederPodcastModel(this.parent, this.doc));
+    }
+    return {podcast: podcast};
   }
 
   decode() {
     this.id = this.doc['id'];
     this.kind = this.doc['kind'] || '';
+    this.url = this.doc['url'] || '';
   }
 
   encode(): {} {
@@ -54,9 +58,23 @@ export class DistributionModel extends BaseModel {
     return this.parent.create('prx:distributions', {}, data);
   }
 
+  saveRelated(): Observable<boolean[]> {
+    if (this.podcast && this.podcast.isNew) {
+      let oldModel = this.podcast;
+
+      // CMS should actually have created the podcast in feeder
+      return this.loadExternal().flatMap(() => {
+        oldModel.copyTo(this.podcast);
+        return super.saveRelated();
+      });
+    } else {
+      return super.saveRelated();
+    }
+  }
+
   loadExternal(): Observable<boolean> {
-    if (this.kind === 'podcast' && this.doc && this.doc['url']) {
-      return this.doc.followLink({href: this.doc['url']}).map(pdoc => {
+    if (this.kind === 'podcast' && this.url) {
+      return this.doc.followLink({href: this.url}).map(pdoc => {
         this.podcast = new FeederPodcastModel(this.parent, this.doc, pdoc);
         return true;
       });
