@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { TimeAgoPipe } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
-import { ButtonComponent, CapitalizePipe, FancyFieldComponent } from './form';
+import { ButtonComponent, CapitalizePipe, CopyInputDirective, FancyFieldComponent } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
@@ -19,6 +19,7 @@ import { HoverDirective } from './hover';
   declarations: [
     ButtonComponent,
     CapitalizePipe,
+    CopyInputDirective,
     DurationPipe,
     FancyFieldComponent,
     FileSelectDirective,
@@ -39,6 +40,7 @@ import { HoverDirective } from './hover';
     FormsModule,
     ButtonComponent,
     CapitalizePipe,
+    CopyInputDirective,
     DurationPipe,
     FancyFieldComponent,
     FileSelectDirective,
