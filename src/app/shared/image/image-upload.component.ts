@@ -71,8 +71,8 @@ export class ImageUploadComponent {
       let img = new Image();
       img.src = this.reader.result;
       if (img.width < this.minWidth || img.height < this.minHeight) {
-        this.imgError = `The image provided is only ${img.width}x${img.height} px
-                         but should be at least ${this.minWidth}x${this.minHeight} px.`;
+        this.imgError = `The image provided is only ${img.width} x ${img.height} px
+                         but should be at least ${this.minWidth} x ${this.minHeight} px.`;
       } else {
         let upload = this.uploadService.add(file);
         this.model.images.push(new ImageModel(this.model.parent, this.model.doc, upload));

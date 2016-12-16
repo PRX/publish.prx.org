@@ -73,11 +73,14 @@ describe('ImageUploadComponent', () => {
   });
 
   cit('validates file type', (fix, el, comp) => {
-    comp.model = {};
+    comp.model = {images: [], changed: () => true};
     let testFile = dataURItoBlob(imageDataURI);
-    spyOn(comp.uploadService, 'validFileType');
+    spyOn(comp.uploadService, 'validFileType').and.returnValue(false);
     comp.addUpload(testFile);
     expect(comp.uploadService.validFileType).toHaveBeenCalledWith(testFile, ['jpeg', 'png']);
+    fix.detectChanges();
+    expect(el).toContainText('unacceptable format');
+    expect (comp.model.images.length).toEqual(0);
   });
 
 });
