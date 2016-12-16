@@ -8,15 +8,18 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
   template: `
     <publish-spinner *ngIf="model && !model?.images"></publish-spinner>
 
-    <div *ngIf="noImages" class="new-image" [class.changed]="model.changed('images')" [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
-      <p class="size">Minimum size: {{minWidth}}x{{minHeight}} px</p>
-      <input type="file" id="image-file" publishFileSelect (file)="addUpload($event)" ngClass="{'invalid': this.imgError}"/>
+    <div *ngIf="noImages" class="new-image" [class.changed]="model.changed('images')"
+    [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
+      <p class="size">Minimum size: {{minWidth}} x {{minHeight}} px</p>
+      <input type="file" id="image-file" accept="image/*"
+       publishFileSelect (file)="addUpload($event)" ngClass="{'invalid': this.imgError}"/>
       <label class="button" for="image-file">Add Image</label>
     </div>
     <p *ngIf="imgError" class="error">{{imgError}}</p>
 
     <div *ngIf="model && model.images">
-      <publish-image-file *ngFor="let i of model.images" [image]="i" [thumbnailWidth]="thumbnailWidth" [thumbnailHeight]="thumbnailHeight"></publish-image-file>
+      <publish-image-file *ngFor="let i of model.images" [image]="i"
+      [thumbnailWidth]="thumbnailWidth" [thumbnailHeight]="thumbnailHeight"></publish-image-file>
     </div>
   `
 })
@@ -46,12 +49,17 @@ export class ImageUploadComponent {
   get thumbnailWidth(): string {
     let width = '220px';
     if (this.minWidth !== this.minHeight) {
-      width = `${220 * this.minWidth/this.minHeight}px`;
+      width = `${220 * this.minWidth / this.minHeight}px`;
     }
     return width;
   }
 
   addUpload(file: File) {
+    if ( !this.uploadService.validFileType(file, ['jpeg', 'png']) ) {
+      this.imgError = 'The file provided is in an unacceptable format. Please upload a file of type JPEG or PNG.';
+      return;
+    }
+
     this.reader.onloadstart = () => {
       this.imgError = '';
     };
@@ -64,7 +72,8 @@ export class ImageUploadComponent {
       let img = new Image();
       img.src = this.reader.result;
       if (img.width < this.minWidth || img.height < this.minHeight) {
-        this.imgError = `The image provided is only ${img.width}x${img.height} px but should be at least ${this.minWidth}x${this.minHeight} px`;
+        this.imgError = `The image provided is only ${img.width} x ${img.height} px
+                         but should be at least ${this.minWidth} x ${this.minHeight} px.`;
       } else {
         let upload = this.uploadService.add(file);
         this.model.images.push(new ImageModel(this.model.parent, this.model.doc, upload));
