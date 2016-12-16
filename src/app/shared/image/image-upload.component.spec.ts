@@ -6,7 +6,10 @@ describe('ImageUploadComponent', () => {
 
   create(ImageUploadComponent);
 
-  provide(UploadService, {add: () => null});
+  provide(UploadService, {
+    add: () => null,
+    validFileType: () => true
+  });
 
   let imageDataURI = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
 
@@ -19,13 +22,14 @@ describe('ImageUploadComponent', () => {
     return new Blob([new Uint8Array(array)], {type: 'image/gif'});
   }
 
+
   cit('shows an indicator for no images', (fix, el, comp) => {
     comp.model = {images: [], changed: () => false};
     comp.minWidth = 123;
     comp.minHeight = 456;
     fix.detectChanges();
     expect(el).toContainText('Add Image');
-    expect(el).toContainText('123x456');
+    expect(el).toContainText('123 x 456');
   });
 
   cit('shows an indicator for a deleted image', (fix, el, comp) => {
@@ -66,6 +70,14 @@ describe('ImageUploadComponent', () => {
       expect(comp.model.images.length).toEqual(0);
       done();
     });
+  });
+
+  cit('validates file type', (fix, el, comp) => {
+    comp.model = {};
+    let testFile = dataURItoBlob(imageDataURI);
+    spyOn(comp.uploadService, 'validFileType');
+    comp.addUpload(testFile);
+    expect(comp.uploadService.validFileType).toHaveBeenCalledWith(testFile, ['jpeg', 'png']);
   });
 
 });
