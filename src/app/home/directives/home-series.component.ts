@@ -21,7 +21,7 @@ import { StoryModel } from '../../shared';
       </a>
       <p class="count">
         <span *ngIf="count === 0">0 Stories</span>
-        <a *ngIf="count > 0" [routerLink]="['search', { tab: 'stories', seriesId: id }]">{{count}} Stories</a>
+        <a *ngIf="count > 0" [routerLink]="['search', { tab: 'stories', seriesId: id }]">{{count}} {{storiesNoun | capitalize}}</a>
       </p>
       <h1><a [routerLink]="['series', id]">{{title}}</a></h1>
       <p class="updated">Last updated {{updated | timeago}}</p>
@@ -56,6 +56,9 @@ export class HomeSeriesComponent implements OnInit {
     } else {
       this.loadSeriesStories();
     }
+  }
+  get storiesNoun(): string {
+    return this.count === 1 ? 'story' : 'stories';
   }
 
   loadSeriesStories() {

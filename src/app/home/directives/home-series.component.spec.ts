@@ -8,6 +8,7 @@ describe('HomeSeriesComponent', () => {
   create(HomeSeriesComponent, false);
 
   stubPipe('timeago');
+  stubPipe('capitalize');
 
   let auth;
   beforeEach(() => {
