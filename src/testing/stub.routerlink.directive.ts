@@ -24,13 +24,13 @@ export class StubRouterLinkDirective implements OnInit {
     let href = this.linkParams;
     if (this.linkParams && this.linkParams instanceof Array) {
       href = this.linkParams[0];
-      this.linkParams.forEach((param) => {
-        if (param instanceof String) {
-          href += '/' + param;
-        } else if (param instanceof Object)  {
+      this.linkParams.slice(1).forEach((param) => {
+        if (param instanceof Object)  {
           Object.keys(param).forEach(key => {
             href += ';' + key + '=' + param[key];
           });
+        } else {
+          href += '/' + param;
         }
       });
     }
