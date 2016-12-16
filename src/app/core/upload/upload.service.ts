@@ -51,9 +51,9 @@ export class UploadService {
     return null;
   }
 
-  validateFileType(file: File, allowed: Array<string>) {
+  validFileType(file: File, allowed: string[]) {
     let ct = this.mimeTypeService.lookupFileMimetype(file).minor();
-    return allowed.includes(ct) ? true : false;
+    return allowed.indexOf(ct) > -1;
   }
 }
 
