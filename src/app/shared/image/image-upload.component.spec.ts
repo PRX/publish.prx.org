@@ -66,7 +66,7 @@ describe('ImageUploadComponent', () => {
     comp.addUpload(dataURItoBlob(imageDataURI));
     comp.reader.addEventListener('loadend', () => {
       fix.detectChanges();
-      expect(el).toContainText(`should be at least ${comp.minWidth}x${comp.minHeight} px`);
+      expect(el).toContainText(`should be at least ${comp.minWidth} x ${comp.minHeight} px`);
       expect(comp.model.images.length).toEqual(0);
       done();
     });
