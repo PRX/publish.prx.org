@@ -40,6 +40,11 @@ describe('UploadService', () => {
       expect(upload.contentType).toEqual('audio/mpeg');
     });
 
+    it('validates file types for added uploads', () => {
+      expect(uploader.validFileType(<any> {name: 'foo.bar'}, ['mpeg'])).toEqual(true);
+      expect(uploader.validFileType(<any> {name: 'bar.foo'}, ['jpeg'])).toEqual(false);
+    });
+
     it('finds uploads by uuid', () => {
       let upload = uploader.add(<any> {name: 'foo.bar'});
       expect(uploader.find('foobar')).toBeNull();
