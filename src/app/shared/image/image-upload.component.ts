@@ -11,7 +11,8 @@ import { ImageModel, StoryModel, SeriesModel } from '../model';
     <div *ngIf="noImages" class="new-image" [class.changed]="model.changed('images')"
     [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
       <p class="size">Minimum size: {{minWidth}} x {{minHeight}} px</p>
-      <input type="file" id="image-file" publishFileSelect (file)="addUpload($event)" ngClass="{'invalid': this.imgError}"/>
+      <input type="file" id="image-file" accept="image/*"
+       publishFileSelect (file)="addUpload($event)" ngClass="{'invalid': this.imgError}"/>
       <label class="button" for="image-file">Add Image</label>
     </div>
     <p *ngIf="imgError" class="error">{{imgError}}</p>
