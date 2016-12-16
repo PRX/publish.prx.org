@@ -21,7 +21,7 @@ export class FeederPodcastModel extends BaseModel {
     } else if (this.series) {
       return `prx.podcast.new.${this.series.id}`; // new in series
     } else {
-      throw new Error('Cannot create podcast until parent feed exists');
+      return null; // Cannot create podcast until parent series exists
     }
   }
 
@@ -33,11 +33,11 @@ export class FeederPodcastModel extends BaseModel {
     this.id = this.doc['id'];
 
     // just ignore all but first category/subcategory
-    let cat = this.doc['itunesCategories'][0];
+    let cat = (this.doc['itunesCategories'] || [])[0];
     if (cat) {
-      this.category = cat['name'];
-      if (cat['subcategories'] && cat['subcategories'][0]) {
-        this.subCategory = cat['subcategories'][0];
+      this.category = cat['name'] || '';
+      if (cat['subcategories']) {
+        this.subCategory = cat['subcategories'][0] || '';
       } else {
         this.subCategory = '';
       }
@@ -63,6 +63,15 @@ export class FeederPodcastModel extends BaseModel {
 
   saveNew(data: {}): Observable<HalDoc> {
     return Observable.throw(new Error('Cannot directly create a feeder podcast'));
+  }
+
+  copyTo(model: FeederPodcastModel) {
+    if (this !== model) {
+      for (let fld of this.SETABLE) {
+        model.set(fld, this[fld]);
+      }
+      this.unstore();
+    }
   }
 
 }
