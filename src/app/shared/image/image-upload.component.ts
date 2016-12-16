@@ -52,6 +52,11 @@ export class ImageUploadComponent {
   }
 
   addUpload(file: File) {
+    if ( !this.uploadService.validateFileType(file, ['jpeg', 'png']) ) {
+      this.imgError = 'The file provided is in an unacceptable format. Please upload a file of type JPEG or PNG.';
+      return;
+    }
+
     this.reader.onloadstart = () => {
       this.imgError = '';
     };
