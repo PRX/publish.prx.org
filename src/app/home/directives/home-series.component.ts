@@ -16,7 +16,7 @@ import { StoryModel } from '../../shared';
       <a *ngIf="count > -1" class="all" [routerLink]="['search', { tab: 'stories', seriesId: -1 }]">View All {{count}} &raquo;</a>
     </header>
     <header *ngIf="!noseries">
-      <a href="#">
+      <a [routerLink]="['series', id]">
         <publish-image [imageDoc]="logoDoc"></publish-image>
       </a>
       <p class="count">{{count}} Stories</p>
