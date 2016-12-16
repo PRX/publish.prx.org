@@ -5,65 +5,21 @@ import { SeriesModel, DistributionModel, FeederPodcastModel,
 
 @Component({
   styleUrls: ['series-podcast.component.css'],
-  template: `
-    <form [ngSwitch]="state">
-
-      <publish-fancy-field label="Series Podcast" *ngSwitchCase="'new'">
-        <div class="fancy-hint">You must save your series before you can create
-          a podcast distribution for it.</div>
-      </publish-fancy-field>
-
-      <publish-fancy-field label="Series Podcast" *ngSwitchCase="'creating'">
-        <div class="fancy-hint">No podcast has been configured for this series.</div>
-        <button (click)="createDistribution()">Create Podcast</button>
-      </publish-fancy-field>
-
-      <div *ngSwitchCase="'editing'">
-
-        <publish-fancy-field label="iTunes Categories">
-          <div class="fancy-hint">Some description of what these are here and
-            maybe also a link to the itunes docs.</div>
-          <div class="span-fields">
-            <publish-fancy-field label="Category" [model]="podcast" name="category"
-              [select]="categories" (change)="setSubCategories()" small=1>
-            </publish-fancy-field>
-            <publish-fancy-field *ngIf="!subCategories.length" label="Sub-Category"
-              [select]="[]" small=1>
-            </publish-fancy-field>
-            <publish-fancy-field *ngIf="subCategories.length" label="Sub-Category"
-              [model]="podcast" name="subCategory" [select]="subCategories" small=1>
-            </publish-fancy-field>
-          </div>
-        </publish-fancy-field>
-
-      </div>
-
-    </form>
-  `
+  templateUrl: 'series-podcast.component.html'
 })
-
-// <publish-fancy-field [model]="story" label="Tag your Story" invalid="tags" invalidlabel="" required>
-//   <div class="fancy-hint">Adding tags that are relevant to your piece helps people find your work
-//     on PRX and can help you be licensed and heard.</div>
-//   <div class="span-fields">
-//     <publish-fancy-field [model]="story" [select]="GENRES" name="genre" label="Genre"
-//       small="true" required></publish-fancy-field>
-//     <publish-fancy-field [model]="story" [select]="SUBGENRES" name="subGenre" label="SubGenre"
-//       small="true" required></publish-fancy-field>
-//   </div>
-//   <publish-fancy-field [model]="story" textinput="true" name="extraTags"
-//     label="Extra Tags" small="true"></publish-fancy-field>
 
 export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   categories = [''].concat(CATEGORIES);
   subCategories: string[] = [];
+  explicitOpts = ['', 'Explicit', 'Clean'];
 
   tabSub: Subscription;
   state: string;
   series: SeriesModel;
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
+  previewUrl: string;
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe(s => this.series = <SeriesModel> s);
@@ -79,7 +35,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
       }
     }
     if (this.distribution && this.distribution.podcast && this.podcast !== this.distribution.podcast) {
-      this.podcast = this.distribution.podcast;
+      this.setPodcast();
     }
 
     // display state
@@ -101,11 +57,14 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   loadPodcast() {
     this.podcast = null;
     if (this.distribution) {
-      this.distribution.loadExternal().subscribe(() => {
-        this.podcast = this.distribution.podcast;
-        this.setSubCategories();
-      });
+      this.distribution.loadExternal().subscribe(() => this.setPodcast);
     }
+  }
+
+  setPodcast() {
+    this.podcast = this.distribution.podcast;
+    this.setSubCategories();
+    this.previewUrl = this.podcast.previewUrl;
   }
 
   createDistribution() {

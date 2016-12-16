@@ -1,14 +1,29 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
+import { REQUIRED, URL, TOKENY } from './invalid';
 
 export class FeederPodcastModel extends BaseModel {
 
+  // read-only
   id: number;
+  previewUrl: string;
+  publishedUrl: string;
+
+  // writeable
+  SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl'];
   category: string = '';
   subCategory: string = '';
-  SETABLE = ['category', 'subCategory'];
-  VALIDATORS = {};
+  explicit: string = '';
+  path: string = '';
+  link: string = '';
+  newFeedUrl: string = '';
+
+  VALIDATORS = {
+    path: [TOKENY('Use letters, numbers and underscores only')],
+    link: [REQUIRED(), URL('Not a valid URL')],
+    newFeedUrl: [URL('Not a valid URL')]
+  };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
     super();
@@ -31,6 +46,20 @@ export class FeederPodcastModel extends BaseModel {
 
   decode() {
     this.id = this.doc['id'];
+    this.previewUrl = this.doc.expand('self').replace(/api\/v1\//, '');
+    this.publishedUrl = this.doc['publishedUrl'];
+    this.explicit = this.doc['explicit'] || '';
+    if (this.explicit) {
+      this.explicit = this.explicit.charAt(0).toUpperCase() + this.explicit.slice(1);
+    }
+    this.link = this.doc['link'] || '';
+    this.newFeedUrl = this.doc['newFeedUrl'] || '';
+
+    // pretend path was blank if it was just the podcast id
+    this.path = this.doc['path'] || '';
+    if (`${this.path}` === `${this.id}`) {
+      this.path = '';
+    }
 
     // just ignore all but first category/subcategory
     let cat = (this.doc['itunesCategories'] || [])[0];
@@ -49,6 +78,19 @@ export class FeederPodcastModel extends BaseModel {
 
   encode(): {} {
     let data = <any> {};
+
+    // unset things with nulls instead of blank strings
+    data.explicit = this.explicit || null;
+    if (data.explicit) {
+      data.explicit = data.explicit.toLowerCase();
+    }
+    data.link = this.link || null;
+    this.newFeedUrl = this.newFeedUrl || null;
+
+    // default path back to the id
+    data.path = this.path || this.id;
+
+    // we can always send a categories array
     data.itunesCategories = [];
     if (this.category) {
       data.itunesCategories = [{name: this.category, subcategories: []}];
