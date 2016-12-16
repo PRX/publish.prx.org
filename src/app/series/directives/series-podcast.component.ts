@@ -70,6 +70,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   ngDoCheck() {
+    // manually check for distribution/podcast changes
     if (this.series && this.series.distributions) {
       let dist = this.series.distributions.find(d => d.kind === 'podcast');
       if (this.distribution !== dist) {
@@ -77,6 +78,11 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
         this.loadPodcast();
       }
     }
+    if (this.distribution && this.distribution.podcast && this.podcast !== this.distribution.podcast) {
+      this.podcast = this.distribution.podcast;
+    }
+
+    // display state
     if (this.distribution) {
       this.state = 'editing';
     } else if (this.series && this.series.isNew) {
