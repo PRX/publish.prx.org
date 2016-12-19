@@ -88,8 +88,10 @@ export class ProseMirrorMarkdownEditor {
       run: (state, onAction, view) => {
         if (this.markActive(state, markType)) {
           let linkMark = this.selectAroundMark(markType, state.doc, state.selection.anchor, onAction);
-          this.promptForLink(linkMark.attrs.href, linkMark.attrs.title);
-          return true;
+          if (linkMark) {
+            this.promptForLink(linkMark.attrs.href, linkMark.attrs.title);
+            return true;
+          }
         } else {
           this.promptForLink();
         }
@@ -102,8 +104,12 @@ export class ProseMirrorMarkdownEditor {
       parent = $pos.parent;
 
     let start = parent.childAfter($pos.parentOffset);
-    if (!start.node) {
-      return null;
+    if (!start.node || start.node.marks.length === 0) {
+      // happens if the cursor is at the end of the line or the end of the node, use nodeAt pos - 1 to find node marks
+      start.node = parent.nodeAt($pos.parentOffset - 1);
+      if (!start.node) {
+        return null;
+      }
     }
 
     let targetMark = start.node.marks.find(mark => mark.type.name === markType.name);
@@ -121,7 +127,7 @@ export class ProseMirrorMarkdownEditor {
     while (endPos < parent.childCount && targetMark.isInSet(parent.child(endIndex).marks)) {
       endPos += parent.child(endIndex++).nodeSize;
     }
-    //return {from: startPos, to: endPos};
+
     let selection = Selection.between(doc.resolve(startPos), doc.resolve(endPos));
     onAction(selection.action());
 
