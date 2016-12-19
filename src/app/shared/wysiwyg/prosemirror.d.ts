@@ -356,7 +356,7 @@ declare module 'prosemirror-state/selection' {
     from: any;
     to: any;
     empty: boolean;
-    static action(options?: any): any;
+    action(options?: any): any;
     static findFrom($pos: any, dir: any, textOnly?: boolean): Selection;
     static near($pos: any, bias?: number): Selection;
     static atStart(doc: any, textOnly?: boolean): Selection;
@@ -874,9 +874,9 @@ declare module 'prosemirror-model/resolvedpos' {
     nodeBefore: any;
     resolveDepth(val: any): any;
     node(depth: any): any;
-    index(depth: any): any;
-    indexAfter(depth: any): any;
-    start(depth: any): any;
+    index(depth?: number): number;
+    indexAfter(depth?: number): number;
+    start(depth?: number): number;
     end(depth: any): any;
     before(depth: any): any;
     after(depth: any): any;

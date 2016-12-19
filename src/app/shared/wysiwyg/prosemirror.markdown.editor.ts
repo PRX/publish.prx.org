@@ -7,7 +7,8 @@ import { schema, defaultMarkdownParser, defaultMarkdownSerializer } from 'prosem
 import { MenuBarEditorView, icons, MenuItem, Dropdown, DropdownSubmenu,
   wrapItem, blockTypeItem, joinUpItem, liftItem} from 'prosemirror-menu';
 import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
-import { EditorState, Plugin } from 'prosemirror-state';
+import { EditorState, Plugin, Selection } from 'prosemirror-state';
+import { Mark, MarkType, Node } from 'prosemirror-model';
 
 export class ProseMirrorImage {
   constructor(public name: string,
@@ -70,6 +71,10 @@ export class ProseMirrorMarkdownEditor {
   }
 
   createLinkItem(url, title) {
+    if (this.markActive(this.view.editor.state, schema.marks.link)) {
+      // can't see how to edit mark, only toggle. So toggle off to toggle back on with new attrs
+      toggleMark(schema.marks.link)(this.view.editor.state, this.view.props.onAction);
+    }
     toggleMark(schema.marks.link, {
       href: url,
       title
@@ -82,12 +87,45 @@ export class ProseMirrorMarkdownEditor {
       icon: icons.link,
       run: (state, onAction, view) => {
         if (this.markActive(state, markType)) {
-          toggleMark(markType)(state, onAction);
+          let linkMark = this.selectAroundMark(markType, state.doc, state.selection.anchor, onAction);
+          this.promptForLink(linkMark.attrs.href, linkMark.attrs.title);
           return true;
+        } else {
+          this.promptForLink();
         }
-        this.promptForLink();
       }
     });
+  }
+
+  selectAroundMark(markType: MarkType, doc: Node, pos: number, onAction): Mark {
+    let $pos = doc.resolve(pos),
+      parent = $pos.parent;
+
+    let start = parent.childAfter($pos.parentOffset);
+    if (!start.node) {
+      return null;
+    }
+
+    let targetMark = start.node.marks.find(mark => mark.type.name === markType.name);
+    if (!targetMark) {
+      return null;
+    }
+
+    let startIndex = $pos.index(),
+      startPos = $pos.start() + start.offset;
+    while (startIndex > 0 && targetMark.isInSet(parent.child(startIndex - 1).marks)) {
+      startPos -= parent.child(--startIndex).nodeSize;
+    }
+    let endIndex = $pos.indexAfter(),
+      endPos = startPos + start.node.nodeSize;
+    while (endPos < parent.childCount && targetMark.isInSet(parent.child(endIndex).marks)) {
+      endPos += parent.child(endIndex++).nodeSize;
+    }
+    //return {from: startPos, to: endPos};
+    let selection = Selection.between(doc.resolve(startPos), doc.resolve(endPos));
+    onAction(selection.action());
+
+    return targetMark;
   }
 
   insertImageItem(image: ProseMirrorImage, label: string) {

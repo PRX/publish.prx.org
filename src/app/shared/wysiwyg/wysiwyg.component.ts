@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
@@ -28,7 +28,7 @@ import { PromptComponent } from './prompt.component';
     <publish-prompt #prompt *ngIf="editor?.isSelectionEmpty()">
       <h1 class="modal-header">Warning</h1>
       <div class="modal-body">
-        <p class="error">Please select text to create link</p>
+        <p class="error">Please select text to create link or existing link to edit</p>
       </div>
       <div class="modal-footer">
         <button (click)="prompt.hide()">Okay</button>
@@ -53,6 +53,8 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('url') private url: NgModel;
   linkURL: string;
   linkTitle: string;
+
+  constructor(private chgRef: ChangeDetectorRef) {}
 
   ngOnInit() {
     if (this.model) {
@@ -106,7 +108,10 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
     return this.url && this.url.invalid && this.url.dirty;
   }
 
-  promptForLink() {
+  promptForLink(url?: string, title?: string) {
+    this.linkURL = url;
+    this.linkTitle = title;
+    this.chgRef.detectChanges();
     this.prompt.show();
   }
 
