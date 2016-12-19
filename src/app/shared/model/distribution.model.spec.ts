@@ -12,7 +12,7 @@ describe('DistributionModel', () => {
 
   beforeEach(() => window.localStorage.clear());
 
-  it('loads an no podcast by default', () => {
+  it('loads no podcast by default', () => {
     let dist = new DistributionModel(series, fooDist);
     expect(dist.kind).toEqual('foo');
     expect(dist.RELATIONS).toContain('podcast');
