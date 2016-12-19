@@ -12,7 +12,7 @@
 
   <div *ngSwitchCase="'editing'">
 
-    <publish-fancy-field label="PRX Feeds">
+    <publish-fancy-field label="PRX Feeds" *ngIf="podcast?.id">
       <div class="fancy-hint">There should really be some text here describing
         exactly what these are and what you might do with them.</div>
       <div class="feed-urls">
