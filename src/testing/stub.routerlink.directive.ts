@@ -17,7 +17,24 @@ export class StubRouterLinkDirective implements OnInit {
   constructor(private el: ElementRef) {}
 
   ngOnInit() {
-    this.el.nativeElement.setAttribute('href', this.linkParams);
+    this.el.nativeElement.setAttribute('href', this.buildLinkParams());
+  }
+
+  buildLinkParams(): string {
+    let href = this.linkParams;
+    if (this.linkParams && this.linkParams instanceof Array) {
+      href = this.linkParams[0];
+      this.linkParams.slice(1).forEach((param) => {
+        if (param instanceof Object)  {
+          Object.keys(param).forEach(key => {
+            href += ';' + key + '=' + param[key];
+          });
+        } else {
+          href += '/' + param;
+        }
+      });
+    }
+    return href;
   }
 
   onClick() {

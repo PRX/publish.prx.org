@@ -34,7 +34,7 @@
     <a routerLinkActive="active" [routerLink]="[base, 'advanced']">Advanced</a>
   </nav>
   <div class="extras">
-    <a *ngIf="storyCount > 0" [routerLink]="['/search']">{{storyCount}} {{storyNoun}} &raquo;</a>
+    <a *ngIf="storyCount > 0" [routerLink]="['/search', { tab: 'stories', seriesId: id }]">{{storyCount}} {{storyNoun}} &raquo;</a>
     <button *ngIf="id && storyCount == 0" class="delete" (click)="confirmDelete()">Delete</button>
   </div>
 </publish-tabs>

@@ -28,10 +28,13 @@ header .count {
   text-transform: uppercase;
   white-space: nowrap;
   color: #a3a3a3;
-  font-size: 8px;
+  font-size: 10px;
   line-height: 10px;
   font-weight: 600;
   padding-top: 4px;
+}
+header .count a {
+  font-weight: normal;
 }
 header h1 {
   font-size: 30px;
