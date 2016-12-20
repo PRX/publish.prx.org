@@ -15,7 +15,7 @@ import { SeriesModel, TabService } from '../../shared';
 
       <h3><label for="description">Description</label></h3>
       <p class="hint">A full description of your series.</p>
-      <publish-wysiwyg [model]="series" name="description" [content]="series.description" [images]="series.images" 
+      <publish-wysiwyg [model]="series" name="descriptionMd" [content]="series.descriptionMd" [images]="series.images" 
         [changed]="descriptionChanged"></publish-wysiwyg>
         
       <publish-fancy-field label="Series Image">

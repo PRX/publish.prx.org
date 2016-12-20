@@ -10,18 +10,18 @@ export class SeriesModel extends BaseModel {
 
   public id: number;
   public title: string = '';
-  public description: string = '';
+  public descriptionMd: string = '';
   public shortDescription: string = '';
   public createdAt: Date;
   public updatedAt: Date;
   public images: ImageModel[] = [];
   public versionTemplates: AudioVersionTemplateModel[] = [];
 
-  SETABLE = ['title', 'description', 'shortDescription'];
+  SETABLE = ['title', 'descriptionMd', 'shortDescription'];
 
   VALIDATORS = {
     title:            [REQUIRED()],
-    description:      [LENGTH(10)],
+    descriptionMd:    [LENGTH(10)],
     shortDescription: [REQUIRED()]
   };
 
@@ -79,7 +79,7 @@ export class SeriesModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.title = this.doc['title'] || '';
-    this.description = this.doc['description_md'] || '';
+    this.descriptionMd = this.doc['descriptionMd'] || '';
     this.shortDescription = this.doc['shortDescription'] || '';
     this.createdAt = new Date(this.doc['createdAt']);
     this.updatedAt = new Date(this.doc['updatedAt']);
@@ -88,7 +88,7 @@ export class SeriesModel extends BaseModel {
   encode(): {} {
     let data = <any> {};
     data.title = this.title;
-    data.description_md = this.description;
+    data.descriptionMd = this.descriptionMd;
     data.shortDescription = this.shortDescription;
     return data;
   }

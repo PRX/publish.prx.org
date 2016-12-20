@@ -10,8 +10,8 @@ describe('WysiwygComponent', () => {
   stubPipe('capitalize');
 
   cit('shows markdown formatted as html', (fix, el, comp) => {
-    let initialState = {description: '**bold text**'};
-    comp.name = 'description';
+    let initialState = {descriptionMd: '**bold text**'};
+    comp.name = 'descriptionMd';
     comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
     comp.content = comp.model[comp.name];
     comp.images = [];
@@ -21,14 +21,14 @@ describe('WysiwygComponent', () => {
   });
 
   cit('doesn\'t add empty links', (fix, el, comp) => {
-    let initialState = {description: 'initial state'};
-    comp.name = 'description';
+    let initialState = {descriptionMd: 'initial state'};
+    comp.name = 'descriptionMd';
     comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
     comp.content = comp.model[comp.name];
     comp.images = [];
     fix.detectChanges();
     comp.linkURL = '';
     comp.createLink();
-    expect(comp.model[comp.name]).toEqual(initialState.description);
+    expect(comp.model[comp.name]).toEqual(initialState.descriptionMd);
   });
 });
