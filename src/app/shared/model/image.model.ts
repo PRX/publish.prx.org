@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
-import { UploadableModel } from './uploadable.model';
+import { UploadableModel } from './upload';
 
 export class ImageModel extends UploadableModel {
 

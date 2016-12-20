@@ -3,19 +3,18 @@ import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioFileModel } from './audio-file.model';
 import { VERSION_TEMPLATED } from './invalid';
+import { HasUpload, applyMixins } from './upload';
 
-export class AudioVersionModel extends BaseModel {
+export class AudioVersionModel extends BaseModel implements HasUpload {
 
   static DEFAULT_LABEL = 'Main Audio';
 
   public id: number;
-  public uploads: string = '';
   public label: string;
   public explicit: string = '';
-  public files: AudioFileModel[];
 
   // save in-progress uploads to localstorage
-  SETABLE = ['uploads', 'label', 'explicit'];
+  SETABLE = ['label', 'explicit', 'hasUploadMap'];
 
   VALIDATORS = {
     self: [VERSION_TEMPLATED()]
@@ -26,6 +25,12 @@ export class AudioVersionModel extends BaseModel {
   public fileTemplates: HalDoc[] = [];
   public hasFileTemplates: boolean = false;
   public filesAndTemplates: {tpl: HalDoc, file: AudioFileModel}[] = [];
+  public files: AudioFileModel[];
+
+  // HasUpload (and also in SETABLE)
+  hasUploadMap: string;
+  getUploads: (rel: string) => Observable<(HalDoc|string)[]>;
+  setUploads: (rel: string, uuids: string[]) => void;
 
   constructor(params: {series?: HalDoc, story?: HalDoc, template?: HalDoc, version?: HalDoc}) {
     super();
@@ -66,24 +71,11 @@ export class AudioVersionModel extends BaseModel {
   related() {
     const fileSort = (f1, f2) => f1.position - f2.position;
 
-    let newAudio: AudioFileModel[] = [];
-    let validUuids = this.uploadUuids.filter(uuid => {
-      let audio = new AudioFileModel(this.doc, uuid);
-      if (audio.filename) {
-        newAudio.push(audio);
-        return true;
-      }
+    let files = this.getUploads('prx:audio').map(audios => {
+      let docs = audios.map(docOrUuid => new AudioFileModel(this.doc, docOrUuid));
+      this.setUploads('prx:audio', docs.map(d => d.uuid));
+      return docs.sort(fileSort);
     });
-    this.set('uploads', validUuids.join(','));
-    newAudio = newAudio.sort(fileSort);
-
-    let files: Observable<AudioFileModel[]> = Observable.of(newAudio);
-    if (this.doc && this.doc.has('prx:audio')) {
-      files = this.doc.followList('prx:audio').map(fdocs => {
-        return fdocs.map(fdoc => new AudioFileModel(this.doc, fdoc))
-                    .concat(newAudio).sort(fileSort);
-      });
-    }
 
     // optionally load-and-assign file templates
     if (this.hasFileTemplates) {
@@ -99,7 +91,6 @@ export class AudioVersionModel extends BaseModel {
 
   decode() {
     this.id = this.doc['id'];
-    this.uploads = '';
     this.label = this.doc['label'];
     switch (this.doc['explicit']) {
       case 'yes':
@@ -168,9 +159,7 @@ export class AudioVersionModel extends BaseModel {
       this.files.push(audio);
     }
     this.reassign();
-
-    let uuids = this.uploadUuids.concat(upload.uuid);
-    this.set('uploads', uuids.sort().join(','));
+    this.setUploads('prx:audio', this.files.map(f => f.uuid));
     return audio;
   }
 
@@ -180,13 +169,7 @@ export class AudioVersionModel extends BaseModel {
         this.files.splice(this.files.indexOf(file), 1);
       }
     }
-    if (file.uuid) {
-      let uuids = this.uploadUuids;
-      if (uuids.indexOf(file.uuid) > -1) {
-        uuids.splice(uuids.indexOf(file.uuid), 1);
-        this.set('uploads', uuids.sort().join(','));
-      }
-    }
+    this.setUploads('prx:audio', this.files.map(f => f.uuid));
     this.reassign();
   }
 
@@ -249,8 +232,6 @@ export class AudioVersionModel extends BaseModel {
     return this.files.filter(f => !f.isDestroy).length;
   }
 
-  get uploadUuids(): string[] {
-    return this.uploads.split(',').filter(u => u);
-  }
-
 }
+
+applyMixins(AudioVersionModel, [HasUpload]);
