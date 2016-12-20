@@ -1,9 +1,8 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
 import { ProseMirrorMarkdownEditor, ProseMirrorImage } from './prosemirror.markdown.editor';
-import { PromptComponent } from './prompt.component';
 
 @Component({
   selector: 'publish-wysiwyg',
@@ -11,29 +10,31 @@ import { PromptComponent } from './prompt.component';
     <div #contentEditable [class.changed]="changed" [class.invalid]="invalid"></div>
     <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
     
-    <publish-prompt #prompt *ngIf="!editor?.isSelectionEmpty()">
-      <h1 class="modal-header">Link to</h1>
-      <div class="modal-body">
-        <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
-        <input type="text" name="url" [(ngModel)]="linkURL" #url="ngModel" required/>
-        <label>Title</label>
-        <input type="text" name="title" [(ngModel)]="linkTitle"/>
-        <p class="error" [style.display]="isURLInvalid() ? 'block' : 'none'">URL is required</p>
-      </div>
-      <div class="modal-footer">
-        <button (click)="createLink()">Okay</button>
-        <button (click)="prompt.hide()">Cancel</button>
-      </div>
-    </publish-prompt>
-    <publish-prompt #prompt *ngIf="editor?.isSelectionEmpty()">
-      <h1 class="modal-header">Warning</h1>
-      <div class="modal-body">
-        <p class="error">Please select text to create link</p>
-      </div>
-      <div class="modal-footer">
-        <button (click)="prompt.hide()">Okay</button>
-      </div>
-    </publish-prompt>
+    <div class="overlay" *ngIf="showPrompt"></div>
+    <div class="modal" *ngIf="hasSelection && showPrompt" tabindex="-1">
+      <header><h1>Link to</h1></header>
+      <section>
+          <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
+          <input publishFocus type="text" name="url" [(ngModel)]="linkURL" #url="ngModel" required/>
+          <label>Title</label>
+          <input type="text" name="title" [(ngModel)]="linkTitle"/>
+          <p class="error" [style.display]="isURLInvalid() ? 'block' : 'none'">URL is required</p>
+      </section>
+      <footer>
+          <button (click)="createLink()">Okay</button>
+          <button (click)="hidePrompt()">Cancel</button>
+      </footer>
+    </div>
+      
+    <div class="modal" *ngIf="!hasSelection && showPrompt" tabindex="-1">  
+      <header><h1>Warning</h1></header>
+      <section>
+        <p class="error">Please select text to create link or existing link to edit</p>
+      </section>
+      <footer>
+        <button (click)="hidePrompt()">Okay</button>
+      </footer>
+    </div>
   `,
   styleUrls: ['wysiwyg.component.css']
 })
@@ -49,10 +50,13 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('contentEditable') private el: ElementRef;
   editor: ProseMirrorMarkdownEditor;
 
-  @ViewChild('prompt') prompt: PromptComponent;
   @ViewChild('url') private url: NgModel;
   linkURL: string;
   linkTitle: string;
+  hasSelection: boolean = false;
+  showPrompt: boolean = false;
+
+  constructor(private chgRef: ChangeDetectorRef) {}
 
   ngOnInit() {
     if (this.model) {
@@ -106,8 +110,12 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
     return this.url && this.url.invalid && this.url.dirty;
   }
 
-  promptForLink() {
-    this.prompt.show();
+  promptForLink(url?: string, title?: string) {
+    this.linkURL = url;
+    this.linkTitle = title;
+    this.hasSelection = !this.editor.isSelectionEmpty();
+    this.chgRef.detectChanges();
+    this.showPrompt = true;
   }
 
   createLink() {
@@ -119,8 +127,11 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
 
       this.editor.createLinkItem(url, this.linkTitle);
 
-      this.prompt.hide();
-      this.linkURL = this.linkTitle = '';
+      this.showPrompt = false;
     }
+  }
+
+  hidePrompt() {
+    this.showPrompt = false;
   }
 }

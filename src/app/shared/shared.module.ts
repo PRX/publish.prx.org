@@ -11,7 +11,7 @@ import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
 import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
-import { PromptComponent, WysiwygComponent } from './wysiwyg';
+import { FocusDirective, WysiwygComponent } from './wysiwyg';
 
 import { HoverDirective } from './hover';
 
@@ -23,12 +23,12 @@ import { HoverDirective } from './hover';
     FancyFieldComponent,
     FileSelectDirective,
     FileSizePipe,
+    FocusDirective,
     HeroComponent,
     HoverDirective,
     ImageFileComponent,
     ImageLoaderComponent,
     ImageUploadComponent,
-    PromptComponent,
     SpinnerComponent,
     TabComponent,
     TimeAgoPipe,
@@ -43,11 +43,11 @@ import { HoverDirective } from './hover';
     FancyFieldComponent,
     FileSelectDirective,
     FileSizePipe,
+    FocusDirective,
     HeroComponent,
     HoverDirective,
     ImageLoaderComponent,
     ImageUploadComponent,
-    PromptComponent,
     SpinnerComponent,
     TabComponent,
     TimeAgoPipe,
