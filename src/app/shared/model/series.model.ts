@@ -79,7 +79,7 @@ export class SeriesModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.title = this.doc['title'] || '';
-    this.description = this.doc['description'] || '';
+    this.description = this.doc['description_md'] || '';
     this.shortDescription = this.doc['shortDescription'] || '';
     this.createdAt = new Date(this.doc['createdAt']);
     this.updatedAt = new Date(this.doc['updatedAt']);
@@ -88,7 +88,7 @@ export class SeriesModel extends BaseModel {
   encode(): {} {
     let data = <any> {};
     data.title = this.title;
-    data.description = this.description;
+    data.description_md = this.description;
     data.shortDescription = this.shortDescription;
     return data;
   }
