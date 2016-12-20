@@ -15,7 +15,7 @@ import { ProseMirrorMarkdownEditor, ProseMirrorImage } from './prosemirror.markd
       <header><h1>Link to</h1></header>
       <section>
           <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
-          <input type="text" name="url" [(ngModel)]="linkURL" #url="ngModel" required/>
+          <input publishFocus type="text" name="url" [(ngModel)]="linkURL" #url="ngModel" required/>
           <label>Title</label>
           <input type="text" name="title" [(ngModel)]="linkTitle"/>
           <p class="error" [style.display]="isURLInvalid() ? 'block' : 'none'">URL is required</p>
