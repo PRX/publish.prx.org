@@ -3,7 +3,6 @@ import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
 import { ProseMirrorMarkdownEditor, ProseMirrorImage } from './prosemirror.markdown.editor';
-import { PromptComponent } from './prompt.component';
 
 @Component({
   selector: 'publish-wysiwyg',
@@ -11,29 +10,31 @@ import { PromptComponent } from './prompt.component';
     <div #contentEditable [class.changed]="changed" [class.invalid]="invalid"></div>
     <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
     
-    <publish-prompt *ngIf="hasSelection && showPrompt">
-      <h1 class="modal-header">Link to</h1>
-      <div class="modal-body">
-        <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
-        <input type="text" name="url" [(ngModel)]="linkURL" #url="ngModel" required/>
-        <label>Title</label>
-        <input type="text" name="title" [(ngModel)]="linkTitle"/>
-        <p class="error" [style.display]="isURLInvalid() ? 'block' : 'none'">URL is required</p>
-      </div>
-      <div class="modal-footer">
-        <button (click)="createLink()">Okay</button>
-        <button (click)="hidePrompt()">Cancel</button>
-      </div>
-    </publish-prompt>
-    <publish-prompt *ngIf="!hasSelection && showPrompt">
-      <h1 class="modal-header">Warning</h1>
-      <div class="modal-body">
+    <div class="overlay" *ngIf="showPrompt"></div>
+    <div class="modal" *ngIf="hasSelection && showPrompt" tabindex="-1">
+      <header><h1>Link to</h1></header>
+      <section>
+          <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
+          <input type="text" name="url" [(ngModel)]="linkURL" #url="ngModel" required/>
+          <label>Title</label>
+          <input type="text" name="title" [(ngModel)]="linkTitle"/>
+          <p class="error" [style.display]="isURLInvalid() ? 'block' : 'none'">URL is required</p>
+      </section>
+      <footer>
+          <button (click)="createLink()">Okay</button>
+          <button (click)="hidePrompt()">Cancel</button>
+      </footer>
+    </div>
+      
+    <div class="modal" *ngIf="!hasSelection && showPrompt" tabindex="-1">  
+      <header><h1>Warning</h1></header>
+      <section>
         <p class="error">Please select text to create link or existing link to edit</p>
-      </div>
-      <div class="modal-footer">
+      </section>
+      <footer>
         <button (click)="hidePrompt()">Okay</button>
-      </div>
-    </publish-prompt>
+      </footer>
+    </div>
   `,
   styleUrls: ['wysiwyg.component.css']
 })
