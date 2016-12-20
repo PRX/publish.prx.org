@@ -73,11 +73,14 @@ export class HomeStoryComponent implements OnInit {
     let duration = 0;
     if (this.story.versions && this.story.versions.length > 0) {
       if (this.story.versions[0].files.length > 0) {
-        duration = this.story.versions[0].files.filter((audio) => !audio.isDestroy).map((audio) => {
-          return audio['duration'] || 0;
-        }).reduce((prevDuration, currDuration) => {
-          return prevDuration + currDuration;
-        });
+        let nonDestroyedAudio = this.story.versions[0].files.filter((audio) => !audio.isDestroy);
+        if (nonDestroyedAudio && nonDestroyedAudio.length > 0) {
+          duration = nonDestroyedAudio.map((audio) => {
+            return audio['duration'] || 0;
+          }).reduce((prevDuration, currDuration) => {
+            return prevDuration + currDuration;
+          });
+        }
       }
     }
     return duration;
