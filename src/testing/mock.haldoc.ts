@@ -130,6 +130,10 @@ export class MockHalDoc extends HalDoc {
     }
   }
 
+  followLink(linkObj: any, params: any = {}): HalObservable<HalDoc> {
+    return this.follow(linkObj.href, params);
+  }
+
   private nonLoggingError(msg: string): any {
     return Observable.throw(new Error(msg));
   }

@@ -62,7 +62,7 @@ export class HalDoc {
         this.error(`Expected create link at _links.${rel} - got array`);
     } else {
       return <HalObservable<HalDoc>> this.remote.post(link, params, data).map((obj) => {
-        return new HalDoc(obj, this.remote);
+        return new HalDoc(obj, this.remote.switchHost(link));
       });
     }
   }
@@ -138,7 +138,9 @@ export class HalDoc {
     } else {
       result = this.remote.get(linkObj, params);
     }
-    return <HalObservable<HalDoc>> result.map(obj => { return new HalDoc(obj, this.remote); });
+    return <HalObservable<HalDoc>> result.map(obj => {
+      return new HalDoc(obj, this.remote.switchHost(linkObj));
+    });
   }
 
   follow(rel: string, params: {} = null): HalObservable<HalDoc> {

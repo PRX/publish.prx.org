@@ -68,6 +68,13 @@ button, .button {
 button:hover, .button:hover {
   background-color: #2b7187;
 }
+a.button {
+  line-height: 17px;
+  color: #fff;
+}
+a.button:hover, a.button:active, a.button:focus {
+  color: #fff;
+}
 
 /*
  * Dragula
