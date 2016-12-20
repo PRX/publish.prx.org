@@ -3,8 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'publish-prompt',
   template: `
-  <div *ngIf="visible" class="overlay"></div>
-  <div *ngIf="visible" class="modal" tabindex="-1">
+  <div class="overlay"></div>
+  <div class="modal" tabindex="-1">
     <header>
       <ng-content select=".modal-header"></ng-content>
     </header>
@@ -18,15 +18,4 @@ import { Component } from '@angular/core';
   `,
   styleUrls: ['prompt.component.css']
 })
-export class PromptComponent {
-
-  public visible = false;
-
-  public show(): void {
-    this.visible = true;
-  }
-
-  public hide(): void {
-    this.visible = false;
-  }
-}
+export class PromptComponent {}

@@ -11,7 +11,7 @@ import { PromptComponent } from './prompt.component';
     <div #contentEditable [class.changed]="changed" [class.invalid]="invalid"></div>
     <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
     
-    <publish-prompt #prompt *ngIf="!editor?.isSelectionEmpty()">
+    <publish-prompt *ngIf="hasSelection && showPrompt">
       <h1 class="modal-header">Link to</h1>
       <div class="modal-body">
         <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
@@ -22,16 +22,16 @@ import { PromptComponent } from './prompt.component';
       </div>
       <div class="modal-footer">
         <button (click)="createLink()">Okay</button>
-        <button (click)="prompt.hide()">Cancel</button>
+        <button (click)="hidePrompt()">Cancel</button>
       </div>
     </publish-prompt>
-    <publish-prompt #prompt *ngIf="editor?.isSelectionEmpty()">
+    <publish-prompt *ngIf="!hasSelection && showPrompt">
       <h1 class="modal-header">Warning</h1>
       <div class="modal-body">
         <p class="error">Please select text to create link or existing link to edit</p>
       </div>
       <div class="modal-footer">
-        <button (click)="prompt.hide()">Okay</button>
+        <button (click)="hidePrompt()">Okay</button>
       </div>
     </publish-prompt>
   `,
@@ -49,10 +49,11 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('contentEditable') private el: ElementRef;
   editor: ProseMirrorMarkdownEditor;
 
-  @ViewChild('prompt') prompt: PromptComponent;
   @ViewChild('url') private url: NgModel;
   linkURL: string;
   linkTitle: string;
+  hasSelection: boolean = false;
+  showPrompt: boolean = false;
 
   constructor(private chgRef: ChangeDetectorRef) {}
 
@@ -111,8 +112,9 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   promptForLink(url?: string, title?: string) {
     this.linkURL = url;
     this.linkTitle = title;
+    this.hasSelection = !this.editor.isSelectionEmpty();
     this.chgRef.detectChanges();
-    this.prompt.show();
+    this.showPrompt = true;
   }
 
   createLink() {
@@ -124,8 +126,11 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
 
       this.editor.createLinkItem(url, this.linkTitle);
 
-      this.prompt.hide();
-      this.linkURL = this.linkTitle = '';
+      this.showPrompt = false;
     }
+  }
+
+  hidePrompt() {
+    this.showPrompt = false;
   }
 }
