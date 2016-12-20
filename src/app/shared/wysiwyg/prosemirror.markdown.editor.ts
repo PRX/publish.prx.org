@@ -166,7 +166,12 @@ export class ProseMirrorMarkdownEditor {
   markActive(state, type) {
     let {from, to, empty} = state.selection;
     if (empty) {
-      return type.isInSet(state.storedMarks || state.doc.marksAt(from));
+      let activeMark = type.isInSet(state.storedMarks || state.doc.marksAt(from));
+      // trick prosemirror into checking from + 1 in case the cursor is at the beginning of a mark
+      if (!activeMark || activeMark.length === 0) {
+        activeMark = type.isInSet(state.doc.marksAt(from + 1));
+      }
+      return activeMark;
     } else {
       return state.doc.rangeHasMark(from, to, type);
     }
