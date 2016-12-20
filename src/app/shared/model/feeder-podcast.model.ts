@@ -85,7 +85,7 @@ export class FeederPodcastModel extends BaseModel {
       data.explicit = data.explicit.toLowerCase();
     }
     data.link = this.link || null;
-    this.newFeedUrl = this.newFeedUrl || null;
+    data.newFeedUrl = this.newFeedUrl || null;
 
     // default path back to the id
     data.path = this.path || this.id;
