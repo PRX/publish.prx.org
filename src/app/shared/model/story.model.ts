@@ -10,7 +10,7 @@ export class StoryModel extends BaseModel {
   public id: number;
   public title: string;
   public shortDescription: string;
-  public descriptionMd: string;
+  public description: string;
   public tags: string;
   public updatedAt: Date;
   public publishedAt: Date;
@@ -19,12 +19,12 @@ export class StoryModel extends BaseModel {
   public isPublishing: boolean;
   public account: HalDoc;
 
-  SETABLE = ['title', 'shortDescription', 'descriptionMd', 'tags'];
+  SETABLE = ['title', 'shortDescription', 'description', 'tags'];
 
   VALIDATORS = {
     title:            [REQUIRED()],
     shortDescription: [REQUIRED()],
-    descriptionMd:    [LENGTH(10)]
+    description:      [LENGTH(10)]
   };
 
   constructor(seriesOrAccount: HalDoc, story?: HalDoc, loadRelated = true) {
@@ -91,7 +91,7 @@ export class StoryModel extends BaseModel {
     this.id = this.doc['id'];
     this.title = this.doc['title'] || '';
     this.shortDescription = this.doc['shortDescription'] || '';
-    this.descriptionMd = this.doc['descriptionMd'] || '';
+    this.description = this.doc['descriptionMd'] || '';
     this.tags = (this.doc['tags'] || []).join(', ');
     this.updatedAt = new Date(this.doc['updatedAt']);
     this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
@@ -101,7 +101,7 @@ export class StoryModel extends BaseModel {
     let data = <any> {};
     data.title = this.title;
     data.shortDescription = this.shortDescription;
-    data.descriptionMd = this.descriptionMd;
+    data.descriptionMd = this.description;
     data.tags = this.splitTags();
     return data;
   }

@@ -11,7 +11,7 @@ describe('WysiwygComponent', () => {
 
   cit('shows markdown formatted as html', (fix, el, comp) => {
     let initialState = {descriptionMd: '**bold text**'};
-    comp.name = 'descriptionMd';
+    comp.name = 'description';
     comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
     comp.content = comp.model[comp.name];
     comp.images = [];
@@ -22,7 +22,7 @@ describe('WysiwygComponent', () => {
 
   cit('doesn\'t add empty links', (fix, el, comp) => {
     let initialState = {descriptionMd: 'initial state'};
-    comp.name = 'descriptionMd';
+    comp.name = 'description';
     comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
     comp.content = comp.model[comp.name];
     comp.images = [];
