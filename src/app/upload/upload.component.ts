@@ -10,32 +10,37 @@ import { AudioVersionModel } from '../shared';
       <span>{{versionDescription}}</span>
     </header>
 
-    <section *ngIf="version.hasFileTemplates">
+    <section *ngIf="version.hasFileTemplates" >
       <div class="uploads">
         <template ngFor let-ft [ngForOf]="version.filesAndTemplates">
           <publish-templated-upload *ngIf="ft.tpl" [template]="ft.tpl"
-            [file]="ft.file" [version]="version"></publish-templated-upload>
+            [file]="ft.file" [version]="version" publishClick></publish-templated-upload>
           <publish-illegal-upload *ngIf="!ft.tpl" [file]="ft.file"
             [version]="version"></publish-illegal-upload>
         </template>
       </div>
     </section>
 
-    <section *ngIf="!version.hasFileTemplates">
-      <div class="uploads" [publishFreeReorder]="version">
-        <div *ngIf="version.noAudioFiles" class="empty">
-          <h4 (click)="upinput.click()">Upload a file to get started</h4>
+    <section publishClick>
+      <section *ngIf="!version.hasFileTemplates">
+        <div class="uploads" [publishFreeReorder]="version">
+          <label>
+            <div *ngIf="version.noAudioFiles" class="empty" >
+              <h4>Upload a file to get started</h4>
+            </div>
+          </label>
+          <publish-free-upload *ngFor="let f of version.files"
+            [file]="f" [version]="version" publishClick>
+          </publish-free-upload>
         </div>
-        <publish-free-upload *ngFor="let f of version.files"
-          [file]="f" [version]="version"></publish-free-upload>
-      </div>
-    </section>
+      </section>
 
-    <footer [class.templated]="version.hasFileTemplates">
-      <p *ngIf="invalidMessage" class="error">{{invalidMessage | capitalize}}</p>
-      <publish-audio-input *ngIf="!version.hasFileTemplates" #upinput
-        multiple=true [version]="version"></publish-audio-input>
-    </footer>
+      <footer [class.templated]="version.hasFileTemplates">
+        <p *ngIf="invalidMessage" class="error">{{invalidMessage | capitalize}}</p>
+        <publish-audio-input *ngIf="!version.hasFileTemplates"
+          multiple=true [version]="version"></publish-audio-input>
+      </footer>
+    </section>
   `
 })
 

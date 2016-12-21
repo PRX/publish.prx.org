@@ -9,7 +9,7 @@ import { AudioFileModel } from '../../shared';
   template: `
     <p *ngIf="error" class="error">{{error}}</p>
 
-    <button *ngIf="!playing && !loading" class="play" (click)="play()"></button>
+    <button *ngIf="!playing && !loading" class="play" (click)="play($event)"></button>
 
     <div #scrubber *ngIf="playing" class="scrubber"
       (mousedown)="scrub('down', $event)"
@@ -18,10 +18,10 @@ import { AudioFileModel } from '../../shared';
       <div class="meter" [style.width.%]="progress * 100"></div>
       <div *ngIf="!dragging" class="position" [style.left.%]="progress * 100"></div>
     </div>
-    <button *ngIf="playing" class="pause" (click)="stop()"></button>
+    <button *ngIf="playing" class="pause" (click)="stop($event)"></button>
 
     <p *ngIf="loading" class="loading">Loading...</p>
-    <button *ngIf="loading" class="pause loading" (click)="stop()"></button>
+    <button *ngIf="loading" class="pause loading" (click)="stop($event)"></button>
   `
 })
 
@@ -61,7 +61,7 @@ export class AudioPlayerComponent implements OnDestroy {
     }
   }
 
-  play() {
+  play(ev: MouseEvent) {
     if (this.playable) {
       this.error = null;
       this.playing = false;
@@ -69,14 +69,15 @@ export class AudioPlayerComponent implements OnDestroy {
       this.sub = this.player.play(this.playable).subscribe(
         data => this.updateProgress(data),
         err => this.showError(err),
-        () => this.stop()
+        () => this.stop(ev)
       );
     } else {
       this.showError('File is not playable');
     }
+    ev.stopPropagation();
   }
 
-  stop() {
+  stop(ev: MouseEvent) {
     if (this.sub) {
       this.sub.unsubscribe();
     }
@@ -84,6 +85,7 @@ export class AudioPlayerComponent implements OnDestroy {
     this.playing = false;
     this.progress = 0;
     this.ref.detectChanges(); // playback 'done' doesn't fire by default
+    ev.stopPropagation();
   }
 
   scrub(dir, ev: MouseEvent) {
@@ -97,6 +99,7 @@ export class AudioPlayerComponent implements OnDestroy {
     } else if (this.dragging && dir === 'move') {
       this.progress = pct;
     }
+    ev.stopPropagation();
   }
 
   private updateProgress(data: PlaybackMetadata) {

@@ -7,7 +7,8 @@ import { UploadComponent } from './upload.component';
 import { FreeReorderDirective, FreeUploadComponent } from './free';
 import { IllegalUploadComponent } from './illegal';
 import { AudioCancelDirective, AudioClassesDirective, AudioDurationComponent,
-         AudioInputComponent, AudioPlayerComponent, AudioStateComponent } from './shared';
+         AudioInputComponent, AudioPlayerComponent, AudioStateComponent,
+         ClickDirective } from './shared';
 import { TemplatedUploadComponent } from './templated';
 
 @NgModule({
@@ -22,13 +23,15 @@ import { TemplatedUploadComponent } from './templated';
     AudioInputComponent,
     AudioPlayerComponent,
     AudioStateComponent,
+    ClickDirective,
     TemplatedUploadComponent
   ],
   exports: [
     CommonModule,
     DragulaModule,
     SharedModule,
-    UploadComponent
+    UploadComponent,
+    ClickDirective
   ],
   imports: [
     CommonModule,
