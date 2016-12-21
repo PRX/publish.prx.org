@@ -48,7 +48,7 @@ import {
       </div>
 
       <div class="cancel">
-        <publish-audio-input #upinput [version]="version" [position]="template.position"></publish-audio-input>
+        <publish-audio-input [version]="version" [position]="template.position"></publish-audio-input>
       </div>
 
     </div>
