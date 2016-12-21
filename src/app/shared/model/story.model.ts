@@ -91,7 +91,7 @@ export class StoryModel extends BaseModel {
     this.id = this.doc['id'];
     this.title = this.doc['title'] || '';
     this.shortDescription = this.doc['shortDescription'] || '';
-    this.description = this.doc['description'] || '';
+    this.description = this.doc['descriptionMd'] || '';
     this.tags = (this.doc['tags'] || []).join(', ');
     this.updatedAt = new Date(this.doc['updatedAt']);
     this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
@@ -101,7 +101,7 @@ export class StoryModel extends BaseModel {
     let data = <any> {};
     data.title = this.title;
     data.shortDescription = this.shortDescription;
-    data.description = this.description;
+    data.descriptionMd = this.description;
     data.tags = this.splitTags();
     return data;
   }
