@@ -12,10 +12,14 @@ import { StoryModel } from '../../shared';
       <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
     </section>
     <section class="story-detail">
-      <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
+      <publish-text-overflow numLines="2" lineHeight="20" unit="px">
+        <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
+      </publish-text-overflow>  
 
-      <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
-      <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
+      <publish-text-overflow numLines="2" lineHeight="20" unit="px">
+        <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
+        <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
+      </publish-text-overflow>
 
       <section class="story-info">
         <span class="duration">{{storyDuration | duration}}</span>
@@ -23,11 +27,15 @@ import { StoryModel } from '../../shared';
         <span class="modified">{{storyUpdated | date:"MM/dd/yy"}}</span>
       </section>
     </section>
-    <section class="story-tags">
-      <span *ngFor="let tag of storyTags">{{tag}}</span>
-    </section>
-    <section class="story-description three-lines" [ngClass]="{'two-lines': storyTags.length > 0 }">
-      {{storyDescription}}
+    <publish-text-overflow numLines="1" lineHeight="20" unit="px" class="outer">
+      <section class="story-tags">
+        <span *ngFor="let tag of storyTags">{{tag}}</span>
+      </section>
+    </publish-text-overflow>
+    <section class="story-description">
+      <publish-text-overflow [numLines]="storyTags.length > 0 ? 2 : 3" lineHeight="20" unit="px">
+        <span title="{{storyDescription}}">{{storyDescription}}</span>
+      </publish-text-overflow>
     </section>
   `
 })
