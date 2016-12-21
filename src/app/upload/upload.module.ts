@@ -13,10 +13,6 @@ import { TemplatedUploadComponent } from './templated';
 
 @NgModule({
   declarations: [
-    UploadComponent,
-    FreeReorderDirective,
-    FreeUploadComponent,
-    IllegalUploadComponent,
     AudioCancelDirective,
     AudioClassesDirective,
     AudioDurationComponent,
@@ -24,14 +20,18 @@ import { TemplatedUploadComponent } from './templated';
     AudioPlayerComponent,
     AudioStateComponent,
     ClickDirective,
-    TemplatedUploadComponent
+    FreeReorderDirective,
+    FreeUploadComponent,
+    IllegalUploadComponent,
+    TemplatedUploadComponent,
+    UploadComponent
   ],
   exports: [
+    ClickDirective,
     CommonModule,
     DragulaModule,
     SharedModule,
-    UploadComponent,
-    ClickDirective
+    UploadComponent
   ],
   imports: [
     CommonModule,

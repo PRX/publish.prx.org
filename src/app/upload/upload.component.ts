@@ -10,7 +10,7 @@ import { AudioVersionModel } from '../shared';
       <span>{{versionDescription}}</span>
     </header>
 
-    <section *ngIf="version.hasFileTemplates" >
+    <section *ngIf="version.hasFileTemplates">
       <div class="uploads">
         <template ngFor let-ft [ngForOf]="version.filesAndTemplates">
           <publish-templated-upload *ngIf="ft.tpl" [template]="ft.tpl"
