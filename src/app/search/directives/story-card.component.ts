@@ -17,8 +17,7 @@ import { StoryModel } from '../../shared';
       </publish-text-overflow-fade>  
 
       <publish-text-overflow-fade numLines="2" lineHeight="20" unit="px">
-        <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
-        <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
+        <h3 class="series-title">{{seriesTitle}}</h3>
       </publish-text-overflow-fade>
 
       <section class="story-info">
@@ -88,7 +87,6 @@ export class StoryCardComponent implements OnInit {
 
     if (this.story.parent) {
       this.seriesTitle = this.story.parent['title'];
-      this.seriesLink = ['/series', this.story.parent.id];
     } else {
       this.seriesTitle = this.story.account['name'] || '(Unnamed Account)';
     }
