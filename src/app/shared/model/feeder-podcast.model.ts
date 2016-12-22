@@ -55,8 +55,12 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
-    this.authorName = this.doc['author']['name'] || this.series['_embedded']['prx:account'].name;
-
+    if (this.series.has('prx:account')) {
+      this.series.follow('prx:account').subscribe(account => this.authorName = account['name']);
+    }
+    if (this.doc['author']) {
+      this.authorName = this.doc['author']['name'];
+    }
     // pretend path was blank if it was just the podcast id
     this.path = this.doc['path'] || '';
     if (`${this.path}` === `${this.id}`) {

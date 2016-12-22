@@ -5,6 +5,7 @@ describe('FeederPodcastModel', () => {
 
   let series = cms.mock('prx:series', {id: 'series1'});
   let dist = series.mock('prx:distributions', {id: 'dist1', kind: 'podcast'});
+  let authorDist = series.mock('prx:accounts', {name: 'Foo'});
 
   beforeEach(() => window.localStorage.clear());
 
@@ -50,6 +51,12 @@ describe('FeederPodcastModel', () => {
     expect(dest.id).not.toEqual(1234);
     expect(dest.category).toEqual('src-category');
     expect(src.unstore).toHaveBeenCalled();
+  });
+
+  it('allows user to override account name for podcast', () => {
+    let doc = authorDist.mock('some-feeder', {author: {name: 'Bar'}});
+    let podcast = new FeederPodcastModel(series, dist, doc);
+    expect(podcast.authorName).toEqual('Bar');
   });
 
 });
