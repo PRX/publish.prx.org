@@ -77,12 +77,15 @@ publish-image  {
   margin-right: -5px;
 }
 
-publish-text-overflow {
+publish-text-overflow-fade {
   display: block;
 }
-publish-text-overflow.outer {
+publish-text-overflow-fade.outer {
   clear: left;
   margin: 0 1em;
+}
+publish-text-overflow-fade >>> div:before {
+  min-height: 20px;
 }
 
 .story-tags {

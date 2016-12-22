@@ -11,7 +11,7 @@ import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
 import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
-import { TextOverflowComponent } from './text-overflow';
+import { TextOverflowEllipsesComponent, TextOverflowFadeComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
 
 import { HoverDirective } from './hover';
@@ -34,7 +34,8 @@ import { HoverDirective } from './hover';
     SpinnerComponent,
     TabComponent,
     TimeAgoPipe,
-    TextOverflowComponent,
+    TextOverflowEllipsesComponent,
+    TextOverflowFadeComponent,
     WysiwygComponent
   ],
   exports: [
@@ -55,7 +56,8 @@ import { HoverDirective } from './hover';
     SpinnerComponent,
     TabComponent,
     TimeAgoPipe,
-    TextOverflowComponent,
+    TextOverflowEllipsesComponent,
+    TextOverflowFadeComponent,
     WysiwygComponent
   ],
   imports: [

@@ -1,1 +1,2 @@
-export * from './text-overflow.component';
+export * from './text-overflow-ellipses.component';
+export * from './text-overflow-fade.component';

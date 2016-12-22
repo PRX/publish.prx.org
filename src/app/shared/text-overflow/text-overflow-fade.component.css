@@ -1,0 +1,25 @@
+div {
+  overflow: hidden;
+  position: relative;
+  line-height: 1.2em;/* just as a default */
+  max-height: 3.6em;/* just as a default */
+  text-align: justify;
+}
+div:before {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  min-width: 3em;
+  /* default, matches line-height.
+  To override in parent component css add
+  publish-text-overflow-fade >>> div:before {
+    min-height: 20px;
+  }*/
+  min-height: 1.2em;
+  background-image: linear-gradient(to right, transparent, rgba(255,255,255,.25) 10%, rgba(255,255,255,.5) 50%, #fff 75%);
+}
+
+div >>> h1, div >>> h2, div >>> h3, div >>> h4, div >>> h5, div >>> h6 {
+  display: inline-block;
+}
