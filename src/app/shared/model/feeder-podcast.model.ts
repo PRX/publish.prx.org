@@ -11,13 +11,14 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl', 'authorName'];
   category: string = '';
   subCategory: string = '';
   explicit: string = '';
   path: string = '';
   link: string = '';
   newFeedUrl: string = '';
+  authorName: string = '';
 
   VALIDATORS = {
     path: [TOKENY('Use letters, numbers and underscores only')],
@@ -54,6 +55,7 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
+    this.authorName = this.doc['author']['name'] || this.series['_embedded']['prx:account'].name;
 
     // pretend path was blank if it was just the podcast id
     this.path = this.doc['path'] || '';
@@ -86,7 +88,9 @@ export class FeederPodcastModel extends BaseModel {
     }
     data.link = this.link || null;
     data.newFeedUrl = this.newFeedUrl || null;
-
+    if (this.authorName) {
+      data.author = { name: this.authorName };
+    }
     // default path back to the id
     data.path = this.path || this.id;
 
