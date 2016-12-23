@@ -39,15 +39,7 @@ publish-image {
 .series-detail {
   position: absolute;
   left: 192px;
-  padding: 10px;
-}
-.series-genre {
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: #a3a3a3;
-  font-size: 8px;
-  line-height: 10px;
-  font-weight: 600;
+  padding: 15px 10px;
 }
 .series-description {
   height: 160px;
