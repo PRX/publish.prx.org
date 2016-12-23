@@ -3,6 +3,7 @@ div {
   position: relative;
   line-height: 1.2em;/* just as a default */
   max-height: 3.6em;/* just as a default */
+  height: 100%;
   text-align: justify;
 }
 div:before {

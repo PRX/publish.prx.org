@@ -20,7 +20,9 @@ import { SeriesModel } from '../../shared';
     </section>
     <section class="series-detail">
       <p class="series-genre">{{GENRE}}</p>
-      <p class="series-description">{{seriesDescription}}</p>
+      <publish-text-overflow-fade class="series-description" numLines="8" lineHeight="20" unit="px">
+        {{seriesDescription}}
+      </publish-text-overflow-fade>
     </section>
   `
 })
