@@ -47,6 +47,12 @@ publish-image  {
 }
 .story-title {
   font-size: 16px;
+  max-height: 40px;
+  overflow: hidden;
+}
+.series-title {
+  max-height: 40px;
+  overflow: hidden;
 }
 
 .story-info {
@@ -80,18 +86,20 @@ publish-image  {
 publish-text-overflow-fade {
   display: block;
 }
-publish-text-overflow-fade.outer {
-  clear: left;
-  margin: 0 1em;
-}
+
 publish-text-overflow-fade >>> div:before {
   min-height: 20px;
 }
 
 .story-tags {
+  clear: left;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-flow: row wrap;
+  padding: 0 10px;
+  max-height: 20px;
+  line-height: 20px;
+  overflow: hidden;
 }
 .story-tags > span {
   background-color: #f0f0f0;

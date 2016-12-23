@@ -12,13 +12,8 @@ import { StoryModel } from '../../shared';
       <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
     </section>
     <section class="story-detail">
-      <publish-text-overflow-fade numLines="2" lineHeight="20" unit="px">
-        <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
-      </publish-text-overflow-fade>  
-
-      <publish-text-overflow-fade numLines="2" lineHeight="20" unit="px">
-        <h3 class="series-title">{{seriesTitle}}</h3>
-      </publish-text-overflow-fade>
+      <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
+      <h3 class="series-title">{{seriesTitle}}</h3>
 
       <section class="story-info">
         <span class="duration">{{storyDuration | duration}}</span>
@@ -26,11 +21,9 @@ import { StoryModel } from '../../shared';
         <span class="modified">{{storyUpdated | date:"MM/dd/yy"}}</span>
       </section>
     </section>
-    <publish-text-overflow-fade numLines="1" lineHeight="20" unit="px" class="outer">
-      <section class="story-tags">
-        <span *ngFor="let tag of storyTags">{{tag}}</span>
-      </section>
-    </publish-text-overflow-fade>
+    <section class="story-tags">
+      <span *ngFor="let tag of storyTags">{{tag}}</span>
+    </section>
     <section class="story-description">
       <publish-text-overflow-fade [numLines]="storyTags.length > 0 ? 2 : 3" lineHeight="20" unit="px">
         <span title="{{storyDescription}}">{{storyDescription}}</span>
@@ -44,7 +37,6 @@ export class StoryCardComponent implements OnInit {
   @Input() story: StoryModel;
 
   editStoryLink: any[];
-  seriesLink: any[];
 
   storyId: number;
   storyTitle: string;

@@ -1,0 +1,10 @@
+div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3.6em;
+  line-height: 1.2em;
+  -webkit-line-clamp: 3;
+  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}

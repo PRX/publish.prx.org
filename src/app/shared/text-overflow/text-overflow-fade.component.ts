@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'publish-text-overflow-fade',
   template: `
-    <div class="overflow" [style.max-height]="(numLines * lineHeight) + unit" [style.line-height]="lineHeight + unit">
+    <div [style.max-height]="(numLines * lineHeight) + unit" [style.line-height]="lineHeight + unit">
       <ng-content></ng-content>
     </div>
   `,
