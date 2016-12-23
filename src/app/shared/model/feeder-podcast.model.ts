@@ -118,7 +118,7 @@ export class FeederPodcastModel extends BaseModel {
 
   set(field: string, value: any) {
     super.set(field, value);
-    if (field === 'path') {
+    if (field === 'path' && this.publishedUrl) {
       let parts = this.publishedUrl.split('/');
       if (parts.length > 2) {
         parts[parts.length - 2] = this.path;

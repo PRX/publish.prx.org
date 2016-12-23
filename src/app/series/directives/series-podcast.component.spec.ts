@@ -27,18 +27,6 @@ describe('SeriesPodcastComponent', () => {
     expect(comp.loadPodcast).toHaveBeenCalled();
   });
 
-  cit('displays feed urls for existing podcasts', (fix, el, comp) => {
-    comp.distribution = {kind: 'podcast'};
-    fix.detectChanges();
-    expect(el).not.toQuery('[label="PRX Feeds"]');
-    comp.podcast = {id: null};
-    fix.detectChanges();
-    expect(el).not.toQuery('[label="PRX Feeds"]');
-    comp.podcast.id = 1234;
-    fix.detectChanges();
-    expect(el).toQuery('[label="PRX Feeds"]');
-  });
-
   cit('sets itunes subcategories', (fix, el, comp) => {
     comp.podcast = {set: () => null};
     comp.setSubCategories();

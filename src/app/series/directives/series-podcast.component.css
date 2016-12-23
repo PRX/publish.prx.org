@@ -20,3 +20,7 @@
 .feed-urls button:hover, .feed-urls button:focus {
   background-color: #e28b42;
 }
+
+.custom-path >>> input {
+  width: 160px;
+}
