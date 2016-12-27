@@ -1,0 +1,34 @@
+/* styles for '...' */
+div {
+  overflow: hidden;
+  position: relative;
+  line-height: 1.2em;/* just as a default */
+  max-height: 3.6em;/* just as a default */
+  height: 100%;
+  text-align: justify;
+  /* place for '...' */
+  margin-right: -1em;
+  padding-right: 1em;
+}
+/* create the ... */
+div:before {
+  content: '...';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+/* hide ... if we have text, which is less than or equal to max lines */
+div:after {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 1em;
+  height: 1em;
+  margin-top: 0.2em;
+  /* bg color = bg color under block */
+  background: #fff; /* huge drawback: there is no way to set this dynamically on a pseudo element */
+}
+
+div >>> h1, div >>> h2, div >>> h3, div >>> h4, div >>> h5, div >>> h6 {
+  display: inline-block;
+}

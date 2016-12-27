@@ -43,7 +43,7 @@ publish-image  {
   width: calc(100% - 120px);
   height: 120px;
   line-height: 20px;
-  padding: 10px;
+  padding: 10px 1em;
 }
 .story-title {
   font-size: 16px;
@@ -77,10 +77,18 @@ publish-image  {
   flex: 1 1 60px;
 }
 .audio-total > i {
-  /* TODO: this isn't the correct icon */
+  /* TODO: this isn't the correct icon -doesn't matter, this is supposed to be play count anyway #56 */
   display: inline-block;
   transform: rotate(90deg);
   margin-right: -5px;
+}
+
+publish-text-overflow-fade {
+  display: block;
+}
+
+publish-text-overflow-fade >>> div:before {
+  min-height: 20px;
 }
 
 .story-tags {
@@ -103,30 +111,8 @@ publish-image  {
 }
 
 .story-description {
-  padding: 0 10px;
+  padding: 0 1em;
   margin-top: 5px;
   margin-bottom: 10px;
-}
-
-.three-lines {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: 60px;
-  line-height: 20px;
-  -webkit-line-clamp: 3;
-  display: block;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-}
-
-.two-lines {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-height: 40px;
-  line-height: 20px;
-  -webkit-line-clamp: 2;
-  display: block;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
 }
 
