@@ -55,7 +55,7 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
-    if (this.doc['author']['name']) {
+    if (this.doc['author'] && this.doc['author']['name']) {
       this.authorName = this.doc['author']['name'];
     } else if (this.series.has('prx:account')) {
       this.series.follow('prx:account').subscribe(account => this.authorName = account['name']);
