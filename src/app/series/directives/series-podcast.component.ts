@@ -13,6 +13,8 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   categories = [''].concat(CATEGORIES);
   subCategories: string[] = [];
   explicitOpts = ['', 'Explicit', 'Clean'];
+  itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
+  itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
 
   tabSub: Subscription;
   state: string;
