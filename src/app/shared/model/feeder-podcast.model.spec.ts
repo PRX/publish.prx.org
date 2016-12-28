@@ -5,6 +5,7 @@ describe('FeederPodcastModel', () => {
 
   let series = cms.mock('prx:series', {id: 'series1'});
   let dist = series.mock('prx:distributions', {id: 'dist1', kind: 'podcast'});
+  let authorDist = series.mock('prx:accounts', {name: 'Foo'});
 
   beforeEach(() => window.localStorage.clear());
 
@@ -58,6 +59,12 @@ describe('FeederPodcastModel', () => {
     src.set('path', 'the_best_podcast');
     src.save();
     expect(src.publishedUrl).toEqual('http://staging-f.prxu.org/the_best_podcast/feed-rss.xml');
+  });
+
+  it('allows user to override account name for podcast', () => {
+    let doc = authorDist.mock('some-feeder', {author: {name: 'Bar'}});
+    let podcast = new FeederPodcastModel(series, dist, doc);
+    expect(podcast.authorName).toEqual('Bar');
   });
 
 });

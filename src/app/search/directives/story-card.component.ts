@@ -13,9 +13,7 @@ import { StoryModel } from '../../shared';
     </section>
     <section class="story-detail">
       <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
-
-      <h3 *ngIf="seriesLink" class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h3>
-      <h3 *ngIf="!seriesLink" class="series-title">{{seriesTitle}}</h3>
+      <h3 class="series-title">{{seriesTitle}}</h3>
 
       <section class="story-info">
         <span class="duration">{{storyDuration | duration}}</span>
@@ -26,8 +24,10 @@ import { StoryModel } from '../../shared';
     <section class="story-tags">
       <span *ngFor="let tag of storyTags">{{tag}}</span>
     </section>
-    <section class="story-description three-lines" [ngClass]="{'two-lines': storyTags.length > 0 }">
-      {{storyDescription}}
+    <section class="story-description">
+      <publish-text-overflow-fade [numLines]="storyTags.length > 0 ? 2 : 3" lineHeight="20" unit="px">
+        <span title="{{storyDescription}}">{{storyDescription}}</span>
+      </publish-text-overflow-fade>
     </section>
   `
 })
@@ -37,7 +37,6 @@ export class StoryCardComponent implements OnInit {
   @Input() story: StoryModel;
 
   editStoryLink: any[];
-  seriesLink: any[];
 
   storyId: number;
   storyTitle: string;
@@ -80,7 +79,6 @@ export class StoryCardComponent implements OnInit {
 
     if (this.story.parent) {
       this.seriesTitle = this.story.parent['title'];
-      this.seriesLink = ['/series', this.story.parent.id];
     } else {
       this.seriesTitle = this.story.account['name'] || '(Unnamed Account)';
     }
