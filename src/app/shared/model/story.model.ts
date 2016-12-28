@@ -19,7 +19,7 @@ export class StoryModel extends BaseModel {
   public isPublishing: boolean;
   public account: HalDoc;
 
-  SETABLE = ['title', 'shortDescription', 'description', 'tags'];
+  SETABLE = ['title', 'shortDescription', 'description', 'tags', 'publishedAt'];
 
   VALIDATORS = {
     title:            [REQUIRED()],
@@ -103,6 +103,7 @@ export class StoryModel extends BaseModel {
     data.shortDescription = this.shortDescription;
     data.descriptionMd = this.description;
     data.tags = this.splitTags();
+    data.publishedAt = this.publishedAt;
     return data;
   }
 
