@@ -11,7 +11,7 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl', 'authorName'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl', 'authorName', 'publishedUrl'];
   category: string = '';
   subCategory: string = '';
   explicit: string = '';
@@ -93,6 +93,8 @@ export class FeederPodcastModel extends BaseModel {
     }
     data.link = this.link || null;
     data.newFeedUrl = this.newFeedUrl || null;
+    data.publishedUrl = this.publishedUrl || null;
+
     if (this.authorName) {
       data.author = { name: this.authorName };
     }
@@ -122,6 +124,18 @@ export class FeederPodcastModel extends BaseModel {
         model.set(fld, this[fld]);
       }
       this.unstore();
+    }
+  }
+
+  set(field: string, value: any) {
+    super.set(field, value);
+    if (field === 'path' && this.publishedUrl) {
+      let parts = this.publishedUrl.split('/');
+      if (parts.length > 2) {
+        parts[parts.length - 2] = this.path;
+      }
+      this.publishedUrl = parts.join('/');
+      this.set('publishedUrl', this.publishedUrl);
     }
   }
 

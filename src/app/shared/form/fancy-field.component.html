@@ -16,6 +16,7 @@
   </div>
 
   <template [ngIf]="model">
+    <ng-content select=".prefix"></ng-content>
     <input *ngIf="type == 'textinput'" [id]="name" type="text"
       [ngModel]="model[name]" (ngModelChange)="onChange($event)"/>
     <input *ngIf="type == 'number'" [id]="name" type="number"
@@ -26,6 +27,7 @@
       [(ngModel)]="model[name]" (ngModelChange)="onChange($event)">
       <option *ngFor="let opt of select" [value]="opt">{{opt}}</option>
     </select>
+    <ng-content select=".suffix"></ng-content>
   </template>
 
   <template [ngIf]="!model">
