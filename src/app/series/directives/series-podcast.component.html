@@ -21,9 +21,11 @@
           <button [publishCopyInput]="pubFeed">Copy</button>
           <a class="button" target="_blank" rel="noopener" [href]="podcast?.publishedUrl">Open Link</a>
         </publish-fancy-field>
-        <publish-fancy-field label="Preview Feed" small=1>
-          <input type="text" readonly [ngModel]="podcast?.previewUrl" name="previewUrl"/>
-          <a class="button" target="_blank" rel="noopener" [href]="podcast?.previewUrl">Open Link</a>
+
+        <publish-fancy-field class="custom-path" label="Custom Path" textinput [model]="podcast" name="path" small=1>
+          <div class="fancy-hint">An optional custom folder name to use in your PRX published feed url.</div>
+          <span class="prefix">{{urlStart}}</span>
+          <span class="suffix">{{urlEnd}}</span>
         </publish-fancy-field>
       </div>
     </publish-fancy-field>
@@ -54,10 +56,6 @@
 
     <publish-fancy-field label="Homepage Link" required textinput [model]="podcast" name="link">
       <div class="fancy-hint">A link to the homepage for your podcast.</div>
-    </publish-fancy-field>
-
-    <publish-fancy-field label="Vanity Path" textinput [model]="podcast" name="path">
-      <div class="fancy-hint">An optional vanity folder name to use in your PRX published feed url.</div>
     </publish-fancy-field>
 
     <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl">
