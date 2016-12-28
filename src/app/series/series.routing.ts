@@ -6,12 +6,14 @@ import { SeriesComponent } from './series.component';
 import { SeriesBasicComponent } from './directives/series-basic.component';
 import { SeriesTemplatesComponent } from './directives/series-templates.component';
 import { SeriesPodcastComponent } from './directives/series-podcast.component';
+import { SeriesFeedComponent } from './directives/series-feed.component';
 import { FileTemplateComponent } from './directives/file-template.component';
 
 const seriesChildRoutes = [
   { path: '',          component: SeriesBasicComponent },
   { path: 'templates', component: SeriesTemplatesComponent },
-  { path: 'podcast',   component: SeriesPodcastComponent }
+  { path: 'podcast',   component: SeriesPodcastComponent },
+  { path: 'feed',   component: SeriesFeedComponent }
 ];
 
 export const seriesRoutes: Routes = [
@@ -34,6 +36,7 @@ export const seriesComponents: any[] = [
   SeriesBasicComponent,
   SeriesTemplatesComponent,
   SeriesPodcastComponent,
+  SeriesFeedComponent,
   FileTemplateComponent
 ];
 

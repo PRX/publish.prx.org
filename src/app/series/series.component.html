@@ -31,6 +31,7 @@
     <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
     <a routerLinkActive="active" [routerLink]="[base, 'templates']">Audio Templates</a>
     <a routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Distribution</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'feed']">Stories in Feed</a>
   </nav>
   <div class="extras">
     <a *ngIf="storyCount > 0" [routerLink]="['/search', { tab: 'stories', seriesId: id }]">{{storyCount}} {{storyNoun}} &raquo;</a>
