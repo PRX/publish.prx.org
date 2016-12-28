@@ -80,8 +80,6 @@ export class PodcastComponent implements OnDestroy {
         // TODO: how to know which of these versions is the podcast?
         this.story.versions.forEach(v => {
           if (dist.podcast && v.explicit === null) {
-            // TODO: how to know that audio version explicit has not been set?
-            // audio version explicit is empty string when it has not been set, which is a valid value
             v.explicit = dist.podcast.explicit;
           }
         });
