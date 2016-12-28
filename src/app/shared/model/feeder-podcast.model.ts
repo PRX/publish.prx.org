@@ -11,7 +11,7 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl', 'publishedUrl'];
   category: string = '';
   subCategory: string = '';
   explicit: string = '';
@@ -86,6 +86,7 @@ export class FeederPodcastModel extends BaseModel {
     }
     data.link = this.link || null;
     data.newFeedUrl = this.newFeedUrl || null;
+    data.publishedUrl = this.publishedUrl || null;
 
     // default path back to the id
     data.path = this.path || this.id;
@@ -124,6 +125,7 @@ export class FeederPodcastModel extends BaseModel {
         parts[parts.length - 2] = this.path;
       }
       this.publishedUrl = parts.join('/');
+      this.set('publishedUrl', this.publishedUrl);
     }
   }
 
