@@ -39,13 +39,13 @@ export class AudioVersionModel extends BaseModel {
     this.setLabel();
   }
 
-  setLabel() {
+  private setLabel() {
     if (this.doc && this.doc['label']) {
-      this.set('label', this.doc['label']); // probably already set to this
+      this.label = this.doc['label']; // probably already set to this
     } else if (this.template) {
-      this.set('label', this.template['label'] || AudioVersionModel.DEFAULT_LABEL);
+      this.label = this.template['label'] || AudioVersionModel.DEFAULT_LABEL;
     } else {
-      this.set('label', AudioVersionModel.DEFAULT_LABEL);
+      this.label = AudioVersionModel.DEFAULT_LABEL;
     }
   }
 
