@@ -56,6 +56,7 @@ describe('FeederPodcastModel', () => {
     let src = new FeederPodcastModel(series, dist);
     src.publishedUrl = 'http://staging-f.prxu.org/doesnotsaythebestpodcast/feed-rss.xml';
     src.set('path', 'the_best_podcast');
+    src.save();
     expect(src.publishedUrl).toEqual('http://staging-f.prxu.org/the_best_podcast/feed-rss.xml');
   });
 
