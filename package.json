@@ -47,6 +47,7 @@
     "evaporate": "^1.6.3",
     "express": "^4.14.0",
     "express-http-proxy": "^0.10.1",
+    "moment": "^2.17.1",
     "morgan": "^1.7.0",
     "newrelic": "1.34.0",
     "ng2-dragula": "1.2.1",

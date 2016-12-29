@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
+import { DatepickerComponent } from '../../shared/';
 
 @Component({
   selector: 'publish-story-hero',
@@ -42,6 +43,9 @@ import { StoryModel } from '../../shared';
               <p>Correct them before saving</p>
             </div>
           </publish-button>
+          <publish-datepicker *ngIf="!story.changed() && !this.story.publishedAt" 
+            [date]="pendingPublishedAt" (onDateChange)="pendingPublishedAt">            
+          </publish-datepicker>
           <publish-button [model]="story" [visible]="!story.changed()"
              [working]="story.isPublishing" (click)="togglePublish()" orange=1>
             {{story.publishedAt ? 'Unpublish' : 'Publish'}}
@@ -59,6 +63,8 @@ export class StoryHeroComponent implements OnInit, OnChanges {
   @Input() story: StoryModel;
 
   series: HalDoc;
+
+  private _pendingPublishedAt: Date;
 
   constructor(private router: Router) {}
 
@@ -93,7 +99,21 @@ export class StoryHeroComponent implements OnInit, OnChanges {
     this.story.discard();
   }
 
+  get pendingPublishedAt(): Date {
+    if (!this.story.publishedAt && !this._pendingPublishedAt) {
+      this._pendingPublishedAt = new Date();
+    }
+    return this.story.publishedAt ? this.story.publishedAt : this._pendingPublishedAt;
+  }
+
+  set pendingPublishedAt(date: Date) {
+    this._pendingPublishedAt = date;
+  }
+
   togglePublish() {
+    if (!this.story.publishedAt) {
+      this.story.set('publishedAt', this._pendingPublishedAt);
+    }
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
       // nothing to do
     });
