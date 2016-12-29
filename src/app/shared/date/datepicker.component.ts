@@ -4,7 +4,13 @@ import * as moment from 'moment';
 
 @Component({
   selector: 'publish-datepicker',
-  template: `<input type="text" #datepicker [value]="formattedDate">`
+  template: `
+    <span class="input-group">
+      <input type="text" #datepicker [value]="formattedDate">
+      <span class="input-group-addon" (click)="datepicker.click()"><img src="assets/images/calendar.svg"></span>
+    </span>
+  `,
+  styleUrls: ['datepicker.component.css']
 })
 
 export class DatepickerComponent implements AfterViewInit{
