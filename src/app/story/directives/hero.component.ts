@@ -43,9 +43,19 @@ import { DatepickerComponent } from '../../shared/';
               <p>Correct them before saving</p>
             </div>
           </publish-button>
-          <publish-datepicker *ngIf="!story.changed() && !this.story.publishedAt" 
-            [date]="pendingPublishedAt" (onDateChange)="pendingPublishedAt">            
-          </publish-datepicker>
+          <span *ngIf="!story.changed() && !this.story.publishedAt">
+            <publish-datepicker 
+              [date]="pendingPublishedAt" (onDateChange)="pendingPublishedAt">            
+            </publish-datepicker>
+            <select
+              [ngModel]="pendingPublishedAtHour" (ngModelChange)="pendingPublishedAtHour">
+              <option *ngFor="let h of hourOptions" [value]="h">{{h}}</option>
+            </select> :
+            <select
+              [ngModel]="pendingPublishedAtMinutes" (ngModelChange)="pendingPublishedAtMinutes">
+              <option *ngFor="let m of minuteOptions" [value]="m">{{m}}</option>
+            </select>
+          </span>
           <publish-button [model]="story" [visible]="!story.changed()"
              [working]="story.isPublishing" (click)="togglePublish()" orange=1>
             {{story.publishedAt ? 'Unpublish' : 'Publish'}}
@@ -65,6 +75,8 @@ export class StoryHeroComponent implements OnInit, OnChanges {
   series: HalDoc;
 
   private _pendingPublishedAt: Date;
+  hourOptions: string[] = new Array(24).fill('').map((x, i) => i < 10 ? '0' + i : '' + i);
+  minuteOptions = ['00', '30'];
 
   constructor(private router: Router) {}
 
@@ -101,13 +113,43 @@ export class StoryHeroComponent implements OnInit, OnChanges {
 
   get pendingPublishedAt(): Date {
     if (!this.story.publishedAt && !this._pendingPublishedAt) {
+      // really only want to set this once and story.publishedAt not ready when instantiated
       this._pendingPublishedAt = new Date();
     }
-    return this.story.publishedAt ? this.story.publishedAt : this._pendingPublishedAt;
+    if (this.story.publishedAt && typeof this.story.publishedAt === "string") {
+      // story.publishedAt supposed to be a Date but it's actually a string ಠ_ಠ
+      // so assigning it to the Date value so it doesn't have to parse the string to a Date over and over and over again
+      this.story.publishedAt = new Date(this.story.publishedAt);
+      return this.story.publishedAt;
+    } else if (this.story.publishedAt) {
+      return this.story.publishedAt;
+    } else {
+      return this._pendingPublishedAt;
+    }
   }
 
   set pendingPublishedAt(date: Date) {
     this._pendingPublishedAt = date;
+  }
+
+  get pendingPublishedAtHour(): string {
+    if (this.pendingPublishedAt.getMinutes() <= 30) {
+      return '' + this.pendingPublishedAt.getHours();
+    } else {
+      return this.pendingPublishedAt.getHours() + 1 <= 23 ? '' + (this.pendingPublishedAt.getHours() + 1) : '00';
+    }
+  }
+
+  set pendingPublishedAtHour(hour: string) {
+    this._pendingPublishedAt.setHours(Number(hour));// TODO: timezone considerations
+  }
+
+  get pendingPublishedAtMinutes(): string {
+    return this.pendingPublishedAt.getMinutes() <= 30 ? '30' : '00';
+  }
+
+  set pendingPublishedAtMinutes(minutes: string) {
+    this._pendingPublishedAt.setMinutes(Number(minutes));
   }
 
   togglePublish() {
