@@ -38,9 +38,7 @@ export class DatepickerComponent implements AfterViewInit{
       }
     };
     if (this.date) {
-      // publishedAt is declared as a Date. why is it a string?
-      let defaultDate = new Date(this.date.valueOf());
-      options['defaultDate'] = (defaultDate.getMonth() + 1) + '/' + defaultDate.getDate() + '/' + defaultDate.getFullYear();
+      options['defaultDate'] = new Date(this.date.valueOf());
       options['setDefaultDate'] = true;
     }
     this.picker = new Pikaday(options);
