@@ -7,6 +7,7 @@ const DEFAULTS = {
   CMS_TTL: 1, // 1 second
   CMS_ROOT_TTL: 3600, // 1 hour
   CMS_USE_LOCALSTORAGE: false,
+  FEEDER_HOST: 'https://feeder.prx.org',
   AUTH_HOST: 'https://id.prx.org',
   AUTH_CLIENT_ID: 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D',
   BUCKET_FOLDER: 'dev'
@@ -25,6 +26,7 @@ export class Env {
   public static get CMS_TTL():               number { return getVar('CMS_TTL'); }
   public static get CMS_ROOT_TTL():          number { return getVar('CMS_ROOT_TTL'); }
   public static get CMS_USE_LOCALSTORAGE(): boolean { return getVar('CMS_USE_LOCALSTORAGE'); }
+  public static get FEEDER_HOST():           string { return getVar('FEEDER_HOST'); }
   public static get AUTH_HOST():             string { return getVar('AUTH_HOST'); }
   public static get AUTH_CLIENT_ID():        string { return getVar('AUTH_CLIENT_ID'); }
   public static get BUCKET_NAME():           string { return getVar('BUCKET_NAME'); }
