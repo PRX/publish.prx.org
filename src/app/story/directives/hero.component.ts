@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
-import { DatepickerComponent } from '../../shared/';
 
 @Component({
   selector: 'publish-story-hero',
@@ -48,11 +47,11 @@ import { DatepickerComponent } from '../../shared/';
               [date]="pendingPublishedAt" (onDateChange)="pendingPublishedAt">            
             </publish-datepicker>
             <select
-              [ngModel]="pendingPublishedAtHour" (ngModelChange)="pendingPublishedAtHour">
+              [(ngModel)]="pendingPublishedAtHour">
               <option *ngFor="let h of hourOptions" [value]="h">{{h}}</option>
             </select> :
             <select
-              [ngModel]="pendingPublishedAtMinutes" (ngModelChange)="pendingPublishedAtMinutes">
+              [(ngModel)]="pendingPublishedAtMinutes">
               <option *ngFor="let m of minuteOptions" [value]="m">{{m}}</option>
             </select>
           </span>
@@ -113,7 +112,7 @@ export class StoryHeroComponent implements OnInit, OnChanges {
 
   get pendingPublishedAt(): Date {
     if (!this.story.publishedAt && !this._pendingPublishedAt) {
-      // really only want to set this once and story.publishedAt not ready when instantiated
+      // really only want to set this once and story.publishedAt not ready when component is instantiated
       this._pendingPublishedAt = new Date();
     }
     if (this.story.publishedAt && typeof this.story.publishedAt === "string") {
@@ -134,14 +133,14 @@ export class StoryHeroComponent implements OnInit, OnChanges {
 
   get pendingPublishedAtHour(): string {
     if (this.pendingPublishedAt.getMinutes() <= 30) {
-      return '' + this.pendingPublishedAt.getHours();
+      return this.pendingPublishedAt.getHours() < 10 ? '0' + this.pendingPublishedAt.getHours() :'' + this.pendingPublishedAt.getHours();
     } else {
       return this.pendingPublishedAt.getHours() + 1 <= 23 ? '' + (this.pendingPublishedAt.getHours() + 1) : '00';
     }
   }
 
   set pendingPublishedAtHour(hour: string) {
-    this._pendingPublishedAt.setHours(Number(hour));// TODO: timezone considerations
+    this._pendingPublishedAt.setHours(Number(hour));
   }
 
   get pendingPublishedAtMinutes(): string {
