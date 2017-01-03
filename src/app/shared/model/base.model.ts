@@ -1,11 +1,12 @@
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseInvalid } from './invalid';
 
-interface ValidatorMap { [key: string]: BaseInvalid[]; }
-interface RelatedMap   { [key: string]: Observable<any>; }
-interface InvalidMap   { [key: string]: string; }
-interface ChangedMap   { [key: string]: boolean; }
+interface ValidatorMap  { [key: string]: BaseInvalid[]; }
+interface RelatedMap    { [key: string]: Observable<any>; }
+interface RelatedLoader { [key: string]: Observable<BaseModel | BaseModel[]>; }
+interface InvalidMap    { [key: string]: string; }
+interface ChangedMap    { [key: string]: boolean; }
 
 /**
  * Base class for modeling/validating haldocs
@@ -22,10 +23,13 @@ export abstract class BaseModel {
   public lastStored: Date;
 
   public SETABLE: string[] = [];
-  public RELATIONS: string[] = [];
   public VALIDATORS: ValidatorMap = {};
   public invalidFields: InvalidMap = {};
   public changedFields: ChangedMap = {};
+
+  public RELATIONS: string[] = [];
+  private relatedReplays: RelatedLoader = {};
+  private relatedLoaders: RelatedLoader = {};
 
   abstract key(): string;
   abstract related(): RelatedMap;
@@ -49,14 +53,11 @@ export abstract class BaseModel {
     this.restore();
     this.revalidate();
 
-    // optionally load related models
+    // setup cold observables for related models, and optionally preload them
+    this.relatedLoaders = this.related();
+    this.RELATIONS = Object.keys(this.relatedLoaders);
     if (loadRelated) {
-      this.RELATIONS = [];
-      let related = this.related() || {};
-      for (let key of Object.keys(related)) {
-        related[key].subscribe((value: any) => { this[key] = value; });
-        this.RELATIONS.push(key);
-      }
+      this.loadRelated();
     }
   }
 
@@ -105,6 +106,25 @@ export abstract class BaseModel {
         return true;
       });
     });
+  }
+
+  loadRelated(relName?: string, force = false): Observable<BaseModel | BaseModel[]> {
+    if (relName && !this.relatedLoaders[relName]) {
+      return Observable.throw(new Error(`Unknown model related: ${relName}`));
+    } else if (relName) {
+      if (force || !this.relatedReplays[relName]) {
+        let relValue = new ReplaySubject<any>(1);
+        this.relatedLoaders[relName].subscribe(v => {
+          this[relName] = v;
+          relValue.next(v);
+        });
+        this.relatedReplays[relName] = relValue;
+      }
+      return this.relatedReplays[relName];
+    } else {
+      let allRelated = this.RELATIONS.map(r => this.loadRelated(r, force).first());
+      return Observable.forkJoin(allRelated).map(relateds => null);
+    }
   }
 
   saveRelated(): Observable<boolean[]> {
