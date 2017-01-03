@@ -30,10 +30,10 @@ describe('ImageLoaderComponent', () => {
   describe('from src', () => {
 
     cit('renders the image src', (fix, el, comp, done) => {
-      comp.src = 'http://placehold.it/10x10';
+      comp.src = 'http://fillmurray.com/10/10';
       waitFor(comp, 'onLoad', () => {
-        expect(el).toQueryAttr('img', 'src', 'http://placehold.it/10x10');
-        expect(getBackground(el)).toEqual('http://placehold.it/10x10');
+        expect(el).toQueryAttr('img', 'src', 'http://fillmurray.com/10/10');
+        expect(getBackground(el)).toEqual('http://fillmurray.com/10/10');
         done();
       });
       fix.detectChanges();
@@ -58,10 +58,10 @@ describe('ImageLoaderComponent', () => {
   describe('from haldoc', () => {
 
     cit('follows the prx:image', (fix, el, comp, done) => {
-      comp.imageDoc = mockDoc('http://placehold.it/10x10');
+      comp.imageDoc = mockDoc('http://fillmurray.com/10/10');
       waitFor(comp, 'onLoad', () => {
-        expect(el).toQueryAttr('img', 'src', 'http://placehold.it/10x10');
-        expect(getBackground(el)).toEqual('http://placehold.it/10x10');
+        expect(el).toQueryAttr('img', 'src', 'http://fillmurray.com/10/10');
+        expect(getBackground(el)).toEqual('http://fillmurray.com/10/10');
         done();
       });
 
