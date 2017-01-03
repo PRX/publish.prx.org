@@ -67,12 +67,12 @@ describe('BaseModel', () => {
         return {foo: Observable.of('bar')};
       });
       base.init(null, null, false);
-      expect(base.related).not.toHaveBeenCalled();
+      expect(base.RELATIONS).toEqual(['foo']);
+      expect(base['foo']).toBeUndefined();
 
       base.init();
-      expect(base.related).toHaveBeenCalled();
-      expect(base['foo']).toEqual('bar');
       expect(base.RELATIONS).toEqual(['foo']);
+      expect(base['foo']).toEqual('bar');
     });
 
   });
@@ -334,7 +334,9 @@ describe('BaseModel', () => {
     });
 
     it('discards child models and removes new records', () => {
-      base.RELATIONS = ['foo'];
+      spyOn(base, 'related').and.callFake(() => {
+        return {foo: Observable.of('bar')};
+      });
       base['foo'] = [
         {id: 1, isNew: true, discard: () => true},
         {id: 2, isNew: true, discard: () => false},
