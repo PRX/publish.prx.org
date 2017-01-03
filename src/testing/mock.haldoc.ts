@@ -108,6 +108,7 @@ export class MockHalDoc extends HalDoc {
         sub.error(this.error(`Expected mocked object at ${rel} - got array`));
       } else if (this.MOCKS[rel]) {
         sub.next(this.MOCKS[rel]);
+        sub.complete();
       } else {
         sub.error(this.error(`Un-mocked request for rel ${rel}`));
       }
@@ -120,6 +121,7 @@ export class MockHalDoc extends HalDoc {
         sub.error(this.nonLoggingError(this.ERRORS[rel]));
       } else if (this.MOCKS[rel] && this.MOCKS[rel] instanceof Array) {
         sub.next(this.MOCKS[rel]);
+        sub.complete();
       } else if (this.MOCKS[rel]) {
         sub.error(this.error(`Expected mocked array at ${rel} - got object`));
       } else {
