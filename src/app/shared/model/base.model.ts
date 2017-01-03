@@ -61,11 +61,16 @@ export abstract class BaseModel {
     }
   }
 
-  set(field: string, value: any) {
+  set(field: string, value: any, forceOriginal = false) {
     this[field] = value;
     if (this.SETABLE.indexOf(field) > -1) {
+      if (forceOriginal) {
+        this.original[field] = value;
+        this.changedFields[field] = false;
+      } else {
+        this.changedFields[field] = this.checkChanged(field, value);
+      }
       this.invalidFields[field] = this.invalidate(field, value);
-      this.changedFields[field] = this.checkChanged(field, value);
       this.store();
     }
   }
@@ -164,10 +169,10 @@ export abstract class BaseModel {
     this.lastStored = null;
     this.isDestroy = false;
     if (!this.doc && this.original) {
-     for (let key of Object.keys(this.original)) {
-       this[key] = this.original[key];
-     }
-   }
+      for (let key of Object.keys(this.original)) {
+        this[key] = this.original[key];
+      }
+    }
     this.init(this.parent, this.doc, false);
     this.getRelated().forEach(model => {
       if (model.discard() !== false && model.isNew) {

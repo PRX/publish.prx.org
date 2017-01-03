@@ -108,6 +108,60 @@ describe('BaseModel', () => {
       expect(base.changedFields['foo']).toEqual('did-checkChanged');
     });
 
+    it('force updates the original value', () => {
+      base.SETABLE = ['someattribute'];
+      expect(base.changed('someattribute')).toEqual(false);
+
+      base.set('someattribute', 'foo');
+      expect(base.someattribute).toEqual('foo');
+      expect(base.changed('someattribute')).toEqual(true);
+
+      base.set('someattribute', 'bar', true);
+      expect(base.someattribute).toEqual('bar');
+      expect(base.changed('someattribute')).toEqual(false);
+    });
+
+  });
+
+  describe('loadRelated', () => {
+
+    beforeEach(() => {
+      let fooCount = 1, barCount = 1;
+      let foo = Observable.create(sub => sub.next(fooCount++));
+      let bar = Observable.create(sub => sub.next(barCount++));
+      spyOn(base, 'related').and.callFake(() => { return {foo: foo, bar: bar}; });
+      base.init(null, null, false);
+    });
+
+    it('loads all relations', () => {
+      let done = false;
+      base.loadRelated().subscribe(() => done = true);
+      expect(done).toEqual(true);
+      expect(base['foo']).toEqual(1);
+      expect(base['bar']).toEqual(1);
+    });
+
+    it('loads a single relation', () => {
+      let val = null;
+      base.loadRelated('foo').subscribe(v => val = v);
+      expect(val).toEqual(1);
+      expect(base['foo']).toEqual(1);
+      expect(base['bar']).toBeUndefined();
+    });
+
+    it('replays relations', () => {
+      base.loadRelated('foo').subscribe(() => null);
+      base.loadRelated('foo').subscribe(() => null);
+      base.loadRelated('foo').subscribe(() => null);
+      expect(base['foo']).toEqual(1);
+    });
+
+    it('forces reloading a relation', () => {
+      base.loadRelated('foo').subscribe(() => null);
+      base.loadRelated('foo', true).subscribe(() => null);
+      expect(base['foo']).toEqual(2);
+    });
+
   });
 
   describe('save', () => {
