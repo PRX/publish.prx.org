@@ -1,0 +1,12 @@
+.public {
+  background-color: blue;
+}
+
+.futurePublic {
+  background-color: yellow;
+
+}
+
+.private {
+  background-color: red;
+}

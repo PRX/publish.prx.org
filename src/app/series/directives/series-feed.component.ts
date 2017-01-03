@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DistributionModel, SeriesModel, StoryModel, TabService } from '../../shared';
+import { HalDoc } from '../../core';
 
 @Component({
   template: `
@@ -12,9 +13,23 @@ import { DistributionModel, SeriesModel, StoryModel, TabService } from '../../sh
       </div>
 
       <section *ngIf="!noStories">
-        <h4>Here are your published stories as they appear in your podcast feed.</h4>
-        <ul>
-          <li *ngFor="let s of stories">
+        <h4>Here are your private stories. They do not appear in your podcast feed.</h4>
+        <ul class="private">
+          <li *ngFor="let s of privateStories">
+            <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
+            <p class="hint">Private.</p>
+          </li>
+        </ul>
+        <h4>Here are your stories set to be published in the future. </h4>
+        <ul class="futurePublic">
+          <li *ngFor="let s of futurePublicStories">
+            <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
+            <p class="hint">To be published {{s.pubDate}}.</p>
+          </li>
+        </ul>
+        <h4>Here are your published stories as they currently appear in your podcast feed.</h4>
+        <ul class="public">
+          <li *ngFor="let s of publicStories">
             <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
             <p class="hint">Published {{s.pubDate}}.</p>
           </li>
@@ -22,14 +37,16 @@ import { DistributionModel, SeriesModel, StoryModel, TabService } from '../../sh
       </section>
     </section>
   `,
-  styleUrls: ['./series-basic.component.css']
+  styleUrls: ['./series-feed.component.css']
 })
 
 export class SeriesFeedComponent implements OnDestroy {
 
   noStories: boolean;
   series: SeriesModel;
-  stories: StoryModel[];
+  publicStories: StoryModel[];
+  futurePublicStories: StoryModel[];
+  privateStories: StoryModel[];
   podcast: DistributionModel;
   tabSub: Subscription;
 
@@ -47,22 +64,46 @@ export class SeriesFeedComponent implements OnDestroy {
         .parent
         .followItems('prx:stories', { sorts: 'updated_at:desc' })
         .subscribe((docs) => {
-          this.stories = docs
-            .filter(doc => doc['publishedAt'])
+          if (docs.length === 0) {
+            this.noStories = true;
+            return;
+          }
+          this.publicStories = docs
+            .filter(doc => this.publicStoryDoc(doc))
             .map((doc) => {
               let story = new StoryModel(this.podcast.parent, doc, false);
               story['pubDate'] = story.publishedAt.toLocaleDateString();
               return story;
             });
-          if (this.stories.length === 0) {
-            this.noStories = true;
-          }
+          this.futurePublicStories = docs
+            .filter(doc => this.futurePublicStoryDoc(doc))
+            .map((doc) => {
+              let story = new StoryModel(this.podcast.parent, doc, false);
+              story['pubDate'] = story.publishedAt.toLocaleDateString();
+              return story;
+            });
+          this.privateStories = docs
+            .filter(doc => this.privateStoryDoc(doc))
+            .map((doc) => {
+               return new StoryModel(this.podcast.parent, doc, false);
+            });
         });
   }
 
-
   ngOnDestroy(): any {
     this.tabSub.unsubscribe();
+  }
+
+  publicStoryDoc(doc: HalDoc): boolean {
+    return doc['publishedAt'] && new Date(doc['publishedAt']) <= new Date();
+  }
+
+  futurePublicStoryDoc(doc: HalDoc): boolean {
+    return doc['publishedAt'] && new Date(doc['publishedAt']) > new Date();
+  }
+
+  privateStoryDoc(doc: HalDoc): boolean {
+    return !doc['publishedAt'];
   }
 
 }
