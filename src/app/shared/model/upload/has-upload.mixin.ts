@@ -10,17 +10,17 @@ import { HalDoc } from '../../../core';
  *       // HasUpload (and also in SETABLE)
  *       hasUploadMap: string;
  *       getUploads: (rel: string) => Observable<(HalDoc|string)[]>;
- *       setUploads: (rel: string, uuids: string[]) => void;
+ *       setUploads: (rel: string, uuids?: string[]) => void;
  * (4) apply the mixins after your class:
  *       applyMixins(YourModel, [HasUpload]);
  */
-export class HasUpload {
+export abstract class HasUpload {
 
   // re-define BaseModel accessors this class needs
-  doc: HalDoc;
-  SETABLE: string[];
-  hasUploadMap: string;
-  set: (field: string, value: any) => void;
+  abstract doc: HalDoc;
+  abstract SETABLE: string[];
+  abstract hasUploadMap: string;
+  abstract set: (field: string, value: any) => void;
 
   getUploads(rel: string): Observable<(HalDoc|string)[]> {
     if (this.SETABLE.indexOf('hasUploadMap') < 0) {
@@ -33,15 +33,24 @@ export class HasUpload {
 
     // concat to stored docs
     if (this.doc && this.doc.has(rel)) {
-      return this.doc.followList(rel).map(docs => docs.concat(uuids));
+      if (this.doc.has(rel, true)) {
+        return this.doc.followList(rel).map(docs => docs.concat(uuids));
+      } else {
+        return this.doc.followItems(rel).map(docs => docs.concat(uuids));
+      }
     } else {
       return Observable.of(uuids);
     }
   }
 
-  setUploads(rel: string, uuids: string[]) {
+  setUploads(rel: string, uuids?: string[]) {
+    if (this.SETABLE.indexOf('hasUploadMap') < 0) {
+      this.SETABLE.push('hasUploadMap');
+    }
+
+    // parse current uuids and sort additions
     let uuidMap = this.hasUploadMap ? JSON.parse(this.hasUploadMap) : {};
-    let ordered = uuids.filter(u => u).sort();
+    let ordered = (uuids || []).filter(u => u).sort();
 
     // unset 0-length uuids
     if (ordered && ordered.length) {

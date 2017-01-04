@@ -108,9 +108,9 @@ export class HalDoc {
     }
   }
 
-  has(rel: string): boolean {
+  has(rel: string, mustBeList = false): boolean {
     if (this['_embedded'] && this['_embedded'][rel]) {
-      return true;
+      return mustBeList ? (this['_embedded'][rel] instanceof Array) : true;
     } else if (this['_links'] && this['_links'][rel]) {
       return true;
     } else {
