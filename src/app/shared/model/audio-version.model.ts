@@ -11,7 +11,7 @@ export class AudioVersionModel extends BaseModel {
   public id: number;
   public uploads: string = '';
   public label: string;
-  public explicit: string = null;
+  public explicit: string = '';
   public files: AudioFileModel[];
 
   // save in-progress uploads to localstorage
@@ -108,11 +108,8 @@ export class AudioVersionModel extends BaseModel {
       case 'clean':
         this.explicit = 'Clean';
         break;
-      case '':
-        this.explicit = '';
-        break;
       default:
-        this.explicit = null;
+        this.explicit = '';
         break;
     }
   }
@@ -127,11 +124,8 @@ export class AudioVersionModel extends BaseModel {
       case 'Clean':
         data.explicit = 'clean';
         break;
-      case '':
-        data.explicit = '';
-        break;
       default:
-        data.explicit = null;
+        data.explicit = '';
         break;
     }
     if (this.isNew && this.template) {
