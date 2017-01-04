@@ -1,12 +1,25 @@
+h4 {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 400;
+  margin: 6px 0;
+  color: #343434;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
 .public {
-  background-color: blue;
+  color: #000000;
 }
 
 .futurePublic {
-  background-color: yellow;
-
+  color: #ffa500;
 }
 
 .private {
-  background-color: red;
+  color: #ee4d3e;
 }
