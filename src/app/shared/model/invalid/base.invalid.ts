@@ -42,3 +42,25 @@ export const FALSEY = (msg: string): BaseInvalid => {
     return value ? msg : null;
   };
 };
+
+export const TOKENY = (msg?: string): BaseInvalid => {
+  return <BaseInvalid> (key: string, value: any) => {
+    if (value && !value.match(/^[a-zA-Z0-9_]+$/)) {
+      return msg || `${key} is not a valid token - use letters, numbers and underscores only`;
+    } else {
+      return null;
+    }
+  };
+};
+
+// basic url matching ... not entirely accurate, but hopefully good enough
+const urlPattern = /(http|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
+export const URL = (msg?: string): BaseInvalid => {
+  return <BaseInvalid> (key: string, value: any) => {
+    if (value && !value.match(urlPattern)) {
+      return msg || `${key} is not a valid URL`;
+    } else {
+      return null;
+    }
+  };
+};

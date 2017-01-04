@@ -22,6 +22,30 @@ describe('HalRemote', () => {
     HalRemoteCache.clear();
   });
 
+  describe('switchHost', () => {
+
+    it('creates a new remote for new hosts in absolute links', () => {
+      link.href = 'https://some.where.else/with/a/path.jpg';
+      let newRemote = remote.switchHost(link);
+      expect(newRemote).not.toEqual(remote);
+      expect(newRemote.host).toEqual('https://some.where.else');
+    });
+
+    it('returns itself if the host has not changed', () => {
+      let newRemote = remote.switchHost(link);
+      expect(newRemote).toEqual(remote);
+
+      link.href = 'http://thehost/and/a/path.mp3';
+      newRemote = remote.switchHost(link);
+      expect(newRemote).toEqual(remote);
+
+      link.href = null;
+      newRemote = remote.switchHost(link);
+      expect(newRemote).toEqual(remote);
+    });
+
+  });
+
   describe('expand', () => {
 
     it('returns the full url', () => {

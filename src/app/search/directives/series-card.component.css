@@ -39,27 +39,15 @@ publish-image {
 .series-detail {
   position: absolute;
   left: 192px;
-  padding: 10px;
-}
-.series-genre {
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: #a3a3a3;
-  font-size: 8px;
-  line-height: 10px;
-  font-weight: 600;
+  padding: 15px 10px;
 }
 .series-description {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 20px;
-  max-height: 160px;
-  -webkit-line-clamp: 8;
+  height: 160px;
   display: block;
   display: -webkit-box;
   -webkit-box-orient: vertical;
 }
-h2 {
+.series-title {
   position: absolute;
   bottom: 22px;
   left: 0;
@@ -67,9 +55,9 @@ h2 {
   padding: 0 10px;
   z-index: 11;
   color: #fff;
-  max-height: 42px;
   font-weight: 100;
   font-size: 16px;
+  max-height: 42px;
   line-height: 21px;
   overflow: hidden;
 }

@@ -19,8 +19,9 @@ import { SeriesModel } from '../../shared';
       </p>
     </section>
     <section class="series-detail">
-      <p class="series-genre">{{GENRE}}</p>
-      <p class="series-description">{{seriesDescription}}</p>
+      <publish-text-overflow-fade class="series-description" numLines="8" lineHeight="20" unit="px">
+        {{seriesDescription}}
+      </publish-text-overflow-fade>
     </section>
   `
 })
@@ -36,24 +37,13 @@ export class SeriesCardComponent implements OnInit {
   seriesEpisodeCount: number;
   seriesUpdatedAt: Date;
   seriesDescription: string;
-  seriesGenre: string;
-  seriesSubGenre: string;
 
   ngOnInit() {
     this.seriesId = this.series.id;
     this.seriesTitle = this.series.title;
     this.seriesEpisodeCount = this.series.doc.count('prx:stories') || 0;
     this.seriesUpdatedAt = this.series.updatedAt;
-
     this.seriesDescription = this.series.shortDescription;
-    /* TODO: add support when series has genre and subgenre
-    this.seriesGenre = this.series.genre;
-    this.seriesSubGenre = this.series.subgenre;*/
-
     this.seriesLink = ['/series', this.series.id];
-  }
-
-  get GENRE(): string {
-    return this.seriesSubGenre ? this.seriesGenre + ' - ' + this.seriesSubGenre : this.seriesGenre;
   }
 }

@@ -1,7 +1,7 @@
 import { cit, create, By, stubPipe } from '../../../testing';
+import { MockHalDoc } from '../../../testing/mock.haldoc';
 import { WysiwygComponent } from './wysiwyg.component';
 import { StoryModel } from '../model/story.model';
-import { HalDoc } from '../../core/cms/haldoc';
 
 describe('WysiwygComponent', () => {
 
@@ -10,9 +10,9 @@ describe('WysiwygComponent', () => {
   stubPipe('capitalize');
 
   cit('shows markdown formatted as html', (fix, el, comp) => {
-    let initialState = {description: '**bold text**'};
+    let initialState = {descriptionMd: '**bold text**'};
     comp.name = 'description';
-    comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
+    comp.model = new StoryModel(undefined, new MockHalDoc(initialState, undefined), false);
     comp.content = comp.model[comp.name];
     comp.images = [];
     fix.detectChanges();
@@ -21,14 +21,14 @@ describe('WysiwygComponent', () => {
   });
 
   cit('doesn\'t add empty links', (fix, el, comp) => {
-    let initialState = {description: 'initial state'};
+    let initialState = {descriptionMd: 'initial state'};
     comp.name = 'description';
-    comp.model = new StoryModel(undefined, new HalDoc(initialState, undefined), false);
+    comp.model = new StoryModel(undefined, new MockHalDoc(initialState, undefined), false);
     comp.content = comp.model[comp.name];
     comp.images = [];
     fix.detectChanges();
     comp.linkURL = '';
     comp.createLink();
-    expect(comp.model[comp.name]).toEqual(initialState.description);
+    expect(comp.model[comp.name]).toEqual(initialState.descriptionMd);
   });
 });

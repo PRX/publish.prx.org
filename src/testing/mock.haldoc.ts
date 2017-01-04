@@ -101,33 +101,37 @@ export class MockHalDoc extends HalDoc {
   }
 
   follow(rel: string, params: {} = null): HalObservable<MockHalDoc> {
-    if (this.ERRORS[rel]) {
-      return <HalObservable<MockHalDoc>> this.nonLoggingError(this.ERRORS[rel]);
-    } else if (this.MOCKS[rel]) {
-      if (this.MOCKS[rel] instanceof Array) {
-        return <HalObservable<MockHalDoc>>
-          this.error(`Expected mocked object at ${rel} - got array`);
+    return Observable.create(sub => {
+      if (this.ERRORS[rel]) {
+        sub.error(this.nonLoggingError(this.ERRORS[rel]));
+      } else if (this.MOCKS[rel] && this.MOCKS[rel] instanceof Array) {
+        sub.error(this.error(`Expected mocked object at ${rel} - got array`));
+      } else if (this.MOCKS[rel]) {
+        sub.next(this.MOCKS[rel]);
+        sub.complete();
       } else {
-        return <HalObservable<MockHalDoc>> Observable.of(this.MOCKS[rel]);
+        sub.error(this.error(`Un-mocked request for rel ${rel}`));
       }
-    } else {
-      return <HalObservable<MockHalDoc>> this.error(`Un-mocked request for rel ${rel}`);
-    }
+    });
   }
 
   followList(rel: string, params: {} = null): HalObservable<MockHalDoc[]> {
-    if (this.ERRORS[rel]) {
-      return <HalObservable<MockHalDoc[]>> this.nonLoggingError(this.ERRORS[rel]);
-    } else if (this.MOCKS[rel]) {
-      if (!(this.MOCKS[rel] instanceof Array)) {
-        return <HalObservable<MockHalDoc[]>>
-          this.error(`Expected mocked array at ${rel} - got object`);
+    return Observable.create(sub => {
+      if (this.ERRORS[rel]) {
+        sub.error(this.nonLoggingError(this.ERRORS[rel]));
+      } else if (this.MOCKS[rel] && this.MOCKS[rel] instanceof Array) {
+        sub.next(this.MOCKS[rel]);
+        sub.complete();
+      } else if (this.MOCKS[rel]) {
+        sub.error(this.error(`Expected mocked array at ${rel} - got object`));
       } else {
-        return <HalObservable<MockHalDoc[]>> Observable.of(this.MOCKS[rel]);
+        sub.error(this.error(`Un-mocked request for rel ${rel}`));
       }
-    } else {
-      return <HalObservable<MockHalDoc[]>> this.error(`Un-mocked request for rel ${rel}`);
-    }
+    });
+  }
+
+  followLink(linkObj: any, params: any = {}): HalObservable<HalDoc> {
+    return this.follow(linkObj.href, params);
   }
 
   private nonLoggingError(msg: string): any {
