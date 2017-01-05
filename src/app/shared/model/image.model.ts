@@ -11,11 +11,8 @@ export class ImageModel extends UploadableModel {
 
   SETABLE = ['caption', 'credit'];
 
-  private grandparent: HalDoc;
-
-  constructor(grandparent: HalDoc, parent?: HalDoc, file?: HalDoc | Upload | string) {
+  constructor(parent?: HalDoc, file?: HalDoc | Upload | string) {
     super();
-    this.grandparent = grandparent;
     this.initUpload(parent, file);
   }
 
@@ -36,12 +33,10 @@ export class ImageModel extends UploadableModel {
   key() {
     if (this.doc) {
       return `prx.image.${this.doc.profileSubtype}.${this.doc.id}`;
-    } else if (this.parent) {
-      return `prx.image.new.${this.parent.profileType}.${this.parent.id}`;
-    } else if (this.grandparent) {
-      return `prx.image.draft.${this.grandparent.profileType}.${this.grandparent.id}`;
+    } else if (this.uuid) {
+      return `prx.image.new.${this.uuid}`;
     } else {
-      return `prx.image.new`;
+      throw new Error('Created an image without a doc/uuid');
     }
   }
 

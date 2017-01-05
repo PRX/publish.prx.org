@@ -9,13 +9,13 @@ describe('HomeStoryComponent', () => {
   stubPipe('duration');
 
   cit('renders new story as draft', (fix, el, comp) => {
-    comp.story = {isNew: true, changed: () => true};
+    comp.story = {isNew: true, changed: () => true, images: []};
     fix.detectChanges();
     expect(el).toContainText('Draft');
   });
 
   cit('renders add story button when no draft changes', (fix, el, comp) => {
-    comp.story = {isNew: true, changed: () => false};
+    comp.story = {isNew: true, changed: () => false, images: []};
     fix.detectChanges();
     expect(el).toQuery('.plus-sign');
   });

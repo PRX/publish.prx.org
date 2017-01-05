@@ -27,10 +27,10 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
   public filesAndTemplates: {tpl: HalDoc, file: AudioFileModel}[] = [];
   public files: AudioFileModel[];
 
-  // HasUpload (and also in SETABLE)
+  // HasUpload mixin
   hasUploadMap: string;
   getUploads: (rel: string) => Observable<(HalDoc|string)[]>;
-  setUploads: (rel: string, uuids: string[]) => void;
+  setUploads: (rel: string, uuids?: string[]) => void;
 
   constructor(params: {series?: HalDoc, story?: HalDoc, template?: HalDoc, version?: HalDoc}) {
     super();

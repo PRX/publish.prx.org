@@ -76,7 +76,7 @@ export class ImageUploadComponent {
                          but should be at least ${this.minWidth} x ${this.minHeight} px.`;
       } else {
         let upload = this.uploadService.add(file);
-        this.model.images.push(new ImageModel(this.model.parent, this.model.doc, upload));
+        this.model.addImage(upload);
       }
     };
 
