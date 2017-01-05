@@ -112,7 +112,7 @@ export class HalDoc {
     if (this['_embedded'] && this['_embedded'][rel]) {
       return mustBeList ? (this['_embedded'][rel] instanceof Array) : true;
     } else if (this['_links'] && this['_links'][rel]) {
-      return true;
+      return mustBeList ? false : true; // links are never lists
     } else {
       return false;
     }
