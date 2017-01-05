@@ -8,6 +8,7 @@ import { AudioFileTemplateModel } from '../../shared';
     <div *ngIf="file && !file.isDestroy">
 
       <publish-fancy-field textinput small required [model]="file" name="label" label="Segment {{file.position}} Label">
+        <div class="fancy-hint">Describe the individual segment audio files required for this version.</div>
       </publish-fancy-field>
 
       <publish-fancy-field small class="length" [model]="file" label="Segment length in seconds" invalid="lengthAny">
