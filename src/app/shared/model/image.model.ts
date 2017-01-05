@@ -8,8 +8,9 @@ export class ImageModel extends UploadableModel {
   public filename: string;
   public caption: string = '';
   public credit: string = '';
+  public purpose: string = '';
 
-  SETABLE = ['caption', 'credit'];
+  SETABLE = ['caption', 'credit', 'purpose'];
 
   constructor(parent?: HalDoc, file?: HalDoc | Upload | string) {
     super();
@@ -50,12 +51,14 @@ export class ImageModel extends UploadableModel {
     this.filename = this.doc['filename'];
     this.caption = this.doc['caption'] || '';
     this.credit = this.doc['credit'] || '';
+    this.purpose = this.doc['purpose'] || '';
   }
 
   encode(): {} {
     let data = super.encode();
     data['caption'] = this.caption;
     data['credit'] =  this.credit;
+    data['purpose'] = this.purpose;
     return data;
   }
 
