@@ -35,6 +35,12 @@ import { DistributionModel, SeriesModel, StoryModel, TabService } from '../../sh
             <p class="public">Published {{s.pubDate}}.</p>
           </li>
         </ul>
+
+        <div class="extra" *ngIf="isLoaded">
+          <a [routerLink]="['/search', { tab: 'stories', seriesId: series.id }]">
+            Search among these stories.
+          </a>
+        </div>
       </section>
     </section>
     </div>

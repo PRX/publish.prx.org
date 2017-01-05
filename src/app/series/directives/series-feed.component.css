@@ -23,3 +23,9 @@ li {
 .private {
   color: #ee4d3e;
 }
+
+.extra {
+  text-align: center;
+  margin-top: 30px;
+  font-weight: 400;
+}

@@ -41,14 +41,6 @@ describe('SeriesComponent', () => {
     expect(comp.series.parent.id).toEqual(88);
   });
 
-  cit('shows the story count', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {}).mockItems('prx:stories', [{}, {}, {}]);
-    fix.detectChanges();
-    expect(el).toContainText('3 Stories');
-    expect(el).toQueryAttr('div.extras a', 'href', '/search;tab=stories;seriesId=99');
-  });
-
   cit('refuses to edit v3 series', (fix, el, comp) => {
     activatedRoute.testParams = {id: '99'};
     auth.mock('prx:series', {appVersion: 'v3'});
