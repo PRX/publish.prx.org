@@ -1,8 +1,13 @@
 <form [ngSwitch]="state">
 
   <publish-fancy-field label="Series Podcast" *ngSwitchCase="'new'">
-    <div class="fancy-hint">You must save your series before you can create
-      a podcast distribution for it.</div>
+    <div class="fancy-hint">The series itself must be created before a podcast distribution
+      can be created for it.</div>
+  </publish-fancy-field>
+
+  <publish-fancy-field label="Series Podcast" *ngSwitchCase="'missing'">
+    <div class="fancy-hint">This series must have audio templates before a podcast distribution
+      can be created for it.</div>
   </publish-fancy-field>
 
   <publish-fancy-field label="Series Podcast" *ngSwitchCase="'creating'">

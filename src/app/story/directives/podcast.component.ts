@@ -56,35 +56,34 @@ export class PodcastComponent implements OnDestroy {
     this.cms.account.subscribe(account => {
       if (this.story.isNew && this.story.parent && this.story.parent.isa('series')) {
         this.defaultDistributionOverrides(new SeriesModel(account, this.story.parent, false));
-      } else if (!this.story.isNew && this.story.doc.has('prx:series')) {
-        this.story.doc.follow('prx:series').subscribe(series => this.defaultDistributionOverrides(new SeriesModel(account, series, false)));
       }
     });
   }
 
   defaultDistributionOverrides(series: SeriesModel) {
-    if (series.doc && series.doc.count('prx:distributions')) {
-      series.doc.followItems('prx:distributions').subscribe(distributions => {
-        let models = distributions.map(d => new DistributionModel(series.doc, d, false));
-        this.defaultExplicitToSeries(models.concat(series.unsavedDistribution).filter(d => d));
-      });
-    } else if (series.unsavedDistribution) {
-      this.defaultExplicitToSeries([series.unsavedDistribution]);
-    }
+    series.loadRelated('distributions').subscribe(distributions => {
+      this.defaultExplicitToSeries(<DistributionModel[]>distributions);
+    });
   }
 
   defaultExplicitToSeries(distributions: DistributionModel[]) {
     let dist = distributions.find(d => d.kind === 'podcast');
-    if (dist) {
+    dist.loadRelated('versionTemplate').subscribe(() => {
       dist.loadExternal().subscribe(() => {
-        // TODO: how to know which of these versions is the podcast?
-        this.story.versions.forEach(v => {
-          if (dist.podcast && v.explicit === null) {
-            v.explicit = dist.podcast.explicit;
-          }
+        this.story.loadRelated('versions').subscribe(() => {
+          this.story.versions.forEach(v => {
+            // well crap, new story's version doc is null
+            if (v.doc && v.doc.has('prx:audio-version-template')) {
+              v.doc.follow('prx:audio-version-template').subscribe(vTemplate => {
+                if (dist.podcast && !v.changed('explicit') && dist.versionTemplate.doc.id === vTemplate.id) {
+                  v.explicit = dist.podcast.explicit;
+                }
+              });
+            }
+          });
         });
       });
-    }
+    });
   }
 
   ngOnDestroy(): any {

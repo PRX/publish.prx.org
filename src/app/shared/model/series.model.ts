@@ -76,7 +76,7 @@ export class SeriesModel extends BaseModel {
 
     if (this.doc && this.doc.count('prx:distributions')) {
       distributions = this.doc.followItems('prx:distributions').map(ddocs => {
-        return ddocs.map(d => new DistributionModel(this.doc, d))
+        return ddocs.map(d => new DistributionModel({series: this.doc, distribution: d}))
                     .concat(this.unsavedDistribution).filter(d => d);
       });
     } else if (this.unsavedDistribution) {
@@ -140,7 +140,7 @@ export class SeriesModel extends BaseModel {
   }
 
   get unsavedDistribution(): DistributionModel {
-    let dist = new DistributionModel(this.doc, null);
+    let dist = new DistributionModel({series: this.doc});
     return dist.isStored() && !dist.isDestroy ? dist : null;
   }
 

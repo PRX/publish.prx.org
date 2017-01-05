@@ -1,6 +1,6 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SeriesModel, DistributionModel, FeederPodcastModel,
+import { SeriesModel, DistributionModel, FeederPodcastModel, AudioVersionTemplateModel,
   TabService, CATEGORIES, SUBCATEGORIES } from '../../shared';
 
 @Component({
@@ -19,12 +19,21 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   tabSub: Subscription;
   state: string;
   series: SeriesModel;
+  templateSub: Subscription;
+  podcastTemplate: AudioVersionTemplateModel;
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
   previewUrl: string;
 
   constructor(tab: TabService) {
-    this.tabSub = tab.model.subscribe(s => this.series = <SeriesModel> s);
+    this.tabSub = tab.model.subscribe(s => {
+      this.series = <SeriesModel> s;
+      this.templateSub = this.series.loadRelated('versionTemplates').subscribe(() => {
+        if (this.series.versionTemplates && this.series.versionTemplates.length > 0) {
+          this.podcastTemplate = this.series.versionTemplates[0];
+        }
+      });
+    });
   }
 
   ngDoCheck() {
@@ -47,6 +56,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
       this.state = 'new';
     } else if (this.series) {
       this.state = 'creating';
+      if (!this.podcastTemplate) {
+        this.state = 'missing';
+      }
     } else {
       this.state = null;
     }
@@ -54,6 +66,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   ngOnDestroy(): any {
     this.tabSub.unsubscribe();
+    if (this.templateSub) {
+      this.templateSub.unsubscribe();
+    }
   }
 
   loadPodcast() {
@@ -70,9 +85,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   createDistribution() {
-    let podcast = new DistributionModel(this.series.doc);
-    podcast.set('kind', 'podcast');
-    this.series.distributions.push(podcast);
+    let podcastDist = new DistributionModel({series: this.series.doc, template: this.podcastTemplate.doc});
+    podcastDist.set('kind', 'podcast');
+    this.series.distributions.push(podcastDist);
   }
 
   setSubCategories() {
@@ -91,7 +106,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   get urlStart() {
-    if (this.podcast) {
+    if (this.podcast && this.podcast.publishedUrl) {
       let parts = this.podcast.publishedUrl.split('/');
       if (parts.length > 2) {
         return parts.slice(0, parts.length - 2).join('/') + '/';
@@ -100,7 +115,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   get urlEnd() {
-    if (this.podcast) {
+    if (this.podcast && this.podcast.publishedUrl) {
       let parts = this.podcast.publishedUrl.split('/');
       if (parts.length > 2) {
         return '/' + parts.slice(parts.length - 1).join('/');
