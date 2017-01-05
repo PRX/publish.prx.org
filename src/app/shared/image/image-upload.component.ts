@@ -1,49 +1,69 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, DoCheck } from '@angular/core';
 import { UploadService } from '../../core';
-import { ImageModel, StoryModel, SeriesModel } from '../model';
+import { StoryModel, SeriesModel, ImageModel } from '../model';
 
 @Component({
   selector: 'publish-image-upload',
   styleUrls: ['image-upload.component.css'],
   template: `
-    <publish-spinner *ngIf="model && !model?.images"></publish-spinner>
+    <publish-spinner *ngIf="!images"></publish-spinner>
 
-    <div *ngIf="noImages" class="new-image" [class.changed]="model.changed('images')"
-    [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
-      <p class="size">Minimum size: {{minWidth}} x {{minHeight}} px</p>
+    <div *ngIf="!hasImages" class="new-image" [class.changed]="hasDestroyed"
+      [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
+
+      <p *ngIf="!suggestSize" class="size">Minimum size: {{minWidth}} x {{minHeight}} px</p>
+      <p *ngIf="suggestSize" class="size">Suggested size: {{suggestSize}} px</p>
       <input type="file" id="image-file" accept="image/*"
-       publishFileSelect (file)="addUpload($event)" ngClass="{'invalid': this.imgError}"/>
+       publishFileSelect (file)="addUpload($event)" class.invalid="imgError"/>
       <label class="button" for="image-file">Add Image</label>
+
     </div>
+
     <p *ngIf="imgError" class="error">{{imgError}}</p>
 
-    <div *ngIf="model && model.images">
-      <publish-image-file *ngFor="let i of model.images" [image]="i"
-      [thumbnailWidth]="thumbnailWidth" [thumbnailHeight]="thumbnailHeight"></publish-image-file>
+    <div *ngIf="hasImages">
+      <publish-image-file *ngFor="let i of images" [model]="model" [image]="i"
+        [thumbnailWidth]="thumbnailWidth" [thumbnailHeight]="thumbnailHeight"></publish-image-file>
     </div>
   `
 })
-export class ImageUploadComponent {
+export class ImageUploadComponent implements DoCheck {
 
   @Input() model: StoryModel|SeriesModel;
-  @Input() minWidth = 200;
-  @Input() minHeight = 200;
+  @Input() purpose: string;
+  @Input() minWidth = 144;
+  @Input() minHeight = 144;
+  @Input() suggestSize: string;
 
   thumbnailHeight = '220px';
   imgError: string;
   reader: FileReader = new FileReader();
 
+  lastImageHash: string;
+  images: ImageModel[];
+  hasImages = false;
+  hasDestroyed = false;
+
   constructor(private uploadService: UploadService) {}
 
-  get noImages(): boolean {
-    if (this.model && this.model.images) {
-      if (this.model.images.length === 0) {
-        return true;
-      } else if (this.model.images.every(img => img.isDestroy)) {
-        return true;
-      }
+  // avoid dom changes - don't touch the images array until necessary
+  ngDoCheck() {
+    if (!this.model || !this.model.images) {
+      return;
     }
-    return false;
+
+    let hash = this.model.images.map(i => `${i.key}${i.purpose}${i.isDestroy}${i.isNew}`).join('');
+    if (this.lastImageHash !== hash) {
+      this.lastImageHash = hash;
+
+      // force set a profile
+      this.setSomethingAsProfile(this.model.images);
+      this.images = this.model.images.filter(img => {
+        return !this.purpose || img.purpose === this.purpose;
+      });
+      this.hasImages = this.images.some(i => !i.isDestroy);
+      this.hasDestroyed = this.images.some(i => i.isDestroy && !i.isNew);
+    }
   }
 
   get thumbnailWidth(): string {
@@ -76,10 +96,25 @@ export class ImageUploadComponent {
                          but should be at least ${this.minWidth} x ${this.minHeight} px.`;
       } else {
         let upload = this.uploadService.add(file);
-        this.model.addImage(upload);
+        let imageModel = this.model.addImage(upload);
+        if (this.purpose) {
+          imageModel.set('purpose', this.purpose);
+        }
       }
     };
 
     this.reader.readAsDataURL(file);
   }
+
+  // for backwards compatibility, try to set something as the 'profile' image
+  setSomethingAsProfile(images: ImageModel[]) {
+    let allBlank = images.every(i => i.purpose === '');
+    if (this.purpose === 'profile' && images.length && allBlank) {
+      // timeout to comply with change detection
+      setTimeout(() => {
+        images[0].set('purpose', 'profile');
+      }, 10);
+    }
+  }
+
 }

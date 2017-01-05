@@ -2,7 +2,7 @@ import { cit, create, provide } from '../../../testing';
 import { ImageUploadComponent } from './image-upload.component';
 import { UploadService } from '../../core/upload/upload.service';
 
-fdescribe('ImageUploadComponent', () => {
+describe('ImageUploadComponent', () => {
 
   create(ImageUploadComponent);
 
@@ -57,11 +57,34 @@ fdescribe('ImageUploadComponent', () => {
     comp.model = model;
     comp.model.images.push({isDestroy: false});
     comp.model.isChanged = true;
-    expect(comp.noImages).toEqual(false);
-    expect(comp.model.images.length).toEqual(1);
+    fix.detectChanges();
+    expect(comp.hasImages).toEqual(true);
+    expect(comp.hasDestroyed).toEqual(false);
+    expect(comp.images.length).toEqual(1);
+
     comp.model.images[0].isDestroy = true;
-    expect(comp.noImages).toEqual(true);
-    expect(comp.model.images.length).toEqual(1);
+    fix.detectChanges();
+    expect(comp.hasImages).toEqual(false);
+    expect(comp.hasDestroyed).toEqual(true);
+    expect(comp.images.length).toEqual(1);
+
+    comp.model.images[0].isNew = true;
+    fix.detectChanges();
+    expect(comp.hasImages).toEqual(false);
+    expect(comp.hasDestroyed).toEqual(false);
+    expect(comp.images.length).toEqual(1);
+  });
+
+  cit('filters to an image purpose', (fix, el, comp) => {
+    comp.model = model;
+    comp.model.images = [{purpose: 'what'}, {purpose: 'ev'}, {purpose: 'er'}];
+    fix.detectChanges();
+    expect(comp.images.length).toEqual(3);
+
+    comp.model.images = [{purpose: 'foo'}, {purpose: 'foo'}, {purpose: 'bar'}];
+    comp.purpose = 'foo';
+    comp.ngDoCheck();
+    expect(comp.images.length).toEqual(2);
   });
 
   cit('adds an image', (fix, el, comp, done) => {
