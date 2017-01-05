@@ -6,9 +6,9 @@ import { DistributionModel, SeriesModel, StoryModel, TabService } from '../../sh
   template: `
   <div>
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>
-    <section *ngIf="series && podcast">
+    <section *ngIf="series && list">
       <div class="hint" *ngIf="noStories">
-        You have no published stories in this podcast.
+        You have no published stories in this series.
       </div>
 
       <section *ngIf="!noStories">
@@ -29,7 +29,7 @@ import { DistributionModel, SeriesModel, StoryModel, TabService } from '../../sh
         </ul>
 
         <ul *ngIf="publicStories.length">
-          <h4>Public feed</h4>
+          <h4>Public</h4>
           <li *ngFor="let s of publicStories">
             <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
             <p class="public">Published {{s.pubDate}}.</p>
@@ -50,20 +50,22 @@ export class SeriesFeedComponent implements OnDestroy {
   publicStories: StoryModel[] = [];
   futurePublicStories: StoryModel[] = [];
   privateStories: StoryModel[] = [];
-  podcast: DistributionModel;
+  list: DistributionModel;
   tabSub: Subscription;
 
   constructor(tab: TabService) {
     this.noStories = false;
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
-      this.podcast = s.distributions.filter(dist => dist.kind === 'podcast')[0];
-      this.sortStories();
+      s.loadRelated('distributions').subscribe((dists) => {
+        this.list = dists[0];
+        this.sortStories();
+      });
     });
   }
 
   sortStories() {
-    this.podcast
+    this.list
         .parent
         .followItems('prx:stories', { sorts: 'updated_at:desc' })
         .subscribe((docs) => {
@@ -73,7 +75,7 @@ export class SeriesFeedComponent implements OnDestroy {
             return;
           }
           docs.forEach((doc) => {
-              let story = new StoryModel(this.podcast.parent, doc, false);
+              let story = new StoryModel(this.list.parent, doc, false);
               if (!story.publishedAt) {
                 this.privateStories.push(story);
                 return;

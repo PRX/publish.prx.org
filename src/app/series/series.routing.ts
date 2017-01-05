@@ -13,7 +13,7 @@ const seriesChildRoutes = [
   { path: '',          component: SeriesBasicComponent },
   { path: 'templates', component: SeriesTemplatesComponent },
   { path: 'podcast',   component: SeriesPodcastComponent },
-  { path: 'feed',   component: SeriesFeedComponent }
+  { path: 'list',   component: SeriesFeedComponent }
 ];
 
 export const seriesRoutes: Routes = [
