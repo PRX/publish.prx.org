@@ -4,6 +4,8 @@ import { DistributionModel, SeriesModel, StoryModel, TabService } from '../../sh
 
 @Component({
   template: `
+  <div>
+    <publish-spinner *ngIf="!isLoaded"></publish-spinner>
     <section *ngIf="series && podcast">
       <div class="hint" *ngIf="noStories">
         You have no published stories in this podcast.
@@ -35,12 +37,14 @@ import { DistributionModel, SeriesModel, StoryModel, TabService } from '../../sh
         </ul>
       </section>
     </section>
+    </div>
   `,
   styleUrls: ['./series-feed.component.css']
 })
 
 export class SeriesFeedComponent implements OnDestroy {
 
+  isLoaded: boolean = false;
   noStories: boolean;
   series: SeriesModel;
   publicStories: StoryModel[] = [];
@@ -63,6 +67,7 @@ export class SeriesFeedComponent implements OnDestroy {
         .parent
         .followItems('prx:stories', { sorts: 'updated_at:desc' })
         .subscribe((docs) => {
+          this.isLoaded = true;
           if (docs.length === 0) {
             this.noStories = true;
             return;
