@@ -71,8 +71,8 @@ export class SeriesFeedComponent implements OnDestroy {
   }
 
   sortStories() {
-    this.list
-        .parent
+    this.series
+        .doc
         .followItems('prx:stories', { sorts: 'updated_at:desc' })
         .subscribe((docs) => {
           this.isLoaded = true;
