@@ -82,7 +82,7 @@ export class SeriesFeedComponent implements OnDestroy {
           .subscribe((docs) => {
             this.isLoaded = true;
             docs.forEach((doc) => {
-                let story = new StoryModel(this.list.parent, doc, false);
+                let story = new StoryModel(this.series.doc, doc, false);
                 if (!story.publishedAt) {
                   this.privateStories.push(story);
                   return;
