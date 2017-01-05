@@ -71,29 +71,31 @@ export class SeriesFeedComponent implements OnDestroy {
   }
 
   sortStories() {
-    this.series
-        .doc
-        .followItems('prx:stories', { sorts: 'updated_at:desc' })
-        .subscribe((docs) => {
-          this.isLoaded = true;
-          if (docs.length === 0) {
-            this.noStories = true;
-            return;
-          }
-          docs.forEach((doc) => {
-              let story = new StoryModel(this.list.parent, doc, false);
-              if (!story.publishedAt) {
-                this.privateStories.push(story);
-                return;
-              }
-              story['pubDate'] = story.publishedAt.toLocaleDateString();
-              if (new Date(story.publishedAt) <= new Date()) {
-                this.publicStories.push(story);
-              } else {
-                this.futurePublicStories.push(story);
-              }
+    let total = this.series.doc.count('prx:stories');
+    if (total === 0) {
+      this.noStories = true;
+      this.isLoaded = true;
+    } else {
+      this.series
+          .doc
+          .followItems('prx:stories', { per: total })
+          .subscribe((docs) => {
+            this.isLoaded = true;
+            docs.forEach((doc) => {
+                let story = new StoryModel(this.list.parent, doc, false);
+                if (!story.publishedAt) {
+                  this.privateStories.push(story);
+                  return;
+                }
+                story['pubDate'] = story.publishedAt.toLocaleDateString();
+                if (new Date(story.publishedAt) <= new Date()) {
+                  this.publicStories.push(story);
+                } else {
+                  this.futurePublicStories.push(story);
+                }
+              });
             });
-          });
+    }
   }
 
   ngOnDestroy(): any {
