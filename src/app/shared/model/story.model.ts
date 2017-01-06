@@ -1,11 +1,12 @@
 import { Observable} from 'rxjs';
-import { HalDoc } from '../../core';
+import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioVersionModel } from './audio-version.model';
 import { ImageModel } from './image.model';
 import { REQUIRED, LENGTH } from './invalid';
+import { HasUpload, applyMixins } from './upload';
 
-export class StoryModel extends BaseModel {
+export class StoryModel extends BaseModel implements HasUpload {
 
   public id: number;
   public title: string;
@@ -19,13 +20,18 @@ export class StoryModel extends BaseModel {
   public isPublishing: boolean;
   public account: HalDoc;
 
-  SETABLE = ['title', 'shortDescription', 'description', 'tags'];
+  SETABLE = ['title', 'shortDescription', 'description', 'tags', 'hasUploadMap'];
 
   VALIDATORS = {
     title:            [REQUIRED()],
     shortDescription: [REQUIRED()],
     description:      [LENGTH(10)]
   };
+
+  // HasUpload mixin
+  hasUploadMap: string;
+  getUploads: (rel: string) => Observable<(HalDoc|string)[]>;
+  setUploads: (rel: string, uuids?: string[]) => void;
 
   constructor(seriesOrAccount: HalDoc, story?: HalDoc, loadRelated = true) {
     super();
@@ -51,7 +57,7 @@ export class StoryModel extends BaseModel {
     let versions: Observable<AudioVersionModel[]>;
     let images: Observable<ImageModel[]>;
 
-    // existing story: splice in unsaved image
+    // audio versions (with optional templates)
     if (this.doc) {
       versions = this.doc.followItems('prx:audio-versions').flatMap(vdocs => {
         return Observable.from(vdocs.map(vdoc => {
@@ -64,26 +70,21 @@ export class StoryModel extends BaseModel {
           }
         })).concatAll().toArray();
       });
-      images = this.doc.followItems('prx:images').map(idocs => {
-        let models = idocs.map(idoc => new ImageModel(this.parent, this.doc, idoc));
-        return this.unsavedImage ? models.concat(this.unsavedImage) : models;
-      });
-    }
-
-    // new story-in-series with templates: init versions from templates
-    if (!this.doc && this.parent && this.parent.count('prx:audio-version-templates')) {
+    } else if (!this.doc && this.parent && this.parent.count('prx:audio-version-templates')) {
       versions = this.parent.followItems('prx:audio-version-templates').map(tdocs => {
         return tdocs.map(tdoc => new AudioVersionModel({series: this.parent, template: tdoc}));
       });
-    }
-
-    // defaults
-    if (!versions) {
+    } else {
       versions = Observable.of([new AudioVersionModel({series: this.parent})]);
     }
-    if (!images) {
-      images = this.unsavedImage ? Observable.of([this.unsavedImage]) : Observable.of([]);
-    }
+
+    // image uploads
+    images = this.getUploads('prx:images').map(idocs => {
+      let models = idocs.map(docOrUuid => new ImageModel(this.doc, docOrUuid));
+      this.setUploads('prx:images', models.map(m => m.uuid));
+      return models;
+    });
+
     return {images: images, versions: versions};
   }
 
@@ -134,9 +135,20 @@ export class StoryModel extends BaseModel {
     }
   }
 
-  get unsavedImage(): ImageModel {
-    let img = new ImageModel(this.parent, this.doc, null);
-    return img.isStored() && !img.isDestroy ? img : null;
+  addImage(upload: Upload): ImageModel {
+    let image = new ImageModel(this.doc, upload);
+    this.images = [...this.images, image];
+    this.setUploads('prx:images', this.images.map(i => i.uuid));
+    return image;
+  }
+
+  removeImage(image: ImageModel) {
+    if (image.isNew) {
+      this.images = this.images.filter(i => i !== image);
+    } else {
+      this.images = [...this.images]; // trigger change detection
+    }
+    this.setUploads('prx:images', this.images.map(i => i.uuid));
   }
 
   splitTags(): string[] {
@@ -148,3 +160,5 @@ export class StoryModel extends BaseModel {
   }
 
 }
+
+applyMixins(StoryModel, [HasUpload]);

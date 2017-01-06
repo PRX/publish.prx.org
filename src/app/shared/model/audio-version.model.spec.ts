@@ -92,7 +92,7 @@ describe('AudioVersionModel', () => {
     it('loads newly uploaded files', () => {
       let version = makeVersion({}, [{thing: 'one', status: 'complete'}]);
       expect(version.files.length).toEqual(1);
-      version.uploads = '1234';
+      version.setUploads('prx:audio', ['1234']);
       version.related().files.subscribe((files: any[]) => {
         expect(files.length).toEqual(2);
       });
@@ -158,9 +158,11 @@ describe('AudioVersionModel', () => {
     it('adds and saves the new upload uuid', () => {
       let version = makeVersion({label: 'hello'}, []);
       spyOn(version, 'store').and.stub();
-      version.addUpload(<any> {uuid: '1234'});
+      version.addUpload(<any> {uuid: 'fake-uuid'});
       expect(version.files.length).toEqual(1);
-      expect(version.uploadUuids).toEqual(['1234']);
+      let uploads = [];
+      version.getUploads('prx:audio').subscribe(d => uploads = d);
+      expect(uploads).toEqual(['fake-uuid']);
       expect(version.store).toHaveBeenCalled();
     });
 

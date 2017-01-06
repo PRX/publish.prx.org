@@ -9,7 +9,7 @@ import { ProseMirrorMarkdownEditor, ProseMirrorImage } from './prosemirror.markd
   template: `
     <div #contentEditable [class.changed]="changed" [class.invalid]="invalid"></div>
     <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
-    
+
     <div class="overlay" *ngIf="showPrompt"></div>
     <div class="modal" *ngIf="hasSelection && showPrompt" tabindex="-1">
       <header><h1>Link to</h1></header>
@@ -25,8 +25,8 @@ import { ProseMirrorMarkdownEditor, ProseMirrorImage } from './prosemirror.markd
           <button (click)="hidePrompt()">Cancel</button>
       </footer>
     </div>
-      
-    <div class="modal" *ngIf="!hasSelection && showPrompt" tabindex="-1">  
+
+    <div class="modal" *ngIf="!hasSelection && showPrompt" tabindex="-1">
       <header><h1>Warning</h1></header>
       <section>
         <p class="error">Please select text to create link or existing link to edit</p>
@@ -70,8 +70,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.editor) {
-      let imagesChanged = changes['images'] && changes['images'].currentValue.length !== changes['images'].previousValue.length;
-      if (imagesChanged) {
+      if (changes['images']) {
         this.editor.update(this.mapImages());
         this.editor.setSavedState();
       }
@@ -91,8 +90,10 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   mapImages(): ProseMirrorImage[] {
-    return this.images.filter(img => !img.isDestroy)
-      .map((img) => new ProseMirrorImage(img.filename, img.enclosureHref, img.caption, img.credit));
+    return this.images.filter(img => !img.isDestroy).map(img => {
+      let name = img.filename || '[untitled]';
+      return new ProseMirrorImage(name, img.enclosureHref, img.caption, img.credit);
+    });
   }
 
   setModel(value: string) {

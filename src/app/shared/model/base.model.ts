@@ -108,6 +108,7 @@ export abstract class BaseModel {
       return this.saveRelated().map(() => {
         this.isNew = false;
         this.isSaving = false;
+        this.resetRelated();
         return true;
       });
     });
@@ -158,8 +159,16 @@ export abstract class BaseModel {
     this.RELATIONS.forEach(rel => {
       if (this[rel] === model) {
         this[rel] = null;
-      } else if (this[rel].indexOf(model) > -1) {
-        this[rel].splice(this[rel].indexOf(model), 1);
+      } else {
+        this[rel] = this[rel].filter(m => m !== model);
+      }
+    });
+  }
+
+  resetRelated() {
+    this.RELATIONS.forEach(rel => {
+      if (this[rel] instanceof Array) {
+        this[rel] = [...this[rel]];
       }
     });
   }
@@ -179,6 +188,7 @@ export abstract class BaseModel {
         this.removeRelated(model);
       }
     });
+    this.resetRelated();
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
