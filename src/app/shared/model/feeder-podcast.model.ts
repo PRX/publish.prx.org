@@ -29,6 +29,9 @@ export class FeederPodcastModel extends BaseModel {
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
     super();
     this.init(distrib, podcast, loadRelated);
+    if (this.series) {
+      this.authorName = this.series['_embedded']['prx:account'].name;
+    }
   }
 
   key() {
@@ -55,12 +58,9 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
+    // debugger
     if (this.doc['author'] && this.doc['author']['name']) {
       this.authorName = this.doc['author']['name'];
-    } else if (this.series.has('prx:account')) {
-      this.series.follow('prx:account').subscribe(account => this.authorName = account['name']);
-    } else {
-      this.authorName = '';
     }
     // pretend path was blank if it was just the podcast id
     this.path = this.doc['path'] || '';
