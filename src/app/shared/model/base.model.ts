@@ -158,8 +158,8 @@ export abstract class BaseModel {
     this.RELATIONS.forEach(rel => {
       if (this[rel] === model) {
         this[rel] = null;
-      } else if (this[rel].indexOf(model) > -1) {
-        this[rel].splice(this[rel].indexOf(model), 1);
+      } else {
+        this[rel] = this[rel].filter(m => m !== model);
       }
     });
   }

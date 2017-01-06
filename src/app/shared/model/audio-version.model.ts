@@ -149,6 +149,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
     let audio = new AudioFileModel(this.doc, upload);
     if (position) {
       audio.set('position', position);
+      this.files = [...this.files]; // trigger change detection
       for (let i = 0; i <= this.files.length; i++) {
         if (!this.files[i] || this.files[i].position >= audio.position) {
           this.files.splice(i, 0, audio);
@@ -156,7 +157,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
         }
       }
     } else {
-      this.files.push(audio);
+      this.files = [...this.files, audio];
     }
     this.reassign();
     this.setUploads('prx:audio', this.files.map(f => f.uuid));
@@ -165,9 +166,9 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
 
   removeUpload(file: AudioFileModel) {
     if (file.isNew) {
-      if (this.files.indexOf(file) > -1) {
-        this.files.splice(this.files.indexOf(file), 1);
-      }
+      this.files = this.files.filter(f => f !== file);
+    } else {
+      this.files = [...this.files]; // trigger change detection
     }
     this.setUploads('prx:audio', this.files.map(f => f.uuid));
     this.reassign();

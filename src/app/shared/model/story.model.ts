@@ -137,16 +137,16 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   addImage(upload: Upload): ImageModel {
     let image = new ImageModel(this.doc, upload);
-    this.images.push(image);
+    this.images = [...this.images, image];
     this.setUploads('prx:images', this.images.map(i => i.uuid));
     return image;
   }
 
   removeImage(image: ImageModel) {
     if (image.isNew) {
-      if (this.images.indexOf(image) > -1) {
-        this.images.splice(this.images.indexOf(image), 1);
-      }
+      this.images = this.images.filter(i => i !== image);
+    } else {
+      this.images = [...this.images]; // trigger change detection
     }
     this.setUploads('prx:images', this.images.map(i => i.uuid));
   }
