@@ -1,12 +1,12 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DistributionModel, SeriesModel, StoryModel, TabService } from '../../shared';
+import { SeriesModel, StoryModel, TabService } from '../../shared';
 
 @Component({
   template: `
   <div>
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>
-    <section *ngIf="series && list">
+    <section *ngIf="series">
       <div class="hint" *ngIf="noStories">
         You have no published stories in this series.
       </div>
@@ -56,17 +56,13 @@ export class SeriesFeedComponent implements OnDestroy {
   publicStories: StoryModel[] = [];
   futurePublicStories: StoryModel[] = [];
   privateStories: StoryModel[] = [];
-  list: DistributionModel;
   tabSub: Subscription;
 
   constructor(tab: TabService) {
     this.noStories = false;
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
-      s.loadRelated('distributions').subscribe((dists) => {
-        this.list = dists[0];
-        this.sortStories();
-      });
+      this.sortStories();
     });
   }
 

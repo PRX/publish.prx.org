@@ -14,9 +14,9 @@ describe('SeriesFeedComponent', () => {
     expect(el).toQuery('publish-spinner');
   });
 
-  cit('does not render until the series and list are loaded', (fix, el, comp) => {
+  cit('does not render until the series is loaded', (fix, el, comp) => {
     expect(el).not.toContainText('stories');
-    comp.series = comp.list = {};
+    comp.series = {};
     comp.noStories = true;
     comp.isLoaded = true;
     fix.detectChanges();
@@ -25,7 +25,7 @@ describe('SeriesFeedComponent', () => {
   });
 
   cit('displays story titles and publication status', (fix, el, comp) => {
-    comp.series = comp.list = {};
+    comp.series = {};
     comp.isLoaded = true;
     comp.publicStories = [
       {title: 'First Public Story', pubDate: new Date()},
