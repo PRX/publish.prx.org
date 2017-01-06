@@ -11,7 +11,18 @@ import {
   styleUrls: ['series-templates.component.css'],
   template: `
     <form *ngIf="series">
-
+    <header>
+        <h2>Audio Versions</h2>
+        <p>
+          When adding stories to your series, you can have different versions of the audio for
+          distribution. For example, it is common to have a podcast version of the audio broken
+          into segments for ad injection, but also a broadcast version with different breaks for
+          local news, different credits, or edits and bleeps to meet FCC permitted language requirements.
+          On this page, you can define the types of audio versions that will be expected for each story in this
+          series, and basic requirements for each of those versions.
+        </p>
+        <hr/>
+      </header>
       <template ngFor let-v [ngForOf]="series.versionTemplates">
         <div *ngIf="!v.isDestroy" class="version">
           <publish-fancy-field textinput required [model]="v" name="label" label="Version Label">
@@ -22,7 +33,7 @@ import {
           </publish-fancy-field>
 
           <publish-fancy-field class="length" [model]="v" label="Total length in seconds" invalid="lengthAny">
-            <div class="fancy-hint">The minimum and maximum durations in seconds for all the audio in this version.</div>
+            <div class="fancy-hint">The minimum and maximum durations in seconds for the sum of all the audio in this version</div>
             <publish-fancy-field number small inline hideinvalid [model]="v" name="lengthMinimum" label="Minimum">
             </publish-fancy-field>
             <publish-fancy-field number small inline hideinvalid [model]="v" name="lengthMaximum" label="Maximum">
@@ -30,7 +41,7 @@ import {
           </publish-fancy-field>
 
           <publish-fancy-field label="Audio Segments">
-            <div class="fancy-hint">Describe the individual segment audio files required for this version.</div>
+            <div class="fancy-hint">Describe the individual segment audio files required for this version</div>
             <div class="actions">
               <button class="btn-link" *ngIf="canAddFile(v)" (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
               <button class="btn-link" *ngIf="canRemoveFile(v)" (click)="removeFile(v)"><i class="icon-cancel"></i>Remove Segment</button>
