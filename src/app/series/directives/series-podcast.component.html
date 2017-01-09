@@ -31,15 +31,14 @@
     </publish-fancy-field>
 
     <publish-fancy-field label="Author Information">
-      Set the author name and email to be associated with this podcast.
-        <div class="span-fields">
+      <div class="fancy-hint">Set the author name and email to be associated with this podcast.</div>
+      <div class="span-fields">
         <publish-fancy-field label="Name" textinput [model]="podcast" name="authorName" small=1>
         </publish-fancy-field>
         <publish-fancy-field label="Email" textinput [model]="podcast" name="authorEmail" small=1>
         </publish-fancy-field>
       </div>
     </publish-fancy-field>
-
 
     <publish-fancy-field label="iTunes Categories" required=1>
       <div class="fancy-hint">Some description of what these are here and

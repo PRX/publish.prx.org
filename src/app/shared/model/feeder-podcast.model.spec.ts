@@ -5,7 +5,7 @@ describe('FeederPodcastModel', () => {
 
   let series = cms.mock('prx:series', {id: 'series1'});
   let dist = series.mock('prx:distributions', {id: 'dist1', kind: 'podcast'});
-  let authorDist = series.mock('prx:account', {name: 'Foo', email: 'Bar'});
+  let authorDist = series.mock('prx:accounts', {name: 'Foo', email: 'Bar'});
 
   beforeEach(() => window.localStorage.clear());
 
