@@ -11,7 +11,7 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl', 'authorName', 'publishedUrl'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl', 'authorName', 'authorEmail', 'publishedUrl'];
   category: string = '';
   subCategory: string = '';
   explicit: string = '';
@@ -19,6 +19,7 @@ export class FeederPodcastModel extends BaseModel {
   link: string = '';
   newFeedUrl: string = '';
   authorName: string = '';
+  authorEmail: string = '';
 
   VALIDATORS = {
     path: [TOKENY('Use letters, numbers and underscores only')],
@@ -29,9 +30,6 @@ export class FeederPodcastModel extends BaseModel {
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
     super();
     this.init(distrib, podcast, loadRelated);
-    if (this.series) {
-      this.authorName = this.series['_embedded']['prx:account'].name;
-    }
   }
 
   key() {
@@ -58,9 +56,13 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
-    // debugger
-    if (this.doc['author'] && this.doc['author']['name']) {
-      this.authorName = this.doc['author']['name'];
+    if (this.doc['author']) {
+      if (this.doc['author']['name']) {
+        this.authorName = this.doc['author']['name'];
+      }
+      if (this.doc['author']['email']) {
+        this.authorEmail = this.doc['author']['email'];
+      }
     }
     // pretend path was blank if it was just the podcast id
     this.path = this.doc['path'] || '';
@@ -95,9 +97,13 @@ export class FeederPodcastModel extends BaseModel {
     data.newFeedUrl = this.newFeedUrl || null;
     data.publishedUrl = this.publishedUrl || null;
 
-    if (this.authorName) {
-      data.author = { name: this.authorName };
+    if (this.authorName || this.authorEmail) {
+      data.author = {
+        name: this.authorName,
+        email: this.authorEmail
+       };
     }
+
     // default path back to the id
     data.path = this.path || this.id;
 
@@ -127,8 +133,8 @@ export class FeederPodcastModel extends BaseModel {
     }
   }
 
-  set(field: string, value: any) {
-    super.set(field, value);
+  set(field: string, value: any, forceOriginal = false) {
+    super.set(field, value, forceOriginal);
     if (field === 'path' && this.publishedUrl) {
       let parts = this.publishedUrl.split('/');
       if (parts.length > 2) {
