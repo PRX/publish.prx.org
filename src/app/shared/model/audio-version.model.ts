@@ -74,7 +74,7 @@ export class AudioVersionModel extends BaseModel {
         return true;
       }
     });
-    this.set('uploads', validUuids.join(','));
+    this.set('uploads', validUuids.join(','), true);
     newAudio = newAudio.sort(fileSort);
 
     let files: Observable<AudioFileModel[]> = Observable.of(newAudio);
