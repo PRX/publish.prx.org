@@ -19,7 +19,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   series: SeriesModel;
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
-  previewUrl: string;
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe(s => this.series = <SeriesModel> s);
@@ -64,7 +63,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   setPodcast() {
     this.podcast = this.distribution.podcast;
     this.setSubCategories();
-    this.previewUrl = this.podcast.previewUrl;
   }
 
   createDistribution() {
@@ -85,24 +83,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
     if (this.podcast && this.subCategories.indexOf(this.podcast.subCategory) < 0) {
       this.podcast.set('subCategory', '');
-    }
-  }
-
-  get urlStart() {
-    if (this.podcast) {
-      let parts = this.podcast.publishedUrl.split('/');
-      if (parts.length > 2) {
-        return parts.slice(0, parts.length - 2).join('/') + '/';
-      }
-    }
-  }
-
-  get urlEnd() {
-    if (this.podcast) {
-      let parts = this.podcast.publishedUrl.split('/');
-      if (parts.length > 2) {
-        return '/' + parts.slice(parts.length - 1).join('/');
-      }
     }
   }
 
