@@ -3,24 +3,20 @@
   width: 250px;
   margin-right: 40px;
 }
-.feed-urls input {
+.feed-url input {
   min-width: 400px;
   padding: 10px 8px;
   color: #939393;
   background: #fff;
   margin-bottom: 4px;
 }
-.feed-urls button, .feed-urls .button {
+.feed-url button, .feed-url .button {
   padding-top: 9px;
   padding-bottom: 8px;
 }
-.feed-urls button {
+.feed-url button {
   background-color: #f59f51;
 }
-.feed-urls button:hover, .feed-urls button:focus {
+.feed-url button:hover, .feed-url button:focus {
   background-color: #e28b42;
-}
-
-.custom-path >>> input {
-  width: 160px;
 }

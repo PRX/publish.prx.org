@@ -19,7 +19,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   series: SeriesModel;
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
-  previewUrl: string;
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe(s => this.series = <SeriesModel> s);
@@ -64,7 +63,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   setPodcast() {
     this.podcast = this.distribution.podcast;
     this.setSubCategories();
-    this.previewUrl = this.podcast.previewUrl;
   }
 
   createDistribution() {
