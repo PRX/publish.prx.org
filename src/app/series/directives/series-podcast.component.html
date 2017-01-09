@@ -17,22 +17,11 @@
 
   <div *ngSwitchCase="'editing'">
 
-    <publish-fancy-field label="PRX Feeds" *ngIf="podcast?.id">
-      <div class="fancy-hint">There should really be some text here describing
-        exactly what these are and what you might do with them.</div>
-      <div class="feed-urls">
-        <publish-fancy-field label="Published Feed" small=1>
-          <input type="text" readonly [ngModel]="podcast?.publishedUrl" name="publishedUrl" #pubFeed/>
-          <button [publishCopyInput]="pubFeed">Copy</button>
-          <a class="button" target="_blank" rel="noopener" [href]="podcast?.publishedUrl">Open Link</a>
-        </publish-fancy-field>
-
-        <publish-fancy-field class="custom-path" label="Custom Path" textinput [model]="podcast" name="path" small=1>
-          <div class="fancy-hint">An optional custom folder name to use in your PRX published feed url.</div>
-          <span class="prefix">{{urlStart}}</span>
-          <span class="suffix">{{urlEnd}}</span>
-        </publish-fancy-field>
-      </div>
+    <publish-fancy-field label="PRX Feed" class="feed-url" *ngIf="podcast?.id">
+      <div class="fancy-hint">The public URL of your PRX podcast feed.</div>
+      <input type="text" readonly [ngModel]="podcast?.publishedUrl" name="publishedUrl" #pubFeed/>
+      <button [publishCopyInput]="pubFeed">Copy</button>
+      <a class="button" target="_blank" rel="noopener" [href]="podcast?.publishedUrl">Open Link</a>
     </publish-fancy-field>
 
     <publish-fancy-field label="Author Name" textinput [model]="podcast" name="authorName">

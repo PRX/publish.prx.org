@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { ImageModel } from '../../model';
+import { ImageModel, StoryModel, SeriesModel } from '../../model';
 import { UploadService } from '../../../core';
 
 @Component({
@@ -7,7 +7,8 @@ import { UploadService } from '../../../core';
   styleUrls: ['image-file.component.css'],
   template: `
     <div *ngIf="!image.isDestroy" class="image-file" [class.canceled]="canceled">
-      <div class="thumbnail" [class.changed]="image.isNew" [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
+      <div class="thumbnail" [class.changed]="image.isNew || image.changed('purpose')"
+        [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
 
         <div *ngIf="canceled && image.isUploading" class="uploading errored">
           <p *ngIf="image.isUploading">Upload Canceled</p>
@@ -65,6 +66,8 @@ export class ImageFileComponent implements OnInit, OnDestroy {
 
   canceled: boolean;
 
+  @Input() delay = 1000;
+  @Input() model: StoryModel|SeriesModel;
   @Input() image: ImageModel;
   @Input() thumbnailWidth: string;
   @Input() thumbnailHeight: string;
@@ -91,7 +94,11 @@ export class ImageFileComponent implements OnInit, OnDestroy {
 
     // wait for fade-out before parent removes this component
     this.canceled = true;
-    setTimeout(() => { this.image.destroy(); this.canceled = false; }, 1000);
+    setTimeout(() => {
+      this.image.destroy();
+      this.model.removeImage(this.image);
+      this.canceled = false;
+    }, this.delay);
   }
 
   onRetry(event: Event) {
