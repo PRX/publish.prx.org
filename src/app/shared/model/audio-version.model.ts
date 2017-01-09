@@ -146,10 +146,6 @@ export class AudioVersionModel extends BaseModel {
     return false; // don't discard
   }
 
-  changed(field?: string | string[], includeRelations = true): boolean {
-    return !(this.isNew && this.files.length === 0) || super.changed(field, includeRelations);
-  }
-
   addUpload(upload: Upload, position?: number): AudioFileModel {
     let audio = new AudioFileModel(this.doc, upload);
     if (position) {
