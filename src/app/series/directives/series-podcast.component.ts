@@ -86,22 +86,4 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
   }
 
-  get urlStart() {
-    if (this.podcast) {
-      let parts = this.podcast.publishedUrl.split('/');
-      if (parts.length > 2) {
-        return parts.slice(0, parts.length - 2).join('/') + '/';
-      }
-    }
-  }
-
-  get urlEnd() {
-    if (this.podcast) {
-      let parts = this.podcast.publishedUrl.split('/');
-      if (parts.length > 2) {
-        return '/' + parts.slice(parts.length - 1).join('/');
-      }
-    }
-  }
-
 }
