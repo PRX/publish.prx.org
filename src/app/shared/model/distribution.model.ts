@@ -41,13 +41,13 @@ export class DistributionModel extends BaseModel {
 
   related() {
     let podcast = Observable.of(null);
-    let versionTemplate: Observable<AudioVersionTemplateModel>;
+    let versionTemplate: Observable<AudioVersionTemplateModel> = Observable.of(null);
 
     if (this.isNew) {
       podcast = Observable.of(new FeederPodcastModel(this.parent, this.doc));
     }
 
-    if (this.doc) {
+    if (this.doc && this.doc.has('prx:audio-version-template')) {
       versionTemplate = this.doc.follow('prx:audio-version-template').map(tdoc => {
         return new AudioVersionTemplateModel(this.parent, tdoc);
       });

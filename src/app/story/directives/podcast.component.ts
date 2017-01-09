@@ -69,20 +69,23 @@ export class PodcastComponent implements OnDestroy {
   defaultExplicitToSeries(distributions: DistributionModel[]) {
     let dist = distributions.find(d => d.kind === 'podcast');
     dist.loadRelated('versionTemplate').subscribe(() => {
-      dist.loadExternal().subscribe(() => {
-        this.story.loadRelated('versions').subscribe(() => {
-          this.story.versions.forEach(v => {
-            // well crap, new story's version doc is null
-            if (v.doc && v.doc.has('prx:audio-version-template')) {
-              v.doc.follow('prx:audio-version-template').subscribe(vTemplate => {
-                if (dist.podcast && !v.changed('explicit') && dist.versionTemplate.doc.id === vTemplate.id) {
-                  v.explicit = dist.podcast.explicit;
-                }
-              });
-            }
-          });
+      if (dist.versionTemplate) {
+        dist.loadExternal().subscribe(() => {
+          if (dist.podcast) {
+            this.story.loadRelated('versions').subscribe(() => {
+              if (this.story.versions) {
+                this.story.versions.forEach(v => {
+                  if (v.template) {
+                    if (!v.changed('explicit') && dist.versionTemplate.id === v.template.id) {
+                      v.set('explicit', dist.podcast.explicit, true);
+                    }
+                  }
+                });
+              }
+            });
+          }
         });
-      });
+      }
     });
   }
 
