@@ -10,13 +10,14 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'authorName'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'authorName', 'authorEmail'];
   category: string = '';
   subCategory: string = '';
   explicit: string = '';
   link: string = '';
   newFeedUrl: string = '';
   authorName: string = '';
+  authorEmail: string = '';
 
   VALIDATORS = {
     link: [REQUIRED(), URL('Not a valid URL')],
@@ -51,12 +52,13 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
-    if (this.doc['author'] && this.doc['author']['name']) {
-      this.authorName = this.doc['author']['name'];
-    } else if (this.series.has('prx:account')) {
-      this.series.follow('prx:account').subscribe(account => this.authorName = account['name']);
-    } else {
-      this.authorName = '';
+    if (this.doc['author']) {
+      if (this.doc['author']['name']) {
+        this.authorName = this.doc['author']['name'];
+      }
+      if (this.doc['author']['email']) {
+        this.authorEmail = this.doc['author']['email'];
+      }
     }
 
     // just ignore all but first category/subcategory
@@ -86,8 +88,11 @@ export class FeederPodcastModel extends BaseModel {
     data.newFeedUrl = this.newFeedUrl || null;
     data.publishedUrl = this.publishedUrl || null;
 
-    if (this.authorName) {
-      data.author = { name: this.authorName };
+    if (this.authorName || this.authorEmail) {
+      data.author = {
+        name: this.authorName,
+        email: this.authorEmail
+       };
     }
 
     // we can always send a categories array

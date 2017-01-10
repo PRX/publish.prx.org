@@ -37,7 +37,17 @@ export class DistributionModel extends BaseModel {
   related() {
     let podcast = Observable.of(null);
     if (this.isNew) {
-      podcast = Observable.of(new FeederPodcastModel(this.parent, this.doc));
+      if (this.parent && this.parent.has('prx:account')) {
+        podcast = this.parent.follow('prx:account').map(account => {
+          let podmodel = new FeederPodcastModel(this.parent, this.doc);
+          if (account && account['name']) {
+            podmodel.set('authorName', account['name'], true);
+          }
+          return podmodel;
+        });
+      } else {
+        podcast = Observable.of(new FeederPodcastModel(this.parent, this.doc));
+      }
     }
     return {podcast: podcast};
   }

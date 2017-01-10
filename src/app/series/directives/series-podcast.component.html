@@ -19,8 +19,14 @@
       <a class="button" target="_blank" rel="noopener" [href]="podcast?.publishedUrl">Open Link</a>
     </publish-fancy-field>
 
-    <publish-fancy-field label="Author Name" textinput [model]="podcast" name="authorName">
-      <div class="fancy-hint">By default, the podcast author name will be set to your account holder name. Override that here.</div>
+    <publish-fancy-field label="Author Information">
+      <div class="fancy-hint">Set the author name and email to be associated with this podcast.</div>
+      <div class="span-fields">
+        <publish-fancy-field label="Name" textinput [model]="podcast" name="authorName" small=1>
+        </publish-fancy-field>
+        <publish-fancy-field label="Email" textinput [model]="podcast" name="authorEmail" small=1>
+        </publish-fancy-field>
+      </div>
     </publish-fancy-field>
 
     <publish-fancy-field label="iTunes Categories" required=1>
