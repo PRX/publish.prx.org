@@ -15,12 +15,13 @@ export class StoryModel extends BaseModel implements HasUpload {
   public tags: string;
   public updatedAt: Date;
   public publishedAt: Date;
+  public releasedAt: Date;
   public versions: AudioVersionModel[] = [];
   public images: ImageModel[] = [];
   public isPublishing: boolean;
   public account: HalDoc;
 
-  SETABLE = ['title', 'shortDescription', 'description', 'tags', 'hasUploadMap'];
+  SETABLE = ['title', 'shortDescription', 'description', 'tags', 'hasUploadMap', 'releasedAt'];
 
   VALIDATORS = {
     title:            [REQUIRED()],
@@ -96,6 +97,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     this.tags = (this.doc['tags'] || []).join(', ');
     this.updatedAt = new Date(this.doc['updatedAt']);
     this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
+    this.releasedAt = this.doc['releasedAt'] ? new Date(this.doc['releasedAt']) : null;
   }
 
   encode(): {} {
@@ -104,6 +106,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     data.shortDescription = this.shortDescription;
     data.descriptionMd = this.description;
     data.tags = this.splitTags();
+    data.releasedAt = this.releasedAt;
     return data;
   }
 
