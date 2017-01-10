@@ -7,7 +7,7 @@ import * as moment from 'moment';
   template: `
     <span class="input-group">
       <input type="text" #datepicker [value]="formattedDate">
-      <span class="input-group-addon" (click)="datepicker.click()"><img src="assets/images/calendar.svg"></span>
+      <span class="input-group-addon" (click)="datepicker.click()"><i class="icon-calendar"></i></span>
     </span>
   `,
   styleUrls: ['datepicker.component.css']

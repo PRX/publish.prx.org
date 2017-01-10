@@ -14,8 +14,9 @@
 }
 
 .is-selected .pika-button {
+  color: #fff;
   background: #368aa2;
-  box-shadow: inset 0 1px 3px #2b7187;
+  box-shadow: none;
 }
 
 .pika-button:hover {
