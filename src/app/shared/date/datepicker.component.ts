@@ -13,7 +13,7 @@ import * as moment from 'moment';
   styleUrls: ['datepicker.component.css']
 })
 
-export class DatepickerComponent implements AfterViewInit{
+export class DatepickerComponent implements AfterViewInit {
   public static FORMAT = 'MM/DD/YYYY';
 
   @Input() date: Date;
@@ -25,6 +25,8 @@ export class DatepickerComponent implements AfterViewInit{
   get formattedDate(): string {
     if (this.date) {
       return moment(this.date.valueOf()).format(DatepickerComponent.FORMAT);
+    } else {
+      return '';
     }
   }
 

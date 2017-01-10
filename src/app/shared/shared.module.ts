@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { DatepickerComponent, TimeAgoPipe } from './date';
+import { DatepickerComponent, TimeAgoPipe, TimepickerComponent } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
 import { ButtonComponent, CapitalizePipe, CopyInputDirective, FancyFieldComponent } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
@@ -35,6 +35,7 @@ import { HoverDirective } from './hover';
     SpinnerComponent,
     TabComponent,
     TimeAgoPipe,
+    TimepickerComponent,
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
@@ -59,6 +60,7 @@ import { HoverDirective } from './hover';
     SpinnerComponent,
     TabComponent,
     TimeAgoPipe,
+    TimepickerComponent,
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,

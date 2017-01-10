@@ -10,6 +10,7 @@ input {
   height: 40px;
   width: 120px;
   border: 1px;
+  background: #fff;
 }
 
 .input-group-addon i {
