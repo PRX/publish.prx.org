@@ -8,8 +8,6 @@ CMS_TTL=
 CMS_ROOT_TTL=3600
 CMS_USE_LOCALSTORAGE=
 
-FEEDER_HOST=https://feeder-staging.prx.tech
-
 # prx auth
 AUTH_HOST=https://id.prx.org
 # for publish.prx.docker
