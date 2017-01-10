@@ -13,10 +13,8 @@ describe('DistributionModel', () => {
   let seriesVersionFileTemplateItems = seriesVersionFileTemplates[0].mockItems('prx:items', [{}]);
   let fooDistTemplate = fooDist.mock('prx:audio-version-template', {id: 'templateFoo'});
   let fooDistFileTemplate = fooDistTemplate.mockItems('prx:audio-file-templates', [{id: 'fileFoo'}]);
-  //let fooDistFileTemplateItems = fooDistFileTemplate.mockItems('prx:items', [{}]);
   let podDistTemplate = podDist.mock('prx:audio-version-template', {id: 'templatePod'});
   let podDistFileTemplate = podDistTemplate.mockItems('prx:audio-file-templates', [{id: 'filePod'}]);
-  //let podDistFileTemplateItems = podDistFileTemplate.mockItems('prx:items', [{}]);
   let podcast = podDist.mock(podcastUrl, {id: 'pod1'});
 
   beforeEach(() => window.localStorage.clear());

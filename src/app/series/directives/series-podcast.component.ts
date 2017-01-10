@@ -29,6 +29,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
       this.series = <SeriesModel> s;
       this.templateSub = this.series.loadRelated('versionTemplates').subscribe(() => {
         if (this.series.versionTemplates && this.series.versionTemplates.length > 0) {
+          // Later we may allow the user to choose which template, but for now they only get one.
           this.podcastTemplate = this.series.versionTemplates[0];
         }
       });
