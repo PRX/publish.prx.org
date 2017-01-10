@@ -1,8 +1,13 @@
 <form [ngSwitch]="state">
 
   <publish-fancy-field label="Series Podcast" *ngSwitchCase="'new'">
-    <div class="fancy-hint">You must save your series before you can create
-      a podcast distribution for it.</div>
+    <div class="fancy-hint">The series itself must be created before a podcast distribution
+      can be created for it.</div>
+  </publish-fancy-field>
+
+  <publish-fancy-field label="Series Podcast" *ngSwitchCase="'missing'">
+    <div class="fancy-hint">This series must have audio templates before a podcast distribution
+      can be created for it.</div>
   </publish-fancy-field>
 
   <publish-fancy-field label="Series Podcast" *ngSwitchCase="'creating'">
@@ -46,7 +51,14 @@
     </publish-fancy-field>
 
     <publish-fancy-field label="Explicit" required=1 [model]="podcast" name="explicit" [select]="explicitOpts">
-      <div class="fancy-hint">Do any of your podcast episodes contain explicit material?</div>
+      <div class="fancy-hint">
+        In accordance with
+        <a [href]="itunesRequirementsDoc"
+           title="Requirements - Podcasts Connect Help">the requirements for iTunes podcast content</a>,
+        do any of your podcast episodes contain
+        <a [href]="itunesExplicitDoc"
+           title="About iTunes Store Parental Advisories - Apple Support">explicit material?</a>
+      </div>
     </publish-fancy-field>
 
     <publish-fancy-field label="Homepage Link" required textinput [model]="podcast" name="link">

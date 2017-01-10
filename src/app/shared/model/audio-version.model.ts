@@ -44,13 +44,13 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
     this.setLabel();
   }
 
-  setLabel() {
+  private setLabel() {
     if (this.doc && this.doc['label']) {
-      this.set('label', this.doc['label']); // probably already set to this
+      this.set('label', this.doc['label'], true); // probably already set to this
     } else if (this.template) {
-      this.set('label', this.template['label'] || AudioVersionModel.DEFAULT_LABEL);
+      this.set('label', this.template['label'] || AudioVersionModel.DEFAULT_LABEL, true);
     } else {
-      this.set('label', AudioVersionModel.DEFAULT_LABEL);
+      this.set('label', AudioVersionModel.DEFAULT_LABEL, true);
     }
   }
 
@@ -135,14 +135,6 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
     this.setLabel();
     this.reassign();
     return false; // don't discard
-  }
-
-  changed(field?: string | string[], includeRelations = true): boolean {
-    if (this.isNew && this.files.length === 0 && !this.explicit) {
-      return false;
-    } else {
-      return super.changed(field, includeRelations);
-    }
   }
 
   addUpload(upload: Upload, position?: number): AudioFileModel {

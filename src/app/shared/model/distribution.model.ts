@@ -3,6 +3,7 @@ import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
 import { REQUIRED } from './invalid';
 import { FeederPodcastModel } from './feeder-podcast.model';
+import { AudioVersionTemplateModel } from './audio-version-template.model';
 
 export class DistributionModel extends BaseModel {
 
@@ -12,6 +13,7 @@ export class DistributionModel extends BaseModel {
 
   // external related models
   podcast: FeederPodcastModel;
+  versionTemplate: AudioVersionTemplateModel;
 
   SETABLE = ['kind'];
 
@@ -19,9 +21,12 @@ export class DistributionModel extends BaseModel {
     kind: [REQUIRED()]
   };
 
-  constructor(series: HalDoc, distrib?: HalDoc, loadRelated = false) {
+  constructor(params: {series: HalDoc, template?: HalDoc, distribution?: HalDoc}, loadRelated = false) {
     super();
-    this.init(series, distrib, loadRelated); // DO NOT load related by default
+    if (params.template) {
+      this.versionTemplate = new AudioVersionTemplateModel(params.series, params.template, loadRelated);
+    }
+    this.init(params.series, params.distribution, loadRelated); // DO NOT load related by default
   }
 
   key() {
@@ -35,9 +40,10 @@ export class DistributionModel extends BaseModel {
   }
 
   related() {
+    let versionTemplate = Observable.of(null);
     let podcast = Observable.of(null);
 
-    // set defauls for new podcasts
+    // set defaults from series for new podcasts
     if (this.isNew && this.parent) {
       podcast = this.parent.follow('prx:account').map(account => {
         let podmodel = new FeederPodcastModel(this.parent, this.doc);
@@ -55,7 +61,14 @@ export class DistributionModel extends BaseModel {
       });
     }
 
-    return {podcast: podcast};
+    // load existing version templates
+    if (this.doc && this.doc.has('prx:audio-version-template')) {
+      versionTemplate = this.doc.follow('prx:audio-version-template').map(tdoc => {
+        return new AudioVersionTemplateModel(this.parent, tdoc);
+      });
+    }
+
+    return {podcast, versionTemplate};
   }
 
   decode() {
@@ -67,6 +80,9 @@ export class DistributionModel extends BaseModel {
   encode(): {} {
     let data = <any> {};
     data.kind = this.kind;
+    if (this.isNew && this.versionTemplate) {
+      data.set_audio_version_template_uri = this.versionTemplate.doc.expand('self');
+    }
     return data;
   }
 

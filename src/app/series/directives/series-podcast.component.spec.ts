@@ -8,11 +8,23 @@ describe('SeriesPodcastComponent', () => {
 
   provide(TabService);
 
-  cit('forces you to save the series first', (fix, el, comp) => {
+  cit('forces you to create the series first', (fix, el, comp) => {
     comp.series = {isNew: true};
     fix.detectChanges();
-    expect(el).toContainText('You must save your series');
+    expect(el).toContainText('The series itself must be created');
     comp.series.isNew = false;
+    comp.podcastTemplate = {};
+    fix.detectChanges();
+    expect(el).toContainText('Create Podcast');
+  });
+
+  cit('warns if no audio version templates exist', (fix, el, comp) => {
+    comp.series = {};
+    comp.podcastTemplate = undefined;
+    fix.detectChanges();
+    expect(el).toContainText('This series must have audio templates');
+    comp.series.isNew = false;
+    comp.podcastTemplate = {};
     fix.detectChanges();
     expect(el).toContainText('Create Podcast');
   });

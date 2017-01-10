@@ -1,6 +1,6 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SeriesModel, DistributionModel, FeederPodcastModel,
+import { SeriesModel, DistributionModel, FeederPodcastModel, AudioVersionTemplateModel,
   TabService, CATEGORIES, SUBCATEGORIES } from '../../shared';
 
 @Component({
@@ -13,15 +13,27 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   categories = [''].concat(CATEGORIES);
   subCategories: string[] = [];
   explicitOpts = ['', 'Explicit', 'Clean'];
+  itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
+  itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
 
   tabSub: Subscription;
   state: string;
   series: SeriesModel;
+  templateSub: Subscription;
+  podcastTemplate: AudioVersionTemplateModel;
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
 
   constructor(tab: TabService) {
-    this.tabSub = tab.model.subscribe(s => this.series = <SeriesModel> s);
+    this.tabSub = tab.model.subscribe(s => {
+      this.series = <SeriesModel> s;
+      this.templateSub = this.series.loadRelated('versionTemplates').subscribe(() => {
+        if (this.series.versionTemplates && this.series.versionTemplates.length > 0) {
+          // Later we may allow the user to choose which template, but for now they only get one.
+          this.podcastTemplate = this.series.versionTemplates[0];
+        }
+      });
+    });
   }
 
   ngDoCheck() {
@@ -44,6 +56,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
       this.state = 'new';
     } else if (this.series) {
       this.state = 'creating';
+      if (!this.podcastTemplate) {
+        this.state = 'missing';
+      }
     } else {
       this.state = null;
     }
@@ -51,6 +66,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   ngOnDestroy(): any {
     this.tabSub.unsubscribe();
+    if (this.templateSub) {
+      this.templateSub.unsubscribe();
+    }
   }
 
   loadPodcast() {
@@ -66,9 +84,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   createDistribution() {
-    let podcast = new DistributionModel(this.series.doc);
-    podcast.set('kind', 'podcast');
-    this.series.distributions.push(podcast);
+    let podcastDist = new DistributionModel({series: this.series.doc, template: this.podcastTemplate.doc});
+    podcastDist.set('kind', 'podcast');
+    this.series.distributions.push(podcastDist);
   }
 
   setSubCategories() {
