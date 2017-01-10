@@ -89,7 +89,7 @@ export class StoryComponent implements OnInit {
   showDistributionTabs() {
     this.story.getSeriesDistribution('podcast').subscribe(dist => {
       this.distPodcast = dist ? true : false;
-      this.distPlayer = this.distPodcast;
+      this.distPlayer = this.distPodcast && !this.story.isNew;
     });
   }
 
