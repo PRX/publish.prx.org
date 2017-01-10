@@ -56,7 +56,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   loadPodcast() {
     this.podcast = null;
     if (this.distribution) {
-      this.distribution.loadExternal().subscribe(() => this.setPodcast);
+      this.distribution.loadRelated('podcast').subscribe(() => this.setPodcast());
     }
   }
 

@@ -3,6 +3,7 @@ import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioVersionModel } from './audio-version.model';
 import { ImageModel } from './image.model';
+import { StoryDistributionModel } from './story-distribution.model';
 import { REQUIRED, LENGTH } from './invalid';
 import { HasUpload, applyMixins } from './upload';
 
@@ -19,6 +20,7 @@ export class StoryModel extends BaseModel implements HasUpload {
   public images: ImageModel[] = [];
   public isPublishing: boolean;
   public account: HalDoc;
+  public distributions: StoryDistributionModel[] = [];
 
   SETABLE = ['title', 'shortDescription', 'description', 'tags', 'hasUploadMap'];
 
@@ -56,6 +58,7 @@ export class StoryModel extends BaseModel implements HasUpload {
   related() {
     let versions: Observable<AudioVersionModel[]>;
     let images: Observable<ImageModel[]>;
+    let distributions = Observable.of([]);
 
     // audio versions (with optional templates)
     if (this.doc) {
@@ -85,7 +88,24 @@ export class StoryModel extends BaseModel implements HasUpload {
       return models;
     });
 
-    return {images: images, versions: versions};
+    // story distributions
+    if (this.doc && this.doc.count('prx:distributions')) {
+      distributions = this.doc.followItems('prx:distributions').map(ddocs => {
+        return ddocs.map(d => new StoryDistributionModel(this.doc, d));
+      });
+    } else if (this.parent && this.parent.count('prx:distributions')) {
+      distributions = this.parent.followItems('prx:distributions').map(ddocs => {
+        if (ddocs.find(d => d['kind'] === 'podcast')) {
+          let newEpisode = new StoryDistributionModel(this.doc);
+          newEpisode.set('kind', 'episode', true);
+          return [newEpisode];
+        } else {
+          return [];
+        }
+      });
+    }
+
+    return {images: images, versions: versions, distributions: distributions};
   }
 
   decode() {

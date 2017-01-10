@@ -10,7 +10,7 @@ export class DistributionModel extends BaseModel {
   kind: string = '';
   url: string = '';
 
-  // external resources -> explicitly loaded by loadExternal
+  // external related models
   podcast: FeederPodcastModel;
 
   SETABLE = ['kind'];
@@ -19,9 +19,9 @@ export class DistributionModel extends BaseModel {
     kind: [REQUIRED()]
   };
 
-  constructor(series: HalDoc, distrib?: HalDoc, loadRelated = true) {
+  constructor(series: HalDoc, distrib?: HalDoc, loadRelated = false) {
     super();
-    this.init(series, distrib, loadRelated);
+    this.init(series, distrib, loadRelated); // DO NOT load related by default
   }
 
   key() {
@@ -36,19 +36,25 @@ export class DistributionModel extends BaseModel {
 
   related() {
     let podcast = Observable.of(null);
-    if (this.isNew) {
-      if (this.parent && this.parent.has('prx:account')) {
-        podcast = this.parent.follow('prx:account').map(account => {
-          let podmodel = new FeederPodcastModel(this.parent, this.doc);
-          if (account && account['name']) {
-            podmodel.set('authorName', account['name'], true);
-          }
-          return podmodel;
-        });
-      } else {
-        podcast = Observable.of(new FeederPodcastModel(this.parent, this.doc));
-      }
+
+    // set defauls for new podcasts
+    if (this.isNew && this.parent) {
+      podcast = this.parent.follow('prx:account').map(account => {
+        let podmodel = new FeederPodcastModel(this.parent, this.doc);
+        if (account && account['name']) {
+          podmodel.set('authorName', account['name'], true);
+        }
+        return podmodel;
+      });
     }
+
+    // load existing podcasts
+    if (this.kind === 'podcast' && this.url) {
+      podcast = this.doc.followLink({href: this.url}).map(pdoc => {
+        return new FeederPodcastModel(this.parent, this.doc, pdoc);
+      });
+    }
+
     return {podcast: podcast};
   }
 
@@ -68,28 +74,16 @@ export class DistributionModel extends BaseModel {
     return this.parent.create('prx:distributions', {}, data);
   }
 
+  // swap new episode with this.url
   saveRelated(): Observable<boolean[]> {
-    if (this.podcast && this.podcast.isNew) {
+    if (this.podcast && this.podcast.isNew && this.url) {
       let oldModel = this.podcast;
-
-      // CMS should actually have created the podcast in feeder
-      return this.loadExternal().flatMap(() => {
-        oldModel.copyTo(this.podcast);
+      this.loadRelated('podcast', true).subscribe((newModel: FeederPodcastModel) => {
+        oldModel.copyTo(newModel);
         return super.saveRelated();
       });
     } else {
       return super.saveRelated();
-    }
-  }
-
-  loadExternal(): Observable<boolean> {
-    if (this.kind === 'podcast' && this.url) {
-      return this.doc.followLink({href: this.url}).map(pdoc => {
-        this.podcast = new FeederPodcastModel(this.parent, this.doc, pdoc);
-        return true;
-      });
-    } else {
-      return Observable.of(false);
     }
   }
 
