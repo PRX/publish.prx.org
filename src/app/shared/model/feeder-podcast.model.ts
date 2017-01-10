@@ -1,7 +1,7 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
-import { REQUIRED, URL, TOKENY } from './invalid';
+import { REQUIRED, URL } from './invalid';
 
 export class FeederPodcastModel extends BaseModel {
 
