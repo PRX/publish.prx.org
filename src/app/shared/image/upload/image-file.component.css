@@ -74,8 +74,13 @@
   color: #2b7187;
 }
 .thumbnail .processing {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  padding: 8px 0 12px;
   text-align: center;
-  padding-top: 8px;
+  background: rgba(0, 0, 0, 0.6);
 }
 .thumbnail .processing p {
   color: #25B370;

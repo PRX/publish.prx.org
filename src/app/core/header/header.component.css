@@ -52,7 +52,7 @@ a.drawer {
 }
 h1 {
   width: 62px;
-  margin: 0 auto;
+  margin: 0;
   position: relative;
   opacity: 0.99;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=99)";
@@ -121,7 +121,6 @@ nav.alternate {
     height: 73px;
   }
   h1 {
-    margin-left: 0;
     width: 93px;
   }
   h1 a {

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
-import { UploadableModel } from './uploadable.model';
+import { UploadableModel } from './upload';
 
 export class ImageModel extends UploadableModel {
 
@@ -8,14 +8,12 @@ export class ImageModel extends UploadableModel {
   public filename: string;
   public caption: string = '';
   public credit: string = '';
+  public purpose: string = '';
 
-  SETABLE = ['caption', 'credit'];
+  SETABLE = ['caption', 'credit', 'purpose'];
 
-  private grandparent: HalDoc;
-
-  constructor(grandparent: HalDoc, parent?: HalDoc, file?: HalDoc | Upload | string) {
+  constructor(parent?: HalDoc, file?: HalDoc | Upload | string) {
     super();
-    this.grandparent = grandparent;
     this.initUpload(parent, file);
   }
 
@@ -36,12 +34,10 @@ export class ImageModel extends UploadableModel {
   key() {
     if (this.doc) {
       return `prx.image.${this.doc.profileSubtype}.${this.doc.id}`;
-    } else if (this.parent) {
-      return `prx.image.new.${this.parent.profileType}.${this.parent.id}`;
-    } else if (this.grandparent) {
-      return `prx.image.draft.${this.grandparent.profileType}.${this.grandparent.id}`;
+    } else if (this.uuid) {
+      return `prx.image.new.${this.uuid}`;
     } else {
-      return `prx.image.new`;
+      throw new Error('Created an image without a doc/uuid');
     }
   }
 
@@ -55,12 +51,14 @@ export class ImageModel extends UploadableModel {
     this.filename = this.doc['filename'];
     this.caption = this.doc['caption'] || '';
     this.credit = this.doc['credit'] || '';
+    this.purpose = this.doc['purpose'] || '';
   }
 
   encode(): {} {
     let data = super.encode();
     data['caption'] = this.caption;
     data['credit'] =  this.credit;
+    data['purpose'] = this.purpose;
     return data;
   }
 

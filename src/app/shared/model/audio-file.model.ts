@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
-import { UploadableModel } from './uploadable.model';
+import { UploadableModel } from './upload';
 import { REQUIRED, FILE_TEMPLATED } from './invalid';
 
 export class AudioFileModel extends UploadableModel {
