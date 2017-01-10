@@ -14,8 +14,8 @@ import { StoryModel } from '../shared';
     <publish-tabs [model]="story">
       <nav>
         <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
-        <a routerLinkActive="active" [routerLink]="[base, 'podcast']" *ngIf="hasPodcast">Podcast Distribution</a>
-        <a routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
+        <a *ngIf="distPodcast" routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Distribution</a>
+        <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
       </nav>
       <button *ngIf="id" class="delete" (click)="confirmDelete()">Delete</button>
     </publish-tabs>
@@ -27,8 +27,11 @@ export class StoryComponent implements OnInit {
   id: number;
   base: string;
   seriesId: number;
-  hasPodcast: boolean;
   story: StoryModel;
+
+  // distribution specific tabs
+  distPodcast = false;
+  distPlayer = false;
 
   constructor(
     private cms: CmsService,
@@ -46,7 +49,6 @@ export class StoryComponent implements OnInit {
         this.base += `/${this.seriesId}`;
       }
       this.loadStory();
-      this.checkStoryPodcast();
     });
   }
 
@@ -68,8 +70,8 @@ export class StoryComponent implements OnInit {
 
   setStory(parent: any, story: any) {
     this.story = new StoryModel(parent, story);
+    this.showDistributionTabs();
     this.checkStoryVersion();
-    this.checkStoryPodcast();
   }
 
   checkStoryVersion() {
@@ -84,13 +86,11 @@ export class StoryComponent implements OnInit {
     }
   }
 
-  checkStoryPodcast() {
-    if (this.story && this.story.parent) {
-      this.hasPodcast = true; // assume until we load
-      this.story.isInPodcast().subscribe(yes => this.hasPodcast = yes);
-    } else {
-      this.hasPodcast = false;
-    }
+  showDistributionTabs() {
+    this.story.getSeriesDistribution('podcast').subscribe(dist => {
+      this.distPodcast = dist ? true : false;
+      this.distPlayer = this.distPodcast;
+    });
   }
 
   canDeactivate(next: any, prev: any): boolean | Observable<boolean> {
