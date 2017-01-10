@@ -86,7 +86,6 @@ export class FeederPodcastModel extends BaseModel {
     }
     data.link = this.link || null;
     data.newFeedUrl = this.newFeedUrl || null;
-    data.publishedUrl = this.publishedUrl || null;
 
     if (this.authorName || this.authorEmail) {
       data.author = {
