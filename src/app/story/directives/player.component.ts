@@ -37,7 +37,7 @@ export class PlayerComponent implements OnDestroy {
   private audioUrl: string;
   private imageUrl: string;
   private subscriptionUrl: string;
-  private host: string = 'http://play-staging.prx.tech';
+  private host: string = window['ENV']['PLAY_HOST'];
 
   story: StoryModel;
   tabSub: Subscription;
