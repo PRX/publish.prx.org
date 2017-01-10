@@ -19,9 +19,9 @@ export class StoryDistributionModel extends BaseModel {
     kind: [REQUIRED()]
   };
 
-  constructor(series: HalDoc, distrib?: HalDoc, loadRelated = false) {
+  constructor(story: HalDoc, distrib?: HalDoc, loadRelated = false) {
     super();
-    this.init(series, distrib, loadRelated); // DO NOT load related by default
+    this.init(story, distrib, loadRelated); // DO NOT load related by default
   }
 
   key() {
