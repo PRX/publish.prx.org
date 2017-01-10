@@ -1,6 +1,20 @@
 /**
  * Series version/file templates
  */
+header {
+ margin-bottom: 30px;
+}
+h2 {
+  font-size: 28px;
+  line-height: 30px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+hr {
+  width: 100%;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #ccc;
+}
 .version {
   width: 100%;
   border-bottom: 1px solid #ddd;

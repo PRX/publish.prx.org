@@ -5,7 +5,7 @@ describe('FeederPodcastModel', () => {
 
   let series = cms.mock('prx:series', {id: 'series1'});
   let dist = series.mock('prx:distributions', {id: 'dist1', kind: 'podcast'});
-  let authorDist = series.mock('prx:accounts', {name: 'Foo'});
+  let authorDist = series.mock('prx:accounts', {name: 'Foo', email: 'Bar'});
 
   beforeEach(() => window.localStorage.clear());
 
@@ -53,18 +53,11 @@ describe('FeederPodcastModel', () => {
     expect(src.unstore).toHaveBeenCalled();
   });
 
-  it('updates the publishedUrl with changes to the custom path', () => {
-    let src = new FeederPodcastModel(series, dist);
-    src.publishedUrl = 'http://staging-f.prxu.org/doesnotsaythebestpodcast/feed-rss.xml';
-    src.set('path', 'the_best_podcast');
-    src.save();
-    expect(src.publishedUrl).toEqual('http://staging-f.prxu.org/the_best_podcast/feed-rss.xml');
-  });
-
-  it('allows user to override account name for podcast', () => {
-    let doc = authorDist.mock('some-feeder', {author: {name: 'Bar'}});
+  it('allows user to override account name and set author email for podcast', () => {
+    let doc = authorDist.mock('some-feeder', {author: {name: 'Foo2', email: 'Bar2'}});
     let podcast = new FeederPodcastModel(series, dist, doc);
-    expect(podcast.authorName).toEqual('Bar');
+    expect(podcast.authorName).toEqual('Foo2');
+    expect(podcast.authorEmail).toEqual('Bar2');
   });
 
 });

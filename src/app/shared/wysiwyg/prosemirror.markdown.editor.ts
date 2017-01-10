@@ -313,9 +313,12 @@ export class ProseMirrorMarkdownEditor {
       r['toggleLink'] = this.linkItem(schema.marks.link);
     }
     if (schema.nodes.image && this.images && this.images.length > 0) {
-      r['insertImage'] = this.insertImageItem(this.images[0], 'Image: ' + this.images[0].name);
-      for (let i = 0; i < this.images.length; i++) {
-        r['insertImage' + i] = this.insertImageItem(this.images[i], this.images[i].name);
+      if (this.images.length === 1) {
+        r['insertImage'] = this.insertImageItem(this.images[0], 'Image: ' + this.images[0].name);
+      } else {
+        for (let i = 0; i < this.images.length; i++) {
+          r['insertImage' + i] = this.insertImageItem(this.images[i], this.images[i].name);
+        }
       }
     }
     if (schema.nodes.bullet_list) { // lists are bonus

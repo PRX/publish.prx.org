@@ -1,11 +1,12 @@
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseInvalid } from './invalid';
 
-interface ValidatorMap { [key: string]: BaseInvalid[]; }
-interface RelatedMap   { [key: string]: Observable<any>; }
-interface InvalidMap   { [key: string]: string; }
-interface ChangedMap   { [key: string]: boolean; }
+interface ValidatorMap  { [key: string]: BaseInvalid[]; }
+interface RelatedMap    { [key: string]: Observable<any>; }
+interface RelatedLoader { [key: string]: Observable<BaseModel | BaseModel[]>; }
+interface InvalidMap    { [key: string]: string; }
+interface ChangedMap    { [key: string]: boolean; }
 
 /**
  * Base class for modeling/validating haldocs
@@ -22,10 +23,13 @@ export abstract class BaseModel {
   public lastStored: Date;
 
   public SETABLE: string[] = [];
-  public RELATIONS: string[] = [];
   public VALIDATORS: ValidatorMap = {};
   public invalidFields: InvalidMap = {};
   public changedFields: ChangedMap = {};
+
+  public RELATIONS: string[] = [];
+  private relatedReplays: RelatedLoader = {};
+  private relatedLoaders: RelatedLoader = {};
 
   abstract key(): string;
   abstract related(): RelatedMap;
@@ -49,22 +53,24 @@ export abstract class BaseModel {
     this.restore();
     this.revalidate();
 
-    // optionally load related models
+    // setup cold observables for related models, and optionally preload them
+    this.relatedLoaders = this.related();
+    this.RELATIONS = Object.keys(this.relatedLoaders);
     if (loadRelated) {
-      this.RELATIONS = [];
-      let related = this.related() || {};
-      for (let key of Object.keys(related)) {
-        related[key].subscribe((value: any) => { this[key] = value; });
-        this.RELATIONS.push(key);
-      }
+      this.loadRelated();
     }
   }
 
-  set(field: string, value: any) {
+  set(field: string, value: any, forceOriginal = false) {
     this[field] = value;
     if (this.SETABLE.indexOf(field) > -1) {
+      if (forceOriginal) {
+        this.original[field] = value;
+        this.changedFields[field] = false;
+      } else {
+        this.changedFields[field] = this.checkChanged(field, value);
+      }
       this.invalidFields[field] = this.invalidate(field, value);
-      this.changedFields[field] = this.checkChanged(field, value);
       this.store();
     }
   }
@@ -102,9 +108,29 @@ export abstract class BaseModel {
       return this.saveRelated().map(() => {
         this.isNew = false;
         this.isSaving = false;
+        this.resetRelated();
         return true;
       });
     });
+  }
+
+  loadRelated(relName?: string, force = false): Observable<BaseModel | BaseModel[]> {
+    if (relName && !this.relatedLoaders[relName]) {
+      return Observable.throw(new Error(`Unknown model related: ${relName}`));
+    } else if (relName) {
+      if (force || !this.relatedReplays[relName]) {
+        let relValue = new ReplaySubject<any>(1);
+        this.relatedLoaders[relName].subscribe(v => {
+          this[relName] = v;
+          relValue.next(v);
+        });
+        this.relatedReplays[relName] = relValue;
+      }
+      return this.relatedReplays[relName];
+    } else {
+      let allRelated = this.RELATIONS.map(r => this.loadRelated(r, force).first());
+      return Observable.forkJoin(allRelated).map(relateds => null);
+    }
   }
 
   saveRelated(): Observable<boolean[]> {
@@ -133,8 +159,16 @@ export abstract class BaseModel {
     this.RELATIONS.forEach(rel => {
       if (this[rel] === model) {
         this[rel] = null;
-      } else if (this[rel].indexOf(model) > -1) {
-        this[rel].splice(this[rel].indexOf(model), 1);
+      } else {
+        this[rel] = this[rel].filter(m => m !== model);
+      }
+    });
+  }
+
+  resetRelated() {
+    this.RELATIONS.forEach(rel => {
+      if (this[rel] instanceof Array) {
+        this[rel] = [...this[rel]];
       }
     });
   }
@@ -144,16 +178,17 @@ export abstract class BaseModel {
     this.lastStored = null;
     this.isDestroy = false;
     if (!this.doc && this.original) {
-     for (let key of Object.keys(this.original)) {
-       this[key] = this.original[key];
-     }
-   }
+      for (let key of Object.keys(this.original)) {
+        this[key] = this.original[key];
+      }
+    }
     this.init(this.parent, this.doc, false);
     this.getRelated().forEach(model => {
       if (model.discard() !== false && model.isNew) {
         this.removeRelated(model);
       }
     });
+    this.resetRelated();
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {

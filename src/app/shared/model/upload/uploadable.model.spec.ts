@@ -1,6 +1,6 @@
 import { Observable, ConnectableObservable, Subscriber } from 'rxjs';
-import { cms } from '../../../testing';
-import { Upload } from '../../core/upload/upload.service';
+import { cms } from '../../../../testing';
+import { Upload } from '../../../core/upload/upload.service';
 import { UploadableModel } from './uploadable.model';
 
 class TestUploadableModel extends UploadableModel {
