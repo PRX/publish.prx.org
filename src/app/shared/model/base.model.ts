@@ -159,7 +159,7 @@ export abstract class BaseModel {
     this.RELATIONS.forEach(rel => {
       if (this[rel] === model) {
         this[rel] = null;
-      } else {
+      } else if (this[rel] instanceof Array) {
         this[rel] = this[rel].filter(m => m !== model);
       }
     });

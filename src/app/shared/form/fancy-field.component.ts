@@ -25,7 +25,7 @@ export class FancyFieldComponent {
 
   // Form field types (intercepted with defaults)
   type: string;
-  _select: string[];
+  _select: string[][];
   @Input()
   set textinput(any: any) { this.type = 'textinput'; }
   @Input()
@@ -33,7 +33,7 @@ export class FancyFieldComponent {
   @Input()
   set textarea(any: any) { this.type = 'textarea'; }
   @Input()
-  set select(opts: string[]) { this.type = 'select'; this._select = opts || []; }
+  set select(opts: any) { this.type = 'select'; this.setOptions(opts); }
   get select() { return this._select; }
 
   // Field attributes
@@ -97,6 +97,17 @@ export class FancyFieldComponent {
       this.model.set(this.name, value);
     }
     this.change.emit(value);
+  }
+
+  // options can either be ['val1'] or [['display1', 'val1']]
+  private setOptions(opts: string[]) {
+    this._select = (opts || []).map(opt => {
+      if (typeof opt === 'string') {
+        return [opt, opt];
+      } else {
+        return opt;
+      }
+    });
   }
 
 }

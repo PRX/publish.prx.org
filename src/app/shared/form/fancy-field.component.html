@@ -25,7 +25,7 @@
       [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"></textarea>
     <select *ngIf="type == 'select'" [id]="name"
       [(ngModel)]="model[name]" (ngModelChange)="onChange($event)">
-      <option *ngFor="let opt of select" [value]="opt">{{opt}}</option>
+      <option *ngFor="let opt of select" [value]="opt[1]">{{opt[0]}}</option>
     </select>
     <ng-content select=".suffix"></ng-content>
   </template>

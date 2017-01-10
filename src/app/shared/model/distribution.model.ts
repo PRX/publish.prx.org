@@ -10,21 +10,23 @@ export class DistributionModel extends BaseModel {
   id: number;
   kind: string = '';
   url: string = '';
+  versionTemplateUrl: string = '';
 
   // external related models
   podcast: FeederPodcastModel;
   versionTemplate: AudioVersionTemplateModel;
 
-  SETABLE = ['kind'];
+  SETABLE = ['kind', 'versionTemplateUrl'];
 
   VALIDATORS = {
-    kind: [REQUIRED()]
+    kind: [REQUIRED()],
+    versionTemplateUrl: [REQUIRED()]
   };
 
-  constructor(params: {series: HalDoc, template?: HalDoc, distribution?: HalDoc}, loadRelated = false) {
+  constructor(params: {series?: HalDoc, template?: HalDoc, distribution?: HalDoc}, loadRelated = false) {
     super();
     if (params.template) {
-      this.versionTemplate = new AudioVersionTemplateModel(params.series, params.template, loadRelated);
+      this.setVersionTemplate(params.template, true);
     }
     this.init(params.series, params.distribution, loadRelated); // DO NOT load related by default
   }
@@ -75,13 +77,21 @@ export class DistributionModel extends BaseModel {
     this.id = this.doc['id'];
     this.kind = this.doc['kind'] || '';
     this.url = this.doc['url'] || '';
+    if (this.doc['set_audio_version_template_uri']) {
+      // TODO: since a PUT returns no data, this is set on callback
+      this.versionTemplateUrl = this.doc['set_audio_version_template_uri'];
+    } else if (this.doc.has('prx:audio-version-template')) {
+      this.versionTemplateUrl = this.doc.expand('prx:audio-version-template');
+    } else {
+      this.versionTemplateUrl = '';
+    }
   }
 
   encode(): {} {
     let data = <any> {};
     data.kind = this.kind;
-    if (this.isNew && this.versionTemplate) {
-      data.set_audio_version_template_uri = this.versionTemplate.doc.expand('self');
+    if (this.versionTemplateUrl && this.changed('versionTemplateUrl')) {
+      data.set_audio_version_template_uri = this.versionTemplateUrl;
     }
     return data;
   }
@@ -101,6 +111,10 @@ export class DistributionModel extends BaseModel {
     } else {
       return super.saveRelated();
     }
+  }
+
+  setVersionTemplate(tpl: HalDoc, setOriginal = false) {
+    this.set('versionTemplateUrl', tpl.expand('self'), setOriginal);
   }
 
 }
