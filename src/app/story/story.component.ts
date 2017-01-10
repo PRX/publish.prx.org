@@ -14,7 +14,7 @@ import { StoryModel } from '../shared';
     <publish-tabs [model]="story">
       <nav>
         <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
-        <a routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Distribution</a>
+        <a routerLinkActive="active" [routerLink]="[base, 'podcast']" *ngIf="hasPodcast">Podcast Distribution</a>
         <a routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
       </nav>
       <button *ngIf="id" class="delete" (click)="confirmDelete()">Delete</button>
@@ -27,6 +27,7 @@ export class StoryComponent implements OnInit {
   id: number;
   base: string;
   seriesId: number;
+  hasPodcast: boolean;
   story: StoryModel;
 
   constructor(
@@ -45,12 +46,19 @@ export class StoryComponent implements OnInit {
         this.base += `/${this.seriesId}`;
       }
       this.loadStory();
+      this.checkStoryPodcast();
     });
   }
 
   loadStory() {
     if (this.id) {
-      this.cms.auth.follow('prx:story', {id: this.id}).subscribe(s => this.setStory(null, s));
+      this.cms.auth.follow('prx:story', {id: this.id}).subscribe(story => {
+        if (story.has('prx:series')) {
+          story.follow('prx:series').subscribe(series => this.setStory(series, story));
+        } else {
+          this.setStory(null, story);
+        }
+      });
     } else if (this.seriesId) {
       this.cms.auth.follow('prx:series', {id: this.seriesId}).subscribe(s => this.setStory(s, null));
     } else {
@@ -61,6 +69,7 @@ export class StoryComponent implements OnInit {
   setStory(parent: any, story: any) {
     this.story = new StoryModel(parent, story);
     this.checkStoryVersion();
+    this.checkStoryPodcast();
   }
 
   checkStoryVersion() {
@@ -72,6 +81,15 @@ export class StoryComponent implements OnInit {
         edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
         () => { window.history.back(); }
       );
+    }
+  }
+
+  checkStoryPodcast() {
+    if (this.story && this.story.parent) {
+      this.hasPodcast = true; // assume until we load
+      this.story.isInPodcast().subscribe(yes => this.hasPodcast = yes);
+    } else {
+      this.hasPodcast = false;
     }
   }
 

@@ -93,9 +93,9 @@ export class StoryModel extends BaseModel implements HasUpload {
       distributions = this.doc.followItems('prx:distributions').map(ddocs => {
         return ddocs.map(d => new StoryDistributionModel(this.doc, d));
       });
-    } else if (this.parent && this.parent.count('prx:distributions')) {
-      distributions = this.parent.followItems('prx:distributions').map(ddocs => {
-        if (ddocs.find(d => d['kind'] === 'podcast')) {
+    } else {
+      distributions = this.isInPodcast().map(yes => {
+        if (yes) {
           let newEpisode = new StoryDistributionModel(this.doc);
           newEpisode.set('kind', 'episode', true);
           return [newEpisode];
@@ -177,6 +177,16 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   isV4(): boolean {
     return !this.doc || this.doc['appVersion'] === 'v4';
+  }
+
+  isInPodcast(): Observable<boolean> {
+    if (this.parent && this.parent.count('prx:distributions')) {
+      return this.parent.followItems('prx:distributions').map(dists => {
+        return dists.find(d => d['kind'] === 'podcast') ? true : false;
+      });
+    } else {
+      return Observable.of(false);
+    }
   }
 
 }
