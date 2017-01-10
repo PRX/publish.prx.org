@@ -7,22 +7,23 @@ export class FeederPodcastModel extends BaseModel {
 
   // read-only
   id: number;
-  previewUrl: string;
   publishedUrl: string;
 
   // writeable
+<<<<<<< HEAD
   SETABLE = ['category', 'subCategory', 'explicit', 'path', 'link', 'newFeedUrl', 'authorName', 'authorEmail', 'publishedUrl'];
+=======
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'authorName'];
+>>>>>>> master
   category: string = '';
   subCategory: string = '';
   explicit: string = '';
-  path: string = '';
   link: string = '';
   newFeedUrl: string = '';
   authorName: string = '';
   authorEmail: string = '';
 
   VALIDATORS = {
-    path: [TOKENY('Use letters, numbers and underscores only')],
     link: [REQUIRED(), URL('Not a valid URL')],
     newFeedUrl: [URL('Not a valid URL')]
   };
@@ -48,8 +49,7 @@ export class FeederPodcastModel extends BaseModel {
 
   decode() {
     this.id = this.doc['id'];
-    this.previewUrl = (this.doc.expand('self') || '').replace(/api\/v1\//, '');
-    this.publishedUrl = this.doc['publishedUrl'];
+    this.publishedUrl = this.doc['publishedUrl'] || '';
     this.explicit = this.doc['explicit'] || '';
     if (this.explicit) {
       this.explicit = this.explicit.charAt(0).toUpperCase() + this.explicit.slice(1);
@@ -63,11 +63,6 @@ export class FeederPodcastModel extends BaseModel {
       if (this.doc['author']['email']) {
         this.authorEmail = this.doc['author']['email'];
       }
-    }
-    // pretend path was blank if it was just the podcast id
-    this.path = this.doc['path'] || '';
-    if (`${this.path}` === `${this.id}`) {
-      this.path = '';
     }
 
     // just ignore all but first category/subcategory
@@ -104,9 +99,6 @@ export class FeederPodcastModel extends BaseModel {
        };
     }
 
-    // default path back to the id
-    data.path = this.path || this.id;
-
     // we can always send a categories array
     data.itunesCategories = [];
     if (this.category) {
@@ -130,18 +122,6 @@ export class FeederPodcastModel extends BaseModel {
         model.set(fld, this[fld]);
       }
       this.unstore();
-    }
-  }
-
-  set(field: string, value: any, forceOriginal = false) {
-    super.set(field, value, forceOriginal);
-    if (field === 'path' && this.publishedUrl) {
-      let parts = this.publishedUrl.split('/');
-      if (parts.length > 2) {
-        parts[parts.length - 2] = this.path;
-      }
-      this.publishedUrl = parts.join('/');
-      this.set('publishedUrl', this.publishedUrl);
     }
   }
 

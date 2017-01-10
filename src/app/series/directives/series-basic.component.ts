@@ -15,12 +15,19 @@ import { SeriesModel, TabService } from '../../shared';
 
       <h3><label for="description">Description</label></h3>
       <p class="hint">A full description of your series.</p>
-      <publish-wysiwyg [model]="series" name="description" [content]="series.description" [images]="series.images" 
-        [changed]="descriptionChanged"></publish-wysiwyg>
-        
-      <publish-fancy-field label="Series Image">
+      <publish-wysiwyg [model]="series" name="description" [content]="series.description"
+        [images]="series.images" [changed]="descriptionChanged"></publish-wysiwyg>
+
+      <publish-fancy-field label="Profile Image">
         <div class="fancy-hint">This image will be used as the cover image for your series.</div>
-        <publish-image-upload [model]="series"></publish-image-upload>
+        <publish-image-upload [model]="series" purpose="profile" minWidth=1400 minHeight=1400></publish-image-upload>
+      </publish-fancy-field>
+
+      <publish-fancy-field label="Thumbnail Image">
+        <div class="fancy-hint">Optionally provide an alternate image to use for smaller
+          display purposes. If not provided, a rescaled thumbnail of your profile image
+          will be used.</div>
+        <publish-image-upload [model]="series" purpose="thumbnail" suggestSize="300 x 300"></publish-image-upload>
       </publish-fancy-field>
     </form>
   `,

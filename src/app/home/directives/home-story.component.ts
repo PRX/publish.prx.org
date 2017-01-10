@@ -87,10 +87,6 @@ export class HomeStoryComponent implements OnInit {
   }
 
   get storyImage(): string {
-    if (this.story.isNew) {
-      return this.story.unsavedImage ? this.story.unsavedImage.enclosureHref : null;
-    } else {
-      return this.story.images.length > 0 ? this.story.images[0].enclosureHref : '';
-    }
+    return this.story.images.length > 0 ? this.story.images[0].enclosureHref : '';
   }
 }

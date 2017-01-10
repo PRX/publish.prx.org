@@ -1,13 +1,14 @@
 import { Observable} from 'rxjs';
-import { HalDoc } from '../../core';
+import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { ImageModel } from './image.model';
 import { AudioVersionTemplateModel } from './audio-version-template.model';
 import { AudioFileTemplateModel } from './audio-file-template.model';
 import { DistributionModel } from './distribution.model';
 import { REQUIRED, LENGTH } from './invalid';
+import { HasUpload, applyMixins } from './upload';
 
-export class SeriesModel extends BaseModel {
+export class SeriesModel extends BaseModel implements HasUpload {
 
   public id: number;
   public title: string = '';
@@ -19,13 +20,18 @@ export class SeriesModel extends BaseModel {
   public versionTemplates: AudioVersionTemplateModel[] = [];
   public distributions: DistributionModel[] = [];
 
-  SETABLE = ['title', 'description', 'shortDescription'];
+  SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap'];
 
   VALIDATORS = {
     title:            [REQUIRED()],
     description:      [LENGTH(10)],
     shortDescription: [REQUIRED()]
   };
+
+  // HasUpload mixin
+  hasUploadMap: string;
+  getUploads: (rel: string) => Observable<(HalDoc|string)[]>;
+  setUploads: (rel: string, uuids?: string[]) => void;
 
   constructor(account: HalDoc, series?: HalDoc, loadRelated = true) {
     super();
@@ -53,17 +59,12 @@ export class SeriesModel extends BaseModel {
     let templates = Observable.of([]);
     let distributions = Observable.of([]);
 
-    if (this.doc && this.doc.has('prx:image')) {
-      images = this.doc.follow('prx:image').map(idoc => {
-        let imageModels = [new ImageModel(this.parent, this.doc, idoc)];
-        if (this.unsavedImage) {
-          imageModels.push(this.unsavedImage);
-        }
-        return imageModels;
-      });
-    } else if (this.unsavedImage) {
-      images = Observable.of([this.unsavedImage]);
-    }
+    // image uploads
+    images = this.getUploads('prx:images').map(idocs => {
+      let models = idocs.map(docOrUuid => new ImageModel(this.doc, docOrUuid));
+      this.setUploads('prx:images', models.map(m => m.uuid));
+      return models;
+    });
 
     if (this.doc && this.doc.count('prx:audio-version-templates')) {
       templates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
@@ -111,27 +112,20 @@ export class SeriesModel extends BaseModel {
     return this.parent.create('prx:series', {}, data);
   }
 
-  saveRelated(): Observable<boolean[]> {
-    let hasNewImage = this.images.find(i => i.isNew && !i.isDestroy);
-
-    // since series only has 1 image, just fire off the POST for the new image
-    // without DELETE-ing the old one.
-    if (hasNewImage) {
-      this.images = this.images.filter(img => {
-        if (!img.isNew && img.isDestroy) {
-          img.unstore();
-          return false;
-        } else {
-          return true;
-        }
-      });
-    }
-    return super.saveRelated();
+  addImage(upload: Upload): ImageModel {
+    let image = new ImageModel(this.doc, upload);
+    this.images = [...this.images, image];
+    this.setUploads('prx:images', this.images.map(i => i.uuid));
+    return image;
   }
 
-  get unsavedImage(): ImageModel {
-    let img = new ImageModel(this.parent, this.doc, null);
-    return img.isStored() && !img.isDestroy ? img : null;
+  removeImage(image: ImageModel) {
+    if (image.isNew) {
+      this.images = this.images.filter(i => i !== image);
+    } else {
+      this.images = [...this.images]; // trigger change detection
+    }
+    this.setUploads('prx:images', this.images.map(i => i.uuid));
   }
 
   get unsavedVersionTemplate(): AudioVersionTemplateModel {
@@ -149,3 +143,5 @@ export class SeriesModel extends BaseModel {
   }
 
 }
+
+applyMixins(SeriesModel, [HasUpload]);

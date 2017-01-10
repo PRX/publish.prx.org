@@ -1,4 +1,4 @@
-import { By, cit, create, cms, stubPipe } from '../../../testing';
+import { cit, create, cms, stubPipe } from '../../../testing';
 import { MockHalDoc } from '../../../testing/mock.haldoc';
 import { HomeSeriesComponent } from './home-series.component';
 

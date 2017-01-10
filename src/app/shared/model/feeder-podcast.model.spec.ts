@@ -53,14 +53,6 @@ describe('FeederPodcastModel', () => {
     expect(src.unstore).toHaveBeenCalled();
   });
 
-  it('updates the publishedUrl with changes to the custom path', () => {
-    let src = new FeederPodcastModel(series, dist);
-    src.publishedUrl = 'http://staging-f.prxu.org/doesnotsaythebestpodcast/feed-rss.xml';
-    src.set('path', 'the_best_podcast');
-    src.save();
-    expect(src.publishedUrl).toEqual('http://staging-f.prxu.org/the_best_podcast/feed-rss.xml');
-  });
-
   it('allows user to override account name and set author email for podcast', () => {
     let doc = authorDist.mock('some-feeder', {author: {name: 'Foo2', email: 'Bar2'}});
     let podcast = new FeederPodcastModel(series, dist, doc);
