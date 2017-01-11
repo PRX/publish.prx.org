@@ -93,7 +93,7 @@ export class StoryModel extends BaseModel implements HasUpload {
       distributions = this.doc.followItems('prx:distributions').map(ddocs => {
         return ddocs.map(d => new StoryDistributionModel(this.doc, d));
       });
-    } else {
+    } else if (this.isNew) {
       distributions = this.getSeriesDistribution('podcast').map(dist => {
         if (dist) {
           let newEpisode = new StoryDistributionModel(this.doc);

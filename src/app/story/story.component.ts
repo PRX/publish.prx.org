@@ -87,10 +87,18 @@ export class StoryComponent implements OnInit {
   }
 
   showDistributionTabs() {
-    this.story.getSeriesDistribution('podcast').subscribe(dist => {
-      this.distPodcast = dist ? true : false;
-      this.distPlayer = this.distPodcast && !this.story.isNew;
-    });
+    if (this.story.isNew) {
+      this.distPlayer = false;
+      this.story.getSeriesDistribution('podcast').subscribe(dist => {
+        this.distPodcast = dist ? true : false;
+      });
+    } else {
+      this.story.loadRelated('distributions').subscribe(() => {
+        let hasEpisode = this.story.distributions.some(d => d.kind === 'episode');
+        this.distPodcast = hasEpisode;
+        this.distPlayer = hasEpisode;
+      });
+    }
   }
 
   canDeactivate(next: any, prev: any): boolean | Observable<boolean> {
