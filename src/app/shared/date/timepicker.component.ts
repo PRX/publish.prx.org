@@ -11,8 +11,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
       [(ngModel)]="minutes">
       <option *ngFor="let m of minuteOptions" [value]="m">{{m}}</option>
     </select>
-  `/*,
-  styleUrls: ['timepicker.component.css']*/
+  `
 })
 
 export class TimepickerComponent {
