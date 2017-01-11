@@ -31,8 +31,9 @@ export class TimepickerComponent {
   }
 
   set hour(hour: string) {
-    this.date.setHours(Number(hour));
-    this.onTimeChange.emit(this.date);
+    let date = new Date(this.date.valueOf());
+    date.setHours(Number(hour));
+    this.onTimeChange.emit(date);
   }
 
   get minutes(): string {
@@ -45,7 +46,8 @@ export class TimepickerComponent {
   }
 
   set minutes(minutes: string) {
-    this.date.setMinutes(Number(minutes));
-    this.onTimeChange.emit(this.date);
+    let date = new Date(this.date.valueOf());
+    date.setMinutes(Number(minutes))
+    this.onTimeChange.emit(date);
   }
 }
