@@ -1,10 +1,11 @@
 
-.icon-twitter:before { content: '\e800'; } /* '' */
-.icon-facebook-official:before { content: '\e801'; } /* '' */
-.icon-mail-alt:before { content: '\e802'; } /* '' */
-.icon-down-dir:before { content: '\e803'; } /* '' */
-.icon-cw:before { content: '\e804'; } /* '' */
-.icon-up-dir:before { content: '\e805'; } /* '' */
-.icon-menu:before { content: '\e806'; } /* '' */
-.icon-cancel:before { content: '\e807'; } /* '' */
-.icon-plus:before { content: '\e808'; } /* '' */
+.icon-calendar:before { content: '\e800'; } /* '' */
+.icon-cw:before { content: '\e801'; } /* '' */
+.icon-down-dir:before { content: '\e802'; } /* '' */
+.icon-up-dir:before { content: '\e803'; } /* '' */
+.icon-cancel:before { content: '\e804'; } /* '' */
+.icon-plus:before { content: '\e805'; } /* '' */
+.icon-twitter:before { content: '\f099'; } /* '' */
+.icon-menu:before { content: '\f0c9'; } /* '' */
+.icon-mail-alt:before { content: '\f0e0'; } /* '' */
+.icon-facebook-official:before { content: '\f230'; } /* '' */
