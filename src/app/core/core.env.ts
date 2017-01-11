@@ -9,7 +9,8 @@ const DEFAULTS = {
   CMS_USE_LOCALSTORAGE: false,
   AUTH_HOST: 'https://id.prx.org',
   AUTH_CLIENT_ID: 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D',
-  BUCKET_FOLDER: 'dev'
+  BUCKET_FOLDER: 'dev',
+  PLAY_HOST: 'https://play.prx.org'
 };
 
 const getVar = (name: string): any => {
@@ -33,4 +34,5 @@ export class Env {
   public static get AWS_KEY():               string { return getVar('AWS_KEY'); }
   public static get AWS_URL():               string { return getVar('AWS_URL'); }
   public static get USE_CLOUDFRONT():       boolean { return getVar('USE_CLOUDFRONT'); }
+  public static get PLAY_HOST():            boolean { return getVar('PLAY_HOST'); }
 }
