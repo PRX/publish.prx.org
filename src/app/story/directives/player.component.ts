@@ -2,6 +2,7 @@ import { Component, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { StoryModel, TabService } from '../../shared';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Env } from '../../core/core.env';
 
 @Component({
   styleUrls: ['player.component.css'],
@@ -37,7 +38,6 @@ export class PlayerComponent implements OnDestroy {
   private audioUrl: string;
   private imageUrl: string;
   private subscriptionUrl: string;
-  private host: string = window['ENV']['PLAY_HOST'];
 
   story: StoryModel;
   tabSub: Subscription;
@@ -84,7 +84,7 @@ export class PlayerComponent implements OnDestroy {
   }
 
   get embeddableUrl() {
-    return `${this.host}/e?${this.paramString}`;
+    return `${Env.PLAY_HOST}/e?${this.paramString}`;
   }
 
   get safeUrl() {
