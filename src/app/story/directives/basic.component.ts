@@ -53,10 +53,10 @@ import { StoryModel, TabService } from '../../shared';
         <div class="fancy-hint">If the release date is not set manually,
           the current date will be used for publishing.</div>
         <publish-datepicker 
-          [date]="story.releasedAt" (onDateChange)="story.set('releasedAt', $event)">            
+          [date]="story.releasedAt" (onDateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">            
         </publish-datepicker>
         <publish-timepicker 
-          [date]="story.releasedAt" (onTimeChange)="story.set('releasedAt', $event)">
+          [date]="story.releasedAt" (onTimeChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </publish-timepicker>
       </publish-fancy-field>
 
@@ -79,5 +79,9 @@ export class BasicComponent implements OnDestroy {
 
   get descriptionChanged(): boolean {
     return this.story && this.story.changed('description', false);
+  }
+
+  get releasedAtChanged(): boolean {
+    return this.story && this.story.changed('releasedAt', false);
   }
 }

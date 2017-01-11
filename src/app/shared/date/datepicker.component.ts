@@ -6,7 +6,7 @@ import * as moment from 'moment';
   selector: 'publish-datepicker',
   template: `
     <span class="input-group">
-      <input type="text" #datepicker [value]="formattedDate">
+      <input type="text" #datepicker [value]="formattedDate" [class.changed]="changed">
       <span class="input-group-addon" (click)="datepicker.click()"><i class="icon-calendar"></i></span>
     </span>
   `,
@@ -18,6 +18,7 @@ export class DatepickerComponent implements AfterViewInit {
 
   @Input() date: Date;
   @Output() onDateChange = new EventEmitter<Date>();
+  @Input() changed: boolean;
   @ViewChild('datepicker') input: ElementRef;
 
   private picker: Pikaday;

@@ -3,20 +3,22 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'publish-timepicker',
   template: `
-    <select
+    <select [class.changed]="changed"
       [(ngModel)]="hour">
       <option *ngFor="let h of hourOptions" [value]="h">{{h}}</option>
     </select> :
-    <select
+    <select [class.changed]="changed"
       [(ngModel)]="minutes">
       <option *ngFor="let m of minuteOptions" [value]="m">{{m}}</option>
     </select>
-  `
+  `,
+  styleUrls: ['timepicker.component.css']
 })
 
 export class TimepickerComponent {
   @Input() date: Date;
   @Output() onTimeChange = new EventEmitter<Date>();
+  @Input() changed: boolean;
   hourOptions: string[] = new Array(24).fill('').map((x, i) => i < 10 ? '0' + i : '' + i);
   minuteOptions = ['00', '30'];
 
