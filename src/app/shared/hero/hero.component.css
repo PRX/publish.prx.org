@@ -36,7 +36,7 @@
 }
 .toolbar section {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   padding-top: 10px;
   padding-bottom: 10px;
   position: relative;
@@ -49,7 +49,6 @@
 }
 .toolbar .actions {
   white-space: nowrap;
-  text-align: right;
 }
 .toolbar >>> h2 {
   font-size: 26px;

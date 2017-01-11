@@ -21,7 +21,8 @@ import { StoryModel } from '../../shared';
       <div class="hero-info" *ngIf="story">
         <h2>{{story.title || '(Untitled)'}}</h2>
         <p *ngIf="story?.isNew">Not saved</p>
-        <p *ngIf="!story?.isNew">Last saved at {{story.updatedAt | timeago}}</p>
+        <p *ngIf="!story?.isNew && !story?.publishedAt">Last saved at {{story.updatedAt | timeago}}</p>
+        <p *ngIf="story?.publishedAt">{{publishedOnText}}</p>
       </div>
       <div class="hero-actions" *ngIf="story">
 
@@ -47,12 +48,6 @@ import { StoryModel } from '../../shared';
              [working]="story.isPublishing" (click)="togglePublish()" orange=1>
             {{story.publishedAt ? 'Unpublish' : 'Publish'}}
           </publish-button>
-          <p *ngIf="!story.changed() && !story.publishedAt">
-            Will be queued up for publishing {{story.releasedAt ? ' at ' + formatDate(story.releasedAt) : 'immediately'}}
-          </p>
-          <p *ngIf="!story.changed() && story.publishedAt">
-            Published at {{formatDate(story.publishedAt)}}
-          </p>
         </template>
 
       </div>
@@ -66,6 +61,8 @@ export class StoryHeroComponent implements OnInit, OnChanges {
   @Input() story: StoryModel;
 
   series: HalDoc;
+
+  now = new Date(); // value changed after checked if new Date() in getter
 
   constructor(private router: Router) {}
 
@@ -106,8 +103,16 @@ export class StoryHeroComponent implements OnInit, OnChanges {
     });
   }
 
-  formatDate(date) {
+  formatDatetime(date) {
     return moment(date).format('L LT');
+  }
+
+  get publishedOnText() {
+    if (this.now.valueOf() >= new Date(this.story.publishedAt.valueOf()).valueOf()) {
+      return `Published on ${this.formatDatetime(this.story.publishedAt)}`;
+    } else {
+      return `Will be published on ${this.formatDatetime(this.story.publishedAt)}`;
+    }
   }
 
 }
