@@ -17,7 +17,7 @@
 
   <div *ngSwitchCase="'editing'">
 
-    <publish-fancy-field label="PRX Feed" class="feed-url" *ngIf="podcast?.id">
+    <publish-fancy-field label="PRX Feed" class="feed-url" *ngIf="!distribution.isNew">
       <div class="fancy-hint">The public URL of your PRX podcast feed.</div>
       <input type="text" readonly [ngModel]="podcast?.publishedUrl" name="publishedUrl" #pubFeed/>
       <button [publishCopyInput]="pubFeed">Copy</button>
