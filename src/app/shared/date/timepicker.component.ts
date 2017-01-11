@@ -23,16 +23,20 @@ export class TimepickerComponent {
   minuteOptions = ['00', '30'];
 
   get hour(): string {
-    let date = this.date ? new Date(this.date.valueOf()) : new Date();
-    if (date.getMinutes() <= 30) {
-      return date.getHours() < 10 ? '0' + date.getHours() : '' + date.getHours();
+    if (!this.date) {
+      return '00';
     } else {
-      return date.getHours() + 1 <= 23 ? '' + (date.getHours() + 1) : '00';
+      let date = new Date(this.date.valueOf());
+      if (date.getMinutes() <= 30) {
+        return date.getHours() < 10 ? '0' + date.getHours() : '' + date.getHours();
+      } else {
+        return date.getHours() + 1 <= 23 ? '' + (date.getHours() + 1) : '00';
+      }
     }
   }
 
   set hour(hour: string) {
-    let date = new Date(this.date.valueOf());
+    let date = this.date ? new Date(this.date.valueOf()) : new Date();
     date.setHours(Number(hour));
     this.onTimeChange.emit(date);
   }
@@ -47,8 +51,8 @@ export class TimepickerComponent {
   }
 
   set minutes(minutes: string) {
-    let date = new Date(this.date.valueOf());
-    date.setMinutes(Number(minutes))
+    let date = this.date ? new Date(this.date.valueOf()) : new Date();
+    date.setMinutes(Number(minutes));
     this.onTimeChange.emit(date);
   }
 }
