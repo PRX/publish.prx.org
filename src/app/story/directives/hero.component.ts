@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
@@ -46,6 +47,12 @@ import { StoryModel } from '../../shared';
              [working]="story.isPublishing" (click)="togglePublish()" orange=1>
             {{story.publishedAt ? 'Unpublish' : 'Publish'}}
           </publish-button>
+          <p *ngIf="!story.changed() && !story.publishedAt">
+            Will be queued up for publishing {{story.releasedAt ? ' at ' + formatDate(story.releasedAt) : 'immediately'}}
+          </p>
+          <p *ngIf="!story.changed() && story.publishedAt">
+            Published at {{formatDate(story.publishedAt)}}
+          </p>
         </template>
 
       </div>
@@ -97,6 +104,10 @@ export class StoryHeroComponent implements OnInit, OnChanges {
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
       // nothing to do
     });
+  }
+
+  formatDate(date) {
+    return moment(date).format('L LT');
   }
 
 }
