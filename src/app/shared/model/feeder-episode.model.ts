@@ -10,8 +10,10 @@ export class FeederEpisodeModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['guid'];
+  SETABLE = ['guid', 'authorName', 'authorEmail'];
   guid: string = '';
+  authorName: string = '';
+  authorEmail: string = '';
 
   VALIDATORS = {
     guid: [REQUIRED()]
@@ -39,11 +41,21 @@ export class FeederEpisodeModel extends BaseModel {
   decode() {
     this.id = '' + (this.doc['id'] || '');
     this.guid = this.doc['guid'] || '';
+    let author = this.doc['author'] || {};
+    this.authorName = author['name'] || '';
+    this.authorEmail = author['email'] || '';
   }
 
   encode(): {} {
     let data = <any> {};
     data.guid = this.guid || null;
+    if (this.authorName || this.authorEmail) {
+      data.author = {};
+      if (this.authorName) { data.author.name = this.authorName; }
+      if (this.authorEmail) { data.author.email = this.authorEmail; }
+    } else {
+      data.author = null;
+    }
     return data;
   }
 
