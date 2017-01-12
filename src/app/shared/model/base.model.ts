@@ -105,11 +105,13 @@ export abstract class BaseModel {
       }
 
       // save related docs in parallel
-      return this.saveRelated().map(() => {
-        this.isNew = false;
-        this.isSaving = false;
-        this.resetRelated();
-        return true;
+      return this.swapRelated().flatMap(() => {
+        return this.saveRelated().map(() => {
+          this.isNew = false;
+          this.isSaving = false;
+          this.resetRelated();
+          return true;
+        });
       });
     });
   }
@@ -126,11 +128,32 @@ export abstract class BaseModel {
         });
         this.relatedReplays[relName] = relValue;
       }
-      return this.relatedReplays[relName];
+      return this.relatedReplays[relName].first();
     } else {
-      let allRelated = this.RELATIONS.map(r => this.loadRelated(r, force).first());
+      let allRelated = this.RELATIONS.map(r => this.loadRelated(r, force));
       return Observable.forkJoin(allRelated).map(relateds => null);
     }
+  }
+
+  swapRelated(): Observable<boolean[]> {
+    let relatedSwappers = this.RELATIONS.map(rel => {
+      let models = this.getRelated(rel);
+      if (models.some(m => (m.isNew && m['swapNew']))) {
+        return this.loadRelated(rel, true).map(() => {
+          let newModels = this.getRelated(rel);
+          models.forEach((model, idx) => {
+            if (model.isNew && model['swapNew'] && newModels[idx]) {
+              model['swapNew'](newModels[idx]);
+            }
+            model.unstore();
+          });
+          return true;
+        });
+      } else {
+        return Observable.of(false);
+      }
+    });
+    return Observable.from(relatedSwappers).concatAll().toArray();
   }
 
   saveRelated(): Observable<boolean[]> {
