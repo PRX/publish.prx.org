@@ -76,9 +76,15 @@ export class DistributionModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.kind = this.doc['kind'] || '';
+
+    // TODO: cms has non-auth'd urls
     this.url = this.doc['url'] || '';
+    if (this.url && !this.url.match('/authorization/')) {
+      this.url = this.url.replace('/podcasts/', '/authorization/podcasts/');
+    }
+
+    // TODO: since a PUT returns no data, underscored key is set on callback
     if (this.doc['set_audio_version_template_uri']) {
-      // TODO: since a PUT returns no data, this is set on callback
       this.versionTemplateUrl = this.doc['set_audio_version_template_uri'];
     } else if (this.doc.has('prx:audio-version-template')) {
       this.versionTemplateUrl = this.doc.expand('prx:audio-version-template');
