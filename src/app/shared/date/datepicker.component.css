@@ -17,6 +17,10 @@ input.changed {
   outline: 5px auto #f09b4c;
 }
 
+input.invalid {
+  outline: 5px auto #e32;
+}
+
 .input-group-addon i {
   height: 20px;
   width: 20px;

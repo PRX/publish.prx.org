@@ -6,7 +6,8 @@ import * as moment from 'moment';
   selector: 'publish-datepicker',
   template: `
     <span class="input-group">
-      <input type="text" #datepicker [value]="formattedDate" [class.changed]="changed">
+      <input type="text" #datepicker [value]="formattedDate" 
+        [class.changed]="changed" [class.invalid]="invalid" (input)="setWhenValid($event.target.value)">
       <span class="input-group-addon" (click)="datepicker.click()"><i class="icon-calendar"></i></span>
     </span>
   `,
@@ -28,6 +29,19 @@ export class DatepickerComponent implements AfterViewInit {
       return moment(this.date.valueOf()).format(DatepickerComponent.FORMAT);
     } else {
       return '';
+    }
+  }
+
+  get invalid(): boolean {
+    return this.input.nativeElement.value.length > 0 &&
+      !moment(this.input.nativeElement.value, DatepickerComponent.FORMAT, true).isValid();
+  }
+
+  setWhenValid(value: string) {
+    if (moment(value, DatepickerComponent.FORMAT, true).isValid()) {
+      let date = new Date(value);
+      this.picker.setDate(date);
+      this.onDateChange.emit(this.picker.getDate());
     }
   }
 
