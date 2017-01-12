@@ -1,4 +1,5 @@
 import { cit, create, provide } from '../../../testing';
+import { Observable } from 'rxjs';
 import { SeriesPodcastComponent } from './series-podcast.component';
 import { TabService } from '../../shared';
 
@@ -9,7 +10,7 @@ describe('SeriesPodcastComponent', () => {
   provide(TabService);
 
   cit('forces you to create the series first', (fix, el, comp) => {
-    comp.series = {isNew: true};
+    comp.series = {isNew: true, loadRelated: () => Observable.of(null), distributions: []};
     fix.detectChanges();
     expect(el).toContainText('The series itself must be created');
     comp.series.isNew = false;
@@ -19,24 +20,27 @@ describe('SeriesPodcastComponent', () => {
   });
 
   cit('warns if no audio version templates exist', (fix, el, comp) => {
-    comp.series = {};
-    comp.podcastTemplate = undefined;
+    comp.series = {loadRelated: () => Observable.of(null), distributions: []};
+    comp.audioVersionOptions = [];
     fix.detectChanges();
     expect(el).toContainText('This series must have audio templates');
     comp.series.isNew = false;
     comp.podcastTemplate = {};
     fix.detectChanges();
-    expect(el).toContainText('Create Podcast');
+    expect(el).not.toContainText('Create Podcast');
   });
 
   cit('finds podcast distributions for the series', (fix, el, comp) => {
-    comp.series = {distributions: [
-      {id: 1, kind: 'something'}, {id: 2, kind: 'podcast'}, {id: 3, kind: 'podcast'}
-    ]};
-    spyOn(comp, 'loadPodcast').and.stub();
+    comp.series = {
+      loadRelated: () => Observable.of(null),
+      distributions: [
+        {id: 1, kind: 'something', loadRelated: () => Observable.of(null)},
+        {id: 2, kind: 'podcast', loadRelated: () => Observable.of(null)},
+        {id: 3, kind: 'podcast', loadRelated: () => Observable.of(null)}
+      ]
+    };
     fix.detectChanges();
     expect(comp.distribution.id).toEqual(2);
-    expect(comp.loadPodcast).toHaveBeenCalled();
   });
 
   cit('sets itunes subcategories', (fix, el, comp) => {

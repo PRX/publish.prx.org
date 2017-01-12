@@ -3,6 +3,7 @@ import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioVersionModel } from './audio-version.model';
 import { ImageModel } from './image.model';
+import { StoryDistributionModel } from './story-distribution.model';
 import { REQUIRED, LENGTH } from './invalid';
 import { HasUpload, applyMixins } from './upload';
 
@@ -20,6 +21,7 @@ export class StoryModel extends BaseModel implements HasUpload {
   public images: ImageModel[] = [];
   public isPublishing: boolean;
   public account: HalDoc;
+  public distributions: StoryDistributionModel[] = [];
 
   SETABLE = ['title', 'shortDescription', 'description', 'tags', 'hasUploadMap', 'releasedAt'];
 
@@ -57,6 +59,7 @@ export class StoryModel extends BaseModel implements HasUpload {
   related() {
     let versions: Observable<AudioVersionModel[]>;
     let images: Observable<ImageModel[]>;
+    let distributions = Observable.of([]);
 
     // audio versions (with optional templates)
     if (this.doc) {
@@ -86,7 +89,24 @@ export class StoryModel extends BaseModel implements HasUpload {
       return models;
     });
 
-    return {images: images, versions: versions};
+    // story distributions
+    if (this.doc && this.doc.count('prx:distributions')) {
+      distributions = this.doc.followItems('prx:distributions').map(ddocs => {
+        return ddocs.map(d => new StoryDistributionModel(this.parent, this.doc, d));
+      });
+    } else if (this.isNew && this.parent) {
+      distributions = this.getSeriesDistribution('podcast').map(dist => {
+        if (dist) {
+          let newEpisode = new StoryDistributionModel(this.parent, this.doc);
+          newEpisode.set('kind', 'episode', true);
+          return [newEpisode];
+        } else {
+          return [];
+        }
+      });
+    }
+
+    return {images: images, versions: versions, distributions: distributions};
   }
 
   decode() {
@@ -160,6 +180,16 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   isV4(): boolean {
     return !this.doc || this.doc['appVersion'] === 'v4';
+  }
+
+  getSeriesDistribution(kind: string): Observable<HalDoc> {
+    if (this.parent && this.parent.count('prx:distributions')) {
+      return this.parent.followItems('prx:distributions').map(dists => {
+        return dists.find(d => d['kind'] === kind);
+      });
+    } else {
+      return Observable.of(null);
+    }
   }
 
 }

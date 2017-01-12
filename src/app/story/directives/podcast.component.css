@@ -23,3 +23,8 @@
 .version:last-child section {
   margin-bottom: 0;
 }
+.span-fields publish-fancy-field {
+  display: inline-block;
+  width: 250px;
+  margin-right: 40px;
+}

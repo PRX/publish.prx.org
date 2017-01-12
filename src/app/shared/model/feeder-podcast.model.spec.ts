@@ -45,12 +45,10 @@ describe('FeederPodcastModel', () => {
     let src = new FeederPodcastModel(series, dist);
     src.id = 1234;
     src.category = 'src-category';
-    spyOn(src, 'unstore').and.stub();
     let dest = new FeederPodcastModel(series, dist);
-    src.copyTo(dest);
+    src.swapNew(dest);
     expect(dest.id).not.toEqual(1234);
     expect(dest.category).toEqual('src-category');
-    expect(src.unstore).toHaveBeenCalled();
   });
 
   it('allows user to override account name and set author email for podcast', () => {

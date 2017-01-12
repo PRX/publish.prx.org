@@ -1,7 +1,7 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SeriesModel, DistributionModel, FeederPodcastModel, AudioVersionTemplateModel,
-  TabService, CATEGORIES, SUBCATEGORIES } from '../../shared';
+import { SeriesModel, DistributionModel, FeederPodcastModel,
+         TabService, CATEGORIES, SUBCATEGORIES } from '../../shared';
 
 @Component({
   styleUrls: ['series-podcast.component.css'],
@@ -15,48 +15,37 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   explicitOpts = ['', 'Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
+  audioVersionOptions: string[][];
 
   tabSub: Subscription;
   state: string;
   series: SeriesModel;
-  templateSub: Subscription;
-  podcastTemplate: AudioVersionTemplateModel;
+  initialDistributions: DistributionModel[];
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
 
   constructor(tab: TabService) {
-    this.tabSub = tab.model.subscribe(s => {
-      this.series = <SeriesModel> s;
-      this.templateSub = this.series.loadRelated('versionTemplates').subscribe(() => {
-        if (this.series.versionTemplates && this.series.versionTemplates.length > 0) {
-          // Later we may allow the user to choose which template, but for now they only get one.
-          this.podcastTemplate = this.series.versionTemplates[0];
-        }
+    this.tabSub = tab.model.subscribe((s: SeriesModel) => {
+      this.series = s;
+      this.series.loadRelated('versionTemplates').subscribe(() => {
+        let realTemplates = this.series.versionTemplates.filter(t => t.doc);
+        this.audioVersionOptions = realTemplates.map(tpl => {
+          return [tpl.label || '[Untitled]', tpl.doc.expand('self')];
+        });
       });
+      this.loadDistributions();
     });
   }
 
   ngDoCheck() {
-    // manually check for distribution/podcast changes
-    if (this.series && this.series.distributions) {
-      let dist = this.series.distributions.find(d => d.kind === 'podcast');
-      if (this.distribution !== dist) {
-        this.distribution = dist;
-        this.loadPodcast();
-      }
-    }
-    if (this.distribution && this.distribution.podcast && this.podcast !== this.distribution.podcast) {
-      this.setPodcast();
-    }
-
-    // display state
+    this.loadDistributions();
     if (this.distribution) {
       this.state = 'editing';
     } else if (this.series && this.series.isNew) {
       this.state = 'new';
     } else if (this.series) {
       this.state = 'creating';
-      if (!this.podcastTemplate) {
+      if (this.audioVersionOptions && !this.audioVersionOptions.length) {
         this.state = 'missing';
       }
     } else {
@@ -66,27 +55,35 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   ngOnDestroy(): any {
     this.tabSub.unsubscribe();
-    if (this.templateSub) {
-      this.templateSub.unsubscribe();
-    }
   }
 
-  loadPodcast() {
-    this.podcast = null;
-    if (this.distribution) {
-      this.distribution.loadExternal().subscribe(() => this.setPodcast);
+  loadDistributions() {
+    let initial = this.initialDistributions;
+    if (this.series && (!initial || this.series.distributions !== initial)) {
+      this.initialDistributions = this.series.distributions;
+      this.series.loadRelated('distributions').subscribe(() => {
+        this.distribution = this.series.distributions.find(d => d.kind === 'podcast');
+        if (this.distribution) {
+          this.distribution.loadRelated('podcast').subscribe(() => {
+            this.podcast = this.distribution.podcast;
+            this.setSubCategories();
+          });
+        } else {
+          this.podcast = null;
+          this.setSubCategories();
+        }
+      });
     }
-  }
-
-  setPodcast() {
-    this.podcast = this.distribution.podcast;
-    this.setSubCategories();
   }
 
   createDistribution() {
-    let podcastDist = new DistributionModel({series: this.series.doc, template: this.podcastTemplate.doc});
+    let podcastDist = new DistributionModel(this.series.doc);
     podcastDist.set('kind', 'podcast');
     this.series.distributions.push(podcastDist);
+    this.distribution = podcastDist;
+    podcastDist.loadRelated('podcast').subscribe(() => {
+      this.podcast = podcastDist.podcast;
+    });
   }
 
   setSubCategories() {
