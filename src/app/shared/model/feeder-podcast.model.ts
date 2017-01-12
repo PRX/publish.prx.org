@@ -111,12 +111,9 @@ export class FeederPodcastModel extends BaseModel {
     return Observable.throw(new Error('Cannot directly create a feeder podcast'));
   }
 
-  copyTo(model: FeederPodcastModel) {
-    if (this !== model) {
-      for (let fld of this.SETABLE) {
-        model.set(fld, this[fld]);
-      }
-      this.unstore();
+  swapNew(newModel: FeederPodcastModel) {
+    for (let fld of this.SETABLE) {
+      newModel.set(fld, this[fld]);
     }
   }
 

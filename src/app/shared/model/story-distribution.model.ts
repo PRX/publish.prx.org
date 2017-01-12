@@ -19,28 +19,28 @@ export class StoryDistributionModel extends BaseModel {
     kind: [REQUIRED()]
   };
 
-  constructor(story: HalDoc, distrib?: HalDoc, loadRelated = false) {
+  constructor(private series: HalDoc, story: HalDoc, storyDistribution?: HalDoc, loadRelated = false) {
     super();
-    this.init(story, distrib, loadRelated); // DO NOT load related by default
+    this.init(story, storyDistribution, loadRelated); // DO NOT load related by default
   }
 
   key() {
     if (this.doc) {
       return `prx.story.distribution.${this.doc.id}`;
-    } else if (this.parent) {
-      return `prx.story.distribution.new.${this.parent.id}`; // new in story
+    } else if (this.series) {
+      return `prx.story.distribution.new.${this.series.id}`;
     } else {
-      return 'prx.story.distribution.new.new'; // new in new story
+      throw new Error('Cannot have a story-distribution outside of a series');
     }
   }
 
   related() {
     let episode = Observable.of(null);
     if (this.isNew) {
-      episode = Observable.of(new FeederEpisodeModel(this.parent, this.doc));
+      episode = Observable.of(new FeederEpisodeModel(this.series, this.doc));
     } else if (this.url) {
       episode = this.doc.followLink({href: this.url}).map(edoc => {
-        return new FeederEpisodeModel(this.parent, this.doc, edoc);
+        return new FeederEpisodeModel(this.series, this.doc, edoc);
       });
     }
     return {episode: episode};
@@ -49,7 +49,12 @@ export class StoryDistributionModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.kind = this.doc['kind'] || '';
+
+    // TODO: cms has non-auth'd urls
     this.url = this.doc['url'] || '';
+    if (this.url && !this.url.match('/authorization/')) {
+      this.url = this.url.replace('/episodes/', '/authorization/episodes/');
+    }
   }
 
   encode(): {} {
@@ -59,20 +64,11 @@ export class StoryDistributionModel extends BaseModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    throw new Error('Cannot directly create an episode distribution');
+    throw new Error('Cannot directly create a story distribution');
   }
 
-  // swap new episode with this.url
-  saveRelated(): Observable<boolean[]> {
-    if (this.episode && this.episode.isNew && this.url) {
-      let oldModel = this.episode;
-      this.loadRelated('episode', true).subscribe((newModel: FeederEpisodeModel) => {
-        oldModel.copyTo(newModel);
-        return super.saveRelated();
-      });
-    } else {
-      return super.saveRelated();
-    }
+  swapNew(newModel: StoryDistributionModel) {
+    newModel.episode = this.episode;
   }
 
 }

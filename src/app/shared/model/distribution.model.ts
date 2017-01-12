@@ -106,19 +106,6 @@ export class DistributionModel extends BaseModel {
     return this.parent.create('prx:distributions', {}, data);
   }
 
-  // swap new episode with this.url
-  saveRelated(): Observable<boolean[]> {
-    if (this.podcast && this.podcast.isNew && this.url) {
-      let oldModel = this.podcast;
-      this.loadRelated('podcast', true).subscribe((newModel: FeederPodcastModel) => {
-        oldModel.copyTo(newModel);
-        return super.saveRelated();
-      });
-    } else {
-      return super.saveRelated();
-    }
-  }
-
   setVersionTemplate(tpl: HalDoc, setOriginal = false) {
     this.set('versionTemplateUrl', tpl.expand('self'), setOriginal);
   }

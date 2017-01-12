@@ -19,18 +19,23 @@ export class FeederEpisodeModel extends BaseModel {
     guid: [REQUIRED()]
   };
 
-  constructor(private story: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
+  constructor(private series: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
     super();
+    this.VALIDATORS.guid = this.VALIDATORS.guid.map(validator => {
+      return (key: string, value: any) => {
+        return this.isNew ? null : validator(key, value);
+      };
+    });
     this.init(distrib, episode, loadRelated);
   }
 
   key() {
     if (this.doc) {
       return `prx.episode.${this.doc.id}`;
-    } else if (this.story) {
-      return `prx.episode.new.${this.story.id}`; // new in story
+    } else if (this.series) {
+      return `prx.episode.new.${this.series.id}`;
     } else {
-      return null; // cannot create episode until parent story exists
+      throw new Error('Cannot have a feeder episode outside of a series');
     }
   }
 
@@ -63,12 +68,9 @@ export class FeederEpisodeModel extends BaseModel {
     return Observable.throw(new Error('Cannot directly create a feeder episode'));
   }
 
-  copyTo(model: FeederEpisodeModel) {
-    if (this !== model) {
-      for (let fld of this.SETABLE) {
-        model.set(fld, this[fld]);
-      }
-      this.unstore();
+  swapNew(newModel: FeederEpisodeModel) {
+    for (let fld of this.SETABLE) {
+      newModel.set(fld, this[fld]);
     }
   }
 

@@ -86,6 +86,14 @@ describe('StoryModel', () => {
       expect(story.images.length).toEqual(2);
     });
 
+    it('creates an episode distribution for podcast series', () => {
+      let story = makeStory(null);
+      expect(story.distributions.length).toEqual(0);
+      seriesMock.mockItems('prx:distributions', [{kind: 'podcast'}]);
+      story = makeStory(null);
+      expect(story.distributions.length).toEqual(1);
+    });
+
   });
 
   describe('encode', () => {
