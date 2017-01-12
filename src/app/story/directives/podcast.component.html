@@ -1,0 +1,38 @@
+<publish-spinner *ngIf="!episode"></publish-spinner>
+<form *ngIf="episode">
+
+  <publish-fancy-field *ngIf="!episode.isNew" label="Episode GUID" required textinput [model]="episode" name="guid">
+    <div class="fancy-hint">The original GUID of this episode.</div>
+  </publish-fancy-field>
+
+  <publish-fancy-field label="Author Information">
+    <div class="fancy-hint">Set the author name and email to be associated with this episode.</div>
+    <div class="span-fields">
+      <publish-fancy-field label="Name" textinput [model]="episode" name="authorName" small=1>
+      </publish-fancy-field>
+      <publish-fancy-field label="Email" textinput [model]="episode" name="authorEmail" small=1>
+      </publish-fancy-field>
+    </div>
+  </publish-fancy-field>
+
+  <publish-fancy-field *ngIf="version" label="Explicit" required=1>
+    <div class="fancy-hint">
+      In accordance with
+      <a [href]="itunesRequirementsDoc"
+        title="Requirements - Podcasts Connect Help">the requirements for iTunes podcast content</a>,
+      does any of your podcast audio contain
+      <a [href]="itunesExplicitDoc"
+        title="About iTunes Store Parental Advisories - Apple Support">explicit material?</a>
+    </div>
+    <div class="version">
+      <header>
+        <strong>{{version?.label}}</strong>
+      </header>
+      <section>
+        <publish-fancy-field [model]="version" [select]="explicitOpts" name="explicit">
+        </publish-fancy-field>
+      </section>
+    </div>
+  </publish-fancy-field>
+
+</form>

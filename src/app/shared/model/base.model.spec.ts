@@ -233,7 +233,66 @@ describe('BaseModel', () => {
       expect(secondSaved).toEqual(false);
     });
 
-    it('removeds destroyed child models', () => {
+    it('swaps new child models', () => {
+      let originalSaved = false, originalUnstore = false, swapCalled = null;
+      let swapSaved = false, swapUnstore = false;
+      let fakeFoo = {
+        name: 'original',
+        isNew: true,
+        changed: () => true,
+        swapNew: data => swapCalled = data,
+        save: () => { originalSaved = true; return Observable.of(true); },
+        unstore: () => originalUnstore = true
+      };
+      spyOn(base, 'related').and.callFake(() => {
+        return {foo: Observable.create(sub => sub.next([fakeFoo]))};
+      });
+
+      // init related
+      base.init(null, <any> {update: () => Observable.of({})});
+      expect(base.RELATIONS).toEqual(['foo']);
+      expect(base['foo'][0].name).toEqual('original');
+
+      // change underlying related() and save
+      fakeFoo = {
+        name: 'swapped',
+        isNew: false,
+        changed: () => true,
+        swapNew: () => true,
+        save: () => { swapSaved = true; return Observable.of(true); },
+        unstore: () => swapUnstore = true
+      };
+      base.save().subscribe();
+
+      // should have been swapped before original was saved
+      expect(originalSaved).toEqual(false);
+      expect(originalUnstore).toEqual(true);
+      expect(swapCalled).not.toBeNull();
+      expect(swapCalled.name).toEqual('swapped');
+      expect(swapSaved).toEqual(true);
+      expect(swapUnstore).toEqual(false);
+      expect(base['foo'][0].name).toEqual('swapped');
+    });
+
+    it('does not swap existing models', () => {
+      let originalSaved = false;
+      let fakeFoo = {
+        isNew: false,
+        changed: () => true,
+        swapNew: () => { throw new Error('should not have swapped'); },
+        save: () => { originalSaved = true; return Observable.of(true); }
+      };
+      spyOn(base, 'related').and.callFake(() => {
+        return {foo: Observable.create(sub => sub.next([fakeFoo]))};
+      });
+
+      // init related and save
+      base.init(null, <any> {update: () => Observable.of({})});
+      base.save().subscribe();
+      expect(originalSaved).toEqual(true);
+    });
+
+    it('removes destroyed child models', () => {
       base.doc = <any> {update: null};
       spyOn(base.doc, 'update').and.returnValue(Observable.of({foo: 'bar'}));
       spyOn(base, 'init').and.stub();

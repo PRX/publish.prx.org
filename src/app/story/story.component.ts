@@ -14,8 +14,8 @@ import { StoryModel } from '../shared';
     <publish-tabs [model]="story">
       <nav>
         <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
-        <a routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Distribution</a>
-        <a routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
+        <a *ngIf="distPodcast" routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Distribution</a>
+        <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
       </nav>
       <button *ngIf="id" class="delete" (click)="confirmDelete()">Delete</button>
     </publish-tabs>
@@ -28,6 +28,10 @@ export class StoryComponent implements OnInit {
   base: string;
   seriesId: number;
   story: StoryModel;
+
+  // distribution specific tabs
+  distPodcast = false;
+  distPlayer = false;
 
   constructor(
     private cms: CmsService,
@@ -50,7 +54,13 @@ export class StoryComponent implements OnInit {
 
   loadStory() {
     if (this.id) {
-      this.cms.auth.follow('prx:story', {id: this.id}).subscribe(s => this.setStory(null, s));
+      this.cms.auth.follow('prx:story', {id: this.id}).subscribe(story => {
+        if (story.has('prx:series')) {
+          story.follow('prx:series').subscribe(series => this.setStory(series, story));
+        } else {
+          this.setStory(null, story);
+        }
+      });
     } else if (this.seriesId) {
       this.cms.auth.follow('prx:series', {id: this.seriesId}).subscribe(s => this.setStory(s, null));
     } else {
@@ -60,6 +70,7 @@ export class StoryComponent implements OnInit {
 
   setStory(parent: any, story: any) {
     this.story = new StoryModel(parent, story);
+    this.showDistributionTabs();
     this.checkStoryVersion();
   }
 
@@ -72,6 +83,21 @@ export class StoryComponent implements OnInit {
         edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
         () => { window.history.back(); }
       );
+    }
+  }
+
+  showDistributionTabs() {
+    if (this.story.isNew) {
+      this.distPlayer = false;
+      this.story.getSeriesDistribution('podcast').subscribe(dist => {
+        this.distPodcast = dist ? true : false;
+      });
+    } else {
+      this.story.loadRelated('distributions').subscribe(() => {
+        let hasEpisode = this.story.distributions.some(d => d.kind === 'episode');
+        this.distPodcast = hasEpisode;
+        this.distPlayer = hasEpisode;
+      });
     }
   }
 

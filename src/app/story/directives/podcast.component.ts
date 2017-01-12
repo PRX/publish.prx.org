@@ -1,96 +1,86 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CmsService } from '../../core';
-import { StoryModel, SeriesModel, DistributionModel, TabService } from '../../shared';
+import {
+  AudioVersionModel,
+  DistributionModel,
+  FeederEpisodeModel,
+  FeederPodcastModel,
+  StoryModel,
+  StoryDistributionModel,
+  TabService
+} from '../../shared';
 
 @Component({
   styleUrls: ['podcast.component.css'],
-  template: `
-    <form *ngIf="story">
-
-      <publish-fancy-field label="Explicit" required=1>
-        <div class="fancy-hint">
-          In accordance with
-          <a [href]="itunesRequirementsDoc" 
-            title="Requirements - Podcasts Connect Help">the requirements for iTunes podcast content</a>,
-          does any of your podcast audio contain 
-          <a [href]="itunesExplicitDoc"
-            title="About iTunes Store Parental Advisories - Apple Support">explicit material?</a>
-        </div>
-
-        <div *ngFor="let v of story.versions" class="version">
-          <header>
-            <strong>{{v.label}}</strong>
-          </header>
-          <section>
-            <publish-fancy-field [model]="v" [select]="OPTIONS" name="explicit">
-            </publish-fancy-field>
-          </section>
-        </div>
-      </publish-fancy-field>
-
-    </form>
-  `
+  templateUrl: 'podcast.component.html'
 })
 
 export class PodcastComponent implements OnDestroy {
 
-  story: StoryModel;
-  tabSub: Subscription;
+  explicitOpts = ['', 'Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
 
-  OPTIONS = ['', 'Explicit', 'Clean'];
+  tabSub: Subscription;
+  storyDistribution: StoryDistributionModel;
+  seriesDistribution: DistributionModel;
+  podcast: FeederPodcastModel;
+  episode: FeederEpisodeModel;
+  version: AudioVersionModel;
 
-  constructor(tab: TabService,
-              private cms: CmsService) {
+  constructor(tab: TabService, private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.init(s));
   }
 
-  init(story) {
-    this.story = story;
-    this.getSeriesOverrides();
+  ngOnDestroy(): any {
+    this.tabSub.unsubscribe();
   }
 
-  getSeriesOverrides() {
-    this.cms.account.subscribe(account => {
-      if (this.story.isNew && this.story.parent && this.story.parent.isa('series')) {
-        this.defaultDistributionOverrides(new SeriesModel(account, this.story.parent, false));
-      }
-    });
+  init(story: StoryModel) {
+    this.loadStoryDistribution(story);
+    this.loadSeriesDistribution(story);
   }
 
-  defaultDistributionOverrides(series: SeriesModel) {
-    series.loadRelated('distributions').subscribe(distributions => {
-      this.defaultExplicitToSeries(<DistributionModel[]>distributions);
-    });
-  }
-
-  defaultExplicitToSeries(distributions: DistributionModel[]) {
-    let dist = distributions.find(d => d.kind === 'podcast');
-    dist.loadRelated('versionTemplate').subscribe(() => {
-      if (dist.versionTemplate) {
-        dist.loadExternal().subscribe(() => {
-          if (dist.podcast) {
-            this.story.loadRelated('versions').subscribe(() => {
-              if (this.story.versions) {
-                this.story.versions.forEach(v => {
-                  if (v.template) {
-                    if (!v.changed('explicit') && dist.versionTemplate.id === v.template.id) {
-                      v.set('explicit', dist.podcast.explicit, true);
-                    }
-                  }
-                });
-              }
-            });
-          }
+  loadStoryDistribution(story: StoryModel) {
+    story.loadRelated('distributions', true).subscribe(() => {
+      this.storyDistribution = story.distributions.find(d => d.kind === 'episode');
+      if (this.storyDistribution) {
+        this.storyDistribution.loadRelated('episode').subscribe(() => {
+          this.episode = this.storyDistribution.episode;
         });
       }
     });
   }
 
-  ngOnDestroy(): any {
-    this.tabSub.unsubscribe();
+  loadSeriesDistribution(story: StoryModel) {
+    story.getSeriesDistribution('podcast').subscribe(ddoc => {
+      let dist = new DistributionModel(null, ddoc);
+      this.findPodcastAudioVersion(story, dist);
+    });
+  }
+
+  findPodcastAudioVersion(story: StoryModel, dist: DistributionModel) {
+    dist.loadRelated('versionTemplate').subscribe(() => {
+      if (dist.versionTemplate) {
+        story.loadRelated('versions').subscribe(() => {
+          this.version = story.versions.find(v => v.template && v.template.id === dist.versionTemplate.id);
+          this.setDefaultExplicit(this.version, dist);
+        });
+      } else {
+        this.version = null;
+      }
+    });
+  }
+
+  setDefaultExplicit(version: AudioVersionModel, dist: DistributionModel) {
+    if (version.isNew && !version.changed('explicit')) {
+      dist.loadRelated('podcast').subscribe(() => {
+        if (dist.podcast && dist.podcast.explicit) {
+          version.set('explicit', dist.podcast.explicit, true);
+        }
+      });
+    }
   }
 
 }
