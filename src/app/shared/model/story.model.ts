@@ -107,12 +107,6 @@ export class StoryModel extends BaseModel implements HasUpload {
     data.descriptionMd = this.description;
     data.tags = this.splitTags();
     data.releasedAt = this.releasedAt;
-    // Setting the publishedAt because it updates with releasedAt in CMS
-    // We are using a PUT for the update, which does not have a body, so we're not picking up the change
-    if (this.publishedAt && this.releasedAt) {
-      this.publishedAt = this.releasedAt;
-      this.doc['publishedAt'] = this.releasedAt;
-    }
     return data;
   }
 
