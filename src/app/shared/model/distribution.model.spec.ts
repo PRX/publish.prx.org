@@ -15,21 +15,21 @@ describe('DistributionModel', () => {
   beforeEach(() => window.localStorage.clear());
 
   it('loads no podcast by default', () => {
-    let dist = new DistributionModel({series, distribution: podDist});
+    let dist = new DistributionModel(series, podDist);
     expect(dist.kind).toEqual('podcast');
     expect(dist.RELATIONS).toContain('podcast');
     expect(dist.podcast).toBeUndefined();
   });
 
   it('loads no podcast for unknown distribution types', () => {
-    let dist = new DistributionModel({series, distribution: fooDist}, true);
+    let dist = new DistributionModel(series, fooDist, true);
     expect(dist.kind).toEqual('foo');
     expect(dist.RELATIONS).toContain('podcast');
     expect(dist.podcast).toBeNull();
   });
 
   it('creates a new podcast for new distributions', () => {
-    let dist = new DistributionModel({series}, true);
+    let dist = new DistributionModel(series, null, true);
     expect(dist.kind).toEqual('');
     expect(dist.RELATIONS).toContain('podcast');
     expect(dist.podcast).not.toBeNull();
@@ -38,7 +38,7 @@ describe('DistributionModel', () => {
   });
 
   it('loads the feeder podcast on-demand only', () => {
-    let dist = new DistributionModel({series, distribution: podDist});
+    let dist = new DistributionModel(series, podDist);
     expect(dist.podcast).toBeUndefined();
     dist.loadRelated('podcast');
     expect(dist.podcast).not.toBeNull();
@@ -46,11 +46,11 @@ describe('DistributionModel', () => {
   });
 
   it('swaps the new feeder podcast for an existing one', () => {
-    let dist = new DistributionModel({series, distribution: podDist});
+    let dist = new DistributionModel(series, podDist);
     expect(dist.podcast).toBeUndefined();
 
      // a new-looking podcast model
-    dist.podcast = (new DistributionModel({series}, true)).podcast;
+    dist.podcast = (new DistributionModel(series, null, true)).podcast;
     dist.podcast.set('category', 'Education');
 
     dist.swapRelated().subscribe();
@@ -59,7 +59,7 @@ describe('DistributionModel', () => {
   });
 
   it('loads the version template', () => {
-    let dist = new DistributionModel({series, distribution: podDist});
+    let dist = new DistributionModel(series, podDist);
     dist.loadRelated('versionTemplate');
     expect(dist.versionTemplate.id).toEqual(podDistTemplate.id);
   });

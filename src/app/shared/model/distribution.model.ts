@@ -23,12 +23,9 @@ export class DistributionModel extends BaseModel {
     versionTemplateUrl: [REQUIRED()]
   };
 
-  constructor(params: {series?: HalDoc, template?: HalDoc, distribution?: HalDoc}, loadRelated = false) {
+  constructor(series: HalDoc, distribution?: HalDoc, loadRelated = false) {
     super();
-    if (params.template) {
-      this.setVersionTemplate(params.template, true);
-    }
-    this.init(params.series, params.distribution, loadRelated); // DO NOT load related by default
+    this.init(series, distribution, loadRelated); // DO NOT load related by default
   }
 
   key() {
@@ -104,10 +101,6 @@ export class DistributionModel extends BaseModel {
 
   saveNew(data: {}): Observable<HalDoc> {
     return this.parent.create('prx:distributions', {}, data);
-  }
-
-  setVersionTemplate(tpl: HalDoc, setOriginal = false) {
-    this.set('versionTemplateUrl', tpl.expand('self'), setOriginal);
   }
 
 }

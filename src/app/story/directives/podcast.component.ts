@@ -55,7 +55,7 @@ export class PodcastComponent implements OnDestroy {
 
   loadSeriesDistribution(story: StoryModel) {
     story.getSeriesDistribution('podcast').subscribe(ddoc => {
-      let dist = new DistributionModel({distribution: ddoc});
+      let dist = new DistributionModel(null, ddoc);
       this.findPodcastAudioVersion(story, dist);
     });
   }

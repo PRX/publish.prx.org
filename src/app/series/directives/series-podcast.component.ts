@@ -77,7 +77,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   createDistribution() {
-    let podcastDist = new DistributionModel({series: this.series.doc});
+    let podcastDist = new DistributionModel(this.series.doc);
     podcastDist.set('kind', 'podcast');
     this.series.distributions.push(podcastDist);
     this.distribution = podcastDist;
