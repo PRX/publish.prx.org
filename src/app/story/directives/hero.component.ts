@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, DoCheck } from '@angular/core';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
 
@@ -62,7 +62,7 @@ export class StoryHeroComponent implements OnInit, OnChanges {
 
   series: HalDoc;
 
-  now = new Date(); // value changed after checked if new Date() in getter
+  now = new Date();
 
   constructor(private router: Router) {}
 
@@ -72,6 +72,10 @@ export class StoryHeroComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.updateBanner();
+  }
+
+  ngDoCheck() {
+    this.now = new Date(); // expression changed after checked if new Date() in getter, but it does need to get updated on change cycles
   }
 
   updateBanner() {
