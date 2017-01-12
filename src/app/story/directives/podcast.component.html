@@ -1,7 +1,7 @@
 <publish-spinner *ngIf="!episode"></publish-spinner>
 <form *ngIf="episode">
 
-  <publish-fancy-field label="Episode GUID" required textinput [model]="episode" name="guid">
+  <publish-fancy-field *ngIf="!episode.isNew" label="Episode GUID" required textinput [model]="episode" name="guid">
     <div class="fancy-hint">The original GUID of this episode.</div>
   </publish-fancy-field>
 

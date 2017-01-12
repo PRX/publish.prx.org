@@ -74,7 +74,7 @@ export class PodcastComponent implements OnDestroy {
   }
 
   setDefaultExplicit(version: AudioVersionModel, dist: DistributionModel) {
-    if (version.isNew) {
+    if (version.isNew && !version.changed('explicit')) {
       dist.loadRelated('podcast').subscribe(() => {
         if (dist.podcast && dist.podcast.explicit) {
           version.set('explicit', dist.podcast.explicit, true);
