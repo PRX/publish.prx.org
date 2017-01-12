@@ -83,7 +83,7 @@ export class HalRemote {
       })
       .catch(res => Observable.of(res)) // don't throw http errors
       .flatMap(res => {
-        if (method === 'get' && res.status === 200) {
+        if ((method === 'get' || method === 'put') && res.status === 200) {
           return Observable.of(res.json());
         } else if (method === 'put' && res.status === 204) {
           return Observable.of(true);
