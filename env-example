@@ -9,7 +9,7 @@ CMS_ROOT_TTL=3600
 CMS_USE_LOCALSTORAGE=
 
 # prx auth
-AUTH_HOST=https://id.prx.org
+AUTH_HOST=https://id-staging.prx.tech
 # for publish.prx.docker
 #AUTH_CLIENT_ID=rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D
 # for publish.prx.dev
@@ -22,3 +22,6 @@ SIGN_URL=your-signing-url
 AWS_KEY=your-aws-key
 AWS_URL=your-cloudfront-url
 USE_CLOUDFRONT=true
+
+# embeddable player
+PLAY_HOST=https://play-staging.prx.tech

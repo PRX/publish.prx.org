@@ -1,0 +1,24 @@
+.pika-single {
+  color: #000;
+  border-color: #e6e6e6;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.pika-button {
+  color: #000;
+  background: #f0f0f0;
+}
+
+.is-today .pika-button {
+  color: #368aa2;
+}
+
+.is-selected .pika-button {
+  color: #fff;
+  background: #368aa2;
+  box-shadow: none;
+}
+
+.pika-button:hover {
+  background: #f59f51;
+}

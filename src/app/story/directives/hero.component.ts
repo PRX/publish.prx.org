@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
@@ -20,7 +21,8 @@ import { StoryModel } from '../../shared';
       <div class="hero-info" *ngIf="story">
         <h2>{{story.title || '(Untitled)'}}</h2>
         <p *ngIf="story?.isNew">Not saved</p>
-        <p *ngIf="!story?.isNew">Last saved at {{story.updatedAt | timeago}}</p>
+        <p *ngIf="!story?.isNew && !story?.publishedAt">Last saved at {{story.updatedAt | timeago}}</p>
+        <p *ngIf="story?.publishedAt">{{publishedOnText}}</p>
       </div>
       <div class="hero-actions" *ngIf="story">
 
@@ -60,6 +62,8 @@ export class StoryHeroComponent implements OnInit, OnChanges {
 
   series: HalDoc;
 
+  now = new Date(); // value changed after checked if new Date() in getter
+
   constructor(private router: Router) {}
 
   ngOnInit() {
@@ -97,6 +101,18 @@ export class StoryHeroComponent implements OnInit, OnChanges {
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
       // nothing to do
     });
+  }
+
+  formatDatetime(date) {
+    return moment(date).format('L LT');
+  }
+
+  get publishedOnText() {
+    if (this.now.valueOf() >= new Date(this.story.publishedAt.valueOf()).valueOf()) {
+      return `Published on ${this.formatDatetime(this.story.publishedAt)}`;
+    } else {
+      return `Will be published on ${this.formatDatetime(this.story.publishedAt)}`;
+    }
   }
 
 }
