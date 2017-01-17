@@ -6,7 +6,7 @@ import { StoryModel } from '../../shared';
   styleUrls: ['story-list.component.css'],
   template: `
     <div *ngIf="noStories">
-      <h1>No Stories match your search</h1>
+      <h1>No Episodes match your search</h1>
     </div>
     <div *ngIf="!noStories">
       <div class="story-list">
