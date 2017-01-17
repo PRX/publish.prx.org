@@ -26,7 +26,7 @@ import { StoryModel, TabService } from '../../shared';
         <publish-spinner *ngIf="!story?.versions"></publish-spinner>
         <publish-upload *ngFor="let v of story?.versions" [version]="v"></publish-upload>
         <h1 *ngIf="story?.versions?.length === 0">
-          You have no audio versions for this episode. How did that happen?
+          You have no audio templates for this episode. How did that happen?
         </h1>
       </publish-fancy-field>
 

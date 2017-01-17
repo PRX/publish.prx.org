@@ -7,7 +7,7 @@ Over time additional distribution channels are planned such as twitter cards and
 
 The current broadcast distribution will also be merged to allow for licensing, subscribing, and distribution to station automation systems. We are also looking into supporting instant articles and AMP for stories published on PRX.
 
-Once published, the other side of the coin is to collect metrics on these channels, and consolidate to provide a complete picture of a story's impact and audience.
+Once published, the other side of the coin is to collect metrics on these channels, and consolidate to provide a complete picture of an episode's impact and audience.
 
 # Install
 

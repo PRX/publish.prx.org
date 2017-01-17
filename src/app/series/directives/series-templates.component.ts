@@ -18,8 +18,8 @@ import {
           distribution. For example, it is common to have a podcast version of the audio broken
           into segments for ad injection, but also a broadcast version with different breaks for
           local news, different credits, or edits and bleeps to meet FCC permitted language requirements.
-          On this page, you can define the types of audio versions that will be expected for each episode in this
-          series, and basic requirements for each of those versions.
+          On this page, you can define basic templates for the versions of audio that will be expected for
+          each episode in this series, and requirements for each of those templates.
         </p>
         <hr/>
       </header>
@@ -40,8 +40,8 @@ import {
             </publish-fancy-field>
           </publish-fancy-field>
 
-          <publish-fancy-field label="Audio Segments">
-            <div class="fancy-hint">Describe the individual segment audio files required for this version</div>
+          <publish-fancy-field label="Segments">
+            <div class="fancy-hint">Describe the individual segment audio files required in this template.</div>
             <div class="actions">
               <button tabindex=-1 class="btn-link" *ngIf="canAddFile(v)" (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
               <button tabindex=-1 class="btn-link" *ngIf="canRemoveFile(v)" (click)="removeFile(v)"><i class="icon-cancel"></i>Remove Segment</button>
@@ -57,7 +57,7 @@ import {
 
       <div *ngIf="!hasVersions()">
         <publish-fancy-field label="No Templates">
-          <div class="fancy-hint">You have no templates defined for your series.
+          <div class="fancy-hint">You have no audio templates defined for your series.
             Defining a template can help validate that your audio has the correct
             duration and number of segments.</div>
           <button class="add-version" (click)="addVersion()"><i class="icon-plus"></i> Create a template</button>
