@@ -1,0 +1,32 @@
+<div *ngIf="story">
+
+  <publish-fancy-field label="Embeddable Player">
+    <div class="fancy-hint">
+      You can include this embeddable player on your website to play the audio for this clip directly.
+    </div>
+
+    <publish-spinner *ngIf="!previewUrl && !loadError"></publish-spinner>
+
+    <p *ngIf="loadError" class="error">{{loadError}}</p>
+
+    <div *ngIf="previewUrl">
+      <p *ngIf="previewingUnpublished" class="error">
+        <b>WARNING:</b> It looks like your story is not yet published.  This may
+        cause the embeddable player to look broken.  But this link/iframe will
+        not change, so feel free to copy it and check back once your story is published.
+      </p>
+
+      <iframe [src]='previewSafe' frameborder="0" height="200" width ="100%"></iframe>
+
+      <p>The link to your embed player</p>
+      <input type="text" readonly [ngModel]="copyUrl" #urlInput/>
+      <button [publishCopyInput]="urlInput">Copy</button>
+      <a class="button" target="_blank" rel="noopener" [href]="copyUrl">Open Link</a>
+      <p class="embed-iframe">An embeddable iframe</p>
+      <input type="text" readonly [ngModel]="copyIframe" #iframeInput/>
+      <button [publishCopyInput]="iframeInput">Copy</button>
+    </div>
+
+  </publish-fancy-field>
+
+</div>

@@ -1,122 +1,157 @@
-import { Component, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { StoryModel, TabService } from '../../shared';
-import { DomSanitizer } from '@angular/platform-browser';
+import { StoryModel, DistributionModel, TabService } from '../../shared';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Env } from '../../core/core.env';
+
+const DEFAULT_IMAGE = 'http://s3.amazonaws.com/production.mediajoint.prx.org/public/comatose_files/4625/prx-logo_large.png';
+const DEFAULT_AUDIO = 'http://s3.amazonaws.com/production.mediajoint.prx.org/public/comatose_files/0000/meet-prx.mp3';
 
 @Component({
   styleUrls: ['player.component.css'],
-  template: `
-    <div *ngIf="story">
-      <p>
-        You can include this embeddable player on your website to play the audio for this clip directly.
-        Here's a preview of what the player will look like for this story. Note that the image and audio
-        are placeholders until this story has been published.
-      </p>
-        <iframe
-                [src]='this.safeUrl'
-                frameborder="0"
-                height="200"
-                width ="100%">
-        </iframe>
-
-        <p>You can embed this player on your own site by including the following <code>iframe</code> tag.</p>
-
-        <div class="embed-code">
-          <input type="text" [value]="iframeHtml(200, 650)" #shareEmbedSmall readonly>
-          <button (click)="copy(small)" data-copytarget="#shareEmbedSmall" #small>Copy</button>
-        </div>
-
-    </div>
-  `
+  templateUrl: 'player.component.html'
 })
 
-export class PlayerComponent implements OnDestroy {
-  @ViewChild('shareEmbedSmall') private inputEl: ElementRef;
+export class PlayerComponent implements OnDestroy, DoCheck {
+
+  private tabSub: Subscription;
+  private story: StoryModel;
+
+  private feedUrl: string;
+  private episodeGuid: string;
   private title: string;
   private subtitle: string;
   private audioUrl: string;
   private imageUrl: string;
   private subscriptionUrl: string;
 
-  story: StoryModel;
-  tabSub: Subscription;
+  shouldUseFeeder: boolean;
+  previewingUnpublished: boolean;
+  loadError: string;
 
-  constructor(
-    tab: TabService,
-    private sanitizer: DomSanitizer
-  ) {
-    this.tabSub = tab.model.subscribe((s: StoryModel) => {
-      this.setFields(s);
+  previewUrl: string;
+  previewSafe: SafeResourceUrl;
+  copyUrl: string;
+  copyIframe: string;
+
+  constructor(tab: TabService, private sanitizer: DomSanitizer) {
+    this.tabSub = tab.model.subscribe((story: StoryModel) => {
+      this.story = story;
+      story.getSeriesDistribution('podcast').subscribe(distDoc => {
+        this.shouldUseFeeder = distDoc ? true : false;
+        this.fromStory(story);
+        if (distDoc) {
+          this.fromFeeder(story, new DistributionModel(story.parent, distDoc));
+        }
+      });
     });
-  }
-
-  setFields(story: StoryModel) {
-    this.story = story;
-    this.title = story.title || 'Placeholder title';
-    this.subtitle = story.shortDescription || 'Placeholder subtitle';
-    this.subscriptionUrl = ''; // currently not in place
-
-    if (this.story.images.length > 0) {
-      let img = this.story.images.find(img => !img.isDestroy);
-      if (img) { this.imageUrl = img.enclosureHref; }
-    }
-
-    if (this.story.versions.length > 0) {
-      let firstAudio = this.story.versions[0].files.find(file => !file.isDestroy);
-      if (firstAudio) { this.audioUrl = firstAudio.enclosureHref; }
-    }
-
-    if (this.story.doc && this.story.doc['_links']['prx:series']) {
-      this.subscriptionUrl = this.story.doc['_links']['prx:series'].href;
-    }
-  }
-
-  get paramString() {
-    let str: string[] = [];
-
-    str.push(`tt=${this.encode(this.title)}`);
-    str.push(`ts=${this.encode(this.subtitle)}`);
-    str.push(`ua=${this.encode(this.audioUrl)}`);
-    str.push(`ui=${this.encode(this.imageUrl)}`);
-    str.push(`us=${this.encode(this.subscriptionUrl)}`);
-    return str.join('&');
-  }
-
-  get embeddableUrl() {
-    return `${Env.PLAY_HOST}/e?${this.paramString}`;
-  }
-
-  get safeUrl() {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.embeddableUrl);
-  }
-
-  iframeHtml(width: string, height: string) {
-    const url = this.embeddableUrl;
-    return `<iframe frameborder="0" height="${height}" width="${width}" src="${url}"></iframe>`;
-  }
-
-  copy(el: any) {
-    const inp = this.inputEl.nativeElement;
-    if (inp && inp.select) {
-      inp.select();
-
-      try {
-        document.execCommand('copy');
-        inp.blur();
-        el.innerHTML = 'Copied';
-      } catch (err) {
-        /// alert('please press Ctrl/Cmd+C to copy');
-      }
-    }
   }
 
   ngOnDestroy(): any {
     this.tabSub.unsubscribe();
   }
 
+  ngDoCheck() {
+    let hasCmsParams = this.title && this.subtitle && this.audioUrl && this.imageUrl && this.subscriptionUrl;
+    let hasFeederParams = this.feedUrl && this.episodeGuid;
+    if (this.shouldUseFeeder === false && hasCmsParams) {
+      this.previewingUnpublished = false;
+      this.buildPlayer(false, false);
+    }
+    if (this.shouldUseFeeder === true && hasFeederParams) {
+      if (this.story.isPublished()) {
+        this.previewingUnpublished = false;
+        this.buildPlayer(true, true);
+      } else {
+        this.previewingUnpublished = true;
+        this.buildPlayer(false, true); // preview via cms params
+      }
+    }
+  }
+
+  fromStory(story: StoryModel) {
+    story.loadRelated().subscribe(() => {
+      this.title = story.title || 'Placeholder title';
+      this.subtitle = story.shortDescription || 'Placeholder subtitle';
+      if (story.parent && story.parent['title']) {
+        this.subtitle = story.parent['title'];
+      }
+
+      // some defaults in case we can't find data
+      this.subscriptionUrl = 'http://www.prx.org';
+      this.imageUrl = DEFAULT_IMAGE;
+      this.audioUrl = DEFAULT_AUDIO;
+
+      // TODO: also the series image for background image
+      let img = story.images.find(i => !i.isDestroy);
+      if (img) { this.imageUrl = img.enclosureHref; }
+
+      // TODO: figure out the correct audio version to use
+      let version = story.versions.find(v => !v.isDestroy);
+      if (version) {
+        version.loadRelated('files').subscribe(() => {
+          let audio = version.files.find(f => !f.isDestroy);
+          if (audio) { this.audioUrl = audio.enclosureHref; }
+        });
+      }
+    });
+  }
+
+  fromFeeder(story: StoryModel, dist: DistributionModel) {
+    dist.loadRelated('podcast').subscribe(() => {
+      if (dist.podcast && dist.podcast.publishedUrl) {
+        this.feedUrl = dist.podcast.publishedUrl;
+      } else {
+        this.loadError = 'Error - unable to find the public URL of your podcast!';
+      }
+    });
+    story.loadRelated('distributions').subscribe(() => {
+      let storyDistribution = story.distributions.find(d => d.kind === 'episode');
+      if (storyDistribution) {
+        storyDistribution.loadRelated('episode').subscribe(() => {
+          if (storyDistribution.episode && storyDistribution.episode.guid) {
+            this.episodeGuid = storyDistribution.episode.guid;
+          } else {
+            this.loadError = 'Error - unable to find the guid of this podcast episode!';
+          }
+        });
+      } else {
+        this.loadError = 'Error - no podcast episode set for this story!';
+      }
+    });
+  }
+
+  buildPlayer(previewFeeder: boolean, copyFeeder: boolean) {
+    let cms: string[] = [];
+    cms.push(`tt=${this.encode(this.title)}`);
+    cms.push(`ts=${this.encode(this.subtitle)}`);
+    cms.push(`ua=${this.encode(this.audioUrl)}`);
+    cms.push(`ui=${this.encode(this.imageUrl)}`);
+    cms.push(`us=${this.encode(this.subscriptionUrl)}`);
+    let cmsUrl = `${Env.PLAY_HOST}/e?${cms.join('&')}`;
+
+    let feeder: string[] = [];
+    feeder.push(`uf=${this.encode(this.feedUrl)}`);
+    feeder.push(`ge=${this.encode(this.episodeGuid)}`);
+    let feederUrl = `${Env.PLAY_HOST}/e?${feeder.join('&')}`;
+
+    // only change the safe resource when the url actually changes
+    let newPreview = previewFeeder ? feederUrl : cmsUrl;
+    if (this.previewUrl !== newPreview) {
+      this.previewUrl = newPreview;
+      this.previewSafe = this.sanitizer.bypassSecurityTrustResourceUrl(newPreview);
+    }
+    this.copyUrl = copyFeeder ? feederUrl : cmsUrl;
+    this.copyIframe = this.getIframeHtml(this.copyUrl, 200, 650);
+  }
+
+  private getIframeHtml(url: string, width: number, height: number) {
+    return `<iframe frameborder="0" height="${height}" width="${width}" src="${url}"></iframe>`;
+  }
+
   private encode (str: string) {
     return encodeURIComponent(str)
       .replace(/[!'()*]/g, (c) => (`%${c.charCodeAt(0).toString(16)}`));
   }
+
 }
