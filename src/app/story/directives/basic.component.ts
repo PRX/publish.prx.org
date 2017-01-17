@@ -7,23 +7,16 @@ import { StoryModel, TabService } from '../../shared';
   template: `
     <form *ngIf="story">
 
-      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title"
-      tiptext="Think newspaper headline." required>
-        <div class="fancy-hint">Write a short, Tweetable title.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="title" label="Story Title" required>
+        <div class="fancy-hint">Write a short, Tweetable title. Think newspaper headline.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field [model]="story" textinput="true" name="shortDescription" label="Teaser"
-      tiptext="Think of this as a first impression for your piece." required>
-        <div class="fancy-hint">Provide a short description for your piece listing.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="shortDescription" label="Teaser" required>
+        <div class="fancy-hint">Provide a short description for your story listing. Think of this as a first impression for your listeners.</div>
       </publish-fancy-field>
 
-      <h3>
-        <section [publishHoverTip]="'Include keywords, names of interviewees, places and topics'">
-          <p></p>
-        </section>
-        <label for="description">Description</label>
-      </h3>
-      <p class="hint">A full description of your piece.</p>
+      <h3><label for="description">Description</label></h3>
+      <p class="hint">Write a full description of your story. Include keywords, names of interviewees, places and topics.</p>
       <publish-wysiwyg [model]="story" name="description" [content]="story.description" [images]="story.images"
         [changed]="descriptionChanged"></publish-wysiwyg>
 
@@ -38,24 +31,23 @@ import { StoryModel, TabService } from '../../shared';
       </publish-fancy-field>
 
       <publish-fancy-field label="Cover Image">
-      <div class="fancy-hint">Provide an image for your piece, if desired.</div>
+      <div class="fancy-hint">Provide an image for your story, if desired.</div>
         <publish-image-upload [model]="story" minWidth=1400 minHeight=1400></publish-image-upload>
       </publish-fancy-field>
 
       <hr/>
 
-      <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories"
-      tiptext="More is better!" >
-        <div class="fancy-hint">A comma-separated list of tags relevant to the content of your piece.</div>
+      <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories">
+        <div class="fancy-hint">A comma-separated list of tags relevant to the content of your story.</div>
       </publish-fancy-field>
-      
+
       <publish-fancy-field label="Release Date">
         <div class="fancy-hint">If the release date is not set manually,
           the current date will be used for publishing.</div>
-        <publish-datepicker 
-          [date]="story.releasedAt" (onDateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">            
+        <publish-datepicker
+          [date]="story.releasedAt" (onDateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </publish-datepicker>
-        <publish-timepicker 
+        <publish-timepicker
           [date]="story.releasedAt" (onTimeChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </publish-timepicker>
       </publish-fancy-field>

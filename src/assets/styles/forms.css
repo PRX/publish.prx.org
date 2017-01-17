@@ -203,33 +203,3 @@ input[type=checkbox].updown-toggle + label {
   border-bottom: 8px solid #368aa2;
   border-top: 0px;
 }
-
-/* Hover Tool Tip */
-.hover-tip {
-  height: 30px;
-  width: 100%;
-  text-align: right;
-  position: absolute;
-}
-
-.hover-tip > p {
-  font-size: 14px;
-  line-height: 24px;
-  vertical-align: baseline;
-  color: #676767;
-  height: 100%;
-  width: 65%;
-  position: absolute;
-  overflow-x: scroll;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  padding: 5px;
-}
-
-.hover-tip > p.displayed {
-  width: auto;
-  margin: 0;
-  background-color: #f59f51;
-  z-index: 1;
-}

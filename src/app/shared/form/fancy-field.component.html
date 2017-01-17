@@ -1,11 +1,9 @@
 <div [class]="fieldClasses">
 
   <h3 *ngIf="label && !small">
-    <section [publishHoverTip]="tiptext"><p></p></section>
     <label [attr.for]="name" [attr.required]="required">{{label}}</label>
   </h3>
   <h4 *ngIf="label && small">
-    <section [publishHoverTip]="tiptext"><p></p></section>
     <label [attr.for]="name" [attr.required]="required">{{label}}</label>
   </h4>
 
