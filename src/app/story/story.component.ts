@@ -49,6 +49,7 @@ export class StoryComponent implements OnInit {
         this.base += `/${this.seriesId}`;
       }
       this.loadStory();
+      this.showDistributionTabs();
     });
   }
 
@@ -87,12 +88,12 @@ export class StoryComponent implements OnInit {
   }
 
   showDistributionTabs() {
-    if (this.story.isNew) {
-      this.distPlayer = false;
+    this.distPlayer = this.id ? true : false;
+    if (this.story && this.story.isNew) {
       this.story.getSeriesDistribution('podcast').subscribe(dist => {
         this.distPodcast = dist ? true : false;
       });
-    } else {
+    } else if (this.story) {
       this.story.loadRelated('distributions').subscribe(() => {
         let hasEpisode = this.story.distributions.some(d => d.kind === 'episode');
         this.distPodcast = hasEpisode;
