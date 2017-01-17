@@ -9,9 +9,6 @@ import { StoryModel } from '../../shared';
   styleUrls: ['home-series.component.css'],
   template: `
     <header *ngIf="noseries">
-      <section [publishHoverTip]="'These are your Stories not associated with any existing Series.'">
-        <p></p>
-      </section>
       <h2>Your Standalone Stories</h2>
       <a *ngIf="count > -1" class="all" [routerLink]="['search', { tab: 'stories', seriesId: -1 }]">View All {{count}} &raquo;</a>
     </header>
