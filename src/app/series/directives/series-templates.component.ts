@@ -28,7 +28,7 @@ import {
           <publish-fancy-field textinput required [model]="v" name="label" label="Version Label">
           <div class="fancy-hint">A name for this audio version, such as "Podcast Audio" or "Clean Version"</div>
             <div class="actions">
-              <button class="btn-link" (click)="removeVersion(v)"><i class="icon-cancel"></i>Remove Template</button>
+              <button tabindex=-1 class="btn-link" (click)="removeVersion(v)"><i class="icon-cancel"></i>Remove Template</button>
             </div>
           </publish-fancy-field>
 
@@ -43,8 +43,8 @@ import {
           <publish-fancy-field label="Audio Segments">
             <div class="fancy-hint">Describe the individual segment audio files required for this version</div>
             <div class="actions">
-              <button class="btn-link" *ngIf="canAddFile(v)" (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
-              <button class="btn-link" *ngIf="canRemoveFile(v)" (click)="removeFile(v)"><i class="icon-cancel"></i>Remove Segment</button>
+              <button tabindex=-1 class="btn-link" *ngIf="canAddFile(v)" (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
+              <button tabindex=-1 class="btn-link" *ngIf="canRemoveFile(v)" (click)="removeFile(v)"><i class="icon-cancel"></i>Remove Segment</button>
             </div>
             <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t">
             </publish-file-template>
