@@ -48,14 +48,15 @@ import { StoryModel, TabService } from '../../shared';
       tiptext="More is better!" >
         <div class="fancy-hint">A comma-separated list of tags relevant to the content of your piece.</div>
       </publish-fancy-field>
-      
+
       <publish-fancy-field label="Release Date">
-        <div class="fancy-hint">If the release date is not set manually,
-          the current date will be used for publishing.</div>
-        <publish-datepicker 
-          [date]="story.releasedAt" (onDateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">            
+        <div class="fancy-hint">If you'd like to manually alter this story's publication
+        to either delay or back-date its release, select the desired release date here.
+        Otherwise, the story will be released immediately once published.</div>
+        <publish-datepicker
+          [date]="story.releasedAt" (onDateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </publish-datepicker>
-        <publish-timepicker 
+        <publish-timepicker
           [date]="story.releasedAt" (onTimeChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </publish-timepicker>
       </publish-fancy-field>
