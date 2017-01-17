@@ -20,8 +20,8 @@ export class FeederPodcastModel extends BaseModel {
   authorEmail: string = '';
 
   VALIDATORS = {
-    link: [REQUIRED(), URL('Not a valid URL')],
-    newFeedUrl: [URL('Not a valid URL')]
+    link: [REQUIRED(), URL('Not a valid URL. Did you include http:// or https:// ?')],
+    newFeedUrl: [URL('Not a valid URL. Did you include http:// or https:// ?')]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {

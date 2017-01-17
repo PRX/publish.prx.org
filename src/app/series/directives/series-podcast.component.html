@@ -62,11 +62,13 @@
     </publish-fancy-field>
 
     <publish-fancy-field label="Homepage Link" required textinput [model]="podcast" name="link">
-      <div class="fancy-hint">A link to the homepage for your podcast.</div>
+      <div class="fancy-hint">A link to the homepage for your podcast. Remember to include the
+        URI scheme (e.g. <code>http://</code> or <code>https://</code>).</div>
     </publish-fancy-field>
 
     <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl">
-      <div class="fancy-hint">Use this to manually change the URL where your podcast is located.</div>
+      <div class="fancy-hint">Use this to manually change the URL where your podcast is located. Remember to include the
+        URI scheme (e.g. <code>http://</code> or <code>https://</code>).</div>
     </publish-fancy-field>
 
     <publish-fancy-field label="Podcast Audio" [select]="audioVersionOptions" [model]="distribution" name="versionTemplateUrl" required>
