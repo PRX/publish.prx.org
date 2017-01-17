@@ -14,8 +14,6 @@ import { TabComponent } from './tab';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
 
-import { HoverDirective } from './hover';
-
 @NgModule({
   declarations: [
     ButtonComponent,
@@ -28,7 +26,6 @@ import { HoverDirective } from './hover';
     FileSizePipe,
     FocusDirective,
     HeroComponent,
-    HoverDirective,
     ImageFileComponent,
     ImageLoaderComponent,
     ImageUploadComponent,
@@ -54,7 +51,6 @@ import { HoverDirective } from './hover';
     FileSizePipe,
     FocusDirective,
     HeroComponent,
-    HoverDirective,
     ImageLoaderComponent,
     ImageUploadComponent,
     SpinnerComponent,
