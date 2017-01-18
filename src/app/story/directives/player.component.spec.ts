@@ -27,6 +27,7 @@ describe('PlayerComponent', () => {
   });
 
   cit('loads data from cms', (fix, el, comp) => {
+    story['_links'] = {alternate: {href: 'http://the-alt-href'}};
     story.mockItems('prx:images', [{
       status: 'complete',
       _links: {enclosure: {href: 'http://the-image-href'}}
@@ -42,7 +43,7 @@ describe('PlayerComponent', () => {
     expect(comp.subtitle).toEqual('ExistingSeriesTitle');
     expect(comp.audioUrl).toEqual('http://the-audio-href');
     expect(comp.imageUrl).toEqual('http://the-image-href');
-    // expect(comp.subscriptionUrl).toEqual('TODO');
+    expect(comp.subscriptionUrl).toEqual('http://the-alt-href');
   });
 
   cit('has defaults for cms data', (fix, el, comp) => {
@@ -75,6 +76,14 @@ describe('PlayerComponent', () => {
     storyDists[0].mock('http://some-where/episode', {guid: 'the-guid'});
     comp.fromFeeder(new StoryModel(series, story), new DistributionModel(series, dist));
     expect(comp.loadError).toMatch(/unable to find the public URL/);
+  });
+
+  cit('warns when using defaults for cms data', (fix, el, comp) => {
+    tabModel.next(new StoryModel(series, story));
+    expect(comp.audioUrl).toMatch(/s3\.amazonaws\.com/);
+    expect(comp.imageUrl).toMatch(/s3\.amazonaws\.com/);
+    fix.detectChanges();
+    expect(el).toContainText('no audio or image');
   });
 
 });

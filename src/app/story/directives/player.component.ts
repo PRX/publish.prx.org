@@ -4,8 +4,9 @@ import { StoryModel, DistributionModel, TabService } from '../../shared';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Env } from '../../core/core.env';
 
-const DEFAULT_IMAGE = 'http://s3.amazonaws.com/production.mediajoint.prx.org/public/comatose_files/4625/prx-logo_large.png';
-const DEFAULT_AUDIO = 'http://s3.amazonaws.com/production.mediajoint.prx.org/public/comatose_files/0000/meet-prx.mp3';
+const DEFAULT_SUBSCRIPTION = 'https://www.prx.org';
+const DEFAULT_IMAGE = '//s3.amazonaws.com/production.mediajoint.prx.org/public/comatose_files/4625/prx-logo_large.png';
+const DEFAULT_AUDIO = '//s3.amazonaws.com/production.mediajoint.prx.org/public/comatose_files/0000/meet-prx.mp3';
 
 @Component({
   styleUrls: ['player.component.css'],
@@ -56,6 +57,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
     let hasFeederParams = this.feedUrl && this.episodeGuid;
     if (this.shouldUseFeeder === false && hasCmsParams) {
       this.previewingUnpublished = false;
+      this.setCmsLoadError();
       this.buildPlayer(false, false);
     }
     if (this.shouldUseFeeder === true && hasFeederParams) {
@@ -71,28 +73,32 @@ export class PlayerComponent implements OnDestroy, DoCheck {
 
   fromStory(story: StoryModel) {
     story.loadRelated().subscribe(() => {
-      this.title = story.title || 'Placeholder title';
-      this.subtitle = story.shortDescription || 'Placeholder subtitle';
-      if (story.parent && story.parent['title']) {
-        this.subtitle = story.parent['title'];
+      this.title = story.title || '(Untitled)';
+      if (story.parent) {
+        this.subtitle = story.parent['title'] || '(No Series Title)';
+      } else {
+        this.subtitle = story.shortDescription || '(No Teaser)';
       }
 
-      // some defaults in case we can't find data
-      this.subscriptionUrl = 'http://www.prx.org';
-      this.imageUrl = DEFAULT_IMAGE;
-      this.audioUrl = DEFAULT_AUDIO;
+      if (story.doc.has('alternate')) {
+        this.subscriptionUrl = story.doc.expand('alternate');
+      } else {
+        this.subscriptionUrl = DEFAULT_SUBSCRIPTION;
+      }
 
       // TODO: also the series image for background image
       let img = story.images.find(i => !i.isDestroy);
-      if (img) { this.imageUrl = img.enclosureHref; }
+      this.imageUrl = img ? img.enclosureHref : DEFAULT_IMAGE;
 
       // TODO: figure out the correct audio version to use
       let version = story.versions.find(v => !v.isDestroy);
       if (version) {
         version.loadRelated('files').subscribe(() => {
           let audio = version.files.find(f => !f.isDestroy);
-          if (audio) { this.audioUrl = audio.enclosureHref; }
+          this.audioUrl = audio ? audio.enclosureHref : DEFAULT_AUDIO;
         });
+      } else {
+        this.audioUrl = DEFAULT_AUDIO;
       }
     });
   }
@@ -143,6 +149,18 @@ export class PlayerComponent implements OnDestroy, DoCheck {
     }
     this.copyUrl = copyFeeder ? feederUrl : cmsUrl;
     this.copyIframe = this.getIframeHtml(this.copyUrl, 200, 650);
+  }
+
+  private setCmsLoadError() {
+    if (this.audioUrl === DEFAULT_AUDIO && this.imageUrl === DEFAULT_IMAGE) {
+      this.loadError = 'Warning: no audio or image - go back to the basic info tab to set them.';
+    } else if (this.audioUrl === DEFAULT_AUDIO) {
+      this.loadError = 'Warning: no audio - go back to the basic info tab to add some.';
+    } else if (this.imageUrl === DEFAULT_IMAGE) {
+      this.loadError = 'Warning: no image - go back to the basic info tab to add one.';
+    } else {
+      this.loadError = null;
+    }
   }
 
   private getIframeHtml(url: string, width: number, height: number) {
