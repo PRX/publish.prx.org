@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { BaseModel } from '../model/base.model';
-import { AdvancedConfirm } from './advanced-confirm.directive';
 
 const isset = (val: any): boolean => val !== false && val !== undefined;
 
@@ -22,7 +21,7 @@ export class FancyFieldComponent {
   @Input() label: string;
   @Input() invalidlabel: string;
   @Input() hideinvalid: boolean;
-  @Input() advanced: AdvancedConfirm;
+  @Input() advancedConfirm: string;
 
   // Form field types (intercepted with defaults)
   type: string;

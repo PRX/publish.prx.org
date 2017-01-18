@@ -15,14 +15,18 @@
 
   <template [ngIf]="model">
     <ng-content select=".prefix"></ng-content>
-    <input *ngIf="type == 'textinput'" [id]="name" type="text" [publishAdvancedConfirm]="advanced"
-      [ngModel]="model[name]" (ngModelChange)="onChange($event)"/>
-    <input *ngIf="type == 'number'" [id]="name" type="number" [publishAdvancedConfirm]="advanced"
-      [ngModel]="model[name]" (ngModelChange)="onChange($event)"/>
-    <textarea *ngIf="type == 'textarea'" [id]="name" [publishAdvancedConfirm]="advanced"
+    <input *ngIf="type == 'textinput'" [id]="name" type="text"
+      [ngModel]="model[name]" (ngModelChange)="onChange($event)"
+      [publishAdvancedConfirm]="advancedConfirm" [fieldName]="name" [model]="model"/>
+    <input *ngIf="type == 'number'" [id]="name" type="number"
+      [ngModel]="model[name]" (ngModelChange)="onChange($event)"
+      [publishAdvancedConfirm]="advancedConfirm" [fieldName]="name" [model]="model"/>
+    <textarea *ngIf="type == 'textarea'" [id]="name"
+      [publishAdvancedConfirm]="advancedConfirm" [fieldName]="name" [model]="model"
       [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"></textarea>
-    <select *ngIf="type == 'select'" [id]="name" [publishAdvancedConfirm]="advanced"
-      [(ngModel)]="model[name]" (ngModelChange)="onChange($event)">
+    <select *ngIf="type == 'select'" [id]="name"
+      [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"
+      [publishAdvancedConfirm]="advancedConfirm" [fieldName]="name" [model]="model">
       <option *ngFor="let opt of select" [value]="opt[1]">{{opt[0]}}</option>
     </select>
     <ng-content select=".suffix"></ng-content>

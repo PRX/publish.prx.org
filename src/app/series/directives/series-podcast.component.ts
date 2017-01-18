@@ -1,7 +1,7 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SeriesModel, DistributionModel, FeederPodcastModel,
-         TabService, CATEGORIES, SUBCATEGORIES, AdvancedConfirmText } from '../../shared';
+         TabService, CATEGORIES, SUBCATEGORIES } from '../../shared';
 
 @Component({
   styleUrls: ['series-podcast.component.css'],
@@ -101,20 +101,18 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
   }
 
-  resetNewFeedUrlOnCancel(confirm) {
-    if (!confirm) {
-      this.podcast.set('newFeedUrl', this.podcast.original['newFeedUrl']);
-    }
-  }
-
-  get newFeedUrlConfirm() {
+  get newFeedUrlConfirm(): string {
     if (this.podcast) {
-      return {
-        confirm: AdvancedConfirmText.newFeedUrl(
-          !this.podcast.isNew && !this.podcast.invalid('newFeedUrl') && this.podcast.changed('newFeedUrl'),
-          this.podcast.original['newFeedUrl'], this.podcast.newFeedUrl),
-        callback: this.resetNewFeedUrlOnCancel.bind(this)
-      };
+      let prompt = 'Are you sure you want to change New Feed URL';
+      if (this.podcast.original['newFeedUrl']) {
+        prompt += ` from "${this.podcast.original['newFeedUrl']}"`;
+      }
+      if (this.podcast.newFeedUrl) {
+        prompt += ` to "${this.podcast.newFeedUrl}"? This will point your subscribers to a new feed location.`;
+      } else {
+        prompt += '?';
+      }
+      return prompt;
     }
   }
 
