@@ -22,7 +22,7 @@ describe('HomeSeriesComponent', () => {
     comp.noseries = true;
     comp.auth = auth;
     fix.detectChanges();
-    expect(el).toContainText('Your Standalone Stories');
+    expect(el).toContainText('Your Standalone Episodes');
   });
 
   cit('provides a link to the series', (fix, el, comp) => {

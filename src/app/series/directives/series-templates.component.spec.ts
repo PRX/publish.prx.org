@@ -11,13 +11,13 @@ describe('SeriesTemplatesComponent', () => {
   cit('renders a placeholder if you have no version templates', (fix, el, comp) => {
     comp.series = {versionTemplates: []};
     fix.detectChanges();
-    expect(el).toContainText('You have no templates');
+    expect(el).toContainText('You have no audio templates');
   });
 
   cit('ignores deleted version templates', (fix, el, comp) => {
     comp.series = {versionTemplates: [{isDestroy: true}]};
     fix.detectChanges();
-    expect(el).toContainText('You have no templates');
+    expect(el).toContainText('You have no audio templates');
   });
 
   cit('adds a new version template', (fix, el, comp) => {
@@ -42,7 +42,7 @@ describe('SeriesTemplatesComponent', () => {
     comp.series = {versionTemplates: [{fileTemplates: files}]};
     fix.detectChanges();
     expect(el).toContainText('No segments defined');
-    el.query(By.css('[label="Audio Segments"] .icon-plus')).nativeElement.click();
+    el.query(By.css('[label="Segments"] .icon-plus')).nativeElement.click();
     fix.detectChanges();
     expect(el).not.toContainText('No segments defined');
     expect(files[0].label).toEqual('Segment A');
@@ -53,7 +53,7 @@ describe('SeriesTemplatesComponent', () => {
     comp.series = {versionTemplates: [{fileTemplates: files}]};
     fix.detectChanges();
     expect(el).toContainText('No segments defined');
-    el.query(By.css('[label="Audio Segments"] .icon-plus')).nativeElement.click();
+    el.query(By.css('[label="Segments"] .icon-plus')).nativeElement.click();
     fix.detectChanges();
     expect(el).not.toContainText('No segments defined');
     expect(files[0].isDestroy).toEqual(false);
@@ -63,7 +63,7 @@ describe('SeriesTemplatesComponent', () => {
     let files = [{label: 'Foo', isDestroy: false}];
     comp.series = {versionTemplates: [{fileTemplates: files}]};
     fix.detectChanges();
-    el.query(By.css('[label="Audio Segments"] .icon-cancel')).nativeElement.click();
+    el.query(By.css('[label="Segments"] .icon-cancel')).nativeElement.click();
     fix.detectChanges();
     expect(el).toContainText('No segments defined');
     expect(files[0].isDestroy).toEqual(true);
@@ -73,7 +73,7 @@ describe('SeriesTemplatesComponent', () => {
     let files = [{label: 'Foo', isNew: true, unstore: () => null}];
     comp.series = {versionTemplates: [{fileTemplates: files}]};
     fix.detectChanges();
-    el.query(By.css('[label="Audio Segments"] .icon-cancel')).nativeElement.click();
+    el.query(By.css('[label="Segments"] .icon-cancel')).nativeElement.click();
     fix.detectChanges();
     expect(el).toContainText('No segments defined');
     expect(files.length).toEqual(0);
@@ -83,10 +83,10 @@ describe('SeriesTemplatesComponent', () => {
     let files = [{label: 'Foo', isDestroy: true}];
     comp.series = {versionTemplates: [{fileTemplates: files}]};
     fix.detectChanges();
-    expect(el).not.toQuery('[label="Audio Segments"] .icon-cancel');
+    expect(el).not.toQuery('[label="Segments"] .icon-cancel');
     files[0].isDestroy = false;
     fix.detectChanges();
-    expect(el).toQuery('[label="Audio Segments"] .icon-cancel');
+    expect(el).toQuery('[label="Segments"] .icon-cancel');
   });
 
 });

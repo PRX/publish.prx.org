@@ -8,7 +8,7 @@ import { SeriesModel, StoryModel, TabService } from '../../shared';
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>
     <section *ngIf="series">
       <div class="hint" *ngIf="noStories">
-        You have no published stories in this series.
+        You have no published episodes in this series.
       </div>
 
       <section *ngIf="!noStories">
@@ -38,7 +38,7 @@ import { SeriesModel, StoryModel, TabService } from '../../shared';
 
         <div class="extra" *ngIf="isLoaded">
           <a [routerLink]="['/search', { tab: 'stories', seriesId: series.id }]">
-            Search among these stories.
+            Search among these episodes.
           </a>
         </div>
       </section>

@@ -9,9 +9,9 @@ import { Env } from '../../core/core.env';
   template: `
     <div *ngIf="story">
       <p>
-        You can include this embeddable player on your website to play the audio for this clip directly.
-        Here's a preview of what the player will look like for this story. Note that the image and audio
-        are placeholders until this story has been published.
+        You can include this embeddable player on your website to play the audio for this episode directly.
+        Here's a preview of what the player will look like for this episode. Note that the image and audio
+        are placeholders until this episode has been published.
       </p>
         <iframe
                 [src]='this.safeUrl'

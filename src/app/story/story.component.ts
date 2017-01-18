@@ -78,7 +78,7 @@ export class StoryComponent implements OnInit {
     if (!this.story.isV4()) {
       let oldLink = `https://www.prx.org/pieces/${this.id}`;
       this.modal.alert(
-        'Cannot Edit Story',
+        'Cannot Edit Episode',
         `This episode was created in the older PRX.org app, and must be
         edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
         () => { window.history.back(); }
@@ -120,7 +120,7 @@ export class StoryComponent implements OnInit {
   confirmDelete(): void {
     this.modal.prompt(
       'Really delete?',
-      'Are you sure you want to delete this story?  This action cannot be undone.',
+      'Are you sure you want to delete this episode?  This action cannot be undone.',
       (okay: boolean) => {
         if (okay) {
           this.story.isDestroy = true;

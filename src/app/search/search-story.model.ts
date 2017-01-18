@@ -2,7 +2,7 @@ export class SearchStory {
   static ORDERBY_OPTIONS: any[] = [
     {
       id: 'title',
-      name: 'Story Title'
+      name: 'Episode Title'
     },
     {
       id: 'updated_at',

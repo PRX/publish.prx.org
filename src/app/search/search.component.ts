@@ -37,7 +37,7 @@ export class SearchComponent implements OnInit {
   allSeries: any;
 
   orderByOptionsStories = SearchStory.ORDERBY_OPTIONS;
-  orderByOptionsSeries = SearchStory.ORDERBY_OPTIONS;
+  orderByOptionsSeries = SearchSeries.ORDERBY_OPTIONS;
 
   constructor(private cms: CmsService,
               private router: Router,
