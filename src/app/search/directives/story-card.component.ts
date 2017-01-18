@@ -17,7 +17,7 @@ import { StoryModel } from '../../shared';
 
       <section class="story-info">
         <span class="duration">{{storyDuration | duration}}</span>
-        <span *ngIf="storyAudioTotal" class="audio-total"><i class="icon-up-dir"></i>{{storyAudioTotal}}</span>
+        <span class="play-count"><i></i></span>
         <span class="modified">{{storyUpdated | date:"MM/dd/yy"}}</span>
       </section>
     </section>
@@ -41,7 +41,6 @@ export class StoryCardComponent implements OnInit {
   storyId: number;
   storyTitle: string;
   storyDuration: number;
-  storyAudioTotal: number;
   storyUpdated: Date;
   storyDescription: string;
   storyTags: string[];
@@ -61,11 +60,9 @@ export class StoryCardComponent implements OnInit {
 
     if (this.story.doc.has('prx:audio')) {
       this.story.doc.followItems('prx:audio').subscribe((audios) => {
-        let audiosDocs = <HalDoc[]> audios;
         if (!audios || audios.length < 1) {
           this.storyDuration = 0;
         } else {
-          this.storyAudioTotal = audiosDocs[0].total();
           this.storyDuration = audios.map((audio) => {
             return audio['duration'] || 0;
           }).reduce((prevDuration, currDuration) => {
