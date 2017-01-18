@@ -12,11 +12,13 @@ import { StoryModel, TabService } from '../../shared';
       </publish-fancy-field>
 
       <publish-fancy-field [model]="story" textinput="true" name="shortDescription" label="Teaser" required>
-        <div class="fancy-hint">Provide a short description for your episode listing. Think of this as a first impression for your listeners.</div>
+        <div class="fancy-hint">Provide a short description for your episode listing.
+        Think of this as a first impression for your listeners.</div>
       </publish-fancy-field>
 
       <h3><label for="description">Description</label></h3>
-      <p class="hint">Write a full description of your episode. Include keywords, names of interviewees, places and topics.</p>
+      <p class="hint">Write a full description of your episode, including keywords, names of interviewees,
+      places and topics. Feel free to incorporate links, images, and any of the other provided rich text formatting options.</p>
       <publish-wysiwyg [model]="story" name="description" [content]="story.description" [images]="story.images"
         [changed]="descriptionChanged"></publish-wysiwyg>
 
