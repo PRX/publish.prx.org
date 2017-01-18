@@ -11,9 +11,10 @@
 
     <div *ngIf="previewUrl">
       <p *ngIf="previewingUnpublished" class="error">
-        <b>WARNING:</b> It looks like your story is not yet published.  This may
-        cause the embeddable player to look broken.  But this link/iframe will
-        not change, so feel free to copy it and check back once your story is published.
+        <b>WARNING:</b> It looks like your episode is not yet published, or very recently
+        published. The player below is only a preview of how it will appear after
+        your feed is updated with the new episode. Your copyable link/iframe will begin
+        to function as expected within a few minutes of publishing.
       </p>
 
       <iframe [src]='previewSafe' frameborder="0" height="200" width ="100%"></iframe>

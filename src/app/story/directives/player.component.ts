@@ -61,7 +61,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
       this.buildPlayer(false, false);
     }
     if (this.shouldUseFeeder === true && hasFeederParams) {
-      if (this.story.isPublished()) {
+      if (this.story.isPublished(60)) {
         this.previewingUnpublished = false;
         this.buildPlayer(true, true);
       } else {
