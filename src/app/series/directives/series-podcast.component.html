@@ -70,12 +70,15 @@
       <div class="fancy-hint">A link to the homepage for your podcast.</div>
     </publish-fancy-field>
 
-    <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" (change)="setLink('newFeedUrl')">
-      <div class="fancy-hint">Use this to manually change the URL where your podcast is located.</div>
-    </publish-fancy-field>
-
     <publish-fancy-field label="Podcast Audio" [select]="audioVersionOptions" [model]="distribution" name="versionTemplateUrl" required>
       <div class="fancy-hint">Select which audio template should be used with your podcast.</div>
+    </publish-fancy-field>
+
+    <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" [advancedConfirm]="newFeedUrlConfirm" (change)="setLink('newFeedUrl')">
+      <div class="fancy-hint">
+        If your podcast feed is moving, use this field to point to the new URL where your podcast is located.
+        The current feed should be maintained until all of your subscribers have migrated.
+      </div>
     </publish-fancy-field>
 
   </div>

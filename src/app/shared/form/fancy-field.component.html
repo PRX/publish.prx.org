@@ -16,13 +16,17 @@
   <template [ngIf]="model">
     <ng-content select=".prefix"></ng-content>
     <input *ngIf="type == 'textinput'" [id]="name" type="text"
-      [ngModel]="model[name]" (ngModelChange)="onChange($event)"/>
+      [ngModel]="model[name]" (ngModelChange)="onChange($event)"
+      [publishAdvancedConfirm]="advancedConfirm" [advancedFieldName]="name" [advancedModel]="model"/>
     <input *ngIf="type == 'number'" [id]="name" type="number"
-      [ngModel]="model[name]" (ngModelChange)="onChange($event)"/>
+      [ngModel]="model[name]" (ngModelChange)="onChange($event)"
+      [publishAdvancedConfirm]="advancedConfirm" [advancedFieldName]="name" [advancedModel]="model"/>
     <textarea *ngIf="type == 'textarea'" [id]="name"
+      [publishAdvancedConfirm]="advancedConfirm" [advancedFieldName]="name" [advancedModel]="model"
       [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"></textarea>
     <select *ngIf="type == 'select'" [id]="name"
-      [(ngModel)]="model[name]" (ngModelChange)="onChange($event)">
+      [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"
+      [publishAdvancedConfirm]="advancedConfirm" [advancedFieldName]="name" [advancedModel]="model">
       <option *ngFor="let opt of select" [value]="opt[1]">{{opt[0]}}</option>
     </select>
     <ng-content select=".suffix"></ng-content>
