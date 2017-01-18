@@ -110,7 +110,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   get newFeedUrlConfirm() {
     if (this.podcast) {
       return {
-        confirm: AdvancedConfirmText.NEW_FEED_URL(
+        confirm: AdvancedConfirmText.newFeedUrl(
           !this.podcast.isNew && !this.podcast.invalid('newFeedUrl') && this.podcast.changed('newFeedUrl'),
           this.podcast.original['newFeedUrl'], this.podcast.newFeedUrl),
         callback: this.resetNewFeedUrlOnCancel.bind(this)

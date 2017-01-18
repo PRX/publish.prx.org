@@ -2,7 +2,7 @@ import { Directive, Input, HostListener, ElementRef } from '@angular/core';
 import { ModalService } from '../../core';
 
 export const AdvancedConfirmText = {
-  NEW_FEED_URL: function (changed, originalValue, changedValue) {
+  newFeedUrl: function (changed, originalValue, changedValue) {
     if (changed) {
       let prompt = "Are you sure you want to change New Feed URL";
       if (originalValue) {
