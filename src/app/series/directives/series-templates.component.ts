@@ -19,7 +19,7 @@ import {
           into segments for ad injection, but also a broadcast version with different breaks for
           local news, different credits, or edits and bleeps to meet FCC permitted language requirements.
           On this page, you can define basic templates for the versions of audio that will be expected for
-          each episode in this series, and requirements for each of those templates.
+          each episode in this series, as well as requirements for each of those templates.
         </p>
         <hr/>
       </header>

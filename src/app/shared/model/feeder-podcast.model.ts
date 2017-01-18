@@ -20,8 +20,8 @@ export class FeederPodcastModel extends BaseModel {
   authorEmail: string = '';
 
   VALIDATORS = {
-    link: [REQUIRED()]
-  };
+    link: [REQUIRED(), URL('Not a valid URL')],
+    newFeedUrl: [URL('Not a valid URL')]  };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
     super();
@@ -83,8 +83,8 @@ export class FeederPodcastModel extends BaseModel {
     if (data.explicit) {
       data.explicit = data.explicit.toLowerCase();
     }
-    data.link = this.createLink(this.link) || null;
-    data.newFeedUrl = this.createLink(this.newFeedUrl) || null;
+    data.link = this.link || null;
+    data.newFeedUrl = this.newFeedUrl || null;
 
     if (this.authorName || this.authorEmail) {
       data.author = {
@@ -104,14 +104,6 @@ export class FeederPodcastModel extends BaseModel {
       data.itunesCategories = [];
     }
     return data;
-  }
-
-  createLink(url: string): string {
-    if (!url) {
-      return null;
-    } else {
-      return /^https?:\/\//i.test(url) ? url : `http://${url}`;
-    }
   }
 
   saveNew(data: {}): Observable<HalDoc> {
