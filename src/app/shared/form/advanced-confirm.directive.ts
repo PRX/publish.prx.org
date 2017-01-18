@@ -17,7 +17,7 @@ export const AdvancedConfirmText = {
   }
 };
 
-interface AdvancedConfirm {
+export interface AdvancedConfirm {
   confirm: string;
   callback: Function;
 }
