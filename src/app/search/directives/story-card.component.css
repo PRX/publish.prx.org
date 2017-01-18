@@ -66,21 +66,18 @@ publish-image  {
   display: -ms-flexbox;
   display: flex;
 }
-.duration, .modified, .audio-total {
+.duration, .modified, .play-count {
   width: calc(100%/3);
 }
-.audio-total {
+.play-count {
   flex: 2 2 60px;
   white-space: nowrap;
 }
 .duration, .modified {
   flex: 1 1 60px;
 }
-.audio-total > i {
-  /* TODO: this isn't the correct icon -doesn't matter, this is supposed to be play count anyway #56 */
+.play-count > i {
   display: inline-block;
-  transform: rotate(90deg);
-  margin-right: -5px;
 }
 
 publish-text-overflow-fade {

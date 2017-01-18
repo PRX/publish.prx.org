@@ -35,7 +35,7 @@ describe('BasicComponent', () => {
     comp.story = {versions: [], changed: () => false};
     fix.detectChanges();
 
-    expect(el).toContainText('You have no audio versions for this story');
+    expect(el).toContainText('You have no audio templates for this episode');
   });
 
 });

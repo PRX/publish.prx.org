@@ -21,7 +21,7 @@ describe('SeriesFeedComponent', () => {
     comp.isLoaded = true;
     fix.detectChanges();
 
-    expect(el).toContainText('You have no published stories');
+    expect(el).toContainText('You have no published episodes');
   });
 
   cit('displays story titles and publication status', (fix, el, comp) => {

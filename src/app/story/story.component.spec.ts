@@ -92,7 +92,7 @@ describe('StoryComponent', () => {
     cit('refuses to edit', (fix, el, comp) => {
       activatedRoute.testParams = {id: 1234};
       fix.detectChanges();
-      expect(modalAlertTitle).toMatch(/cannot edit story/i);
+      expect(modalAlertTitle).toMatch(/cannot edit episode/i);
     });
 
   });

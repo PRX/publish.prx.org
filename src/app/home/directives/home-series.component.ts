@@ -9,7 +9,7 @@ import { StoryModel } from '../../shared';
   styleUrls: ['home-series.component.css'],
   template: `
     <header *ngIf="noseries">
-      <h2>Your Standalone Stories</h2>
+      <h2>Your Standalone Episodes</h2>
       <a *ngIf="count > -1" class="all" [routerLink]="['search', { tab: 'stories', seriesId: -1 }]">View All {{count}} &raquo;</a>
     </header>
     <header *ngIf="!noseries">
@@ -17,7 +17,7 @@ import { StoryModel } from '../../shared';
         <publish-image [imageDoc]="logoDoc"></publish-image>
       </a>
       <p class="count">
-        <span *ngIf="count === 0">0 Stories</span>
+        <span *ngIf="count === 0">0 Episodes</span>
         <a *ngIf="count > 0" [routerLink]="['search', { tab: 'stories', seriesId: id }]">{{count}} {{storiesNoun | capitalize}}</a>
       </p>
       <h1><a [routerLink]="['series', id]">{{title}}</a></h1>
@@ -55,7 +55,7 @@ export class HomeSeriesComponent implements OnInit {
     }
   }
   get storiesNoun(): string {
-    return this.count === 1 ? 'story' : 'stories';
+    return this.count === 1 ? 'episode' : 'episodes';
   }
 
   loadSeriesStories() {

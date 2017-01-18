@@ -15,6 +15,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   explicitOpts = ['', 'Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
+  itunesCategoryDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12';
   audioVersionOptions: string[][];
 
   tabSub: Subscription;
@@ -98,6 +99,16 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
     if (this.podcast && this.subCategories.indexOf(this.podcast.subCategory) < 0) {
       this.podcast.set('subCategory', '');
+    }
+  }
+
+  createLink(url: string): string {
+    return /^https?:\/\//i.test(url) ? url : `http://${url}`;
+  }
+
+  setLink(field: string) {
+    if (this.podcast && this.podcast[field]) {
+      this.podcast.set(field, this.createLink(this.podcast[field]));
     }
   }
 

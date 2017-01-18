@@ -13,9 +13,9 @@ import { StoryModel, SeriesModel, ImageModel } from '../model';
 
       <p *ngIf="!suggestSize" class="size">Minimum size: {{minWidth}} x {{minHeight}} px</p>
       <p *ngIf="suggestSize" class="size">Suggested size: {{suggestSize}} px</p>
-      <input type="file" id="image-file" accept="image/*"
+      <input type="file" [attr.id]="'image-file-' + purpose" accept="image/*"
        publishFileSelect (file)="addUpload($event)" class.invalid="imgError"/>
-      <label class="button" for="image-file">Add Image</label>
+      <label class="button" [attr.for]="'image-file-' + purpose">Add Image</label>
 
     </div>
 
