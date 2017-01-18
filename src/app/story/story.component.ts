@@ -95,9 +95,7 @@ export class StoryComponent implements OnInit {
       });
     } else if (this.story) {
       this.story.loadRelated('distributions').subscribe(() => {
-        let hasEpisode = this.story.distributions.some(d => d.kind === 'episode');
-        this.distPodcast = hasEpisode;
-        this.distPlayer = hasEpisode;
+        this.distPodcast = this.story.distributions.some(d => d.kind === 'episode');
       });
     }
   }

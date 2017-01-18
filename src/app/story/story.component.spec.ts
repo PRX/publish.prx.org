@@ -21,12 +21,12 @@ describe('StoryComponent', () => {
   });
   beforeEach(() => modalAlertTitle = null);
 
-  let auth;
+  let auth, series, story;
   beforeEach(() => {
     auth = cms.mock('prx:authorization', {});
     auth.mock('prx:default-account', {title: 'DefaultAccountTitle'});
-    auth.mock('prx:series', {title: 'ExistingSeriesTitle'});
-    let story = auth.mock('prx:story', {title: 'ExistingStoryTitle', appVersion: 'v4'});
+    series = auth.mock('prx:series', {title: 'ExistingSeriesTitle'});
+    story = auth.mock('prx:story', {title: 'ExistingStoryTitle', appVersion: 'v4'});
     story.mockItems('prx:audio-versions', []);
     story.mockItems('prx:images', []);
   });
@@ -84,7 +84,7 @@ describe('StoryComponent', () => {
   describe('with a v3 story', () => {
 
     beforeEach(() => {
-      let story = auth.mock('prx:story', {title: 'SomeV3Story', appVersion: 'v3'});
+      story = auth.mock('prx:story', {title: 'SomeV3Story', appVersion: 'v3'});
       story.mockItems('prx:audio-versions', []);
       story.mockItems('prx:images', []);
     });
@@ -95,6 +95,38 @@ describe('StoryComponent', () => {
       expect(modalAlertTitle).toMatch(/cannot edit story/i);
     });
 
+  });
+
+  cit('shows the player tab for existing stories', (fix, el, comp) => {
+    activatedRoute.testParams = {};
+    fix.detectChanges();
+    expect(el).not.toContainText('Embeddable Player');
+    comp.id = 1234;
+    comp.showDistributionTabs();
+    fix.detectChanges();
+    expect(el).toContainText('Embeddable Player');
+  });
+
+  cit('shows the podcast distribution tab for existing stories', (fix, el, comp) => {
+    activatedRoute.testParams = {id: 1234};
+    story.mockItems('prx:distributions', [{kind: 'foobar'}]);
+    fix.detectChanges();
+    expect(el).not.toContainText('Podcast Distribution');
+    story.mockItems('prx:distributions', [{kind: 'foobar'}, {kind: 'episode'}]);
+    comp.loadStory();
+    fix.detectChanges();
+    expect(el).toContainText('Podcast Distribution');
+  });
+
+  cit('shows the podcast distribution tab for new stories', (fix, el, comp) => {
+    activatedRoute.testParams = {seriesId: 5678};
+    series.mockItems('prx:distributions', [{kind: 'foobar'}]);
+    fix.detectChanges();
+    expect(el).not.toContainText('Podcast Distribution');
+    series.mockItems('prx:distributions', [{kind: 'foobar'}, {kind: 'podcast'}]);
+    comp.loadStory();
+    fix.detectChanges();
+    expect(el).toContainText('Podcast Distribution');
   });
 
 });
