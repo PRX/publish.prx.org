@@ -35,8 +35,13 @@
     </publish-fancy-field>
 
     <publish-fancy-field label="iTunes Categories" required=1>
-      <div class="fancy-hint">Some description of what these are here and
-        maybe also a link to the itunes docs.</div>
+      <div class="fancy-hint">Select the
+        <a [href]="itunesCategoryDoc"
+           title="Podcasts Connect categories - Podcasts Connect Help">
+           iTunes category and subcategory, if applicable,
+        </a>
+        that best describe this podcast.
+      </div>
       <div class="span-fields">
         <publish-fancy-field label="Category" [model]="podcast" name="category"
           [select]="categories" (change)="setSubCategories()" small=1>
