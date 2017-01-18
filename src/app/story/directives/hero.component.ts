@@ -11,8 +11,8 @@ import { StoryModel } from '../../shared';
   template: `
     <publish-hero>
       <div class="hero-title">
-        <h1 *ngIf="id">Edit Story</h1>
-        <h1 *ngIf="!id">Create Story</h1>
+        <h1 *ngIf="id">Edit Episode</h1>
+        <h1 *ngIf="!id">Create Episode</h1>
         <a *ngIf="series" class="series" [routerLink]="['/series', series.id]">
           <publish-image [imageDoc]="series"></publish-image>
           <h3>{{series.title || '(Untitled Series)'}}</h3>
@@ -30,7 +30,7 @@ import { StoryModel } from '../../shared';
           <publish-button [model]="story" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
           <publish-button [model]="story" visible=1 green=1 (click)="save()">Create
             <div *ngIf="story.invalid()" class="invalid-tip create">
-              <h4>Invalid story</h4>
+              <h4>Invalid episode</h4>
               <p>Fill out all required fields</p>
             </div>
           </publish-button>

@@ -45,7 +45,7 @@ export class SeriesComponent implements OnInit {
     this.series = new SeriesModel(parent, series);
     if (series) {
       this.storyCount = series.count('prx:stories');
-      this.storyNoun = this.storyCount === 1 ? 'Story' : 'Stories';
+      this.storyNoun = this.storyCount === 1 ? 'Episode' : 'Episodes';
     } else {
       this.storyCount = null;
     }

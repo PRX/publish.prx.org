@@ -21,7 +21,7 @@
 
       <div>
         <button (click)="searchSeriesTab()" class="tab" [ngClass]="{'active': isOnSeriesTab()}" [disabled]="isOnSeriesTab()">Series</button>
-        <button (click)="searchStoriesTab()" class="tab" [ngClass]="{'active': isOnStoriesTab()}" [disabled]="isOnStoriesTab()">Stories</button>
+        <button (click)="searchStoriesTab()" class="tab" [ngClass]="{'active': isOnStoriesTab()}" [disabled]="isOnStoriesTab()">Episodes</button>
 
         <span class="pages">
           <button *ngIf="totalCount && pages?.length > 1" (click)="navigateToPagePer(1, totalCount)" class="btn-link">View All {{totalCount}} &raquo;</button>

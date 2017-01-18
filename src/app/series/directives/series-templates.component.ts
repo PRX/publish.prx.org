@@ -12,39 +12,39 @@ import {
   template: `
     <form *ngIf="series">
     <header>
-        <h2>Audio Versions</h2>
+        <h2>Audio Templates</h2>
         <p>
-          When adding stories to your series, you can have different versions of the audio for
+          When adding episodes to your series, you can have different versions of the audio for
           distribution. For example, it is common to have a podcast version of the audio broken
           into segments for ad injection, but also a broadcast version with different breaks for
           local news, different credits, or edits and bleeps to meet FCC permitted language requirements.
-          On this page, you can define the types of audio versions that will be expected for each story in this
-          series, and basic requirements for each of those versions.
+          On this page, you can define basic templates for the versions of audio that will be expected for
+          each episode in this series, as well as requirements for each of those templates.
         </p>
         <hr/>
       </header>
       <template ngFor let-v [ngForOf]="series.versionTemplates">
         <div *ngIf="!v.isDestroy" class="version">
           <publish-fancy-field textinput required [model]="v" name="label" label="Version Label">
-          <div class="fancy-hint">A name for this audio version, such as "Podcast Audio" or "Clean Version"</div>
+          <div class="fancy-hint">A name for this audio template, such as "Podcast Audio" or "Clean Version"</div>
             <div class="actions">
-              <button class="btn-link" (click)="removeVersion(v)"><i class="icon-cancel"></i>Remove Template</button>
+              <button tabindex=-1 class="btn-link" (click)="removeVersion(v)"><i class="icon-cancel"></i>Remove Template</button>
             </div>
           </publish-fancy-field>
 
           <publish-fancy-field class="length" [model]="v" label="Total length in seconds" invalid="lengthAny">
-            <div class="fancy-hint">The minimum and maximum durations in seconds for the sum of all the audio in this version</div>
+            <div class="fancy-hint">The minimum and maximum durations in seconds for the sum of all the audio in this template</div>
             <publish-fancy-field number small inline hideinvalid [model]="v" name="lengthMinimum" label="Minimum">
             </publish-fancy-field>
             <publish-fancy-field number small inline hideinvalid [model]="v" name="lengthMaximum" label="Maximum">
             </publish-fancy-field>
           </publish-fancy-field>
 
-          <publish-fancy-field label="Audio Segments">
-            <div class="fancy-hint">Describe the individual segment audio files required for this version</div>
+          <publish-fancy-field label="Segments">
+            <div class="fancy-hint">Describe the individual segment audio files required in this template.</div>
             <div class="actions">
-              <button class="btn-link" *ngIf="canAddFile(v)" (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
-              <button class="btn-link" *ngIf="canRemoveFile(v)" (click)="removeFile(v)"><i class="icon-cancel"></i>Remove Segment</button>
+              <button tabindex=-1 class="btn-link" *ngIf="canAddFile(v)" (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
+              <button tabindex=-1 class="btn-link" *ngIf="canRemoveFile(v)" (click)="removeFile(v)"><i class="icon-cancel"></i>Remove Segment</button>
             </div>
             <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t">
             </publish-file-template>
@@ -57,7 +57,7 @@ import {
 
       <div *ngIf="!hasVersions()">
         <publish-fancy-field label="No Templates">
-          <div class="fancy-hint">You have no templates defined for your series.
+          <div class="fancy-hint">You have no audio templates defined for your series.
             Defining a template can help validate that your audio has the correct
             duration and number of segments.</div>
           <button class="add-version" (click)="addVersion()"><i class="icon-plus"></i> Create a template</button>
