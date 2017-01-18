@@ -7,8 +7,8 @@ import { BaseModel } from '../model/base.model';
 })
 
 export class AdvancedConfirmDirective implements Directive {
-  @Input() fieldName: string;
-  @Input() model: BaseModel;
+  @Input('advancedFieldName') fieldName: string;
+  @Input('advancedModel') model: BaseModel;
   @Input('publishAdvancedConfirm') confirmText: string;
 
   @HostListener('blur') onBlur() {

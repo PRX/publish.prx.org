@@ -4,7 +4,7 @@ import { ModalService } from '../../core';
 import { AdvancedConfirmDirective } from './advanced-confirm.directive';
 
 @Component({
-  template: '<input [publishAdvancedConfirm]="confirmText" [model]="model" [fieldName]="name"/>'
+  template: '<input [publishAdvancedConfirm]="confirmText" [advancedModel]="model" [advancedFieldName]="name"/>'
 })
 class MyComponent {
   confirmText: string;
