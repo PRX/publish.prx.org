@@ -1,7 +1,7 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SeriesModel, DistributionModel, FeederPodcastModel,
-         TabService, CATEGORIES, SUBCATEGORIES } from '../../shared';
+         TabService, CATEGORIES, SUBCATEGORIES, AdvancedConfirmText } from '../../shared';
 
 @Component({
   styleUrls: ['series-podcast.component.css'],
@@ -98,6 +98,23 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
     if (this.podcast && this.subCategories.indexOf(this.podcast.subCategory) < 0) {
       this.podcast.set('subCategory', '');
+    }
+  }
+
+  resetNewFeedUrlOnCancel(confirm) {
+    if (!confirm) {
+      this.podcast.set('newFeedUrl', this.podcast.original['newFeedUrl']);
+    }
+  }
+
+  get newFeedUrlConfirm() {
+    if (this.podcast) {
+      return {
+        confirm: AdvancedConfirmText.NEW_FEED_URL(
+          !this.podcast.isNew && !this.podcast.invalid('newFeedUrl') && this.podcast.changed('newFeedUrl'),
+          this.podcast.original['newFeedUrl'], this.podcast.newFeedUrl),
+        callback: this.resetNewFeedUrlOnCancel.bind(this)
+      };
     }
   }
 

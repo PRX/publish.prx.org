@@ -15,13 +15,13 @@
 
   <template [ngIf]="model">
     <ng-content select=".prefix"></ng-content>
-    <input *ngIf="type == 'textinput'" [id]="name" type="text"
+    <input *ngIf="type == 'textinput'" [id]="name" type="text" [publishAdvancedConfirm]="advanced"
       [ngModel]="model[name]" (ngModelChange)="onChange($event)"/>
-    <input *ngIf="type == 'number'" [id]="name" type="number"
+    <input *ngIf="type == 'number'" [id]="name" type="number" [publishAdvancedConfirm]="advanced"
       [ngModel]="model[name]" (ngModelChange)="onChange($event)"/>
-    <textarea *ngIf="type == 'textarea'" [id]="name"
+    <textarea *ngIf="type == 'textarea'" [id]="name" [publishAdvancedConfirm]="advanced"
       [(ngModel)]="model[name]" (ngModelChange)="onChange($event)"></textarea>
-    <select *ngIf="type == 'select'" [id]="name"
+    <select *ngIf="type == 'select'" [id]="name" [publishAdvancedConfirm]="advanced"
       [(ngModel)]="model[name]" (ngModelChange)="onChange($event)">
       <option *ngFor="let opt of select" [value]="opt[1]">{{opt[0]}}</option>
     </select>

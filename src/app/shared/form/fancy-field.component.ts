@@ -21,6 +21,7 @@ export class FancyFieldComponent {
   @Input() label: string;
   @Input() invalidlabel: string;
   @Input() hideinvalid: boolean;
+  @Input() advanced: string;
 
   // Form field types (intercepted with defaults)
   type: string;
