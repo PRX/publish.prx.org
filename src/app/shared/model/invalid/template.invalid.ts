@@ -42,10 +42,10 @@ export const VERSION_LENGTH = (version?: AudioVersionTemplateModel): BaseInvalid
     let min = version.lengthMinimum;
     let max = version.lengthMaximum;
     if (key === 'lengthMinimum') {
-      version.invalidFields['lengthMaximum'] = checkMaximum(min, max);
+      // version.invalidFields['lengthMaximum'] = checkMaximum(min, max);
       return checkMinimum(min, max);
     } else if (key === 'lengthMaximum') {
-      version.invalidFields['lengthMinimum'] = checkMinimum(min, max);
+      // version.invalidFields['lengthMinimum'] = checkMinimum(min, max);
       return checkMaximum(min, max);
     }
   };
@@ -56,10 +56,10 @@ export const FILE_LENGTH = (file?: AudioFileTemplateModel): BaseInvalid => {
     let min = file.lengthMinimum;
     let max = file.lengthMaximum;
     if (key === 'lengthMinimum') {
-      file.invalidFields['lengthMaximum'] = checkMaximum(min, max);
+      // file.invalidFields['lengthMaximum'] = checkMaximum(min, max);
       return checkMinimum(min, max);
     } else if (key === 'lengthMaximum') {
-      file.invalidFields['lengthMinimum'] = checkMinimum(min, max);
+      // file.invalidFields['lengthMinimum'] = checkMinimum(min, max);
       return checkMaximum(min, max);
     }
   };
