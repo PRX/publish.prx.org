@@ -22,6 +22,7 @@ export class FancyFieldComponent {
   @Input() invalidlabel: string;
   @Input() hideinvalid: boolean;
   @Input() advancedConfirm: string;
+  @Input() strict: boolean;
 
   // Form field types (intercepted with defaults)
   type: string;
@@ -64,7 +65,7 @@ export class FancyFieldComponent {
 
   get formattedInvalid(): string {
     if (this.invalidFieldName && this.model && this.hideinvalid === undefined) {
-      let msg = this.model.invalid(this.invalidFieldName);
+      let msg = this.model.invalid(this.invalidFieldName, this.strict);
       if (msg) {
         if (this.invalidFieldLabel) {
           msg = msg.replace(this.invalidFieldName, this.invalidFieldLabel);
@@ -82,7 +83,7 @@ export class FancyFieldComponent {
 
     // explicit changed/invalid inputs get different classes
     let changed = this.changedFieldName && this.model.changed(this.changedFieldName);
-    let invalid = this.invalidFieldName && this.model.invalid(this.invalidFieldName);
+    let invalid = this.invalidFieldName && this.model.invalid(this.invalidFieldName, this.strict);
     if (changed) {
       classes.push(this.name ? 'changed' : 'changed-explicit');
     }
