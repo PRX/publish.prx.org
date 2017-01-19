@@ -1,0 +1,33 @@
+<div *ngIf="story">
+
+  <publish-fancy-field label="Embeddable Player">
+    <div class="fancy-hint">
+      You can include this embeddable player on your website to play the audio for this episode directly.
+    </div>
+
+    <publish-spinner *ngIf="!previewUrl && !loadError"></publish-spinner>
+
+    <p *ngIf="loadError" class="error">{{loadError}}</p>
+
+    <div *ngIf="previewUrl">
+      <p *ngIf="previewingUnpublished" class="error">
+        <b>WARNING:</b> It looks like your episode is not yet published, or very recently
+        published. The player below is only a preview of how it will appear after
+        your feed is updated with the new episode. Your copyable link/iframe will begin
+        to function as expected within a few minutes of publishing.
+      </p>
+
+      <iframe [src]='previewSafe' frameborder="0" height="200" width ="100%"></iframe>
+
+      <p>The link to your embed player</p>
+      <input type="text" readonly [ngModel]="copyUrl" #urlInput/>
+      <button [publishCopyInput]="urlInput">Copy</button>
+      <a class="button" target="_blank" rel="noopener" [href]="copyUrl">Open Link</a>
+      <p class="embed-iframe">An embeddable iframe</p>
+      <input type="text" readonly [ngModel]="copyIframe" #iframeInput/>
+      <button [publishCopyInput]="iframeInput">Copy</button>
+    </div>
+
+  </publish-fancy-field>
+
+</div>

@@ -182,6 +182,14 @@ export class StoryModel extends BaseModel implements HasUpload {
     return !this.doc || this.doc['appVersion'] === 'v4';
   }
 
+  isPublished(bufferSeconds = 0): boolean {
+    if (this.publishedAt) {
+      return new Date().valueOf() >= this.publishedAt.valueOf() + (bufferSeconds * 1000);
+    } else {
+      return false;
+    }
+  }
+
   getSeriesDistribution(kind: string): Observable<HalDoc> {
     if (this.parent && this.parent.count('prx:distributions')) {
       return this.parent.followItems('prx:distributions').map(dists => {

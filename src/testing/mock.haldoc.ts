@@ -89,6 +89,8 @@ export class MockHalDoc extends HalDoc {
   has(rel: string, mustBeList = false): boolean {
     if (this.MOCKS[rel]) {
       return mustBeList ? (this.MOCKS[rel] instanceof Array) : true;
+    } else if (this['_links'] && this['_links'][rel]) {
+      return mustBeList ? (this['_links'][rel] instanceof Array) : true;
     } else {
       return false;
     }
