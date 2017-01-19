@@ -110,6 +110,14 @@
   border-color: rgba(97, 168, 93, 0);
   border-bottom-color: #61A85D;
 }
+.toolbar >>> .invalid-tip.publish {
+  color: #f59f51;
+  border-color: #f59f51;
+}
+.toolbar >>> .invalid-tip.publish:before {
+  border-color: rgba(97, 168, 93, 0);
+  border-bottom-color: #f59f51;
+}
 
 /**
  * Affixing
