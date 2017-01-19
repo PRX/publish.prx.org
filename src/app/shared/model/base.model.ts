@@ -144,7 +144,7 @@ export abstract class BaseModel {
 
   saveRelated(): Observable<boolean[]> {
     let relatedSavers: Observable<boolean>[] = this.getRelated().filter(model => {
-      return model.changed();
+      return model.isNew || model.changed();
     }).map(model => {
       if (model.isNew) {
         model.unstore(); // delete old storage key
@@ -213,7 +213,7 @@ export abstract class BaseModel {
     });
   }
 
-  invalid(field?: string | string[], strict = false): string {
+  invalid(field?: string | string[], strict = true): string {
     if (this.isDestroy) {
       return null; // don't care if it's invalid
     }
