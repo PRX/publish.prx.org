@@ -90,9 +90,9 @@ export class PodcastComponent implements OnDestroy {
         prompt += ` from "${this.episode.original['guid']}"`;
       }
       if (this.episode.guid) {
-        prompt += ` to "${this.episode.guid}"? This should only be done in special cases.`
+        prompt += ` to "${this.episode.guid}"? This should only be done in special cases.`;
       } else {
-        prompt += "?";
+        prompt += '?';
       }
       return prompt;
     }
