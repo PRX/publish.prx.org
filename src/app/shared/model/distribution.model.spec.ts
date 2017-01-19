@@ -6,6 +6,7 @@ describe('DistributionModel', () => {
   let podcastUrl = 'http://some.where/your/podcast/1234';
   let series = cms.mock('prx:series', {id: 'series1'});
   let account = series.mock('prx:account', {name: 'my account name'});
+  let alternate = series.mock('alternate', {href: 'http://linkto.beta'});
   let fooDist = series.mock('prx:distributions', {id: 'dist1', kind: 'foo'});
   let podDist = series.mock('prx:distributions', {id: 'dist2', kind: 'podcast', url: podcastUrl});
   let podcast = podDist.mock(podcastUrl, {id: 'pod1'});
@@ -35,6 +36,13 @@ describe('DistributionModel', () => {
     expect(dist.podcast).not.toBeNull();
     expect(dist.podcast.category).toEqual('');
     expect(dist.podcast.authorName).toEqual(account['name']);
+  });
+
+  it('defaults author and link for new podcasts', () => {
+    let dist = new DistributionModel(series, null, true);
+    expect(dist.podcast).not.toBeNull();
+    expect(dist.podcast.authorName).toEqual(account['name']);
+    expect(dist.podcast.link).toEqual(alternate['href']);
   });
 
   it('loads the feeder podcast on-demand only', () => {

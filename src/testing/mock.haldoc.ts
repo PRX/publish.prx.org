@@ -144,4 +144,18 @@ export class MockHalDoc extends HalDoc {
     return Observable.throw(new Error(msg));
   }
 
+  expand(rel: string, params: any = {}): string {
+    let link;
+    if (this.MOCKS) {
+      link = this.MOCKS[rel];
+    }
+    if (this['_links']) {
+      link = this['_links'][rel];
+    }
+    if (link && link instanceof Array) {
+      link = link[0];
+    }
+    return this.remote.expand(link, params);
+  }
+
 }
