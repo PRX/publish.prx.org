@@ -102,16 +102,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
   }
 
-  createLink(url: string): string {
-    return /^https?:\/\//i.test(url) ? url : `http://${url}`;
-  }
-
-  setLink(field: string) {
-    if (this.podcast && this.podcast[field]) {
-      this.podcast.set(field, this.createLink(this.podcast[field]));
-    }
-  }
-
   get newFeedUrlConfirm(): string {
     if (this.podcast) {
       let prompt = 'Are you sure you want to change New Feed URL';
