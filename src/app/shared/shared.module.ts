@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { DatepickerComponent, TimeAgoPipe, TimepickerComponent } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
-import { AdvancedConfirmDirective, ButtonComponent, CapitalizePipe, CopyInputDirective, FancyFieldComponent } from './form';
+import { AdvancedConfirmDirective, AdvancedSectionComponent, ButtonComponent, CapitalizePipe, CopyInputDirective, FancyFieldComponent } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
@@ -17,6 +17,7 @@ import { FocusDirective, WysiwygComponent } from './wysiwyg';
 @NgModule({
   declarations: [
     AdvancedConfirmDirective,
+    AdvancedSectionComponent,
     ButtonComponent,
     CapitalizePipe,
     CopyInputDirective,
@@ -41,6 +42,7 @@ import { FocusDirective, WysiwygComponent } from './wysiwyg';
   ],
   exports: [
     AdvancedConfirmDirective,
+    AdvancedSectionComponent,
     CommonModule,
     FormsModule,
     ButtonComponent,
