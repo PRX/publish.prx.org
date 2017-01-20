@@ -21,7 +21,7 @@ import { StoryModel } from '../../shared';
         <a *ngIf="!storyTitle" [routerLink]="editLink">(Untitled)</a>
       </h2>
       <p class="duration">{{storyDuration | duration}}</p>
-      <p class="modified">{{storyUpdated | date:"MM/dd/yy"}}</p>
+      <p class="modified">{{storyDate | date:"MM/dd/yy"}}</p>
       <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
     </template>
   `
@@ -36,7 +36,7 @@ export class HomeStoryComponent implements OnInit {
 
   storyTitle: string;
   storyDate: Date;
-  storyDuration: number;
+  storyDuration: number = 0;
   storyImage: HalDoc;
 
   statusClass: string;
