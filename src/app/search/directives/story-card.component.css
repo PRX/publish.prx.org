@@ -33,8 +33,11 @@ publish-image  {
   text-transform: uppercase;
   line-height: 18px;
 }
-.status.unpublished {
-  background-color: #ee4d3e;
+.status.draft {
+  background-color: #ffa500;
+}
+.status.scheduled {
+  background-color: #368aa2;
 }
 
 .story-detail {
@@ -112,4 +115,3 @@ publish-text-overflow-fade >>> div:before {
   margin-top: 5px;
   margin-bottom: 10px;
 }
-

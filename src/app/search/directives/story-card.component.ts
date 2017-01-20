@@ -18,7 +18,7 @@ import { StoryModel } from '../../shared';
       <section class="story-info">
         <span class="duration">{{storyDuration | duration}}</span>
         <span class="play-count"><i></i></span>
-        <span class="modified">{{storyUpdated | date:"MM/dd/yy"}}</span>
+        <span class="modified">{{storyDate | date:"MM/dd/yy"}}</span>
       </section>
     </section>
     <section class="story-tags">
@@ -41,7 +41,7 @@ export class StoryCardComponent implements OnInit {
   storyId: number;
   storyTitle: string;
   storyDuration: number;
-  storyUpdated: Date;
+  storyDate: Date;
   storyDescription: string;
   storyTags: string[];
   seriesTitle: string;
@@ -52,27 +52,11 @@ export class StoryCardComponent implements OnInit {
   ngOnInit() {
     this.storyId = this.story.id;
     this.storyTitle = this.story.title;
-    this.storyUpdated = this.story.lastStored || this.story.updatedAt;
+    this.storyDate = this.story.publishedAt || this.story.updatedAt || this.story.lastStored;
     this.storyDescription = this.story.shortDescription;
     this.storyTags = this.story.splitTags();
-
+    this.storyDuration = this.story.doc['duration'] || 0;
     this.editStoryLink = ['/story', this.story.id];
-
-    if (this.story.doc.has('prx:audio')) {
-      this.story.doc.followItems('prx:audio').subscribe((audios) => {
-        if (!audios || audios.length < 1) {
-          this.storyDuration = 0;
-        } else {
-          this.storyDuration = audios.map((audio) => {
-            return audio['duration'] || 0;
-          }).reduce((prevDuration, currDuration) => {
-            return prevDuration + currDuration;
-          });
-        }
-      });
-    } else {
-      this.storyDuration = 0;
-    }
 
     if (this.story.parent) {
       this.seriesTitle = this.story.parent['title'];
@@ -81,8 +65,11 @@ export class StoryCardComponent implements OnInit {
     }
 
     if (!this.story.publishedAt) {
-      this.statusClass = 'status unpublished';
-      this.statusText = 'Private';
+      this.statusClass = 'status draft';
+      this.statusText = 'Draft';
+    } else if (!this.story.isPublished()) {
+      this.statusClass = 'status scheduled';
+      this.statusText = 'Scheduled';
     }
   }
 
