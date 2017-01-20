@@ -29,7 +29,7 @@ import { StoryModel } from '../../shared';
           (click)="discard()">Discard</publish-button>
 
         <template [ngIf]="stateNew">
-          <publish-button green [model]="story" [disabled]="normalInvalid"
+          <publish-button green=1 [model]="story" [disabled]="normalInvalid"
               visible=1 (click)="save()">Create
             <div *ngIf="normalInvalid" class="invalid-tip create">
               <h4>Invalid episode</h4>
