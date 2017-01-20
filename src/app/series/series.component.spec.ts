@@ -1,6 +1,7 @@
 import { cit, create, cms, provide, stubPipe, By } from '../../testing';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { ModalService } from '../core';
 import { SeriesComponent } from './series.component';
 
@@ -77,6 +78,25 @@ describe('SeriesComponent', () => {
     expect(modalAlertTitle).toBeNull();
     btn.triggerEventHandler('click', null);
     expect(modalAlertTitle).toEqual('Really delete?');
+  });
+
+  cit('prompts for leaving with unsaved changes', (fix, el, comp) => {
+    activatedRoute.testParams = {id: '99'};
+    auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
+    fix.detectChanges();
+    expect(comp.canDeactivate()).toEqual(true);
+    spyOn(comp.series, 'changed').and.returnValue(true);
+    expect(comp.canDeactivate() instanceof Observable).toBeTruthy();
+    expect(modalAlertTitle).toMatch(/unsaved changes/i);
+  });
+
+  cit('does not prompt for unsaved changes after delete', (fix, el, comp) => {
+    activatedRoute.testParams = {id: '99'};
+    auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
+    fix.detectChanges();
+    comp.series.isDestroy = true;
+    expect(comp.canDeactivate()).toEqual(true);
+    expect(modalAlertTitle).toBeNull();
   });
 
 });
