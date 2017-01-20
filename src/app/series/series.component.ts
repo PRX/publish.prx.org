@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
 
 import { CmsService, ModalService } from '../core';
 import { SeriesModel } from '../shared';
@@ -90,6 +91,27 @@ export class SeriesComponent implements OnInit {
         }
       }
     );
+  }
+
+  canDeactivate(next: any, prev: any): boolean | Observable<boolean> {
+    if (this.series && this.series.changed() && !this.series.isDestroy) {
+      let thatsOkay = new Subject<boolean>();
+      this.modal.prompt(
+        'Unsaved changes',
+        `This series has unsaved changes. Click 'Okay' to discard the changes and
+          continue or 'Cancel' to complete and ${this.series.isNew ? 'create' : 'save'} the series.`,
+        (okay: boolean) => {
+          if (okay) {
+            this.discard();
+          }
+          thatsOkay.next(okay);
+          thatsOkay.complete();
+        }
+      );
+      return thatsOkay;
+    } else {
+      return true;
+    }
   }
 
 }
