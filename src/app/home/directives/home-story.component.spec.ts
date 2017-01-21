@@ -8,6 +8,8 @@ describe('HomeStoryComponent', () => {
 
   stubPipe('duration');
 
+  stubPipe('date');
+
   cit('renders new stories as new', (fix, el, comp) => {
     comp.story = {isNew: true, changed: () => true, images: []};
     fix.detectChanges();
