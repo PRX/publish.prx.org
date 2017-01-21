@@ -44,22 +44,12 @@ describe('BaseModel', () => {
       expect(base.original).toEqual({foo: 'fooval', bar: undefined});
     });
 
-    it('runs validations on default + original + stored values', () => {
+    it('overlays stored values', () => {
       base.SETABLE = ['someattribute'];
-
-      let expected = 'somevalue';
-      spyOn(base, 'revalidate').and.callFake(() => {
-        expect(base.someattribute).toEqual(expected);
-      });
-      base.init(null);
-
-      expected = 'originalvalue';
-      base.init(null, <any> {someattribute: 'originalvalue'});
-
-      expected = 'override';
       spyOn(base, 'restore').and.callFake(function() { this.someattribute = 'override'; });
       base.init(null, <any> {someattribute: 'originalvalue'});
-      expect(base.revalidate).toHaveBeenCalledTimes(3);
+      expect(base.someattribute).toEqual('override');
+      expect(base.original['someattribute']).toEqual('originalvalue');
     });
 
     it('subscribes to related models', () => {
@@ -82,43 +72,21 @@ describe('BaseModel', () => {
     it('sets and stores the value', () => {
       base.SETABLE = ['foo'];
       spyOn(base, 'store').and.stub();
-      spyOn(base, 'invalidate').and.stub();
-      spyOn(base, 'checkChanged').and.stub();
       base.set('foo', 'bar');
       expect(base.store).toHaveBeenCalled();
     });
 
-    it('only validates setable fields', () => {
-      spyOn(base, 'invalidate').and.returnValue('did-invalidate');
-      spyOn(base, 'checkChanged').and.stub();
-      base.set('foo', 'bar');
-      expect(base.invalidFields['foo']).toBeUndefined();
-      base.SETABLE = ['foo'];
-      base.set('foo', 'bar');
-      expect(base.invalidFields['foo']).toEqual('did-invalidate');
-    });
-
-    it('only tracks changes for setable fields', () => {
-      spyOn(base, 'checkChanged').and.returnValue('did-checkChanged');
-      spyOn(base, 'invalidate').and.stub();
-      base.set('foo', 'bar');
-      expect(base.changedFields['foo']).toBeUndefined();
-      base.SETABLE = ['foo'];
-      base.set('foo', 'bar');
-      expect(base.changedFields['foo']).toEqual('did-checkChanged');
-    });
-
     it('force updates the original value', () => {
       base.SETABLE = ['someattribute'];
-      expect(base.changed('someattribute')).toEqual(false);
+      expect(base.original['someattribute']).toBeUndefined();
 
       base.set('someattribute', 'foo');
       expect(base.someattribute).toEqual('foo');
-      expect(base.changed('someattribute')).toEqual(true);
+      expect(base.original['someattribute']).toBeUndefined();
 
       base.set('someattribute', 'bar', true);
       expect(base.someattribute).toEqual('bar');
-      expect(base.changed('someattribute')).toEqual(false);
+      expect(base.original['someattribute']).toEqual('bar');
     });
 
   });
@@ -306,6 +274,16 @@ describe('BaseModel', () => {
 
   describe('changed', () => {
 
+    it('only tracks changes for setable fields', () => {
+      base.SETABLE = [];
+      base.set('someattribute', 'foo');
+      expect(base.someattribute).toEqual('foo');
+      expect(base.changed('someattribute')).toEqual(false);
+      base.SETABLE = ['someattribute'];
+      base.set('someattribute', 'foo');
+      expect(base.changed('someattribute')).toEqual(true);
+    });
+
     it('checks specific or all fields', () => {
       base.SETABLE = ['one', 'two', 'four'];
       base.original = {one: '1', three: '3', four: '4'};
@@ -358,6 +336,16 @@ describe('BaseModel', () => {
 
   describe('invalid', () => {
 
+    it('only validates setable fields', () => {
+      base.SETABLE = [];
+      base.VALIDATORS = {someattribute: [() => 'bad']};
+      base.set('someattribute', 'foo');
+      expect(base.invalid('someattribute')).toBeNull();
+      base.SETABLE = ['someattribute'];
+      base.set('someattribute', 'foo');
+      expect(base.invalid('someattribute')).toEqual('bad');
+    });
+
     it('checks specific or all fields', () => {
       base.SETABLE = ['one', 'two', 'four'];
       base.VALIDATORS = {
@@ -400,6 +388,15 @@ describe('BaseModel', () => {
       expect(base.invalid()).toBeNull();
     });
 
+    it('strictly enforces validations', () => {
+      base.SETABLE = ['one'];
+      base.VALIDATORS = {one: [(k, v, strict) => strict ? 'bad' : null]};
+      base.set('one', 'anything');
+      expect(base.invalid('one')).toEqual('bad');
+      expect(base.invalid('one', true)).toEqual('bad');
+      expect(base.invalid('one', false)).toBeNull();
+    });
+
   });
 
   describe('storage', () => {
@@ -410,13 +407,11 @@ describe('BaseModel', () => {
 
       // not persisted
       base.SETABLE = ['someattribute'];
-      base.someattribute = 'new';
-      base.store();
+      base.set('someattribute', 'start', true);
       expect(Object.keys(localStorage).length).toEqual(0);
 
       // changed fields persisted
-      base.changedFields['someattribute'] = true;
-      base.store();
+      base.set('someattribute', 'new');
       expect(Object.keys(localStorage).length).toEqual(1);
 
       // overwrites
@@ -425,8 +420,7 @@ describe('BaseModel', () => {
       expect(base.someattribute).toEqual('new');
 
       // clears when not changed
-      base.changedFields['someattribute'] = false;
-      base.store();
+      base.set('someattribute', 'start');
       expect(Object.keys(localStorage).length).toEqual(0);
     });
 

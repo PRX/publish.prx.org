@@ -6,8 +6,7 @@ describe('TemplateInvalid', () => {
   const buildModel = (min, max) => {
     model = {
       lengthMinimum: min,
-      lengthMaximum: max,
-      invalidFields: {lengthMinimum: null, lengthMaximum: null}
+      lengthMaximum: max
     };
     return model;
   };
@@ -44,7 +43,7 @@ describe('TemplateInvalid', () => {
     it('also validates the other column', () => {
       let invalid = build(null, -1);
       expect(invalid('lengthMinimum', null)).toMatch('Must set');
-      expect(model.invalidFields.lengthMaximum).toMatch('greater than 0');
+      expect(invalid('lengthMaximum', null)).toMatch('greater than 0');
     });
 
   });
