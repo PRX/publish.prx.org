@@ -89,12 +89,11 @@
         <button [publishCopyInput]="pubFeed">Copy</button>
         <a class="button" target="_blank" rel="noopener" [href]="podcast?.publicFeedUrl">Open Link</a>
       </div>
-      <div *ngIf="!podcast?.hasPublicFeed">
+      <publish-fancy-field textinput [model]="podcast" name="publicFeedUrl" *ngIf="!podcast?.hasPublicFeed">
         <div class="fancy-hint">
-          <input type="text" [ngModel]="podcast?.publicFeedUrl" name="publicFeedUrl"/>
           If you already have a public url for your podcast feed (e.g., feedburner), enter it here.
         </div>
-      </div>
+      </publish-fancy-field>
     </publish-fancy-field>
 
     <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" [advancedConfirm]="newFeedUrlConfirm">
