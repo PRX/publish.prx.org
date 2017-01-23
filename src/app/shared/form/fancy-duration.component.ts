@@ -17,13 +17,13 @@ import { BaseModel } from '../model/base.model';
         <input [id]="secondsName" type="number" disabled=true/>
       </template>
       <template [ngIf]="model">
-        <input [id]="hoursName" type="number" min="0" [ngModel]="hours"
+        <input [id]="hoursName" type="number" min="0" [ngModel]="hours | padzero"
           (ngModelChange)="set('hours', $event)" [class.changed]="hoursChanged"/>
         <b>:</b>
-        <input [id]="minutesName" type="number" min="0" [ngModel]="minutes"
+        <input [id]="minutesName" type="number" min="0" [ngModel]="minutes | padzero"
           (ngModelChange)="set('minutes', $event)" [class.changed]="minutesChanged"/>
         <b>:</b>
-        <input [id]="secondsName" type="number" min="0" [ngModel]="seconds"
+        <input [id]="secondsName" type="number" min="0" [ngModel]="seconds | padzero"
           (ngModelChange)="set('seconds', $event)" [class.changed]="secondsChanged"/>
       </template>
     </div>
@@ -77,7 +77,7 @@ export class FancyDurationComponent implements DoCheck {
       this.seconds = value;
     }
     let total = this.hours * 3600 + this.minutes * 60 + this.seconds;
-    this.model.set(this.name, total || null);
+    this.model.set(this.name, total || 0);
   }
 
 }
