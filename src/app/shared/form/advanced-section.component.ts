@@ -4,12 +4,15 @@ import { Component } from '@angular/core';
   selector: 'publish-advanced-section',
   template: `
     <section>
-    <ng-content *ngIf="show"></ng-content>
-    <button class="btn-link" (click)="toggleShow()">
-      <i [class.icon-plus]="!show" [class.icon-cancel]="show"></i>{{show ? 'Hide' : 'Show'}} Advanced Settings
-    </button>
+      <ng-content *ngIf="show"></ng-content>
+      <h3>
+        <button class="btn-link" (click)="toggleShow()">
+          <i [class.icon-right-dir]="!show" [class.icon-up-dir]="show"></i>{{show ? 'Hide' : 'Show'}} Advanced Settings
+        </button>
+      </h3>
     </section>
-  `
+  `,
+  styleUrls: ['advanced-section.component.css']
 })
 
 export class AdvancedSectionComponent {
