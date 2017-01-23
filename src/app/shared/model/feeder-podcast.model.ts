@@ -20,6 +20,7 @@ export class FeederPodcastModel extends BaseModel {
   publicFeedUrl: string = '';
   authorName: string = '';
   authorEmail: string = '';
+  hasPublicFeed: boolean = false;
 
   VALIDATORS = {
     link: [REQUIRED(), URL('Not a valid URL')],
@@ -53,7 +54,10 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
-    this.publicFeedUrl = this.doc['url'] || '';
+    if (this.doc['url']) {
+      this.publicFeedUrl = this.doc['url'];
+      this.hasPublicFeed = true;
+    }
     if (this.doc['author']) {
       if (this.doc['author']['name']) {
         this.authorName = this.doc['author']['name'];

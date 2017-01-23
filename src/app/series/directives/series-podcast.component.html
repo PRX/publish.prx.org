@@ -17,13 +17,6 @@
 
   <div *ngSwitchCase="'editing'">
 
-    <publish-fancy-field label="PRX Feed" class="feed-url" *ngIf="!distribution.isNew">
-      <div class="fancy-hint">The public URL of your PRX podcast feed.</div>
-      <input type="text" readonly [ngModel]="podcast?.publishedUrl" name="publishedUrl" #pubFeed/>
-      <button [publishCopyInput]="pubFeed">Copy</button>
-      <a class="button" target="_blank" rel="noopener" [href]="podcast?.publishedUrl">Open Link</a>
-    </publish-fancy-field>
-
     <publish-fancy-field label="Author Information">
       <div class="fancy-hint">Set the author name and email to be associated with this podcast.</div>
       <div class="span-fields">
@@ -74,9 +67,33 @@
       <div class="fancy-hint">A link to the homepage for your podcast.</div>
     </publish-fancy-field>
 
-    <publish-fancy-field label="Public Feed Url" textinput [model]="podcast" name="publicFeedUrl">
-      <div class="fancy-hint">
-        If you already have a public url for your podcast feed (e.g., feedburner), enter it here.
+    <publish-fancy-field label="PRX Feed" class="prx-feed-url" *ngIf="!distribution.isNew">
+      <div class="fancy-hint" *ngIf="podcast?.hasPublicFeed">
+        The private url for your PRX podcast feed, providing the content for <a href="{{podcast.publicFeedUrl}}">your public feed</a>.
+      </div>
+      <div class="fancy-hint" *ngIf="!podcast?.hasPublicFeed">
+        The URL for your PRX podcast feed. It's encouraged for podcasters to use a  public proxy like feedburner (potentially with a custom domain)
+        for sharing with listeners. If you already have a public URL for your podcast feed, enter it in the next field, or feel free to
+        <a href="https://support.google.com/feedburner/answer/78475?hl=en" title="Feedburner Help">create one.</a>
+      </div>
+      <input type="text" readonly [ngModel]="podcast?.publishedUrl" name="publishedUrl"/>
+    </publish-fancy-field>
+
+    <publish-fancy-field label="Public Feed Url" class="feed-url">
+      <div *ngIf="podcast?.hasPublicFeed">
+        <div class="fancy-hint">
+          The public URL for your podcast feed. Feel free to share this URL with listeners. If you need to alter this URL, please
+          do so safely by using the New Feed Url field in the Advanced settings.
+        </div>
+        <input type="text" readonly [ngModel]="podcast?.publicFeedUrl" name="publicFeedUrl" #pubFeed/>
+        <button [publishCopyInput]="pubFeed">Copy</button>
+        <a class="button" target="_blank" rel="noopener" [href]="podcast?.publicFeedUrl">Open Link</a>
+      </div>
+      <div *ngIf="!podcast?.hasPublicFeed">
+        <div class="fancy-hint">
+          <input type="text" [ngModel]="podcast?.publicFeedUrl" name="publicFeedUrl"/>
+          If you already have a public url for your podcast feed (e.g., feedburner), enter it here.
+        </div>
       </div>
     </publish-fancy-field>
 
