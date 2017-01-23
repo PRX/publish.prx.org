@@ -5,11 +5,9 @@ import { Component } from '@angular/core';
   template: `
     <section>
       <ng-content *ngIf="show"></ng-content>
-      <h3>
-        <button class="btn-link" (click)="toggleShow()">
-          <i [class.icon-right-dir]="!show" [class.icon-up-dir]="show"></i>{{show ? 'Hide' : 'Show'}} Advanced Settings
-        </button>
-      </h3>
+      <button class="btn-link" (click)="toggleShow()">
+        <i [class.icon-right-dir]="!show" [class.icon-up-dir]="show"></i>{{show ? 'Hide' : 'Show'}} Advanced Settings
+      </button>
     </section>
   `,
   styleUrls: ['advanced-section.component.css']
