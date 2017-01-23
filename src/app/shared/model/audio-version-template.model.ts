@@ -54,8 +54,8 @@ export class AudioVersionTemplateModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.label = this.doc['label'] || '';
-    this.lengthMinimum = this.doc['lengthMinimum'] || null;
-    this.lengthMaximum = this.doc['lengthMaximum'] || null;
+    this.lengthMinimum = this.doc['lengthMinimum'];
+    this.lengthMaximum = this.doc['lengthMaximum'];
   }
 
   encode(): {} {
@@ -75,6 +75,13 @@ export class AudioVersionTemplateModel extends BaseModel {
       return this.invalid('lengthMinimum') || this.invalid('lengthMaximum');
     } else {
       return super.invalid(field);
+    }
+  }
+
+  set(field: string, value: any, forceOriginal = false) {
+    super.set(field, value, forceOriginal);
+    if (field === 'lengthMinimum' && value >= this.lengthMaximum) {
+      super.set('lengthMaximum', value + 60);
     }
   }
 
