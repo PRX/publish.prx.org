@@ -35,8 +35,11 @@ import {
               <div class="fancy-hint">A name for this audio template, such as "Podcast Audio" or "Clean Version"</div>
             </publish-fancy-field>
 
-            <publish-fancy-field class="length" [model]="v" label="Total length in seconds" invalid="lengthAny">
-              <div class="fancy-hint">The minimum and maximum durations in seconds for the sum of all the audio in this template</div>
+            <publish-fancy-field class="length" [model]="v" label="Total length" invalid="lengthAny">
+              <div class="fancy-hint">
+                The minimum and maximum durations in seconds for all the audio files. Used
+                to check that your episodes have sane lengths, and prevent uploading bad audio.
+              </div>
               <publish-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"></publish-fancy-duration>
               <publish-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"></publish-fancy-duration>
             </publish-fancy-field>
@@ -44,7 +47,8 @@ import {
             <publish-fancy-field label="Segments">
               <div class="fancy-hint">
                 Describe the individual segment audio files required in this template. Give
-                them a label such as "Billboard" or "Part A", and an optional min/max length.
+                them a label such as "Billboard" or "Part A", and an optional min/max length
+                to validate the specific file.
               </div>
               <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t" [version]="v"></publish-file-template>
               <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)"
