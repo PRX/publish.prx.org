@@ -17,16 +17,6 @@
 
   <div *ngSwitchCase="'editing'">
 
-    <publish-fancy-field label="Author Information">
-      <div class="fancy-hint">Set the author name and email to be associated with this podcast.</div>
-      <div class="span-fields">
-        <publish-fancy-field label="Name" textinput [model]="podcast" name="authorName" small=1>
-        </publish-fancy-field>
-        <publish-fancy-field label="Email" textinput [model]="podcast" name="authorEmail" small=1>
-        </publish-fancy-field>
-      </div>
-    </publish-fancy-field>
-
     <publish-fancy-field label="iTunes Categories" required=1>
       <div class="fancy-hint">Select the
         <a [href]="itunesCategoryDoc"
@@ -65,6 +55,16 @@
 
     <publish-fancy-field label="Homepage Link" required textinput [model]="podcast" name="link">
       <div class="fancy-hint">A link to the homepage for your podcast.</div>
+    </publish-fancy-field>
+
+    <publish-fancy-field label="Author Information">
+      <div class="fancy-hint">Set the author name and email to be associated with this podcast.</div>
+      <div class="span-fields">
+        <publish-fancy-field label="Name" textinput [model]="podcast" name="authorName" small=1>
+        </publish-fancy-field>
+        <publish-fancy-field label="Email" textinput [model]="podcast" name="authorEmail" small=1>
+        </publish-fancy-field>
+      </div>
     </publish-fancy-field>
 
     <publish-fancy-field label="PRX Feed" class="prx-feed-url" *ngIf="!distribution.isNew">
