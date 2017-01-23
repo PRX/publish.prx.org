@@ -105,8 +105,8 @@ export class PlayerComponent implements OnDestroy, DoCheck {
 
   fromFeeder(story: StoryModel, dist: DistributionModel) {
     dist.loadRelated('podcast').subscribe(() => {
-      if (dist.podcast && dist.podcast.publishedUrl) {
-        this.feedUrl = dist.podcast.publishedUrl;
+      if (dist.podcast && (dist.podcast.publicFeedUrl || dist.podcast.publishedUrl)) {
+        this.feedUrl = dist.podcast.publicFeedUrl || dist.podcast.publishedUrl;
       } else {
         this.loadError = 'Error - unable to find the public URL of your podcast!';
       }
