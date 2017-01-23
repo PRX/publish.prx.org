@@ -8,7 +8,7 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
     <div *ngIf="file && !file.isDestroy" class="file">
 
       <div class="label">
-        <publish-fancy-field textinput required [model]="file" name="label">
+        <publish-fancy-field textinput required hideinvalid [model]="file" name="label">
         </publish-fancy-field>
       </div>
 
@@ -21,6 +21,8 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
         <i *ngIf="canRemoveFile" class="icon-cancel" (click)="removeFile()"></i>
       </div>
 
+      <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
+
     </div>
   `
 })
@@ -29,6 +31,10 @@ export class FileTemplateComponent {
 
   @Input() version: AudioVersionTemplateModel;
   @Input() file: AudioFileTemplateModel;
+
+  get invalid(): string {
+    return this.file.invalid('label') || this.file.invalid('lengthAny');
+  }
 
   get canRemoveFile(): boolean {
     if (this.version && this.file) {

@@ -51,3 +51,8 @@
   font-size: 22px;
   cursor: pointer;
 }
+.error {
+  order: 4;
+  color: #e32;
+  margin-top: 2px;
+}
