@@ -9,8 +9,7 @@ import { Component } from '@angular/core';
       <i [class.icon-plus]="!show" [class.icon-cancel]="show"></i>{{show ? 'Hide' : 'Show'}} Advanced Settings
     </button>
     </section>
-  `/*,
-  styleUrls: ['advanced-section.component.css']*/
+  `
 })
 
 export class AdvancedSectionComponent {
