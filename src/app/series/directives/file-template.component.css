@@ -1,20 +1,53 @@
 /**
  * Audio file templates
  */
-div {
-  display: block;
-  padding: 16px 24px 0;
-  border: 1px solid #ccc;
-  margin-bottom: -1px;
+.file {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #DDD;
+  border-top: 1px solid #DDD;
+  margin-top: -1px;
+  padding: 18px 0;
 }
-.length >>> publish-fancy-field {
+.label {
+  padding: 6px 0;
+  min-width: 200px;
+  position: relative;
+}
+.label >>> .field {
+  margin-bottom: 0;
+}
+.label >>> .hint {
+  display: none;
+}
+.label >>> input {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border: 1px solid #ddd;
+}
+.lengths {
+  flex-grow: 1;
+  border: 1px solid #DDDDDD;
+  border-left: 0 none;
+  padding: 3px 0 4px;
+  height: 46px;
+}
+.lengths publish-fancy-duration {
   display: inline-block;
   width: auto;
-  margin-right: 10px;
 }
-.length >>> input {
-  max-width: 80px;
+.remove {
+  text-align: right;
+  order: 3;
+  flex-basis: 50px;
+  padding-right: 10px;
 }
-.length >>> .nested label {
-  font-size: 15px;
+.remove i {
+  color: #368AA2;
+  font-size: 22px;
+  cursor: pointer;
 }

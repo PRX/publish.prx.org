@@ -1,55 +1,44 @@
 /**
  * Series version/file templates
  */
-header {
- margin-bottom: 30px;
+.version header {
+  background-color: #B8B8B8;
+  padding: 16px 14px;
+  position: relative;
 }
-h2 {
-  font-size: 28px;
-  line-height: 30px;
-  font-weight: 400;
-  margin-bottom: 6px;
+.version header i {
+  position: absolute;
+  right: 10px;
+  top: 15px;
+  font-size: 22px;
+  cursor: pointer;
 }
-hr {
-  width: 100%;
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #ccc;
+.version header i:hover, .version header i:focus {
+  color: #222;
 }
-.version {
-  width: 100%;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 22px;
+.version header strong {
+  color: #222;
+  font-size: 17px;
+  font-weight: 600;
+  vertical-align: middle;
+  margin-right: 14px;
 }
-.version:last-child {
-  border-bottom: none;
+.version section {
+  background: #fff;
+  border-bottom: 1px solid #DDD;
+  border-top: 1px solid #DDD;
+  margin-top: -1px;
+  margin-bottom: 30px;
+  padding: 18px 22px 0;
+}
+.version:last-child section {
   margin-bottom: 0;
 }
-.length >>> publish-fancy-field {
+.length >>> publish-fancy-duration {
   display: inline-block;
   width: auto;
-  margin-right: 10px;
+  margin-right: 20px;
 }
-.length >>> input {
-  max-width: 80px;
-}
-.empty {
-  border: 1px solid #ccc;
-  text-align: center;
-}
-.empty h4 {
-  padding: 74px 0;
-  color: #bbb;
-  font-size: 18px;
-  font-weight: 600;
-}
-.add-version {
-  margin-top: 6px;
-}
-.actions {
-  position: absolute;
-  top: 6px;
-  right: 0;
-}
-.actions button {
-  margin-left: 6px;
+.add-version, .add-segment {
+  margin-top: 20px;
 }

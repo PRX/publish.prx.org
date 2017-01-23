@@ -82,7 +82,7 @@ select[disabled] {
 /**
  * Valid/changed indicators
  */
-.field.changed input, .field.changed textarea, .field.changed select {
+.field.changed input, .field.changed textarea, .field.changed select, input.changed {
   outline: 5px auto #f09b4c;
 }
 .field.changed.invalid input, .field.changed.invalid textarea, .field.changed.invalid select {

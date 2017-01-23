@@ -1,26 +1,25 @@
 import { Component, Input } from '@angular/core';
-import { AudioFileTemplateModel } from '../../shared';
+import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared';
 
 @Component({
   selector: 'publish-file-template',
   styleUrls: ['file-template.component.css'],
   template: `
-    <div *ngIf="file && !file.isDestroy">
+    <div *ngIf="file && !file.isDestroy" class="file">
 
-      <publish-fancy-field textinput small required [model]="file" name="label" label="Segment {{file.position}} Label">
-        <span class="fancy-hint">A name for this audio segment, such as "Billboard" or "Part A"</span>
-      </publish-fancy-field>
-
-      <publish-fancy-field small class="length" [model]="file" label="Segment length in seconds" invalid="lengthAny">
-      <span class="fancy-hint">The minimum and maximum durations in seconds for this segment</span>
-
-        <publish-fancy-field number small inline hideinvalid [model]="file" name="lengthMinimum" label="Minimum">
+      <div class="label">
+        <publish-fancy-field textinput required [model]="file" name="label">
         </publish-fancy-field>
+      </div>
 
-        <publish-fancy-field number small inline hideinvalid [model]="file" name="lengthMaximum" label="Maximum">
-        </publish-fancy-field>
+      <div class="lengths">
+        <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"></publish-fancy-duration>
+        <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"></publish-fancy-duration>
+      </div>
 
-      </publish-fancy-field>
+      <div class="remove">
+        <i *ngIf="canRemoveFile" class="icon-cancel" (click)="removeFile()"></i>
+      </div>
 
     </div>
   `
@@ -28,6 +27,22 @@ import { AudioFileTemplateModel } from '../../shared';
 
 export class FileTemplateComponent {
 
+  @Input() version: AudioVersionTemplateModel;
   @Input() file: AudioFileTemplateModel;
+
+  get canRemoveFile(): boolean {
+    if (this.version && this.file) {
+      let last = this.version.fileTemplates.filter(f => !f.isDestroy).pop();
+      return this.file === last;
+    }
+  }
+
+  removeFile() {
+    this.file.isDestroy = true;
+    if (this.file.isNew) {
+      this.version.removeRelated(this.file);
+      this.file.unstore();
+    }
+  }
 
 }
