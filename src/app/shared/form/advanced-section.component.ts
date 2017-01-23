@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
   selector: 'publish-advanced-section',
   template: `
     <section>
+      <hr *ngIf="show">
       <ng-content *ngIf="show"></ng-content>
       <button class="btn-link" (click)="toggleShow()">
         <i [class.icon-right-dir]="!show" [class.icon-up-dir]="show"></i>{{show ? 'Hide' : 'Show'}} Advanced Settings
