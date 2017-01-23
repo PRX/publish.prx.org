@@ -104,9 +104,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   get newFeedUrlConfirm(): string {
     if (this.podcast) {
-      let prompt = 'Are you sure you want to change New Feed URL';
-      if (this.podcast.original['newFeedUrl']) {
-        prompt += ` from "${this.podcast.original['newFeedUrl']}"`;
+      let prompt = 'Are you sure you want to change your feed URL';
+      if (this.podcast.original['newFeedUrl'] || this.podcast['publicFeedUrl']) {
+        prompt += ` from "${this.podcast.original['newFeedUrl'] || this.podcast['publicFeedUrl']}"`;
       }
       if (this.podcast.newFeedUrl) {
         prompt += ` to "${this.podcast.newFeedUrl}"? This will point your subscribers to a new feed location.`;
