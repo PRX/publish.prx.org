@@ -14,7 +14,7 @@ import { StoryModel } from '../../shared';
     </header>
     <header *ngIf="!noseries">
       <a [routerLink]="['series', id]">
-        <publish-image [imageDoc]="logoDoc"></publish-image>
+        <publish-image [imageDoc]="series"></publish-image>
       </a>
       <p class="count">
         <span *ngIf="count === 0">0 Episodes</span>
@@ -39,7 +39,6 @@ export class HomeSeriesComponent implements OnInit {
   @Input() noseries: boolean;
   @Input() rows: number = 1;
 
-  logoDoc: HalDoc;
   count: number = -1;
   id: number;
   title: string;
@@ -63,7 +62,6 @@ export class HomeSeriesComponent implements OnInit {
     this.title = this.series['title'];
     this.count = this.series.count('prx:stories');
     this.updated = new Date(this.series['updatedAt']);
-    this.logoDoc = this.series;
 
     // how many stories to display? (plus 1 new/draft story)
     let total = this.series.count('prx:stories');
@@ -73,9 +71,9 @@ export class HomeSeriesComponent implements OnInit {
 
     this.series.followItems('prx:stories', {per: limit, filters: 'v4'}).subscribe((stories) => {
       this.storyLoaders = null;
-      this.stories = [new StoryModel(this.series, null, true)];
+      this.stories = [this.getDraftStory(this.series)];
       for (let story of stories) {
-        this.stories.push(new StoryModel(this.series, story, true));
+        this.stories.push(new StoryModel(this.series, story, false));
       }
     });
   }
@@ -94,12 +92,16 @@ export class HomeSeriesComponent implements OnInit {
       // parent result total is embedded in child total
       this.count = storyDocs.length ? storyDocs[0].total() : 0;
 
-      this.stories = [new StoryModel(accountDoc, null, true)];
+      this.stories = [this.getDraftStory()];
       for (let story of storyDocs) {
-        this.stories.push(new StoryModel(accountDoc, story, true));
+        this.stories.push(new StoryModel(accountDoc, story, false));
       }
       this.storyLoaders = null;
     });
+  }
+
+  private getDraftStory(series?: HalDoc) {
+    return new StoryModel(series, null, false);
   }
 
 }

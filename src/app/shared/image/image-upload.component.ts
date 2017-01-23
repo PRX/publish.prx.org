@@ -35,6 +35,9 @@ export class ImageUploadComponent implements DoCheck {
   @Input() minHeight = 144;
   @Input() suggestSize: string;
 
+  // TODO: move size validations to model, to prevent saving an invalid image
+  @Input() strict: boolean;
+
   thumbnailHeight = '220px';
   imgError: string;
   reader: FileReader = new FileReader();

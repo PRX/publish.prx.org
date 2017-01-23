@@ -1,7 +1,7 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
-import { REQUIRED } from './invalid';
+import { REQUIRED, UNLESS_NEW } from './invalid';
 
 export class FeederEpisodeModel extends BaseModel {
 
@@ -16,16 +16,11 @@ export class FeederEpisodeModel extends BaseModel {
   authorEmail: string = '';
 
   VALIDATORS = {
-    guid: [REQUIRED()]
+    guid: [UNLESS_NEW(REQUIRED())]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
     super();
-    this.VALIDATORS.guid = this.VALIDATORS.guid.map(validator => {
-      return (key: string, value: any) => {
-        return this.isNew ? null : validator(key, value);
-      };
-    });
     this.init(distrib, episode, loadRelated);
   }
 

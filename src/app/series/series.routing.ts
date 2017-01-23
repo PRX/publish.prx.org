@@ -1,6 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from '../shared';
+import { AuthGuard, DeactivateGuard } from '../shared';
 
 import { SeriesComponent } from './series.component';
 import { SeriesBasicComponent } from './directives/series-basic.component';
@@ -21,12 +21,14 @@ export const seriesRoutes: Routes = [
     path: 'series/new',
     component: SeriesComponent,
     canActivate: [AuthGuard],
+    canDeactivate: [DeactivateGuard],
     children: seriesChildRoutes
   },
   {
     path: 'series/:id',
     component: SeriesComponent,
     canActivate: [AuthGuard],
+    canDeactivate: [DeactivateGuard],
     children: seriesChildRoutes
   }
 ];

@@ -25,29 +25,44 @@ import { StoryModel } from '../../shared';
         <p *ngIf="story?.publishedAt">{{publishedOnText}}</p>
       </div>
       <div class="hero-actions" *ngIf="story">
+        <publish-button [model]="story" working=0 disabled=0 plain=1
+          (click)="discard()">Discard</publish-button>
 
-        <template [ngIf]="story.isNew">
-          <publish-button [model]="story" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
-          <publish-button [model]="story" visible=1 green=1 (click)="save()">Create
-            <div *ngIf="story.invalid()" class="invalid-tip create">
+        <template [ngIf]="stateNew">
+          <publish-button green=1 [model]="story" [disabled]="normalInvalid"
+              visible=1 (click)="save()">Create
+            <div *ngIf="normalInvalid" class="invalid-tip create">
               <h4>Invalid episode</h4>
+              <p>Add a title and resolve validation errors</p>
+            </div>
+          </publish-button>
+        </template>
+
+        <template [ngIf]="stateUnpublished">
+          <publish-button [model]="story" [disabled]="normalInvalid" (click)="save()">Save
+            <div *ngIf="normalInvalid" class="invalid-tip">
+              <h4>Invalid episode</h4>
+              <p>Resolve all validation errors</p>
+            </div>
+          </publish-button>
+          <publish-button [model]="story" [visible]="!story.changed()" [disabled]="strictInvalid"
+              [working]="isPublishing" (click)="togglePublish()" orange=1>Publish
+            <div *ngIf="strictInvalid" class="invalid-tip publish">
+              <h4>Not ready to publish</h4>
               <p>Fill out all required fields</p>
             </div>
           </publish-button>
         </template>
 
-        <template [ngIf]="!story.isNew">
-          <publish-button [model]="story" plain=1 working=0 disabled=0 (click)="discard()">Discard</publish-button>
-          <publish-button [model]="story" (click)="save()">Save
-            <div *ngIf="story.invalid()" class="invalid-tip">
-              <h4>Invalid changes</h4>
-              <p>Correct them before saving</p>
+        <template [ngIf]="statePublished">
+          <publish-button [model]="story" (click)="save()" [disabled]="strictInvalid">Save
+            <div *ngIf="strictInvalid" class="invalid-tip">
+              <h4>Invalid episode</h4>
+              <p>Resolve all validation errors</p>
             </div>
           </publish-button>
-          <publish-button [model]="story" [visible]="!story.changed()"
-             [working]="story.isPublishing" (click)="togglePublish()" orange=1>
-            {{story.publishedAt ? 'Unpublish' : 'Publish'}}
-          </publish-button>
+          <publish-button [model]="story" [visible]="!story.changed()" [working]="isPublishing"
+            (click)="togglePublish()" orange=1>Unpublish</publish-button>
         </template>
 
       </div>
@@ -55,14 +70,20 @@ import { StoryModel } from '../../shared';
     `
 })
 
-export class StoryHeroComponent implements OnInit, OnChanges {
+export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
 
   @Input() id: number;
   @Input() story: StoryModel;
 
   series: HalDoc;
 
-  now = new Date();
+  stateNew: boolean;
+  stateUnpublished: boolean;
+  statePublished: boolean;
+  isPublishing: boolean;
+
+  strictInvalid: string;
+  normalInvalid: string;
 
   constructor(private router: Router) {}
 
@@ -75,7 +96,13 @@ export class StoryHeroComponent implements OnInit, OnChanges {
   }
 
   ngDoCheck() {
-    this.now = new Date(); // expression changed after checked if new Date() in getter, but it does need to get updated on change cycles
+    if (this.story) {
+      this.stateNew = this.story.isNew;
+      this.stateUnpublished = !this.stateNew && !this.story.publishedAt;
+      this.statePublished = !this.stateNew && !this.stateUnpublished;
+      this.strictInvalid = this.story.invalid(null, true);
+      this.normalInvalid = this.story.invalid(null, false);
+    }
   }
 
   updateBanner() {
@@ -102,8 +129,9 @@ export class StoryHeroComponent implements OnInit, OnChanges {
   }
 
   togglePublish() {
+    this.isPublishing = true;
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
-      // nothing to do
+      this.isPublishing = false;
     });
   }
 
@@ -112,7 +140,7 @@ export class StoryHeroComponent implements OnInit, OnChanges {
   }
 
   get publishedOnText() {
-    if (this.now.valueOf() >= new Date(this.story.publishedAt.valueOf()).valueOf()) {
+    if (this.story.isPublished()) {
       return `Published on ${this.formatDatetime(this.story.publishedAt)}`;
     } else {
       return `Will be published on ${this.formatDatetime(this.story.publishedAt)}`;

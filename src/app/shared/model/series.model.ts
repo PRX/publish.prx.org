@@ -39,8 +39,8 @@ export class SeriesModel extends BaseModel implements HasUpload {
     if (this.isNew && !this.changed()) {
       let versionTpl = new AudioVersionTemplateModel(account);
       let fileTpl = new AudioFileTemplateModel(null, null, 1);
-      versionTpl.set('label', 'Podcast Audio');
-      fileTpl.set('label', 'Main Segment');
+      versionTpl.set('label', 'Podcast Audio', true);
+      fileTpl.set('label', 'Main Segment', true);
       versionTpl.fileTemplates.push(fileTpl);
       this.versionTemplates.push(versionTpl);
     }

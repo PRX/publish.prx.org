@@ -7,11 +7,11 @@ import { StoryModel, TabService } from '../../shared';
   template: `
     <form *ngIf="story">
 
-      <publish-fancy-field [model]="story" textinput="true" name="title" label="Episode Title" required>
+      <publish-fancy-field textinput required [model]="story" name="title" label="Episode Title">
         <div class="fancy-hint">Write a short, Tweetable title. Think newspaper headline.</div>
       </publish-fancy-field>
 
-      <publish-fancy-field [model]="story" textinput="true" name="shortDescription" label="Teaser" required>
+      <publish-fancy-field textinput required [model]="story" name="shortDescription" label="Teaser" [strict]="strict">
         <div class="fancy-hint">Provide a short description for your episode listing.
         Think of this as a first impression for your listeners.</div>
       </publish-fancy-field>
@@ -24,9 +24,9 @@ import { StoryModel, TabService } from '../../shared';
 
       <hr/>
 
-      <publish-fancy-field label="Audio Files" required>
+      <publish-fancy-field required label="Audio Files">
         <publish-spinner *ngIf="!story?.versions"></publish-spinner>
-        <publish-upload *ngFor="let v of story?.versions" [version]="v"></publish-upload>
+        <publish-upload *ngFor="let v of story?.versions" [version]="v" [strict]="strict"></publish-upload>
         <h1 *ngIf="story?.versions?.length === 0">
           You have no audio templates for this episode. How did that happen?
         </h1>
@@ -34,12 +34,12 @@ import { StoryModel, TabService } from '../../shared';
 
       <publish-fancy-field label="Cover Image">
       <div class="fancy-hint">Provide an image for your episode, if desired.</div>
-        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400></publish-image-upload>
+        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400 [strict]="strict"></publish-image-upload>
       </publish-fancy-field>
 
       <hr/>
 
-      <publish-fancy-field [model]="story" textinput="true" name="tags" label="Categories">
+      <publish-fancy-field textinput [model]="story" name="tags" label="Categories" [strict]="strict">
         <div class="fancy-hint">A comma-separated list of tags relevant to the content of your episode.</div>
       </publish-fancy-field>
 
@@ -79,4 +79,9 @@ export class BasicComponent implements OnDestroy {
   get releasedAtChanged(): boolean {
     return this.story && this.story.changed('releasedAt', false);
   }
+
+  get strict(): boolean {
+    return (this.story && this.story.publishedAt) ? true : false;
+  }
+
 }

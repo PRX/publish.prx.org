@@ -28,12 +28,14 @@ describe('FeederEpisodeModel', () => {
   it('only validates guids for existing models', () => {
     let newEpisode = new FeederEpisodeModel(series, dist);
     expect(newEpisode.guid).toEqual('');
-    expect(newEpisode.invalid('guid')).toBeFalsy();
+    expect(newEpisode.invalid('guid', false)).toBeFalsy();
+    expect(newEpisode.invalid('guid', true)).toBeFalsy();
 
     let doc = cms.mock('some-episode', {id: 1234});
     let oldEpisode = new FeederEpisodeModel(series, dist, doc);
     expect(oldEpisode.guid).toEqual('');
-    expect(oldEpisode.invalid('guid')).toMatch(/guid is a required field/);
+    expect(oldEpisode.invalid('guid', false)).toBeFalsy();
+    expect(oldEpisode.invalid('guid', true)).toMatch(/guid is a required field/);
     oldEpisode.set('guid', '1234');
     expect(oldEpisode.invalid('guid')).toBeFalsy();
   });

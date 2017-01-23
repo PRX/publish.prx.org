@@ -10,23 +10,22 @@ import { HasUpload, applyMixins } from './upload';
 export class StoryModel extends BaseModel implements HasUpload {
 
   public id: number;
-  public title: string;
-  public shortDescription: string;
-  public description: string;
-  public tags: string;
+  public title: string; // show changes
+  public shortDescription = '';
+  public description = '';
+  public tags = '';
   public updatedAt: Date;
   public publishedAt: Date;
   public releasedAt: Date;
   public versions: AudioVersionModel[] = [];
   public images: ImageModel[] = [];
-  public isPublishing: boolean;
   public account: HalDoc;
   public distributions: StoryDistributionModel[] = [];
 
   SETABLE = ['title', 'shortDescription', 'description', 'tags', 'hasUploadMap', 'releasedAt'];
 
   VALIDATORS = {
-    title:            [REQUIRED()],
+    title:            [REQUIRED(true)],
     shortDescription: [REQUIRED()],
     description:      [LENGTH(10, 4000)]
   };
@@ -140,17 +139,13 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   setPublished(published: boolean): Observable<boolean> {
     if (!published && this.doc.has('prx:unpublish')) {
-      this.isPublishing = true;
       return this.doc.follow('prx:unpublish', {method: 'post'}).map(doc => {
         this.init(this.parent, doc, false);
-        this.isPublishing = false;
         return false;
       });
     } else if (published && this.doc.has('prx:publish')) {
-      this.isPublishing = true;
       return this.doc.follow('prx:publish', {method: 'post'}).map(doc => {
         this.init(this.parent, doc, false);
-        this.isPublishing = false;
         return true;
       });
     } else {

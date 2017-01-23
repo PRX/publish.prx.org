@@ -10,38 +10,43 @@ const durationPipe = new DurationPipe();
  * Audio version template validations
  */
 export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
-  return <BaseInvalid> (key: string, version: AudioVersionModel) => {
+  return <BaseInvalid> (key: string, version: AudioVersionModel, strict: boolean) => {
     let undeleted = version.files.filter(f => !f.isDestroy);
     let count = undeleted.length;
-
-    // segment count
-    if (template && template.count('prx:audio-file-templates')) {
-      let segments = template.count('prx:audio-file-templates');
-      if (count !== segments) {
-        return `you must upload ${segments} segments (got ${count})`;
-      }
-    } else if (count < 1) {
-      return 'upload at least 1 segment';
-    }
 
     // wait for uploads to complete
     if (!version.files.every(f => !f.isUploading)) {
       return 'wait for uploads to complete';
     }
 
-    // min duration
-    let duration = undeleted.map(f => f.duration || 0).reduce((a, b) => a + b);
-    if (template && template['lengthMinimum'] && duration < template['lengthMinimum']) {
-      let min = durationPipe.transform(template['lengthMinimum']);
-      let got = durationPipe.transform(duration);
-      return `total length must be greater than ${min} - currently ${got}`;
-    }
+    // prevent publishing unless strict checks pass
+    if (strict) {
 
-    // max duration
-    if (template && template['lengthMaximum'] && duration > template['lengthMaximum']) {
-      let max = durationPipe.transform(template['lengthMaximum']);
-      let got = durationPipe.transform(duration);
-      return `total length must be less than ${max} - currently ${got}`;
+      // segment count
+      if (template && template.count('prx:audio-file-templates')) {
+        let segments = template.count('prx:audio-file-templates');
+        if (count !== segments) {
+          return `you must upload ${segments} segments (got ${count})`;
+        }
+      } else if (count < 1) {
+        return 'upload at least 1 segment';
+      }
+
+      // min duration
+      let duration = undeleted.map(f => f.duration || 0).reduce((a, b) => a + b);
+      if (template && template['lengthMinimum'] && duration < template['lengthMinimum']) {
+        let min = durationPipe.transform(template['lengthMinimum']);
+        let got = durationPipe.transform(duration);
+        return `total length must be greater than ${min} - currently ${got}`;
+      }
+
+      // max duration
+      if (template && template['lengthMaximum'] && duration > template['lengthMaximum']) {
+        let max = durationPipe.transform(template['lengthMaximum']);
+        let got = durationPipe.transform(duration);
+        return `total length must be less than ${max} - currently ${got}`;
+      }
+
     }
 
     return null;

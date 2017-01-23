@@ -47,6 +47,7 @@ import { AudioVersionModel } from '../shared';
 export class UploadComponent implements OnInit, DoCheck {
 
   @Input() version: AudioVersionModel;
+  @Input() strict: boolean;
 
   versionDescription: string;
 
@@ -75,11 +76,11 @@ export class UploadComponent implements OnInit, DoCheck {
     this.invalidClass = false;
     this.invalidMessage = null;
     if (this.version) {
-      if (this.version.invalid('files')) {
+      if (this.version.invalid('files', this.strict)) {
         this.invalidClass = this.versionUploadedInvalid();
-      } else if (this.version.invalid('self') && this.version.changed()) {
+      } else if (this.version.invalid('self', this.strict) && this.version.changed()) {
         this.invalidClass = true;
-        this.invalidMessage = this.version.invalid('self');
+        this.invalidMessage = this.version.invalid('self', this.strict);
       } else if (this.version.changed('files')) {
         this.changedClass = !this.versionUndeletedHaveChanged();
       } else if (this.version.changed(null, false)) {
@@ -89,7 +90,7 @@ export class UploadComponent implements OnInit, DoCheck {
   }
 
   versionUploadedInvalid(): boolean {
-    return this.version.files.filter(f => !f.isUploading).some(f => !!f.invalid());
+    return this.version.files.filter(f => !f.isUploading).some(f => !!f.invalid(null, this.strict));
   }
 
   versionUndeletedHaveChanged(): boolean {

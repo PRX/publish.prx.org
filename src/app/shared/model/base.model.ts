@@ -5,8 +5,6 @@ import { BaseInvalid } from './invalid';
 interface ValidatorMap  { [key: string]: BaseInvalid[]; }
 interface RelatedMap    { [key: string]: Observable<any>; }
 interface RelatedLoader { [key: string]: Observable<BaseModel | BaseModel[]>; }
-interface InvalidMap    { [key: string]: string; }
-interface ChangedMap    { [key: string]: boolean; }
 
 /**
  * Base class for modeling/validating haldocs
@@ -24,8 +22,6 @@ export abstract class BaseModel {
 
   public SETABLE: string[] = [];
   public VALIDATORS: ValidatorMap = {};
-  public invalidFields: InvalidMap = {};
-  public changedFields: ChangedMap = {};
 
   public RELATIONS: string[] = [];
   private relatedReplays: RelatedLoader = {};
@@ -51,7 +47,6 @@ export abstract class BaseModel {
       this.original[f] = this[f];
     }
     this.restore();
-    this.revalidate();
 
     // setup cold observables for related models, and optionally preload them
     this.relatedLoaders = this.related();
@@ -64,13 +59,7 @@ export abstract class BaseModel {
   set(field: string, value: any, forceOriginal = false) {
     this[field] = value;
     if (this.SETABLE.indexOf(field) > -1) {
-      if (forceOriginal) {
-        this.original[field] = value;
-        this.changedFields[field] = false;
-      } else {
-        this.changedFields[field] = this.checkChanged(field, value);
-      }
-      this.invalidFields[field] = this.invalidate(field, value);
+      if (forceOriginal) { this.original[field] = value; }
       this.store();
     }
   }
@@ -97,10 +86,7 @@ export abstract class BaseModel {
     return saveMe.flatMap((doc?) => {
       this.unstore();
       this.lastStored = null;
-
-      // update haldoc reference (and mock the timestamp)
       if (doc) {
-        if (doc['updatedAt']) { doc['updatedAt'] = new Date(); }
         this.init(this.parent, doc, false);
       }
 
@@ -158,7 +144,7 @@ export abstract class BaseModel {
 
   saveRelated(): Observable<boolean[]> {
     let relatedSavers: Observable<boolean>[] = this.getRelated().filter(model => {
-      return model.changed();
+      return model.isNew || model.changed();
     }).map(model => {
       if (model.isNew) {
         model.unstore(); // delete old storage key
@@ -222,12 +208,12 @@ export abstract class BaseModel {
       if (this.RELATIONS.indexOf(f) > -1) {
         return this.getRelated(f).some(m => m.changed());
       } else {
-        return this.changedFields[f];
+        return this.original[f] !== this[f];
       }
     });
   }
 
-  invalid(field?: string | string[]): string {
+  invalid(field?: string | string[], strict = true): string {
     if (this.isDestroy) {
       return null; // don't care if it's invalid
     }
@@ -235,24 +221,29 @@ export abstract class BaseModel {
     let invalids: string[] = [];
     for (let f of fields) {
       if (f === 'self') {
-        invalids.push(this.invalidate('self', this));
-      } else if (this.RELATIONS.indexOf(f) < 0) {
-        invalids.push(this.invalidFields[f]);
+        invalids.push(this.invalidate('self', this, strict));
+      } else if (this.RELATIONS.indexOf(f) > -1) {
+        invalids.push(this.invalidate(f, this.getRelated(f), strict));
       } else {
-        invalids.push(this.invalidRelated(f));
+        invalids.push(this.invalidate(f, this[f], strict));
       }
     }
     return invalids.filter(i => i).join(', ') || null;
   }
 
-  invalidRelated(rel: string): string {
-    let models = this.getRelated(rel);
-    let invalidMsg = this.invalidate(rel, models);
-    if (invalidMsg) {
-      return invalidMsg; // fast-return first error
-    } else {
-      return models.map(m => m.invalid()).filter(i => i).join(', ') || null;
+  invalidate(field: string, value: any, strict: boolean): string {
+    let validators = this.VALIDATORS[field] || [];
+    for (let validator of validators) {
+      let invalidMsg = validator(field, value, strict, this);
+      if (invalidMsg) {
+        return invalidMsg;
+      }
     }
+    if (this.RELATIONS.indexOf(field) > -1) {
+      let models = <BaseModel[]> value;
+      return models.map(m => m.invalid(null, strict)).filter(i => i).join(', ') || null;
+    }
+    return null;
   }
 
   setableFields(only?: string | string[], includeRelations = true): string[] {
@@ -271,7 +262,7 @@ export abstract class BaseModel {
     this.lastStored = new Date();
     if (window && window.localStorage && this.key()) {
       let changed = {};
-      this.SETABLE.filter(f => this.changedFields[f]).forEach(f => changed[f] = this[f]);
+      this.SETABLE.filter(f => this.changed(f)).forEach(f => changed[f] = this[f]);
       if (Object.keys(changed).length > 0) {
         changed['lastStored'] = this.lastStored;
         window.localStorage.setItem(this.key(), JSON.stringify(changed));
@@ -310,28 +301,6 @@ export abstract class BaseModel {
     } else {
       return false;
     }
-  }
-
-  revalidate() {
-    for (let f of this.SETABLE) {
-      this.invalidFields[f] = this.invalidate(f, this[f]);
-      this.changedFields[f] = this.checkChanged(f, this[f]);
-    }
-  }
-
-  invalidate(field: string, value: any): string {
-    let validators = this.VALIDATORS[field] || [];
-    for (let validator of validators) {
-      let invalidMsg = validator(field, value);
-      if (invalidMsg) {
-        return invalidMsg;
-      }
-    }
-    return null;
-  }
-
-  checkChanged(field: string, value: any): boolean {
-    return this.original[field] !== value;
   }
 
   getRelated(rel?: string): BaseModel[] {

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
 
 @Component({
@@ -13,14 +14,14 @@ import { StoryModel } from '../../shared';
     </template>
     <template [ngIf]="!isPlusSign">
       <a [routerLink]="editLink">
-        <publish-image [src]="storyImage" ></publish-image>
+        <publish-image [imageDoc]="storyImage" ></publish-image>
       </a>
       <h2>
         <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>
         <a *ngIf="!storyTitle" [routerLink]="editLink">(Untitled)</a>
       </h2>
       <p class="duration">{{storyDuration | duration}}</p>
-      <p class="modified">{{storyUpdated | date:"MM/dd/yy"}}</p>
+      <p class="modified">{{storyDate | date:"MM/dd/yy"}}</p>
       <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
     </template>
   `
@@ -30,20 +31,25 @@ export class HomeStoryComponent implements OnInit {
 
   @Input() story: StoryModel;
 
+  isPlusSign: boolean;
   editLink: any[];
 
-  storyId: number;
   storyTitle: string;
-  storyUpdated: Date;
+  storyDate: Date;
+  storyDuration: number = 0;
+  storyImage: HalDoc;
 
   statusClass: string;
   statusText: string;
 
   ngOnInit() {
-    this.storyId = this.story.id;
-    this.storyTitle = this.story.title;
-    this.storyUpdated = this.story.lastStored || this.story.updatedAt;
+    this.isPlusSign = this.story.isNew && !this.story.changed();
+    this.setLink();
+    this.setStatus();
+    this.loadData();
+  }
 
+  setLink() {
     if (this.story.isNew) {
       this.editLink = ['story/new'];
       if (this.story.parent) {
@@ -52,41 +58,28 @@ export class HomeStoryComponent implements OnInit {
     } else {
       this.editLink = ['/story', this.story.id];
     }
+  }
 
+  setStatus() {
     if (this.story.isNew) {
+      this.statusClass = 'status new';
+      this.statusText = 'New';
+    } else if (!this.story.publishedAt) {
       this.statusClass = 'status draft';
       this.statusText = 'Draft';
-    } else if (this.story.changed()) {
-      this.statusClass = 'status unsaved';
-      this.statusText = 'Unsaved Changes';
-    } else if (!this.story.publishedAt) {
-      this.statusClass = 'status unpublished';
-      this.statusText = 'Private';
+    } else if (!this.story.isPublished()) {
+      this.statusClass = 'status scheduled';
+      this.statusText = 'Scheduled';
     }
   }
 
-  get isPlusSign(): boolean {
-    return this.story.isNew && !this.story.changed();
-  }
-
-  get storyDuration(): number {
-    let duration = 0;
-    if (this.story.versions && this.story.versions.length > 0) {
-      if (this.story.versions[0].files.length > 0) {
-        let nonDestroyedAudio = this.story.versions[0].files.filter((audio) => !audio.isDestroy);
-        if (nonDestroyedAudio && nonDestroyedAudio.length > 0) {
-          duration = nonDestroyedAudio.map((audio) => {
-            return audio['duration'] || 0;
-          }).reduce((prevDuration, currDuration) => {
-            return prevDuration + currDuration;
-          });
-        }
-      }
+  loadData() {
+    this.storyTitle = this.story.title;
+    this.storyDate = this.story.publishedAt || this.story.updatedAt || this.story.lastStored;
+    if (this.story.doc) {
+      this.storyDuration = this.story.doc['duration'] || 0;
+      this.storyImage = this.story.doc;
     }
-    return duration;
   }
 
-  get storyImage(): string {
-    return this.story.images.length > 0 ? this.story.images[0].enclosureHref : '';
-  }
 }
