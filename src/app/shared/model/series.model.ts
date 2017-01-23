@@ -36,6 +36,11 @@ export class SeriesModel extends BaseModel implements HasUpload {
   constructor(account: HalDoc, series?: HalDoc, loadRelated = true) {
     super();
     this.init(account, series, loadRelated);
+    this.loadRelated('versionTemplates').subscribe(() => {
+      if (this.isNew && this.versionTemplates.length === 0) {
+        this.defaultVersionTemplate();
+      }
+    });
   }
 
   key() {
@@ -86,7 +91,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
   discard(): any {
     super.discard();
     if (this.isNew) {
-      this.loadRelated('versionTemplates', true);
+      this.defaultVersionTemplate();
     }
   }
 
@@ -135,18 +140,18 @@ export class SeriesModel extends BaseModel implements HasUpload {
     this.setUploads('prx:images', this.images.map(i => i.uuid));
   }
 
+  defaultVersionTemplate() {
+    let tpl = new AudioVersionTemplateModel();
+    tpl.set('label', 'Podcast Audio', true);
+    let file = new AudioFileTemplateModel(null, null, 1);
+    file.set('label', 'Main Segment', true);
+    tpl.fileTemplates.push(file);
+    this.versionTemplates = [tpl];
+  }
+
   get unsavedVersionTemplate(): AudioVersionTemplateModel {
-    if (this.isNew) {
-      let tpl = new AudioVersionTemplateModel(this.parent);
-      tpl.set('label', 'Podcast Audio', true);
-      let file = new AudioFileTemplateModel(null, null, 1);
-      file.set('label', 'Main Segment', true);
-      tpl.fileTemplates.push(file);
-      return tpl;
-    } else {
-      let tpl = new AudioVersionTemplateModel(this.doc);
-      return tpl.isStored() && !tpl.isDestroy ? tpl : null;
-    }
+    let tpl = new AudioVersionTemplateModel(this.doc);
+    return tpl.isStored() && !tpl.isDestroy ? tpl : null;
   }
 
   get unsavedDistribution(): DistributionModel {
