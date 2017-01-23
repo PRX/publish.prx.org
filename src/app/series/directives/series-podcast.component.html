@@ -74,12 +74,14 @@
       <div class="fancy-hint">Select which audio template should be used with your podcast.</div>
     </publish-fancy-field>
 
-    <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" [advancedConfirm]="newFeedUrlConfirm">
-      <div class="fancy-hint">
-        If your podcast feed is moving, use this field to point to the new URL where your podcast is located.
-        The current feed should be maintained until all of your subscribers have migrated.
-      </div>
-    </publish-fancy-field>
+    <publish-advanced-section>
+      <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" [advancedConfirm]="newFeedUrlConfirm">
+        <div class="fancy-hint">
+          If your podcast feed is moving, use this field to point to the new URL where your podcast is located.
+          The current feed should be maintained until all of your subscribers have migrated.
+        </div>
+      </publish-fancy-field>
+    </publish-advanced-section>
 
   </div>
 
