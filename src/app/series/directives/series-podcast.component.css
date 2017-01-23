@@ -4,11 +4,16 @@
   margin-right: 40px;
 }
 .prx-feed-url input, .feed-url input {
-  min-width: 400px;
   padding: 10px 8px;
   color: #939393;
   background: #fff;
   margin-bottom: 4px;
+}
+.prx-feed-url input {
+  width: 100%;
+}
+.feed-url input {
+  min-width: 400px;
 }
 .feed-url button, .feed-url .button {
   padding-top: 9px;
