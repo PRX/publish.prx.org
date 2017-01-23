@@ -10,18 +10,23 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'authorName', 'authorEmail'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'authorName', 'authorEmail'];
+  URLS = ['link', 'newFeedUrl', 'publicFeedUrl'];
   category: string = '';
   subCategory: string = '';
   explicit: string = '';
   link: string = '';
   newFeedUrl: string = '';
+  publicFeedUrl: string = '';
   authorName: string = '';
   authorEmail: string = '';
+  hasPublicFeed: boolean = false;
 
   VALIDATORS = {
     link: [REQUIRED(), URL('Not a valid URL')],
-    newFeedUrl: [URL('Not a valid URL')]  };
+    newFeedUrl: [URL('Not a valid URL')],
+    publicFeedUrl: [URL('Not a valid URL')]
+  };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
     super();
@@ -51,6 +56,10 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
+    if (this.doc['url']) {
+      this.publicFeedUrl = this.doc['url'];
+      this.hasPublicFeed = true;
+    }
     if (this.doc['author']) {
       if (this.doc['author']['name']) {
         this.authorName = this.doc['author']['name'];
@@ -85,6 +94,7 @@ export class FeederPodcastModel extends BaseModel {
     }
     data.link = this.link || null;
     data.newFeedUrl = this.newFeedUrl || null;
+    data.url = this.publicFeedUrl || null;
 
     if (this.authorName || this.authorEmail) {
       data.author = {
@@ -127,7 +137,7 @@ export class FeederPodcastModel extends BaseModel {
   }
 
   set(field: string, value: any, forceOriginal = false) {
-    if (['link', 'newFeedUrl'].indexOf(field) > -1) {
+    if (this.URLS.indexOf(field) > -1) {
       value = this.createLink(value);
     }
     super.set(field, value, forceOriginal);
