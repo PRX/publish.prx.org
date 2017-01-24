@@ -84,6 +84,9 @@ export class SeriesComponent implements OnInit {
       'Are you sure you want to delete this series? This action cannot be undone.',
       (okay: boolean) => {
         if (okay) {
+          if (this.series.changed()) {
+            this.discard();
+          }
           this.series.isDestroy = true;
           this.series.save().subscribe(() => {
             this.router.navigate(['/']);
