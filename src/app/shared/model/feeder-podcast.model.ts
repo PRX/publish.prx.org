@@ -10,14 +10,15 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'authorName', 'authorEmail'];
-  URLS = ['link', 'newFeedUrl', 'publicFeedUrl'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail'];
+  URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category: string = '';
   subCategory: string = '';
   explicit: string = '';
   link: string = '';
   newFeedUrl: string = '';
   publicFeedUrl: string = '';
+  enclosurePrefix: string = '';
   authorName: string = '';
   authorEmail: string = '';
   hasPublicFeed: boolean = false;
@@ -25,7 +26,8 @@ export class FeederPodcastModel extends BaseModel {
   VALIDATORS = {
     link: [REQUIRED(), URL('Not a valid URL')],
     newFeedUrl: [URL('Not a valid URL')],
-    publicFeedUrl: [URL('Not a valid URL')]
+    publicFeedUrl: [URL('Not a valid URL')],
+    enclosurePrefix: [URL('Not a valid URL')]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
@@ -68,6 +70,7 @@ export class FeederPodcastModel extends BaseModel {
         this.authorEmail = this.doc['author']['email'];
       }
     }
+    this.enclosurePrefix = this.doc['enclosurePrefix'] || '';
 
     // just ignore all but first category/subcategory
     let cat = (this.doc['itunesCategories'] || [])[0];
@@ -102,6 +105,8 @@ export class FeederPodcastModel extends BaseModel {
         email: this.authorEmail
        };
     }
+
+    data.enclosurePrefix = this.enclosurePrefix || null;
 
     // we can always send a categories array
     data.itunesCategories = [];
