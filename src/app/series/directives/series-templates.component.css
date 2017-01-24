@@ -35,9 +35,24 @@
   margin-bottom: 0;
 }
 .length >>> publish-fancy-duration {
-  display: inline-block;
-  width: auto;
-  margin-right: 20px;
+  margin-bottom: 12px;
+}
+.length >>> publish-fancy-duration:last-child {
+  margin-bottom: 0;
+}
+.length >>> h4 {
+  width: 90px;
+}
+@media screen and (min-width: 992px) {
+  .length >>> publish-fancy-duration {
+    display: inline-block;
+    width: auto;
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+  .length >>> h4 {
+    width: auto;
+  }
 }
 .add-version, .add-segment {
   margin-top: 20px;
