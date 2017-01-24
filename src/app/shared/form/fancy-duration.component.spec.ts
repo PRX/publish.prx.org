@@ -1,7 +1,7 @@
 import { cit, create, stubPipe } from '../../../testing';
 import { FancyDurationComponent } from './fancy-duration.component';
 
-fdescribe('FancyDurationComponent', () => {
+describe('FancyDurationComponent', () => {
 
   create(FancyDurationComponent, false);
 
