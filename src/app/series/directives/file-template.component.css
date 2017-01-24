@@ -16,9 +16,6 @@
 .main {
   flex-grow: 1;
 }
-/*.label {
-  padding: 6px 0 0;
-}*/
 .label >>> .field {
   margin-bottom: 0;
 }
@@ -43,15 +40,8 @@
   width: 40px;
 }
 .remove {
-  text-align: right;
   order: 3;
-  flex-basis: 50px;
-  padding-right: 10px;
-}
-.remove i {
-  color: #368AA2;
-  font-size: 22px;
-  cursor: pointer;
+  flex-basis: 44px;
 }
 .error {
   order: 4;

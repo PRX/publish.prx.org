@@ -19,7 +19,7 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
       </div>
 
       <div class="remove">
-        <i *ngIf="canRemoveFile" class="icon-cancel" (click)="removeFile()"></i>
+        <button *ngIf="canRemoveFile" class="btn-icon icon-cancel" (click)="removeFile()"></button>
       </div>
 
       <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>

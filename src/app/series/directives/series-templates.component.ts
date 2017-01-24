@@ -28,7 +28,7 @@ import {
         <div *ngIf="!v.isDestroy" class="version">
           <header>
             <strong>{{v?.label}}</strong>
-            <i class="icon-cancel" (click)="removeVersion(v)"></i>
+            <button class="btn-icon icon-cancel" (click)="removeVersion(v)"></button>
           </header>
           <section>
             <publish-fancy-field required textinput [model]="v" name="label" label="Template Label">

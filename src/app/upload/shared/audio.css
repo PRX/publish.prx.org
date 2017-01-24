@@ -39,7 +39,7 @@
 @media screen and (min-width:600px) {
   .audio {flex-wrap: nowrap;}
   .reorder {order: 1; flex-basis: 70px;}
-  .cancel {order: 3; flex-basis: 50px;}
+  .cancel {order: 3; flex-basis: 44px;}
   .main {order: 2; flex-basis: 1;}
 }
 
@@ -47,20 +47,16 @@
   font-size: 30px;
   cursor: move;
 }
-.cancel {
-  text-align: right;
+.cancel button {
+  margin: 4px 0 4px 20px
 }
-.cancel i {
-  font-size: 22px;
-  cursor: pointer;
-}
-.reorder i, .cancel i {
+.reorder i {
   color: #368AA2;
 }
-.reorder i:hover, .reorder i:focus, .cancel i:hover, .cancel i:focus {
+.reorder i:hover, .reorder i:focus {
   color: #2b7187;
 }
-.audio.canceled .reorder i, .audio.canceled .cancel i {
+.audio.canceled .reorder i, .audio.canceled .cancel button {
   display: none;
 }
 

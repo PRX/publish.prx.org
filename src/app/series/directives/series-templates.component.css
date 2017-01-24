@@ -6,14 +6,13 @@
   padding: 16px 14px;
   position: relative;
 }
-.version header i {
+.version header button {
   position: absolute;
-  right: 10px;
-  top: 15px;
-  font-size: 22px;
-  cursor: pointer;
+  right: 4px;
+  top: 4px;
+  color: #676767;
 }
-.version header i:hover, .version header i:focus {
+.version header button:hover, .version header button:focus {
   color: #222;
 }
 .version header strong {
