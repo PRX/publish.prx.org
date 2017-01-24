@@ -36,14 +36,11 @@ export class SeriesModel extends BaseModel implements HasUpload {
   constructor(account: HalDoc, series?: HalDoc, loadRelated = true) {
     super();
     this.init(account, series, loadRelated);
-    if (this.isNew && !this.changed()) {
-      let versionTpl = new AudioVersionTemplateModel(account);
-      let fileTpl = new AudioFileTemplateModel(null, null, 1);
-      versionTpl.set('label', 'Podcast Audio', true);
-      fileTpl.set('label', 'Main Segment', true);
-      versionTpl.fileTemplates.push(fileTpl);
-      this.versionTemplates.push(versionTpl);
-    }
+    this.loadRelated('versionTemplates').subscribe(() => {
+      if (this.isNew && this.versionTemplates.length === 0) {
+        this.defaultVersionTemplate();
+      }
+    });
   }
 
   key() {
@@ -91,6 +88,21 @@ export class SeriesModel extends BaseModel implements HasUpload {
     };
   }
 
+  discard(): any {
+    super.discard();
+    if (this.isNew) {
+      this.defaultVersionTemplate();
+    }
+  }
+
+  changed(field?: string | string[], includeRelations = true): boolean {
+    if (this.isNew && this.versionTemplates.length !== 1) {
+      return true; // default version template was deleted!
+    } else {
+      return super.changed(field, includeRelations);
+    }
+  }
+
   decode() {
     this.id = this.doc['id'];
     this.title = this.doc['title'] || '';
@@ -128,8 +140,17 @@ export class SeriesModel extends BaseModel implements HasUpload {
     this.setUploads('prx:images', this.images.map(i => i.uuid));
   }
 
+  defaultVersionTemplate() {
+    let tpl = new AudioVersionTemplateModel();
+    tpl.set('label', 'Podcast Audio', true);
+    let file = new AudioFileTemplateModel(null, null, 1);
+    file.set('label', 'Main Segment', true);
+    tpl.fileTemplates.push(file);
+    this.versionTemplates = [tpl];
+  }
+
   get unsavedVersionTemplate(): AudioVersionTemplateModel {
-    let tpl = new AudioVersionTemplateModel(this.doc, null);
+    let tpl = new AudioVersionTemplateModel(this.doc);
     return tpl.isStored() && !tpl.isDestroy ? tpl : null;
   }
 

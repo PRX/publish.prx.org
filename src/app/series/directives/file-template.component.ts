@@ -1,26 +1,28 @@
 import { Component, Input } from '@angular/core';
-import { AudioFileTemplateModel } from '../../shared';
+import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared';
 
 @Component({
   selector: 'publish-file-template',
   styleUrls: ['file-template.component.css'],
   template: `
-    <div *ngIf="file && !file.isDestroy">
+    <div *ngIf="file && !file.isDestroy" class="file">
 
-      <publish-fancy-field textinput small required [model]="file" name="label" label="Segment {{file.position}} Label">
-        <span class="fancy-hint">A name for this audio segment, such as "Billboard" or "Part A"</span>
-      </publish-fancy-field>
+      <div class="main">
+        <div class="label">
+          <publish-fancy-field textinput required hideinvalid [model]="file" name="label">
+          </publish-fancy-field>
+        </div>
+        <div class="lengths">
+          <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"></publish-fancy-duration>
+          <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"></publish-fancy-duration>
+        </div>
+      </div>
 
-      <publish-fancy-field small class="length" [model]="file" label="Segment length in seconds" invalid="lengthAny">
-      <span class="fancy-hint">The minimum and maximum durations in seconds for this segment</span>
+      <div class="remove">
+        <button *ngIf="canRemoveFile" class="btn-icon icon-cancel" (click)="removeFile()"></button>
+      </div>
 
-        <publish-fancy-field number small inline hideinvalid [model]="file" name="lengthMinimum" label="Minimum">
-        </publish-fancy-field>
-
-        <publish-fancy-field number small inline hideinvalid [model]="file" name="lengthMaximum" label="Maximum">
-        </publish-fancy-field>
-
-      </publish-fancy-field>
+      <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
 
     </div>
   `
@@ -28,6 +30,26 @@ import { AudioFileTemplateModel } from '../../shared';
 
 export class FileTemplateComponent {
 
+  @Input() version: AudioVersionTemplateModel;
   @Input() file: AudioFileTemplateModel;
+
+  get invalid(): string {
+    return this.file.invalid('label') || this.file.invalid('lengthAny');
+  }
+
+  get canRemoveFile(): boolean {
+    if (this.version && this.file) {
+      let last = this.version.fileTemplates.filter(f => !f.isDestroy).pop();
+      return this.file === last;
+    }
+  }
+
+  removeFile() {
+    this.file.isDestroy = true;
+    if (this.file.isNew) {
+      this.version.removeRelated(this.file);
+      this.file.unstore();
+    }
+  }
 
 }

@@ -22,15 +22,15 @@ describe('TemplateInvalid', () => {
     });
 
     it('requires both min and max', () => {
-      let invalid = build(null, 4);
-      expect(invalid('lengthMinimum', null)).toMatch('Must set');
-      invalid = build(4, null);
-      expect(invalid('lengthMaximum', null)).toMatch('Must set');
+      let invalid = build(0, 4);
+      expect(invalid('lengthMinimum', null)).toBeNull();
+      invalid = build(4, 0);
+      expect(invalid('lengthMaximum', null)).toMatch('greater than minimum');
     });
 
     it('checks for positive numbers', () => {
       let invalid = build(-1, 'b');
-      expect(invalid('lengthMinimum', null)).toMatch('greater than 0');
+      expect(invalid('lengthMinimum', null)).toMatch('must be a positive');
       expect(invalid('lengthMaximum', null)).toMatch('is not a number');
     });
 
@@ -41,9 +41,9 @@ describe('TemplateInvalid', () => {
     });
 
     it('also validates the other column', () => {
-      let invalid = build(null, -1);
-      expect(invalid('lengthMinimum', null)).toMatch('Must set');
-      expect(invalid('lengthMaximum', null)).toMatch('greater than 0');
+      let invalid = build('NaN', -1);
+      expect(invalid('lengthMinimum', null)).toMatch('not a number');
+      expect(invalid('lengthMaximum', null)).toMatch('must be a positive');
     });
 
   });

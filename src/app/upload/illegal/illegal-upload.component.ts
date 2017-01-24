@@ -21,7 +21,7 @@ import { AudioVersionModel, AudioFileModel } from '../../shared';
     </div>
 
     <div class="cancel">
-      <i class="icon-cancel" [publishAudioCancel]="file" [version]="version"></i>
+      <button class="btn-icon icon-cancel" [publishAudioCancel]="file" [version]="version"></button>
     </div>
 
   </div>

@@ -1,20 +1,75 @@
 /**
  * Audio file templates
  */
-div {
-  display: block;
-  padding: 16px 24px 0;
-  border: 1px solid #ccc;
-  margin-bottom: -1px;
+.file {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #DDD;
+  border-top: 1px solid #DDD;
+  margin-top: -1px;
+  padding: 18px 0;
 }
-.length >>> publish-fancy-field {
-  display: inline-block;
-  width: auto;
-  margin-right: 10px;
+.main {
+  flex-grow: 1;
 }
-.length >>> input {
-  max-width: 80px;
+.label >>> .field {
+  margin-bottom: 0;
 }
-.length >>> .nested label {
-  font-size: 15px;
+.label >>> .hint {
+  display: none;
+}
+.label >>> input {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  border: 1px solid #ddd;
+}
+.lengths {
+  flex-grow: 1;
+  border: 1px solid #DDDDDD;
+  border-top: 0 none;
+  padding: 2px 0 5px;
+}
+.lengths publish-fancy-duration {
+  margin: 10px 0;
+}
+.lengths >>> h4 {
+  width: 40px;
+}
+.remove {
+  order: 3;
+  flex-basis: 44px;
+}
+.error {
+  order: 4;
+  color: #e32;
+  width: 100%;
+  margin-top: 4px;
+}
+@media screen and (min-width: 992px) {
+  .lengths publish-fancy-duration {
+    margin: 0;
+    display: inline-block;
+    width: auto;
+  }
+  .lengths >>> h4 {
+    width: auto;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .main {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 6px 0;
+  }
+  .lengths {
+    border: 1px solid #DDDDDD;
+    border-left: 0 none;
+  }
 }

@@ -168,6 +168,24 @@ button.btn-link.active {
   color: #2b7187;
 }
 
+button.btn-icon {
+  color: #368aa2;
+  background: none;
+  font-size: 22px;
+  padding: 0;
+  margin: 10px;
+}
+button.btn-icon::before {
+  margin-left: 0;
+  margin-right: 0;
+}
+button.btn-icon:hover, button.btn-icon:focus, button.btn-icon:active {
+  color: #2b7187;
+}
+button.btn-icon[disabled] {
+  color: #a3a3a3;
+}
+
 button.delete {
   color: #fff;
   background-color: #ee4d3e;

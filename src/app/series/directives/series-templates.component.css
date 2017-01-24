@@ -1,55 +1,58 @@
 /**
  * Series version/file templates
  */
-header {
- margin-bottom: 30px;
+.version header {
+  background-color: #B8B8B8;
+  padding: 16px 14px;
+  position: relative;
 }
-h2 {
-  font-size: 28px;
-  line-height: 30px;
-  font-weight: 400;
-  margin-bottom: 6px;
+.version header button {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  color: #676767;
 }
-hr {
-  width: 100%;
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #ccc;
+.version header button:hover, .version header button:focus {
+  color: #222;
 }
-.version {
-  width: 100%;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 22px;
+.version header strong {
+  color: #222;
+  font-size: 17px;
+  font-weight: 600;
+  vertical-align: middle;
+  margin-right: 14px;
 }
-.version:last-child {
-  border-bottom: none;
+.version section {
+  background: #fff;
+  border-bottom: 1px solid #DDD;
+  border-top: 1px solid #DDD;
+  margin-top: -1px;
+  margin-bottom: 30px;
+  padding: 18px 22px 0;
+}
+.version:last-child section {
   margin-bottom: 0;
 }
-.length >>> publish-fancy-field {
-  display: inline-block;
-  width: auto;
-  margin-right: 10px;
+.length >>> publish-fancy-duration {
+  margin-bottom: 12px;
 }
-.length >>> input {
-  max-width: 80px;
+.length >>> publish-fancy-duration:last-child {
+  margin-bottom: 0;
 }
-.empty {
-  border: 1px solid #ccc;
-  text-align: center;
+.length >>> h4 {
+  width: 90px;
 }
-.empty h4 {
-  padding: 74px 0;
-  color: #bbb;
-  font-size: 18px;
-  font-weight: 600;
+@media screen and (min-width: 992px) {
+  .length >>> publish-fancy-duration {
+    display: inline-block;
+    width: auto;
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+  .length >>> h4 {
+    width: auto;
+  }
 }
-.add-version {
-  margin-top: 6px;
-}
-.actions {
-  position: absolute;
-  top: 6px;
-  right: 0;
-}
-.actions button {
-  margin-left: 6px;
+.add-version, .add-segment {
+  margin-top: 20px;
 }

@@ -11,59 +11,52 @@ import {
   styleUrls: ['series-templates.component.css'],
   template: `
     <form *ngIf="series">
-    <header>
-        <h2>Audio Templates</h2>
-        <p>
+      <publish-fancy-field label="Audio Templates">
+        <div class="fancy-hint">
           When adding episodes to your series, you can have different versions of the audio for
           distribution. For example, it is common to have a podcast version of the audio broken
           into segments for ad injection, but also a broadcast version with different breaks for
           local news, different credits, or edits and bleeps to meet FCC permitted language requirements.
           On this page, you can define basic templates for the versions of audio that will be expected for
           each episode in this series, as well as requirements for each of those templates.
-        </p>
-        <hr/>
-      </header>
+        </div>
+        <button *ngIf="!hasVersions()" class="add-version"
+          (click)="addVersion()"><i class="icon-plus"></i>Add a template</button>
+      </publish-fancy-field>
+
       <template ngFor let-v [ngForOf]="series.versionTemplates">
         <div *ngIf="!v.isDestroy" class="version">
-          <publish-fancy-field textinput required [model]="v" name="label" label="Version Label">
-          <div class="fancy-hint">A name for this audio template, such as "Podcast Audio" or "Clean Version"</div>
-            <div class="actions">
-              <button tabindex=-1 class="btn-link" (click)="removeVersion(v)"><i class="icon-cancel"></i>Remove Template</button>
-            </div>
-          </publish-fancy-field>
-
-          <publish-fancy-field class="length" [model]="v" label="Total length in seconds" invalid="lengthAny">
-            <div class="fancy-hint">The minimum and maximum durations in seconds for the sum of all the audio in this template</div>
-            <publish-fancy-field number small inline hideinvalid [model]="v" name="lengthMinimum" label="Minimum">
+          <header>
+            <strong>{{v?.label}}</strong>
+            <button class="btn-icon icon-cancel" (click)="removeVersion(v)"></button>
+          </header>
+          <section>
+            <publish-fancy-field required textinput [model]="v" name="label" label="Template Label">
+              <div class="fancy-hint">A name for this audio template, such as "Podcast Audio" or "Clean Version"</div>
             </publish-fancy-field>
-            <publish-fancy-field number small inline hideinvalid [model]="v" name="lengthMaximum" label="Maximum">
-            </publish-fancy-field>
-          </publish-fancy-field>
 
-          <publish-fancy-field label="Segments">
-            <div class="fancy-hint">Describe the individual segment audio files required in this template.</div>
-            <div class="actions">
-              <button tabindex=-1 class="btn-link" *ngIf="canAddFile(v)" (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
-              <button tabindex=-1 class="btn-link" *ngIf="canRemoveFile(v)" (click)="removeFile(v)"><i class="icon-cancel"></i>Remove Segment</button>
-            </div>
-            <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t">
-            </publish-file-template>
-            <div *ngIf="!canRemoveFile(v)" class="empty">
-              <h4>No segments defined</h4>
-            </div>
-          </publish-fancy-field>
+            <publish-fancy-field class="length" [model]="v" label="Total length" invalid="lengthAny">
+              <div class="fancy-hint">
+                The minimum and maximum HH:MM:SS durations for all the audio files. Used to ensure that each
+                of your episodes is the desired approximate length, and to prevent uploading bad audio.
+              </div>
+              <publish-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"></publish-fancy-duration>
+              <publish-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"></publish-fancy-duration>
+            </publish-fancy-field>
+
+            <publish-fancy-field label="Segments">
+              <div class="fancy-hint">
+                Describe the individual segment audio files required in this template. Give
+                them a label such as "Billboard" or "Part A", and an optional min/max length
+                to validate the specific file.
+              </div>
+              <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t" [version]="v"></publish-file-template>
+              <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)"
+                (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
+            </publish-fancy-field>
+          </section>
         </div>
       </template>
-
-      <div *ngIf="!hasVersions()">
-        <publish-fancy-field label="No Templates">
-          <div class="fancy-hint">You have no audio templates defined for your series.
-            Defining a template can help validate that your audio has the correct
-            duration and number of segments.</div>
-          <button class="add-version" (click)="addVersion()"><i class="icon-plus"></i> Create a template</button>
-        </publish-fancy-field>
-      </div>
-
     </form>
   `
 })
@@ -103,10 +96,6 @@ export class SeriesTemplatesComponent implements OnDestroy {
     return version.fileTemplates.filter(f => !f.isDestroy).length < 10;
   }
 
-  canRemoveFile(version: AudioVersionTemplateModel): boolean {
-    return version.fileTemplates.some(f => !f.isDestroy);
-  }
-
   addFile(version: AudioVersionTemplateModel) {
     let existing = version.fileTemplates.find(f => f.isDestroy);
     if (existing) {
@@ -117,17 +106,6 @@ export class SeriesTemplatesComponent implements OnDestroy {
       let draft = new AudioFileTemplateModel(version.parent, version.doc, count + 1);
       draft.set('label', `Segment ${segLetter}`);
       version.fileTemplates.push(draft);
-    }
-  }
-
-  removeFile(version: AudioVersionTemplateModel) {
-    let last = version.fileTemplates.filter(f => !f.isDestroy).pop();
-    if (last) {
-      last.isDestroy = true;
-      if (last.isNew) {
-        version.fileTemplates.splice(version.fileTemplates.indexOf(last), 1);
-        last.unstore();
-      }
     }
   }
 
