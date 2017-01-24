@@ -24,7 +24,6 @@ export class PodcastComponent implements OnDestroy {
 
   tabSub: Subscription;
   storyDistribution: StoryDistributionModel;
-  seriesDistribution: DistributionModel;
   podcast: FeederPodcastModel;
   episode: FeederEpisodeModel;
   version: AudioVersionModel;
