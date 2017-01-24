@@ -7,14 +7,15 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
   template: `
     <div *ngIf="file && !file.isDestroy" class="file">
 
-      <div class="label">
-        <publish-fancy-field textinput required hideinvalid [model]="file" name="label">
-        </publish-fancy-field>
-      </div>
-
-      <div class="lengths">
-        <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"></publish-fancy-duration>
-        <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"></publish-fancy-duration>
+      <div class="main">
+        <div class="label">
+          <publish-fancy-field textinput required hideinvalid [model]="file" name="label">
+          </publish-fancy-field>
+        </div>
+        <div class="lengths">
+          <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"></publish-fancy-duration>
+          <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"></publish-fancy-duration>
+        </div>
       </div>
 
       <div class="remove">

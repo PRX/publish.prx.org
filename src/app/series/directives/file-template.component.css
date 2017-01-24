@@ -13,11 +13,12 @@
   margin-top: -1px;
   padding: 18px 0;
 }
-.label {
-  padding: 6px 0;
-  min-width: 200px;
-  position: relative;
+.main {
+  flex-grow: 1;
 }
+/*.label {
+  padding: 6px 0 0;
+}*/
 .label >>> .field {
   margin-bottom: 0;
 }
@@ -32,13 +33,14 @@
 .lengths {
   flex-grow: 1;
   border: 1px solid #DDDDDD;
-  border-left: 0 none;
-  padding: 3px 0 4px;
-  height: 46px;
+  border-top: 0 none;
+  padding: 2px 0 5px;
 }
 .lengths publish-fancy-duration {
-  display: inline-block;
-  width: auto;
+  margin: 10px 0;
+}
+.lengths >>> h4 {
+  width: 40px;
 }
 .remove {
   text-align: right;
@@ -54,5 +56,30 @@
 .error {
   order: 4;
   color: #e32;
-  margin-top: 2px;
+  width: 100%;
+  margin-top: 4px;
+}
+@media screen and (min-width: 992px) {
+  .lengths publish-fancy-duration {
+    margin: 0;
+    display: inline-block;
+    width: auto;
+  }
+  .lengths >>> h4 {
+    width: auto;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .main {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 6px 0;
+  }
+  .lengths {
+    border: 1px solid #DDDDDD;
+    border-left: 0 none;
+  }
 }
