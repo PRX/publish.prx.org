@@ -34,13 +34,15 @@
     </div>
   </publish-fancy-field>
 
-  <publish-fancy-field *ngIf="!episode.isNew" label="GUID" required textinput [model]="episode" name="guid" [advancedConfirm]="guidConfirm">
-    <div class="fancy-hint">
-      Every podcast episode on iTunes should have a permanent, case-sensitive globally unique identifier (GUID).
-      When an episode is added to a podcast's RSS feed, the episode is deemed "new" if no episode with that GUID exists
-      yet in the feed. In certain rare cases, it can make sense to give an existing episode a new GUID.
-      If you'd like to change the GUID for this episode, you may do so here.
-    </div>
-  </publish-fancy-field>
+  <publish-advanced-section *ngIf="!episode?.isNew">
+    <publish-fancy-field label="GUID" required textinput [model]="episode" name="guid" [advancedConfirm]="guidConfirm">
+      <div class="fancy-hint">
+        Every podcast episode on iTunes should have a permanent, case-sensitive globally unique identifier (GUID).
+        When an episode is added to a podcast's RSS feed, the episode is deemed "new" if no episode with that GUID exists
+        yet in the feed. In certain rare cases, it can make sense to give an existing episode a new GUID.
+        If you'd like to change the GUID for this episode, you may do so here.
+      </div>
+    </publish-fancy-field>
+  </publish-advanced-section>
 
 </form>
