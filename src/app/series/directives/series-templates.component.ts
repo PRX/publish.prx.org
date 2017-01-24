@@ -37,8 +37,8 @@ import {
 
             <publish-fancy-field class="length" [model]="v" label="Total length" invalid="lengthAny">
               <div class="fancy-hint">
-                The minimum and maximum durations in seconds for all the audio files. Used
-                to check that your episodes have sane lengths, and prevent uploading bad audio.
+                The minimum and maximum durations for all the audio files. Used to check
+                that your episodes have sane lengths, and prevent uploading bad audio.
               </div>
               <publish-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"></publish-fancy-duration>
               <publish-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"></publish-fancy-duration>
