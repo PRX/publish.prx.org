@@ -58,4 +58,16 @@ describe('FeederPodcastModel', () => {
     expect(podcast.authorEmail).toEqual('Bar2');
   });
 
+  it('ensures URLs have http(s)', () => {
+    let podcast = new FeederPodcastModel(series, dist);
+    podcast.set('link', 'show.me');
+    expect(podcast.link).toEqual('http://show.me');
+    podcast.set('publicFeedUrl', 'https://notfeeder.prx.org');
+    expect(podcast.publicFeedUrl).toEqual('https://notfeeder.prx.org');
+    podcast.set('newFeedUrl', 'htshompson.party');
+    expect(podcast.newFeedUrl).toEqual('http://htshompson.party');
+    podcast.set('enclosurePrefix', 'redirect.me');
+    expect(podcast.enclosurePrefix).toEqual('http://redirect.me');
+  });
+
 });

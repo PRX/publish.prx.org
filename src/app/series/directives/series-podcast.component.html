@@ -96,6 +96,13 @@
       </publish-fancy-field>
     </publish-fancy-field>
 
+    <publish-fancy-field label="Enclosure Prefix Url" textinput [model]="podcast" name="enclosurePrefix">
+      <div class="fancy-hint">
+        The enclosure prefix URL, an optional prefix URL for your podcast feed. This URL may be used
+        to set a redirect prefix on audio requests, for example, to track download statistics.
+      </div>
+    </publish-fancy-field>
+
     <publish-advanced-section>
       <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" [advancedConfirm]="newFeedUrlConfirm">
         <div class="fancy-hint">
