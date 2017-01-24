@@ -127,6 +127,9 @@ export class StoryComponent implements OnInit {
       'Are you sure you want to delete this episode?  This action cannot be undone.',
       (okay: boolean) => {
         if (okay) {
+          if (this.story.changed()) {
+            this.story.discard();
+          }
           this.story.isDestroy = true;
           this.story.save().subscribe(() => {
             this.router.navigate(['/']);
