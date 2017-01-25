@@ -1,4 +1,5 @@
 import { Component, Input, DoCheck } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalService } from '../../core';
 import { StoryModel } from '../../shared';
 
@@ -10,10 +11,20 @@ import { StoryModel } from '../../shared';
     <dl>
 
       <dt>Status</dt>
-      <dd><span [class]="statusClass">{{statusText}}</span></dd>
+      <dd>
+        <span [class]="statusClass">{{statusText}}</span>
+        <template [ngIf]="isPublished">
+          <button *ngIf="editStatus" class="btn-link edit-status" (click)="toggleEdit()">Hide</button>
+          <button *ngIf="!editStatus" class="btn-link edit-status" (click)="toggleEdit()">Edit</button>
+          <publish-button *ngIf="editStatus" [model]="story" visible=1 orange=1 disabled=0
+            [working]="isPublishing" (click)="togglePublish()">Unpublish</publish-button>
+          <publish-button *ngIf="editStatus" [model]="story" visible=1 red=1 disabled=0 working=0
+            (click)="confirmDelete()">Delete</publish-button>
+        </template>
+      </dd>
 
-      <dt *ngIf="id">Valid</dt>
-      <dd *ngIf="id">
+      <dt>Valid</dt>
+      <dd>
         <p *ngIf="notPublished && !normalInvalid">Yes</p>
         <button *ngIf="notPublished && normalInvalid" class="btn-link error"
           (click)="showProblems(normalInvalid)">No</button>
@@ -27,11 +38,11 @@ import { StoryModel } from '../../shared';
       <dd *ngIf="isPublished"><p>{{story.publishedAt | date:"short"}}</p></dd>
 
       <dt>Saved</dt>
-      <dd *ngIf="!id">Not Saved</dd>
+      <dd *ngIf="!id"><p>Not Saved</p></dd>
       <dd *ngIf="id"><p *ngIf="story?.updatedAt">{{story.updatedAt | date:"short"}}</p></dd>
 
-      <dt *ngIf="id && !story?.isPublished">Progress</dt>
-      <dd *ngIf="id && !story?.isPublished">
+      <dt *ngIf="id && !story?.publishedAt">Progress</dt>
+      <dd *ngIf="id && !story?.publishedAt">
         <template [ngIf]="notPublished && strictInvalid">
           <p>Not ready to publish</p>
           <button (click)="showProblems(strictInvalid, 'Not ready to publish')"
@@ -65,9 +76,10 @@ export class StoryStatusComponent implements DoCheck {
   strictInvalid: string;
   strictInvalidCount: string;
   changed: boolean;
+  editStatus: boolean;
   isPublishing: boolean;
 
-  constructor(private modal: ModalService) {}
+  constructor(private modal: ModalService, private router: Router) {}
 
   ngDoCheck() {
     if (this.story) {
@@ -116,11 +128,34 @@ export class StoryStatusComponent implements DoCheck {
     this.modal.show({title: title, body: `<ul>${items}</ul>`, buttons: ['Okay']});
   }
 
+  toggleEdit() {
+    this.editStatus = !this.editStatus;
+  }
+
   togglePublish() {
     this.isPublishing = true;
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
       this.isPublishing = false;
+      setTimeout(() => this.editStatus = false, 1000);
     });
+  }
+
+  confirmDelete(): void {
+    this.modal.prompt(
+      'Really delete?',
+      'Are you sure you want to delete this episode?  This action cannot be undone.',
+      (okay: boolean) => {
+        if (okay) {
+          if (this.story.changed()) {
+            this.story.discard();
+          }
+          this.story.isDestroy = true;
+          this.story.save().subscribe(() => {
+            this.router.navigate(['/']);
+          });
+        }
+      }
+    );
   }
 
 }

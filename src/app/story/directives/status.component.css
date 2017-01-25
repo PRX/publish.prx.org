@@ -29,6 +29,7 @@ dt {
   font-weight: bold;
 }
 dd {
+  min-height: 34px;
   margin-left: 84px;
   color: #555;
 }
@@ -53,6 +54,9 @@ dd {
 }
 .status.published {
   background-color: #61A85D;
+}
+.edit-status {
+  margin-left: 6px;
 }
 publish-button {
   display: block;
