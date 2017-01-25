@@ -3,14 +3,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'publish-timepicker',
   template: `
-    <select [class.changed]="changed"
-      [(ngModel)]="hour">
-      <option *ngFor="let h of hourOptions" [value]="h">{{h}}</option>
-    </select> :
-    <select [class.changed]="changed"
-      [(ngModel)]="minutes">
-      <option *ngFor="let m of minuteOptions" [value]="m">{{m}}</option>
-    </select>
+    <input [class.changed]="changed" type="number" min="0" max="24" 
+      [ngModel]="hour | padzero" (ngModelChange)="set('hour', $event)">
+    <span class="separator">:</span>
+    <input [class.changed]="changed" type="number" min="0" max="30" step="30"
+      [ngModel]="minutes | padzero" (ngModelChange)="set('minutes', $event)">
   `,
   styleUrls: ['timepicker.component.css']
 })
@@ -19,40 +16,38 @@ export class TimepickerComponent {
   @Input() date: Date;
   @Output() onTimeChange = new EventEmitter<Date>();
   @Input() changed: boolean;
-  hourOptions: string[] = new Array(24).fill('').map((x, i) => i < 10 ? '0' + i : '' + i);
-  minuteOptions = ['00', '30'];
 
-  get hour(): string {
-    if (!this.date) {
-      return '00';
-    } else {
+  get hour(): number {
+    if (this.date) {
       let date = new Date(this.date.valueOf());
       if (date.getMinutes() <= 30) {
-        return date.getHours() < 10 ? '0' + date.getHours() : '' + date.getHours();
+        return date.getHours();
       } else {
-        return date.getHours() + 1 <= 23 ? '' + (date.getHours() + 1) : '00';
+        return date.getHours() + 1 <= 23 ? (date.getHours() + 1) : 0;
       }
     }
   }
 
-  set hour(hour: string) {
-    let date = this.date ? new Date(this.date.valueOf()) : new Date();
-    date.setHours(Number(hour));
-    this.onTimeChange.emit(date);
-  }
-
-  get minutes(): string {
-    if (!this.date) {
-      return '00';
-    } else {
-      let minutes = new Date(this.date.valueOf()).getMinutes();
-      return minutes > 0 && minutes <= 30 ? '30' : '00';
+  get minutes(): number {
+    if (this.date) {
+      return this.roundMinutes(new Date(this.date.valueOf()).getMinutes());
     }
   }
 
-  set minutes(minutes: string) {
+  roundMinutes(value) {
+    return value > 0 && value <= 30 ? 30 : 0;
+  }
+
+  set(field: string, value: number) {
     let date = this.date ? new Date(this.date.valueOf()) : new Date();
-    date.setMinutes(Number(minutes));
+    if (field === 'hour') {
+      date.setHours(value);
+      if (!this.date) {
+        date.setMinutes(0);
+      }
+    } else if (field === 'minutes') {
+      date.setMinutes(this.roundMinutes(value));
+    }
     this.onTimeChange.emit(date);
   }
 }

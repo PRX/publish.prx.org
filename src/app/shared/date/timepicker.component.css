@@ -1,3 +1,18 @@
-select.changed {
+input:first-child {
+  margin-left: 10px;
+}
+
+input {
+  background-color: #fff;
+}
+
+input.changed {
   outline: 5px auto #f09b4c;
+}
+
+span.separator {
+  color: #343434;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 5px 3px;
 }
