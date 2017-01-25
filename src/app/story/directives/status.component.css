@@ -1,0 +1,60 @@
+:host {
+  display: block;
+  min-height: 100px;
+  margin-top: 20px;
+  background: #fff;
+}
+h1 {
+  background-color: #aaa;
+  padding: 8px 20px;
+  margin-bottom: 4px;
+  font-weight: 400;
+  color: #fff;
+}
+dl {
+  padding: 6px 10px 16px 16px
+}
+dl:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+dt, dd {
+  padding-top: 10px;
+}
+dt {
+  float: left;
+  clear: left;
+  margin-right: 10px;
+  font-weight: bold;
+}
+dd {
+  margin-left: 84px;
+  color: #555;
+}
+.status {
+  padding: 3px 10px;
+  z-index: 10;
+  color: #fff;
+  background-color: #444;
+  font-weight: 400;
+  font-size: 11px;
+  text-transform: uppercase;
+  line-height: 18px;
+}
+.status.new {
+  background-color: #61A85D;
+}
+.status.draft {
+  background-color: #ffa500;
+}
+.status.scheduled {
+  background-color: #368aa2;
+}
+.status.published {
+  background-color: #61A85D;
+}
+publish-button {
+  display: block;
+  margin-top: 8px;
+}
