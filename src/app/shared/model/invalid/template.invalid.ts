@@ -6,13 +6,13 @@ import { BaseInvalid } from './base.invalid';
  * Audio version template length
  */
 const checkMinimum = (min, max): string => {
-  if (!min && !max) {
+  if (!min) {
     return null; // allow unset
   } else if (isNaN(parseInt(min, 10))) {
     return `Minimum is not a number`;
   } else if (min < 0) {
     return `Minimum must be a positive number`;
-  } else if (min >= max) {
+  } else if (max && min >= max) {
     return 'Minimum must be less than maximum';
   } else {
     return null;
@@ -20,13 +20,13 @@ const checkMinimum = (min, max): string => {
 };
 
 const checkMaximum = (min, max): string => {
-  if (!min && !max) {
+  if (!max) {
     return null; // allow unset
   } else if (isNaN(parseInt(max, 10))) {
     return `Maximum is not a number`;
   } else if (max < 0) {
     return `Maximum must be a positive number`;
-  } else if (max <= min) {
+  } else if (min && max <= min) {
     return 'Maximum must be greater than minimum';
   } else {
     return null;

@@ -77,11 +77,4 @@ export class AudioFileTemplateModel extends BaseModel {
     }
   }
 
-  set(field: string, value: any, forceOriginal = false) {
-    super.set(field, value, forceOriginal);
-    if (field === 'lengthMinimum' && value >= this.lengthMaximum) {
-      super.set('lengthMaximum', value + 60);
-    }
-  }
-
 }

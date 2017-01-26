@@ -21,11 +21,11 @@ describe('TemplateInvalid', () => {
       expect(invalid('lengthMaximum', null)).toBeNull();
     });
 
-    it('requires both min and max', () => {
+    it('does not require both min and max', () => {
       let invalid = build(0, 4);
       expect(invalid('lengthMinimum', null)).toBeNull();
       invalid = build(4, 0);
-      expect(invalid('lengthMaximum', null)).toMatch('greater than minimum');
+      expect(invalid('lengthMaximum', null)).toBeNull();
     });
 
     it('checks for positive numbers', () => {
