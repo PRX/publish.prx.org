@@ -1,4 +1,4 @@
-import { cit, create, provide } from '../../../testing';
+import { cit, create, provide, stubPipe } from '../../../testing';
 import { Router } from '@angular/router';
 import { RouterStub } from '../../../testing/stub.router';
 import { ModalService } from '../../core';
@@ -9,6 +9,8 @@ describe('StoryStatusComponent', () => {
   create(StoryStatusComponent);
 
   provide(Router, RouterStub);
+
+  stubPipe('date');
 
   let modalAlertBody: any;
   provide(ModalService, {
