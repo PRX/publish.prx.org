@@ -70,9 +70,6 @@ publish-image  {
   display: flex;
   justify-content: space-between;
 }
-.play-count > i {
-  display: inline-block;
-}
 
 publish-text-overflow-fade {
   display: block;

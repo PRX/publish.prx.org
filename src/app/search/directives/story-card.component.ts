@@ -15,9 +15,8 @@ import { StoryModel } from '../../shared';
       <h3 class="series-title">{{seriesTitle}}</h3>
 
       <section class="story-info">
-        <span class="duration">{{storyDuration | duration}}</span>
-        <span class="play-count"><i></i></span>
-        <span class="published">{{storyDate | date:"MM/dd/yy"}}</span>
+        <span>{{storyDuration | duration}}</span>
+        <span>{{storyDate | date:"MM/dd/yy"}}</span>
       </section>
     </section>
     <section class="story-tags">
