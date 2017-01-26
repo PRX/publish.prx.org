@@ -68,16 +68,7 @@ publish-image  {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-}
-.duration, .published, .play-count {
-  width: calc(100%/3);
-}
-.play-count {
-  flex: 2 2 60px;
-  white-space: nowrap;
-}
-.duration, .published {
-  flex: 1 1 60px;
+  justify-content: space-between;
 }
 .play-count > i {
   display: inline-block;

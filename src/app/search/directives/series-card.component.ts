@@ -15,7 +15,7 @@ import { SeriesModel } from '../../shared';
       <h2 class="series-title"><a [routerLink]="seriesLink">{{seriesTitle}}</a></h2>
       <p class="series-info">
         <span class="episode-count">{{seriesEpisodeCount}} Ep.</span>
-        <span class="updated-at">{{seriesUpdatedAt | date:"MM/dd/yy"}}</span>
+        <span class="updated-at">Updated {{seriesUpdatedAt | date:"MM/dd/yy"}}</span>
       </p>
     </section>
     <section class="series-detail">
