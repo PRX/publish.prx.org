@@ -11,8 +11,8 @@ describe('PadZeroPipe', () => {
     expect(pipe.transform(86739)).toMatch('86739');
   });
 
-  it('stringifies things it does not understand', () => {
-    expect(pipe.transform(<any> 'foobar')).toMatch('foobar');
+  it('stringifies non numbers', () => {
+    expect(pipe.transform(<any> 'foobar')).toMatch('NaN');
   });
 
 });

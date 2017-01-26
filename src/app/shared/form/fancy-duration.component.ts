@@ -18,12 +18,15 @@ import { BaseModel } from '../model/base.model';
       </template>
       <template [ngIf]="model">
         <input [id]="hoursName" type="number" min="0" [ngModel]="hours | padzero"
+          #hoursInput (click)="selectAllContent(hoursInput)"
           (ngModelChange)="set('hours', $event)" [class.changed]="hoursChanged"/>
         <b>:</b>
         <input [id]="minutesName" type="number" min="0" [ngModel]="minutes | padzero"
+          #minutesInput (click)="selectAllContent(minutesInput)"
           (ngModelChange)="set('minutes', $event)" [class.changed]="minutesChanged"/>
         <b>:</b>
         <input [id]="secondsName" type="number" min="0" [ngModel]="seconds | padzero"
+          #secondsInput (click)="selectAllContent(secondsInput)"
           (ngModelChange)="set('seconds', $event)" [class.changed]="secondsChanged"/>
       </template>
     </div>
@@ -78,6 +81,10 @@ export class FancyDurationComponent implements DoCheck {
     }
     let total = this.hours * 3600 + this.minutes * 60 + this.seconds;
     this.model.set(this.name, total || 0);
+  }
+
+  selectAllContent(input: HTMLInputElement) {
+    if (input.select) { input.select(); }
   }
 
 }
