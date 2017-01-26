@@ -1,27 +1,15 @@
-import { cit, create, direct, provide, By } from '../../../testing';
-import { Component } from '@angular/core';
+import { cit, contain, provide, By } from '../../../testing';
 import { ModalService } from '../../core';
 import { AdvancedConfirmDirective } from './advanced-confirm.directive';
 
-@Component({
-  template: '<input [publishAdvancedConfirm]="confirmText" [advancedModel]="model" [advancedFieldName]="name"/>'
-})
-class MyComponent {
-  confirmText: string;
-  model: any;
-  fieldName: string;
-}
-const getDirective = (el): AdvancedConfirmDirective => {
-  let inputEl = el.query(By.directive(AdvancedConfirmDirective));
-  expect(inputEl).toBeDefined();
-  return inputEl.injector.get(AdvancedConfirmDirective);
-};
-
 describe('AdvancedConfirmDirective', () => {
 
-  create(MyComponent, false);
-
-  direct(AdvancedConfirmDirective);
+  contain(AdvancedConfirmDirective, {
+    template: `
+      <input [publishAdvancedConfirm]="confirmText" [publishModel]="model"
+        [publishName]="fieldName" [publishEvent]="eventName"/>
+    `
+  });
 
   let modalAlertMessage: any;
   beforeEach(() => modalAlertMessage = null);
@@ -37,10 +25,35 @@ describe('AdvancedConfirmDirective', () => {
       invalid: () => false
     };
     comp.fieldName = 'fieldName';
+    comp.eventName = 'blur';
     fix.detectChanges();
 
-    let advancedConfirm = getDirective(el);
-    advancedConfirm.onBlur();
+    let advancedConfirm = el.query(By.css('input'));
+    advancedConfirm.nativeElement.focus();
+    advancedConfirm.nativeElement.blur();
+    expect(modalAlertMessage).toEqual(comp.confirmText);
+  });
+
+  cit('can also trigger on the change event', (fix, el, comp) => {
+    comp.confirmText = 'some warning';
+    comp.model = {
+      isNew: false,
+      changed: () => true,
+      invalid: () => false
+    };
+    comp.fieldName = 'fieldName';
+    comp.eventName = 'change';
+    fix.detectChanges();
+
+    let advancedConfirm = el.query(By.css('input'));
+    advancedConfirm.nativeElement.focus();
+    advancedConfirm.nativeElement.blur();
+    expect(modalAlertMessage).toBeNull();
+
+    // creating events is tricky!
+    let e = document.createEvent('HTMLEvents');
+    e.initEvent('change', false, true);
+    advancedConfirm.nativeElement.dispatchEvent(e);
     expect(modalAlertMessage).toEqual(comp.confirmText);
   });
 
