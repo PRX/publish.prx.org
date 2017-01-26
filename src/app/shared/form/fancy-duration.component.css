@@ -1,6 +1,9 @@
 input {
   width: auto;
-  max-width: 50px;
+  max-width: 60px;
+  padding-left: 6px;
+  padding-right: 0;
+  text-align: center;
 }
 b {
   color: #343434;
@@ -14,6 +17,7 @@ b {
   margin-left: 16px;
 }
 .tiny input {
-  padding: 7px 0px 5px 4px;
-  max-width: 36px;
+  padding-top: 7px;
+  padding-bottom: 5px;
+  max-width: 44px;
 }
