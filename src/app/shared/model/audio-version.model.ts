@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioFileModel } from './audio-file.model';
-import { VERSION_TEMPLATED } from './invalid';
+import { VERSION_TEMPLATED, LENGTH, REQUIRED} from './invalid';
 import { HasUpload, applyMixins } from './upload';
 
 export class AudioVersionModel extends BaseModel implements HasUpload {
@@ -17,7 +17,8 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
   SETABLE = ['label', 'explicit', 'hasUploadMap'];
 
   VALIDATORS = {
-    self: [VERSION_TEMPLATED()]
+    self: [VERSION_TEMPLATED()],
+    label: [REQUIRED(), LENGTH(1, 255)]
   };
 
   public series: HalDoc;
