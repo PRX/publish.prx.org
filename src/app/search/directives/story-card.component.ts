@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
 
 @Component({
