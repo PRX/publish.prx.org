@@ -45,14 +45,20 @@ import { StoryModel, TabService } from '../../shared';
 
       <publish-fancy-field label="Release Date">
         <div class="fancy-hint">If you'd like to manually alter this episode's publication
-        to either delay or back-date its release, select the desired release date here.
-        Otherwise, the episode will be released immediately once published.</div>
+        to either delay or back-date its release, select the desired release date and time here.
+        Otherwise, the episode will be released immediately once published.
+        </div>
         <publish-datepicker
           [date]="story.releasedAt" (onDateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </publish-datepicker>
         <publish-timepicker
           [date]="story.releasedAt" (onTimeChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </publish-timepicker>
+        <p class="form-group">
+          <input type="checkbox" [ngModel]="story.releasedAt" [attr.disabled]="story.releasedAt ? null : true" 
+            name="useReleasedAt" id="useReleasedAt" (change)="clearReleasedAt()">
+          <label for="useReleasedAt">Specify date and time to be published</label>
+        </p>
       </publish-fancy-field>
 
     </form>
@@ -82,6 +88,12 @@ export class BasicComponent implements OnDestroy {
 
   get strict(): boolean {
     return (this.story && this.story.publishedAt) ? true : false;
+  }
+
+  clearReleasedAt() {
+    if (this.story.releasedAt) {
+      this.story.releasedAt = null;
+    }
   }
 
 }
