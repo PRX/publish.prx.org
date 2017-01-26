@@ -46,8 +46,8 @@ export class HalDoc {
     } else if (link instanceof Array) {
       return <HalObservable<HalDoc>> this.error(`Expected update link at _links.self - got array`);
     } else {
-      return <HalObservable<HalDoc>> this.remote.put(link, null, data).map(() => {
-        this.setData(data);
+      return <HalObservable<HalDoc>> this.remote.put(link, null, data).map((obj) => {
+        this.setData(obj || data);
         return <HalDoc> this;
       });
     }
