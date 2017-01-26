@@ -5,12 +5,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class PadZeroPipe implements PipeTransform {
 
-  transform(value: number): string {
-    if (value < 10) {
-      return `0${value}`;
-    } else {
-      return `${value}`;
+  transform(value: any, length = 2): string {
+    let num = parseInt(value, 10);
+    let padded = `${num}`;
+    while (padded.length < length) {
+      padded = `0${padded}`;
     }
+    return padded;
   }
 
 }
