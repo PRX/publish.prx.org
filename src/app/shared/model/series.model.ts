@@ -23,7 +23,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
   SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap'];
 
   VALIDATORS = {
-    title:            [REQUIRED()],
+    title:            [REQUIRED(), LENGTH(1, 255)],
     description:      [LENGTH(10)],
     shortDescription: [REQUIRED()]
   };
