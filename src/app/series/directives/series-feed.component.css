@@ -2,14 +2,33 @@ h4 {
   font-size: 18px;
   line-height: 22px;
   font-weight: 400;
-  margin: 6px 0;
+  margin: 20px 0 6px 0;
   color: #343434;
+  border-bottom: 1px black solid;
+}
+
+ul {
+  padding: 0 5px;
 }
 
 li {
   display: flex;
   justify-content: space-between;
   margin: 5px 0;
+  border-bottom: 1px #ddd solid;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+li h5 {
+  width: calc(3 * 100%/5);
+}
+
+li p {
+  width: calc(100%/5);
+  text-align: right;
 }
 
 .public {
@@ -20,9 +39,6 @@ li {
   color: #ffa500;
 }
 
-.private {
-  color: #ee4d3e;
-}
 
 .extra {
   text-align: center;
