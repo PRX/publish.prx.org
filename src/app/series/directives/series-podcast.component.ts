@@ -122,4 +122,16 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
   }
 
+  get versionTemplateConfirm(): string {
+    if (this.distribution && this.audioVersionOptions) {
+      let url = this.distribution.versionTemplateUrl;
+      let name = this.audioVersionOptions.find(opt => opt[1] === url)[0];
+      return `
+        Are you sure you want to use <b>${name}</b> as the audio for your podcast?
+        Changing this field can have catastrophic consequences for any previously
+        published episodes.
+      `;
+    }
+  }
+
 }
