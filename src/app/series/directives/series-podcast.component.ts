@@ -85,6 +85,11 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     podcastDist.loadRelated('podcast').subscribe(() => {
       this.podcast = podcastDist.podcast;
     });
+    this.series.loadRelated('versionTemplates').subscribe(() => {
+      if (this.audioVersionOptions.length === 1) {
+        podcastDist.set('versionTemplateUrl', this.audioVersionOptions[0][1], true);
+      }
+    });
   }
 
   setSubCategories() {
