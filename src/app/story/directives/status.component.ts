@@ -33,9 +33,10 @@ import { StoryModel } from '../../shared';
 
       <dt>Progress</dt>
       <dd *ngIf="!id">
-        <p *ngIf="!normalInvalid">Ready to create</p>
-        <p *ngIf="normalInvalid" class="error">Unable to create</p>
-        <button *ngIf="normalInvalid" (click)="showProblems()" class="btn-link">{{normalInvalidCount}}</button>
+        <p *ngIf="changed && !normalInvalid">Ready to create</p>
+        <p *ngIf="changed && normalInvalid" class="error">Unable to create</p>
+        <button *ngIf="changed && normalInvalid" class="btn-link"
+          (click)="showProblems()">{{normalInvalidCount}}</button>
       </dd>
       <dd *ngIf="id">
         <template [ngIf]="strictInvalid">
@@ -159,6 +160,7 @@ export class StoryStatusComponent implements DoCheck {
     this.isPublishing = true;
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
       this.isPublishing = false;
+      this.editStatus = false;
     });
   }
 
