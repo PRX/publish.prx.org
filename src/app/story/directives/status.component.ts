@@ -23,36 +23,35 @@ import { StoryModel } from '../../shared';
         </template>
       </dd>
 
-      <dt>Valid</dt>
-      <dd>
-        <p *ngIf="notPublished && !normalInvalid">Yes</p>
-        <button *ngIf="notPublished && normalInvalid" class="btn-link error"
-          (click)="showProblems(normalInvalid)">No</button>
-        <p *ngIf="isPublished && !strictInvalid">Yes</p>
-        <button *ngIf="isPublished && strictInvalid" class="btn-link error"
-          (click)="showProblems(strictInvalid)">No</button>
-      </dd>
-
       <dt *ngIf="isPublished && isScheduled">Publishing</dt>
-      <dt *ngIf="isPublished && !isScheduled">Publishing</dt>
+      <dt *ngIf="isPublished && !isScheduled">Published</dt>
       <dd *ngIf="isPublished"><p>{{story.publishedAt | date:"short"}}</p></dd>
 
       <dt>Saved</dt>
       <dd *ngIf="!id"><p>Not Saved</p></dd>
       <dd *ngIf="id"><p *ngIf="story?.updatedAt">{{story.updatedAt | date:"short"}}</p></dd>
 
-      <dt *ngIf="id && !story?.publishedAt">Progress</dt>
-      <dd *ngIf="id && !story?.publishedAt">
-        <template [ngIf]="notPublished && strictInvalid">
-          <p>Not ready to publish</p>
-          <button (click)="showProblems(strictInvalid, 'Not ready to publish')"
-            class="btn-link">Found {{strictInvalidCount}}</button>
+      <dt>Progress</dt>
+      <dd *ngIf="!id">
+        <p *ngIf="!normalInvalid">Ready to create</p>
+        <p *ngIf="normalInvalid" class="error">Unable to create</p>
+        <button *ngIf="normalInvalid" (click)="showProblems()" class="btn-link">{{normalInvalidCount}}</button>
+      </dd>
+      <dd *ngIf="id">
+        <template [ngIf]="strictInvalid">
+          <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
+          <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
+          <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
         </template>
         <template [ngIf]="notPublished && !strictInvalid">
           <p *ngIf="changed">Ready after save</p>
           <p *ngIf="!changed">Ready to publish</p>
           <publish-button [model]="story" visible=1 orange=1 [disabled]="changed"
             [working]="isPublishing" (click)="togglePublish()">Publish</publish-button>
+        </template>
+        <template [ngIf]="isPublished && !strictInvalid">
+          <p *ngIf="changed">Unsaved changes</p>
+          <p *ngIf="!changed">Complete</p>
         </template>
       </dd>
 
@@ -85,12 +84,12 @@ export class StoryStatusComponent implements DoCheck {
     if (this.story) {
       this.setStatus();
       this.isPublished = this.story.publishedAt ? true : false;
-      this.isScheduled = this.story.isPublished();
+      this.isScheduled = this.isPublished && !this.story.isPublished();
       this.notPublished = !this.isPublished;
       this.normalInvalid = this.story.invalid(null, false);
-      this.normalInvalidCount = this.countProblems(this.normalInvalid);
+      this.normalInvalidCount = this.countProblems(false);
       this.strictInvalid = this.story.invalid(null, true);
-      this.strictInvalidCount = this.countProblems(this.strictInvalid);
+      this.strictInvalidCount = this.countProblems(true);
       this.changed = this.story.changed();
     }
   }
@@ -111,21 +110,45 @@ export class StoryStatusComponent implements DoCheck {
     }
   }
 
-  formatInvalid(str: string) {
+  formatInvalid(str: string): string {
     str = str.trim();
     str = str.replace(/shortdescription/i, 'teaser');
     str = str.charAt(0).toUpperCase() + str.slice(1);
     return str;
   }
 
-  countProblems(invalids: string, singular = 'problem', plural = 'problems') {
-    let count = invalids ? invalids.split(',').length : 0;
-    return count === 1 ? `1 ${singular}` : `${count} ${plural}`;
+  formatInvalids(strict = false): string[] {
+    let invalids = strict ? this.strictInvalid : this.normalInvalid;
+    if (invalids) {
+      return invalids.split(',').map(s => this.formatInvalid(s));
+    } else {
+      return [];
+    }
   }
 
-  showProblems(invalids: string, title = 'Validation errors') {
-    let items = invalids.split(',').map(s => '<li>' + this.formatInvalid(s) + '</li>').join('');
-    this.modal.show({title: title, body: `<ul>${items}</ul>`, buttons: ['Okay']});
+  countProblems(strict = false): string {
+    let count = this.formatInvalids(strict).length;
+    return count === 1 ? `Found 1 problem` : `Found ${count} problems`;
+  }
+
+  showProblems() {
+    let normals = this.formatInvalids(false);
+    let stricts = this.formatInvalids(true).filter(s => normals.indexOf(s) === -1);
+
+    let title = 'Validation errors';
+    let msg = '';
+    normals.forEach(s => msg += `<li class="error">${s}</li>`);
+    if (this.isPublished) {
+      stricts.forEach(s => msg += `<li class="error">${s}</li>`);
+    }
+    if (this.id && !this.isPublished) {
+      stricts.forEach(s => msg += `<li>${s}</li>`);
+      if (normals.length === 0) {
+        title = 'Not ready to publish';
+      }
+    }
+
+    this.modal.show({title: title, body: `<ul>${msg}</ul>`, buttons: ['Okay']});
   }
 
   toggleEdit() {
@@ -136,7 +159,6 @@ export class StoryStatusComponent implements DoCheck {
     this.isPublishing = true;
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
       this.isPublishing = false;
-      setTimeout(() => this.editStatus = false, 1000);
     });
   }
 
@@ -146,9 +168,7 @@ export class StoryStatusComponent implements DoCheck {
       'Are you sure you want to delete this episode?  This action cannot be undone.',
       (okay: boolean) => {
         if (okay) {
-          if (this.story.changed()) {
-            this.story.discard();
-          }
+          this.story.discard();
           this.story.isDestroy = true;
           this.story.save().subscribe(() => {
             this.router.navigate(['/']);

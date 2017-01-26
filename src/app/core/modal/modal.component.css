@@ -85,3 +85,6 @@ section >>> ul {
   list-style: square;
   margin-left: 28px;
 }
+section >>> .error {
+  color: #e32;
+}

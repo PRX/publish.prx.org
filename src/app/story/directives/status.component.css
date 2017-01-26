@@ -62,3 +62,7 @@ publish-button {
   display: block;
   margin-top: 8px;
 }
+.error {
+  color: #e32;
+  font-weight: 600;
+}

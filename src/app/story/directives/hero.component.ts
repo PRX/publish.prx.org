@@ -1,7 +1,5 @@
 import { Component, Input, OnInit, OnChanges, DoCheck } from '@angular/core';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
-
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
 
@@ -31,7 +29,7 @@ import { StoryModel } from '../../shared';
         <publish-button *ngIf="!story.isNew" [model]="story" [visible]="isChanged"
           [disabled]="isInvalid" (click)="save()">Save</publish-button>
         <publish-button *ngIf="!story.isNew" working=0 disabled=1
-          [visible]="!isChanged" (click)="save()">Saved</publish-button>
+          [visible]="!isChanged">Saved</publish-button>
       </div>
     </publish-hero>
     `
