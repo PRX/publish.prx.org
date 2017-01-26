@@ -41,7 +41,11 @@ export class DatepickerComponent implements AfterViewInit {
     if (moment(value, DatepickerComponent.FORMAT, true).isValid()) {
       let date = new Date(value);
       this.picker.setDate(date);
-      this.onDateChange.emit(this.picker.getDate());
+      if (this.date) {
+        date.setHours(new Date(this.date.valueOf()).getHours());
+        date.setMinutes(new Date(this.date.valueOf()).getMinutes());
+      }
+      this.onDateChange.emit(date);
     }
   }
 
@@ -51,7 +55,12 @@ export class DatepickerComponent implements AfterViewInit {
       format: DatepickerComponent.FORMAT,
       theme: 'triangle-theme',
       onSelect: () => {
-        this.onDateChange.emit(this.picker.getDate());
+        let date = this.picker.getDate();
+        if (this.date) {
+          date.setHours(new Date(this.date.valueOf()).getHours());
+          date.setMinutes(new Date(this.date.valueOf()).getMinutes());
+        }
+        this.onDateChange.emit(date);
       }
     };
     if (this.date) {
