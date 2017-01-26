@@ -113,7 +113,7 @@ export class SearchComponent implements OnInit {
       sorts = this.searchStoryParams.orderBy + ':';
       sorts += this.searchStoryParams.orderDesc ? 'desc' : 'asc';
       if (this.searchStoryParams.orderBy === 'published_at') {
-        sorts += 'updated_at:';
+        sorts += ', updated_at:';
         sorts += this.searchStoryParams.orderDesc ? 'desc' : 'asc';
       }
     }

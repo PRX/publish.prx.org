@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { HalDoc, Upload } from '../../core';
 import { UploadableModel } from './upload';
-import { REQUIRED, FILE_TEMPLATED } from './invalid';
+import { REQUIRED, LENGTH, FILE_TEMPLATED } from './invalid';
 
 export class AudioFileModel extends UploadableModel {
 
@@ -18,7 +18,7 @@ export class AudioFileModel extends UploadableModel {
   SETABLE = ['label', 'position', 'format', 'duration', 'bitrate', 'frequency'];
 
   VALIDATORS = {
-    label: [REQUIRED()],
+    label: [REQUIRED(), LENGTH(1, 255)],
     self: [FILE_TEMPLATED()]
   };
 

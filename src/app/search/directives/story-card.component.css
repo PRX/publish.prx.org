@@ -68,19 +68,7 @@ publish-image  {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-}
-.duration, .modified, .play-count {
-  width: calc(100%/3);
-}
-.play-count {
-  flex: 2 2 60px;
-  white-space: nowrap;
-}
-.duration, .modified {
-  flex: 1 1 60px;
-}
-.play-count > i {
-  display: inline-block;
+  justify-content: space-between;
 }
 
 publish-text-overflow-fade {

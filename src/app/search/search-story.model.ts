@@ -5,10 +5,6 @@ export class SearchStory {
       name: 'Episode Title'
     },
     {
-      id: 'updated_at',
-      name: 'Last Updated'
-    },
-    {
       id: 'published_at',
       name: 'When Published'
     }
@@ -26,7 +22,7 @@ export class SearchStory {
     this.perPage = params['perPage'] || 12;
     this.seriesId = params['seriesId'] ? +params['seriesId'] : undefined;
     this.text = params['text'];
-    this.orderBy = params['orderBy'] || 'updated_at';
+    this.orderBy = params['orderBy'] || 'published_at';
     this.orderDesc = params['orderDesc'] === 'true' || params['orderDesc'] === undefined;
   }
 }
