@@ -66,13 +66,6 @@ describe('StoryComponent', () => {
     expect(modalAlertTitle).toMatch(/unsaved changes/i);
   });
 
-  cit('prompts for deletion', (fix, el, comp) => {
-    activatedRoute.testParams = {id: 1234};
-    fix.detectChanges();
-    el.query(By.css('.delete')).nativeElement.click();
-    expect(modalAlertTitle).toMatch(/really delete/i);
-  });
-
   cit('does not prompt for unsaved changes after delete', (fix, el, comp) => {
     activatedRoute.testParams = {id: 1234};
     fix.detectChanges();
