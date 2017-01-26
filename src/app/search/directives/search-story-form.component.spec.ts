@@ -13,7 +13,7 @@ describe('SearchStoryFormComponent', () => {
     comp.model = new SearchStory();
     comp.model.fromRouteParams({tab: SearchComponent.TAB_STORIES});
     expect(comp.model.perPage).toEqual(12);
-    expect(comp.model.orderBy).toEqual('updated_at');
+    expect(comp.model.orderBy).toEqual('published_at');
     expect(comp.model.orderDesc).toBe(true);
   });
 

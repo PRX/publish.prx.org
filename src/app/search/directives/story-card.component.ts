@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
 
 @Component({
@@ -16,9 +15,8 @@ import { StoryModel } from '../../shared';
       <h3 class="series-title">{{seriesTitle}}</h3>
 
       <section class="story-info">
-        <span class="duration">{{storyDuration | duration}}</span>
-        <span class="play-count"><i></i></span>
-        <span class="modified">{{storyDate | date:"MM/dd/yy"}}</span>
+        <span>{{storyDuration | duration}}</span>
+        <span>{{storyDate | date:"MM/dd/yy"}}</span>
       </section>
     </section>
     <section class="story-tags">
@@ -52,7 +50,7 @@ export class StoryCardComponent implements OnInit {
   ngOnInit() {
     this.storyId = this.story.id;
     this.storyTitle = this.story.title;
-    this.storyDate = this.story.publishedAt || this.story.updatedAt || this.story.lastStored;
+    this.storyDate = this.story.publishedAt;
     this.storyDescription = this.story.shortDescription;
     this.storyTags = this.story.splitTags();
     this.storyDuration = this.story.doc['duration'] || 0;

@@ -25,7 +25,7 @@ export class StoryModel extends BaseModel implements HasUpload {
   SETABLE = ['title', 'shortDescription', 'description', 'tags', 'hasUploadMap', 'releasedAt'];
 
   VALIDATORS = {
-    title:            [REQUIRED(true)],
+    title:            [REQUIRED(true), LENGTH(1, 255)],
     shortDescription: [REQUIRED()],
     description:      [LENGTH(10, 4000)]
   };
