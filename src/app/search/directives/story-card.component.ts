@@ -17,7 +17,7 @@ import { StoryModel } from '../../shared';
       <section class="story-info">
         <span class="duration">{{storyDuration | duration}}</span>
         <span class="play-count"><i></i></span>
-        <span class="modified">{{storyDate | date:"MM/dd/yy"}}</span>
+        <span class="published">{{storyDate | date:"MM/dd/yy"}}</span>
       </section>
     </section>
     <section class="story-tags">
@@ -51,7 +51,7 @@ export class StoryCardComponent implements OnInit {
   ngOnInit() {
     this.storyId = this.story.id;
     this.storyTitle = this.story.title;
-    this.storyDate = this.story.publishedAt || this.story.updatedAt || this.story.lastStored;
+    this.storyDate = this.story.publishedAt;
     this.storyDescription = this.story.shortDescription;
     this.storyTags = this.story.splitTags();
     this.storyDuration = this.story.doc['duration'] || 0;

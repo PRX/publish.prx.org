@@ -69,14 +69,14 @@ publish-image  {
   display: -ms-flexbox;
   display: flex;
 }
-.duration, .modified, .play-count {
+.duration, .published, .play-count {
   width: calc(100%/3);
 }
 .play-count {
   flex: 2 2 60px;
   white-space: nowrap;
 }
-.duration, .modified {
+.duration, .published {
   flex: 1 1 60px;
 }
 .play-count > i {
