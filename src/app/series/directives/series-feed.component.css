@@ -13,7 +13,6 @@ ul {
 
 li {
   display: flex;
-  justify-content: space-between;
   margin: 5px 0;
   border-bottom: 1px #ddd solid;
 }
@@ -23,11 +22,13 @@ li:last-child {
 }
 
 li h5 {
-  width: calc(3 * 100%/5);
+  flex-grow: 3;
+  flex-basis: 0;
 }
 
 li p {
-  width: calc(100%/5);
+  flex-grow: 1;
+  flex-basis: 0;
   text-align: right;
 }
 
