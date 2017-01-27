@@ -1,4 +1,4 @@
-import { cit, create, provide } from '../../../testing';
+import { cit, create, provide, stubPipe } from '../../../testing';
 import { SeriesFeedComponent } from './series-feed.component';
 import { TabService } from '../../shared';
 
@@ -7,6 +7,8 @@ describe('SeriesFeedComponent', () => {
   create(SeriesFeedComponent);
 
   provide(TabService);
+
+  stubPipe('duration');
 
   cit('shows a loading spinner', (fix, el, comp) => {
     comp.isLoaded = false;
@@ -28,23 +30,20 @@ describe('SeriesFeedComponent', () => {
     comp.series = {};
     comp.isLoaded = true;
     comp.publicStories = [
-      {title: 'First Public Story', pubDate: new Date()},
-      {title: 'Second Public Story', pubDate: new Date()},
+      {title: 'First Public Story'},
+      {title: 'Second Public Story'},
     ];
     comp.futurePublicStories = [
-      {title: 'Future Story', pubDate: new Date('01/01/2020')}
+      {title: 'Future Story'}
     ];
     comp.privateStories = [
       {title: 'Private Story'}
     ];
     fix.detectChanges();
     expect(el).toContainText('Private Story');
-    expect(el).toContainText('No publication date set');
     expect(el).toContainText('Future Story');
-    expect(el).toContainText('Set for future publication');
     expect(el).toContainText('First Public Story');
     expect(el).toContainText('Second Public Story');
-    expect(el).toContainText('Public');
   });
 
 });

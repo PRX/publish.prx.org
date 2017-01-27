@@ -12,27 +12,30 @@ import { SeriesModel, StoryModel, TabService } from '../../shared';
       </div>
 
       <section *ngIf="!noStories">
+        <h4 *ngIf="privateStories.length">Draft</h4>
         <ul *ngIf="privateStories.length">
-          <h4>Private</h4>
           <li *ngFor="let s of privateStories">
             <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
-            <p class="private">No publication date set.</p>
+            <p>{{s.doc?.duration || 0 | duration}}</p>
+            <p></p>
           </li>
         </ul>
 
+        <h4 *ngIf="futurePublicStories.length">Scheduled</h4>
         <ul *ngIf="futurePublicStories.length">
-          <h4>Set for future publication</h4>
           <li *ngFor="let s of futurePublicStories">
             <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
-            <p class="futurePublic">Will be published {{s.pubDate}}.</p>
+            <p>{{s.doc?.duration || 0 | duration}}</p>
+            <p class="futurePublic">{{s.publishedAt | date:'shortDate'}}</p>
           </li>
         </ul>
 
+        <h4 *ngIf="publicStories.length">Published</h4>
         <ul *ngIf="publicStories.length">
-          <h4>Public</h4>
           <li *ngFor="let s of publicStories">
             <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
-            <p class="public">Published {{s.pubDate}}.</p>
+            <p>{{s.doc?.duration || 0 | duration}}</p>
+            <p>{{s.publishedAt | date:'shortDate'}}</p>
           </li>
         </ul>
 
@@ -74,7 +77,7 @@ export class SeriesFeedComponent implements OnDestroy {
     } else {
       this.series
           .doc
-          .followItems('prx:stories', { per: total })
+          .followItems('prx:stories', { per: total, sorts: 'released_at: desc, published_at: desc' })
           .subscribe((docs) => {
             this.isLoaded = true;
             docs.forEach((doc) => {
@@ -83,7 +86,6 @@ export class SeriesFeedComponent implements OnDestroy {
                   this.privateStories.push(story);
                   return;
                 }
-                story['pubDate'] = story.publishedAt.toLocaleDateString();
                 if (new Date(story.publishedAt) <= new Date()) {
                   this.publicStories.push(story);
                 } else {
