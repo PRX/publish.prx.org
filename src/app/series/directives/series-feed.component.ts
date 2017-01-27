@@ -35,7 +35,7 @@ import { SeriesModel, StoryModel, TabService } from '../../shared';
           <li *ngFor="let s of publicStories">
             <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
             <p>{{s.doc?.duration || 0 | duration}}</p>
-            <p class="public">{{s.publishedAt | date:'shortDate'}}</p>
+            <p>{{s.publishedAt | date:'shortDate'}}</p>
           </li>
         </ul>
 
