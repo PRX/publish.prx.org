@@ -5,7 +5,6 @@ import {
   AudioVersionModel,
   DistributionModel,
   FeederEpisodeModel,
-  FeederPodcastModel,
   StoryModel,
   StoryDistributionModel,
   TabService
@@ -24,9 +23,9 @@ export class PodcastComponent implements OnDestroy {
 
   tabSub: Subscription;
   storyDistribution: StoryDistributionModel;
-  podcast: FeederPodcastModel;
   episode: FeederEpisodeModel;
   version: AudioVersionModel;
+  podcastExplicit: string;
 
   constructor(tab: TabService, private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.init(s));
@@ -55,6 +54,9 @@ export class PodcastComponent implements OnDestroy {
   loadSeriesDistribution(story: StoryModel) {
     story.getSeriesDistribution('podcast').subscribe(ddoc => {
       let dist = new DistributionModel(null, ddoc);
+      dist.loadRelated('podcast').subscribe(() => {
+        this.podcastExplicit = dist.podcast ? dist.podcast.explicit : null;
+      });
       this.findPodcastAudioVersion(story, dist);
     });
   }
@@ -64,22 +66,11 @@ export class PodcastComponent implements OnDestroy {
       if (dist.versionTemplate) {
         story.loadRelated('versions').subscribe(() => {
           this.version = story.versions.find(v => v.template && v.template.id === dist.versionTemplate.id);
-          this.setDefaultExplicit(this.version, dist);
         });
       } else {
         this.version = null;
       }
     });
-  }
-
-  setDefaultExplicit(version: AudioVersionModel, dist: DistributionModel) {
-    if (version.isNew && !version.changed('explicit')) {
-      dist.loadRelated('podcast').subscribe(() => {
-        if (dist.podcast && dist.podcast.explicit) {
-          version.set('explicit', dist.podcast.explicit, true);
-        }
-      });
-    }
   }
 
   get guidConfirm(): string {
