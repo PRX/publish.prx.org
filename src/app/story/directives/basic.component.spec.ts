@@ -23,7 +23,7 @@ describe('BasicComponent', () => {
     comp.story = {images: [], changed: () => false};
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(6);
+    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(7);
     expect(el.queryAll(By.css('publish-wysiwyg')).length).toEqual(1);
     expect(el).toContainText('Tweetable title');
     expect(el).toContainText('short description');
