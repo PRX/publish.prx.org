@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { StoryModel, TabService } from '../../shared';
 
@@ -47,34 +47,40 @@ import { StoryModel, TabService } from '../../shared';
       </publish-fancy-field>
 
       <publish-fancy-field label="Release Date">
-        <div class="fancy-hint">If you'd like to manually alter this episode's publication
+        <div class="fancy-hint">
+          <input type="checkbox" [ngModel]="showReleasedAt" (click)="toggleShowReleaseAt()" name="showReleasedAt" id="showReleasedAt">
+          <label for="showReleasedAt">Specify date and time to be published</label>
+        </div>
+        <div class="fancy-hint" *ngIf="showReleasedAt">If you'd like to manually alter this episode's publication
         to either delay or back-date its release, select the desired release date and time here.
         Otherwise, the episode will be released immediately once published.
         </div>
-        <publish-datepicker
+        <publish-datepicker *ngIf="showReleasedAt"
           [date]="story.releasedAt" (onDateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </publish-datepicker>
-        <publish-timepicker
+        <publish-timepicker *ngIf="showReleasedAt"
           [date]="story.releasedAt" (onTimeChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </publish-timepicker>
-        <p class="form-group">
-          <input type="checkbox" [ngModel]="story.releasedAt" [attr.disabled]="story.releasedAt ? null : true" 
-            name="useReleasedAt" id="useReleasedAt" (change)="clearReleasedAt()">
-          <label for="useReleasedAt">Specify date and time to be published</label>
-        </p>
       </publish-fancy-field>
 
     </form>
   `
 })
 
-export class BasicComponent implements OnDestroy {
+export class BasicComponent implements OnDestroy, DoCheck {
 
   story: StoryModel;
   tabSub: Subscription;
+  showReleasedAt: boolean = false;
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.story = s);
+  }
+
+  ngDoCheck() {
+    if (this.story && this.story.releasedAt) {
+      this.showReleasedAt = true;
+    }
   }
 
   ngOnDestroy(): any {
@@ -93,7 +99,8 @@ export class BasicComponent implements OnDestroy {
     return (this.story && this.story.publishedAt) ? true : false;
   }
 
-  clearReleasedAt() {
+  toggleShowReleaseAt() {
+    this.showReleasedAt = !this.showReleasedAt;
     if (this.story.releasedAt) {
       this.story.releasedAt = null;
     }
