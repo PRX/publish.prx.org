@@ -7,21 +7,33 @@ import { BaseModel } from '../model/base.model';
 })
 
 export class AdvancedConfirmDirective implements Directive {
-  @Input('advancedFieldName') fieldName: string;
-  @Input('advancedModel') model: BaseModel;
-  @Input('publishAdvancedConfirm') confirmText: string;
 
-  @HostListener('blur') onBlur() {
-    if (this.confirmText && !this.model.isNew && !this.model.invalid(this.fieldName) && this.model.changed(this.fieldName)) {
-      this.modal.prompt('', this.confirmText, this.resetFieldOnCancel.bind(this));
-    }
-  }
+  @Input() publishAdvancedConfirm: string;
+  @Input() publishModel: BaseModel;
+  @Input() publishName: string;
+  @Input() publishEvent = 'blur';
+
+  @HostListener('blur') onBlur() { return this.publishEvent === 'blur' && this.prompt(); }
+  @HostListener('change') onChange() { return this.publishEvent === 'change' && this.prompt(); }
 
   constructor(private modal: ModalService) {}
 
+  prompt(msg?: string) {
+    if (this.publishAdvancedConfirm && this.shouldConfirm()) {
+      this.modal.prompt('', this.publishAdvancedConfirm, this.resetFieldOnCancel.bind(this));
+    }
+  }
+
+  shouldConfirm(): boolean {
+    return (this.publishModel && this.publishName)
+      && !this.publishModel.isNew
+      && !this.publishModel.invalid(this.publishName)
+      && this.publishModel.changed(this.publishName);
+  }
+
   resetFieldOnCancel(confirm) {
     if (!confirm) {
-      this.model.set(this.fieldName, this.model.original[this.fieldName]);
+      this.publishModel.set(this.publishName, this.publishModel.original[this.publishName]);
     }
   }
 }
