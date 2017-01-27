@@ -96,7 +96,7 @@ export class DistributionModel extends BaseModel {
   encode(): {} {
     let data = <any> {};
     data.kind = this.kind;
-    if (this.versionTemplateUrl && this.changed('versionTemplateUrl')) {
+    if (this.versionTemplateUrl && (this.isNew || this.changed('versionTemplateUrl'))) {
       data.set_audio_version_template_uri = this.versionTemplateUrl;
     }
     return data;
