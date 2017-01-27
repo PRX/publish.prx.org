@@ -28,15 +28,15 @@
   background: #fff;
   overflow-x: auto;
   overflow-y: auto;
-  padding: 25px 25px 10px;
+  padding: 15px 25px 10px;
 }
 button.close {
   position: absolute;
-  top: 23px;
+  top: 8px;
   right: 6px;
   background: none;
   color: #368aa2;
-  font-size: 34px;
+  font-size: 32px;
   margin: 0;
   padding: 0;
 }
@@ -51,6 +51,7 @@ h1 {
 }
 section {
   flex-grow: 1;
+  margin-top: 10px;
 }
 footer {
   text-align: right;
@@ -79,4 +80,11 @@ section >>> pre {
   font-size: 12px;
   line-height: 16px;
   white-space: pre;
+}
+section >>> ul {
+  list-style: square;
+  margin-left: 28px;
+}
+section >>> .error {
+  color: #e32;
 }

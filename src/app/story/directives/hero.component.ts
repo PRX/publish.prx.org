@@ -1,7 +1,5 @@
 import { Component, Input, OnInit, OnChanges, DoCheck } from '@angular/core';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
-
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
 
@@ -21,50 +19,17 @@ import { StoryModel } from '../../shared';
       <div class="hero-info" *ngIf="story">
         <h2>{{story.title || '(Untitled)'}}</h2>
         <p *ngIf="story?.isNew">Not saved</p>
-        <p *ngIf="!story?.isNew && !story?.publishedAt">Last saved at {{story.updatedAt | timeago}}</p>
-        <p *ngIf="story?.publishedAt">{{publishedOnText}}</p>
+        <p *ngIf="!story?.isNew">Last saved at {{story.updatedAt | timeago}}</p>
       </div>
       <div class="hero-actions" *ngIf="story">
         <publish-button [model]="story" working=0 disabled=0 plain=1
-          (click)="discard()">Discard</publish-button>
-
-        <template [ngIf]="stateNew">
-          <publish-button green=1 [model]="story" [disabled]="normalInvalid"
-              visible=1 (click)="save()">Create
-            <div *ngIf="normalInvalid" class="invalid-tip create">
-              <h4>Invalid episode</h4>
-              <p>Add a title and resolve validation errors</p>
-            </div>
-          </publish-button>
-        </template>
-
-        <template [ngIf]="stateUnpublished">
-          <publish-button [model]="story" [disabled]="normalInvalid" (click)="save()">Save
-            <div *ngIf="normalInvalid" class="invalid-tip">
-              <h4>Invalid episode</h4>
-              <p>Resolve all validation errors</p>
-            </div>
-          </publish-button>
-          <publish-button [model]="story" [visible]="!story.changed()" [disabled]="strictInvalid"
-              [working]="isPublishing" (click)="togglePublish()" orange=1>Publish
-            <div *ngIf="strictInvalid" class="invalid-tip publish">
-              <h4>Not ready to publish</h4>
-              <p>Fill out all required fields</p>
-            </div>
-          </publish-button>
-        </template>
-
-        <template [ngIf]="statePublished">
-          <publish-button [model]="story" (click)="save()" [disabled]="strictInvalid">Save
-            <div *ngIf="strictInvalid" class="invalid-tip">
-              <h4>Invalid episode</h4>
-              <p>Resolve all validation errors</p>
-            </div>
-          </publish-button>
-          <publish-button [model]="story" [visible]="!story.changed()" [working]="isPublishing"
-            (click)="togglePublish()" orange=1>Unpublish</publish-button>
-        </template>
-
+          [visible]="isChanged" (click)="discard()">Discard</publish-button>
+        <publish-button *ngIf="story.isNew" green=1 visible=1 [model]="story"
+          [disabled]="isInvalid" (click)="save()">Create</publish-button>
+        <publish-button *ngIf="!story.isNew" [model]="story" [visible]="isChanged"
+          [disabled]="isInvalid" (click)="save()">Save</publish-button>
+        <publish-button *ngIf="!story.isNew" working=0 disabled=1
+          [visible]="!isChanged">Saved</publish-button>
       </div>
     </publish-hero>
     `
@@ -76,14 +41,8 @@ export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
   @Input() story: StoryModel;
 
   series: HalDoc;
-
-  stateNew: boolean;
-  stateUnpublished: boolean;
-  statePublished: boolean;
-  isPublishing: boolean;
-
-  strictInvalid: string;
-  normalInvalid: string;
+  isChanged: boolean;
+  isInvalid: string;
 
   constructor(private router: Router) {}
 
@@ -97,11 +56,12 @@ export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
 
   ngDoCheck() {
     if (this.story) {
-      this.stateNew = this.story.isNew;
-      this.stateUnpublished = !this.stateNew && !this.story.publishedAt;
-      this.statePublished = !this.stateNew && !this.stateUnpublished;
-      this.strictInvalid = this.story.invalid(null, true);
-      this.normalInvalid = this.story.invalid(null, false);
+      this.isChanged = this.story.changed();
+      if (this.story.isNew || !this.story.publishedAt) {
+        this.isInvalid = this.story.invalid(null, false);
+      } else {
+        this.isInvalid = this.story.invalid(null, true); // strict
+      }
     }
   }
 
@@ -126,25 +86,6 @@ export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
 
   discard() {
     this.story.discard();
-  }
-
-  togglePublish() {
-    this.isPublishing = true;
-    this.story.setPublished(!this.story.publishedAt).subscribe(() => {
-      this.isPublishing = false;
-    });
-  }
-
-  formatDatetime(date) {
-    return moment(date).format('L LT');
-  }
-
-  get publishedOnText() {
-    if (this.story.isPublished()) {
-      return `Published on ${this.formatDatetime(this.story.publishedAt)}`;
-    } else {
-      return `Will be published on ${this.formatDatetime(this.story.publishedAt)}`;
-    }
   }
 
 }

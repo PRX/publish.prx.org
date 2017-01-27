@@ -2,11 +2,12 @@ import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard, DeactivateGuard } from '../shared';
 
-import { StoryComponent }     from './story.component';
-import { StoryHeroComponent } from './directives/hero.component';
-import { BasicComponent }     from './directives/basic.component';
-import { PodcastComponent }   from './directives/podcast.component';
-import { PlayerComponent }    from './directives/player.component';
+import { StoryComponent }       from './story.component';
+import { StoryHeroComponent }   from './directives/hero.component';
+import { BasicComponent }       from './directives/basic.component';
+import { PodcastComponent }     from './directives/podcast.component';
+import { PlayerComponent }      from './directives/player.component';
+import { StoryStatusComponent } from './directives/status.component';
 
 const storyChildRoutes = [
   { path: '',        component: BasicComponent },
@@ -43,7 +44,8 @@ export const storyComponents: any[] = [
   StoryHeroComponent,
   BasicComponent,
   PodcastComponent,
-  PlayerComponent
+  PlayerComponent,
+  StoryStatusComponent
 ];
 
 export const storyProviders: any[] = [];

@@ -36,6 +36,13 @@ button.green[disabled] {
   background-color: #87c390;
   color: #BCDBC0;
 }
+button.red {
+  color: #fff;
+  background-color: #ee4d3e;
+}
+button.red:hover, button.red:focus {
+  background-color: #ff0000;
+}
 
 /*
  * Hide text when spinner is showing
