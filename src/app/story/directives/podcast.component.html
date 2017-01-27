@@ -14,7 +14,7 @@
     </div>
   </publish-fancy-field>
 
-  <publish-fancy-field *ngIf="version" label="Explicit" required=1>
+  <publish-fancy-field *ngIf="version" label="Explicit">
     <div class="fancy-hint">
       In accordance with
       <a [href]="itunesRequirementsDoc"
@@ -22,6 +22,9 @@
       does any of your podcast audio contain
       <a [href]="itunesExplicitDoc"
         title="About iTunes Store Parental Advisories - Apple Support">explicit material?</a>
+      <template [ngIf]="podcastExplicit">
+        Setting this field will override your <strong>{{podcastExplicit}}</strong> podcast global value.
+      </template>
     </div>
     <div class="version">
       <header>
