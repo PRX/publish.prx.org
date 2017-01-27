@@ -133,7 +133,11 @@ export class PlayerComponent implements OnDestroy, DoCheck {
     cms.push(`ts=${this.encode(this.subtitle)}`);
     cms.push(`ua=${this.encode(this.audioUrl)}`);
     cms.push(`ui=${this.encode(this.imageUrl)}`);
-    cms.push(`us=${this.encode(this.subscriptionUrl)}`);
+    if (this.feedUrl) {
+      cms.push(`us=${this.encode(this.feedUrl)}`);
+    } else {
+      cms.push(`us=${this.encode(this.subscriptionUrl)}`);
+    }
     let cmsUrl = `${Env.PLAY_HOST}/e?${cms.join('&')}`;
 
     let feeder: string[] = [];
