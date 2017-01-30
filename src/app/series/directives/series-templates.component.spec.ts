@@ -1,4 +1,4 @@
-import { cit, create, provide, By } from '../../../testing';
+import { cit, create, provide, By, stubPipe } from '../../../testing';
 import { SeriesTemplatesComponent } from './series-templates.component';
 import { TabService } from '../../shared';
 
@@ -7,6 +7,8 @@ describe('SeriesTemplatesComponent', () => {
   create(SeriesTemplatesComponent);
 
   provide(TabService);
+
+  stubPipe('duration');
 
   cit('ignores deleted version templates', (fix, el, comp) => {
     comp.series = {versionTemplates: [{isDestroy: true}]};

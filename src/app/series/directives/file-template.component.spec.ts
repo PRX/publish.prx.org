@@ -7,6 +7,7 @@ describe('FileTemplateComponent', () => {
   create(FileTemplateComponent);
 
   stubPipe('capitalize');
+  stubPipe('duration');
 
   cit('renders undestroyed file templates', (fix, el, comp) => {
     expect(el).not.toQuery('publish-fancy-field');

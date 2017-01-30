@@ -40,8 +40,10 @@ import {
                 The minimum and maximum HH:MM:SS durations for all the audio files. Used to ensure that each
                 of your episodes is the desired approximate length, and to prevent uploading bad audio.
               </div>
-              <publish-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"></publish-fancy-duration>
-              <publish-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"></publish-fancy-duration>
+              <publish-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"
+                [advancedConfirm]="lengthConfirm(v, v['lengthMinimum'] | duration, 'minimum')"></publish-fancy-duration>
+              <publish-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"
+                [advancedConfirm]="lengthConfirm(v, v['lengthMaximum'] | duration, 'maximum')"></publish-fancy-duration>
             </publish-fancy-field>
 
             <publish-fancy-field label="Segments">
@@ -106,6 +108,15 @@ export class SeriesTemplatesComponent implements OnDestroy {
       let draft = new AudioFileTemplateModel(version.parent, version.doc, count + 1);
       draft.set('label', `Segment ${segLetter}`);
       version.fileTemplates.push(draft);
+    }
+  }
+
+  lengthConfirm(version: AudioVersionTemplateModel, value: string, label: string): string {
+    if (this.series && this.series.doc && this.series.doc.has('prx:stories') && this.series.doc.count('prx:stories') > 0 &&
+      (version.lengthMinimum > version.original['lengthMinimum'] ||
+      (version.lengthMaximum !== 0 && version.lengthMaximum < version.original['lengthMaximum']))) {
+      return `Are you sure you want to use ${value} as the ${label} length for all audio for your podcast?
+        This change could invalidate published episodes of your podcast.`;
     }
   }
 

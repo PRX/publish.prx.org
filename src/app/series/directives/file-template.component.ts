@@ -13,8 +13,10 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
           </publish-fancy-field>
         </div>
         <div class="lengths">
-          <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"></publish-fancy-duration>
-          <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"></publish-fancy-duration>
+          <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"
+            [advancedConfirm]="lengthConfirm(file['lengthMinimum'] | duration, 'minimum')"></publish-fancy-duration>
+          <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"
+            [advancedConfirm]="lengthConfirm(file['lengthMaximum'] | duration, 'maximum')"></publish-fancy-duration>
         </div>
       </div>
 
@@ -49,6 +51,15 @@ export class FileTemplateComponent {
     if (this.file.isNew) {
       this.version.removeRelated(this.file);
       this.file.unstore();
+    }
+  }
+
+  lengthConfirm(value: string, label: string): string {
+    if (this.version && this.version.parent && this.version.parent.has('prx:stories') && this.version.parent.count('prx:stories') > 0 &&
+      (this.file.lengthMinimum > this.file.original['lengthMinimum'] ||
+      (this.file.lengthMaximum !== 0 && this.file.lengthMaximum < this.file.original['lengthMaximum']))) {
+      return `Are you sure you want to use ${value} as the ${label} length for the ${this.file.label} segment?
+        This change could invalidate published episodes of your podcast.`;
     }
   }
 
