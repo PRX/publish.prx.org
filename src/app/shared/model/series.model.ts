@@ -24,7 +24,6 @@ export class SeriesModel extends BaseModel implements HasUpload {
 
   VALIDATORS = {
     title:            [REQUIRED(), LENGTH(1, 255)],
-    description:      [LENGTH(10)],
     shortDescription: [REQUIRED()]
   };
 

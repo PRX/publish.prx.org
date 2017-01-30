@@ -27,7 +27,7 @@ export class StoryModel extends BaseModel implements HasUpload {
   VALIDATORS = {
     title:            [REQUIRED(true), LENGTH(1, 255)],
     shortDescription: [REQUIRED()],
-    description:      [LENGTH(10, 4000)]
+    description:      [LENGTH(0, 4000)]
   };
 
   // HasUpload mixin
