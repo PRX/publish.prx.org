@@ -28,7 +28,7 @@ import {
         <div *ngIf="!v.isDestroy" class="version">
           <header>
             <strong>{{v?.label}}</strong>
-            <button class="btn-icon icon-cancel" (click)="removeVersion(v)"></button>
+            <button type="button" class="btn-icon icon-cancel" (click)="removeVersion(v)"></button>
           </header>
           <section>
             <publish-fancy-field required textinput [model]="v" name="label" label="Template Label">
@@ -51,7 +51,7 @@ import {
                 to validate the specific file.
               </div>
               <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t" [version]="v"></publish-file-template>
-              <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)"
+              <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)" type="button"
                 (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
             </publish-fancy-field>
           </section>
