@@ -140,7 +140,6 @@
 }
 .toolbar.affix .info >>> h2 {
   max-height: 30px;
-  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
