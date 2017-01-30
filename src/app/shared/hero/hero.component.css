@@ -46,6 +46,7 @@
 }
 .toolbar .info {
   flex-grow: 1;
+  min-width: 0;
 }
 .toolbar .actions {
   white-space: nowrap;
@@ -136,4 +137,11 @@
 }
 .spacer.affix {
   height: 75px;
+}
+.toolbar.affix .info >>> h2 {
+  max-height: 30px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
