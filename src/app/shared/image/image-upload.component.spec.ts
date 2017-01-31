@@ -93,10 +93,12 @@ describe('ImageUploadComponent', () => {
     comp.minWidth = comp.minHeight = 0;
     comp.addUpload(dataURItoBlob(imageDataURI));
     comp.reader.addEventListener('loadend', () => {
-      fix.detectChanges();
-      expect(el).not.toContainText('Add Image');
-      expect(el).toQuery('publish-image-file');
-      done();
+      comp.browserImage.addEventListener('load', () => {
+        fix.detectChanges();
+        expect(el).not.toContainText('Add Image');
+        expect(el).toQuery('publish-image-file');
+        done();
+      });
     });
   });
 
@@ -106,10 +108,12 @@ describe('ImageUploadComponent', () => {
     comp.minWidth = comp.minHeight = 1400;
     comp.addUpload(dataURItoBlob(imageDataURI));
     comp.reader.addEventListener('loadend', () => {
-      fix.detectChanges();
-      expect(el).toContainText(`should be at least ${comp.minWidth} x ${comp.minHeight} px`);
-      expect(comp.model.images.length).toEqual(0);
-      done();
+      comp.browserImage.addEventListener('load', () => {
+        fix.detectChanges();
+        expect(el).toContainText(`should be at least ${comp.minWidth} x ${comp.minHeight} px`);
+        expect(comp.model.images.length).toEqual(0);
+        done();
+      });
     });
   });
 

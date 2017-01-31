@@ -41,6 +41,7 @@ export class ImageUploadComponent implements DoCheck {
   thumbnailHeight = '220px';
   imgError: string;
   reader: FileReader = new FileReader();
+  browserImage: any;
 
   lastImageHash: string;
   images: ImageModel[];
@@ -92,18 +93,20 @@ export class ImageUploadComponent implements DoCheck {
     };
 
     this.reader.onloadend = () => {
-      let img = new Image();
-      img.src = this.reader.result;
-      if (img.width < this.minWidth || img.height < this.minHeight) {
-        this.imgError = `The image provided is only ${img.width} x ${img.height} px
-                         but should be at least ${this.minWidth} x ${this.minHeight} px.`;
-      } else {
-        let upload = this.uploadService.add(file);
-        let imageModel = this.model.addImage(upload);
-        if (this.purpose) {
-          imageModel.set('purpose', this.purpose);
+      this.browserImage = new Image();
+      this.browserImage.onload = () => {
+        if (this.browserImage.width < this.minWidth || this.browserImage.height < this.minHeight) {
+          this.imgError = `The image provided is only ${this.browserImage.width} x ${this.browserImage.height} px
+                           but should be at least ${this.minWidth} x ${this.minHeight} px.`;
+        } else {
+          let upload = this.uploadService.add(file);
+          let imageModel = this.model.addImage(upload);
+          if (this.purpose) {
+            imageModel.set('purpose', this.purpose);
+          }
         }
-      }
+      };
+      this.browserImage.src = this.reader.result;
     };
 
     this.reader.readAsDataURL(file);
