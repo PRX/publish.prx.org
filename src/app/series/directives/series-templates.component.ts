@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ModalService } from '../../core';
 import {
   SeriesModel,
   TabService,
@@ -28,7 +29,7 @@ import {
         <div *ngIf="!v.isDestroy" class="version">
           <header>
             <strong>{{v?.label}}</strong>
-            <button type="button" class="btn-icon icon-cancel" (click)="removeVersion(v)"></button>
+            <button type="button" class="btn-icon icon-cancel" (click)="promptToRemoveVersion(v)"></button>
           </header>
           <section>
             <publish-fancy-field required textinput [model]="v" name="label" label="Template Label">
@@ -54,7 +55,7 @@ import {
               </div>
               <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t" [version]="v"></publish-file-template>
               <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)" type="button"
-                (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
+                (click)="promptToAddFile(v)"><i class="icon-plus"></i>Add Segment</button>
             </publish-fancy-field>
           </section>
         </div>
@@ -68,12 +69,17 @@ export class SeriesTemplatesComponent implements OnDestroy {
   series: SeriesModel;
   tabSub: Subscription;
 
-  constructor(tab: TabService) {
+  constructor(tab: TabService,
+              private modal: ModalService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => this.series = s);
   }
 
   ngOnDestroy(): any {
     this.tabSub.unsubscribe();
+  }
+
+  hasStories() {
+    return this.series && this.series.doc && this.series.doc.has('prx:stories') && this.series.doc.count('prx:stories') > 0;
   }
 
   hasVersions() {
@@ -86,6 +92,20 @@ export class SeriesTemplatesComponent implements OnDestroy {
     this.series.versionTemplates.push(draft);
   }
 
+  promptToRemoveVersion(version: AudioVersionTemplateModel) {
+    if (this.hasStories()) {
+      let confirmMsg = `Are you sure you want to remove the ${version.label} template?
+      This change could affect your already published episodes.`;
+      this.modal.prompt('', confirmMsg, (confirm) => {
+        if (confirm) {
+          this.removeVersion(version);
+        }
+      });
+    } else {
+      this.removeVersion(version);
+    }
+  }
+
   removeVersion(version: AudioVersionTemplateModel) {
     version.isDestroy = true;
     if (version.isNew) {
@@ -96,6 +116,20 @@ export class SeriesTemplatesComponent implements OnDestroy {
 
   canAddFile(version: AudioVersionTemplateModel): boolean {
     return version.fileTemplates.filter(f => !f.isDestroy).length < 10;
+  }
+
+  promptToAddFile(version: AudioVersionTemplateModel) {
+    if (this.hasStories()) {
+      let confirmMsg = `Are you sure you want to add a segment to your ${version.label} template?
+      This change could invalidate your already published episodes.`;
+      this.modal.prompt('', confirmMsg, (confirm) => {
+        if (confirm) {
+          this.addFile(version);
+        }
+      });
+    } else {
+      this.addFile(version);
+    }
   }
 
   addFile(version: AudioVersionTemplateModel) {
@@ -112,11 +146,11 @@ export class SeriesTemplatesComponent implements OnDestroy {
   }
 
   lengthConfirm(version: AudioVersionTemplateModel, value: string, label: string): string {
-    if (this.series && this.series.doc && this.series.doc.has('prx:stories') && this.series.doc.count('prx:stories') > 0 &&
+    if (this.hasStories() &&
       (version.lengthMinimum > version.original['lengthMinimum'] ||
       (version.lengthMaximum !== 0 && version.lengthMaximum < version.original['lengthMaximum']))) {
-      return `Are you sure you want to use ${value} as the ${label} length for all audio for your podcast?
-        This change could invalidate published episodes of your podcast.`;
+      return `Are you sure you want to use ${value} as the ${label} length for all audio for your ${version.label} template?
+        This change could invalidate your already published episodes.`;
     }
   }
 

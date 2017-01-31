@@ -18,7 +18,7 @@ export class AdvancedConfirmDirective implements Directive {
 
   constructor(private modal: ModalService) {}
 
-  prompt(msg?: string) {
+  prompt() {
     if (this.publishAdvancedConfirm && this.shouldConfirm()) {
       this.modal.prompt('', this.publishAdvancedConfirm, this.resetFieldOnCancel.bind(this));
     }

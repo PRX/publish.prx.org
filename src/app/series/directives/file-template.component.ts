@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ModalService } from '../../core';
 import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared';
 
 @Component({
@@ -21,7 +22,7 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
       </div>
 
       <div class="remove">
-        <button *ngIf="canRemoveFile" type="button" class="btn-icon icon-cancel" (click)="removeFile()"></button>
+        <button *ngIf="canRemoveFile" type="button" class="btn-icon icon-cancel" (click)="promptToRemoveFile()"></button>
       </div>
 
       <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
@@ -35,6 +36,12 @@ export class FileTemplateComponent {
   @Input() version: AudioVersionTemplateModel;
   @Input() file: AudioFileTemplateModel;
 
+  constructor(private modal: ModalService) {}
+
+  hasStories() {
+    return this.version && this.version.parent && this.version.parent.has('prx:stories') && this.version.parent.count('prx:stories') > 0;
+  }
+
   get invalid(): string {
     return this.file.invalid('label') || this.file.invalid('lengthAny');
   }
@@ -43,6 +50,20 @@ export class FileTemplateComponent {
     if (this.version && this.file) {
       let last = this.version.fileTemplates.filter(f => !f.isDestroy).pop();
       return this.file === last;
+    }
+  }
+
+  promptToRemoveFile() {
+    if (this.hasStories()) {
+      let confirmMsg = `Are you sure you want to remove the ${this.file.label} segment?
+      This change could affect your already published episodes.`;
+      this.modal.prompt('', confirmMsg, (confirm) => {
+        if (confirm) {
+          this.removeFile();
+        }
+      });
+    } else {
+      this.removeFile();
     }
   }
 
@@ -55,11 +76,11 @@ export class FileTemplateComponent {
   }
 
   lengthConfirm(value: string, label: string): string {
-    if (this.version && this.version.parent && this.version.parent.has('prx:stories') && this.version.parent.count('prx:stories') > 0 &&
+    if (this.hasStories() &&
       (this.file.lengthMinimum > this.file.original['lengthMinimum'] ||
       (this.file.lengthMaximum !== 0 && this.file.lengthMaximum < this.file.original['lengthMaximum']))) {
       return `Are you sure you want to use ${value} as the ${label} length for the ${this.file.label} segment?
-        This change could invalidate published episodes of your podcast.`;
+        This change could invalidate your already published episodes.`;
     }
   }
 
