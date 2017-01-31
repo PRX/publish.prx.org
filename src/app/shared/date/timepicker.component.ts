@@ -57,7 +57,7 @@ export class TimepickerComponent {
     let hours = +value.split(':')[0];
     if (hours < 12 && value.substr(value.indexOf(':') + 3, 2) === 'pm') {
       hours += 12;
-    } else if (hours === 12 && value.slice(value.length - 2) === 'am') {
+    } else if (hours === 12 && value.substr(value.indexOf(':') + 3, 2) === 'am') {
       hours = 0;
     }
     date.setHours(hours);
