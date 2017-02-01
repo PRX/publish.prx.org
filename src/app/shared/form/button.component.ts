@@ -18,7 +18,7 @@ import { BaseModel } from '../model/base.model';
 export class ButtonComponent {
 
   @Input() model: BaseModel;
-  @Output() click = new EventEmitter();
+  @Output() click = new EventEmitter<Event>();
 
   @Input() orange = false;
   @Input() plain = false;
@@ -55,7 +55,7 @@ export class ButtonComponent {
 
   onClick(event: Event) {
     event.stopPropagation();
-    this.click.emit();
+    this.click.emit(event);
   }
 
   private decode(val: any): any {

@@ -37,6 +37,6 @@
     <a routerLinkActive="active" [routerLink]="[base, 'list']">{{storyCount}} {{storyNoun}} in Series</a>
   </div>
   <div class="extras">
-    <button *ngIf="id && storyCount == 0" class="delete" (click)="confirmDelete()">Delete</button>
+    <button *ngIf="id && storyCount == 0" class="delete" (click)="confirmDelete($event)">Delete</button>
   </div>
 </publish-tabs>

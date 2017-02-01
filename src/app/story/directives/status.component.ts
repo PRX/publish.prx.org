@@ -19,7 +19,7 @@ import { StoryModel } from '../../shared';
           <publish-button *ngIf="editStatus" [model]="story" visible=1 orange=1 disabled=0
             [working]="isPublishing" (click)="togglePublish()">Unpublish</publish-button>
           <publish-button *ngIf="editStatus" [model]="story" visible=1 red=1 disabled=0 working=0
-            (click)="confirmDelete()">Delete</publish-button>
+            (click)="confirmDelete($event)">Delete</publish-button>
         </template>
       </dd>
 
@@ -164,7 +164,10 @@ export class StoryStatusComponent implements DoCheck {
     });
   }
 
-  confirmDelete(): void {
+  confirmDelete(event: MouseEvent): void {
+    if (event.target['blur']) {
+      event.target['blur']();
+    }
     this.modal.prompt(
       'Really delete?',
       'Are you sure you want to delete this episode?  This action cannot be undone.',
