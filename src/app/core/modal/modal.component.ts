@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { ModalService, ModalState } from './modal.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class ModalComponent {
   shown: boolean;
   state: ModalState;
 
-  constructor(modalService: ModalService, ref: ChangeDetectorRef) {
+  constructor(modalService: ModalService) {
     modalService.state.subscribe((state) => {
       this.shown = !state.hide;
       if (state.hide) {
@@ -36,8 +36,7 @@ export class ModalComponent {
       } else {
         this.setScroll(false);
       }
-      this.state = state;
-      ref.detectChanges();
+      this.state = Object.assign({}, state);
     });
   }
 
