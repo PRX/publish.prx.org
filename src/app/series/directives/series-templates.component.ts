@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ModalService } from '../../core';
 import {
   SeriesModel,
   TabService,
@@ -28,7 +29,7 @@ import {
         <div *ngIf="!v.isDestroy" class="version">
           <header>
             <strong>{{v?.label}}</strong>
-            <button class="btn-icon icon-cancel" (click)="removeVersion(v)"></button>
+            <button type="button" class="btn-icon icon-cancel" (click)="promptToRemoveVersion(v)"></button>
           </header>
           <section>
             <publish-fancy-field required textinput [model]="v" name="label" label="Template Label">
@@ -40,8 +41,10 @@ import {
                 The minimum and maximum HH:MM:SS durations for all the audio files. Used to ensure that each
                 of your episodes is the desired approximate length, and to prevent uploading bad audio.
               </div>
-              <publish-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"></publish-fancy-duration>
-              <publish-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"></publish-fancy-duration>
+              <publish-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"
+                [advancedConfirm]="lengthConfirm(v, v['lengthMinimum'] | duration, 'minimum')"></publish-fancy-duration>
+              <publish-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"
+                [advancedConfirm]="lengthConfirm(v, v['lengthMaximum'] | duration, 'maximum')"></publish-fancy-duration>
             </publish-fancy-field>
 
             <publish-fancy-field label="Segments">
@@ -51,8 +54,8 @@ import {
                 to validate the specific file.
               </div>
               <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t" [version]="v"></publish-file-template>
-              <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)"
-                (click)="addFile(v)"><i class="icon-plus"></i>Add Segment</button>
+              <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)" type="button"
+                (click)="promptToAddFile($event, v)"><i class="icon-plus"></i>Add Segment</button>
             </publish-fancy-field>
           </section>
         </div>
@@ -66,12 +69,17 @@ export class SeriesTemplatesComponent implements OnDestroy {
   series: SeriesModel;
   tabSub: Subscription;
 
-  constructor(tab: TabService) {
+  constructor(tab: TabService,
+              private modal: ModalService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => this.series = s);
   }
 
   ngOnDestroy(): any {
     this.tabSub.unsubscribe();
+  }
+
+  hasStories() {
+    return this.series && this.series.doc && this.series.doc.has('prx:stories') && this.series.doc.count('prx:stories') > 0;
   }
 
   hasVersions() {
@@ -82,6 +90,20 @@ export class SeriesTemplatesComponent implements OnDestroy {
     let draft = new AudioVersionTemplateModel(this.series.doc);
     draft.set('label', 'Podcast Audio');
     this.series.versionTemplates.push(draft);
+  }
+
+  promptToRemoveVersion(version: AudioVersionTemplateModel) {
+    if (this.hasStories()) {
+      let confirmMsg = `Are you sure you want to remove the ${version.label} template?
+      This change could affect your already published episodes.`;
+      this.modal.prompt('', confirmMsg, (confirm) => {
+        if (confirm) {
+          this.removeVersion(version);
+        }
+      });
+    } else {
+      this.removeVersion(version);
+    }
   }
 
   removeVersion(version: AudioVersionTemplateModel) {
@@ -96,6 +118,23 @@ export class SeriesTemplatesComponent implements OnDestroy {
     return version.fileTemplates.filter(f => !f.isDestroy).length < 10;
   }
 
+  promptToAddFile(event: MouseEvent, version: AudioVersionTemplateModel) {
+    if (event.target['blur']) {
+      event.target['blur']();
+    }
+    if (this.hasStories()) {
+      let confirmMsg = `Are you sure you want to add a segment to your ${version.label} template?
+      This change could invalidate your already published episodes.`;
+      this.modal.prompt('', confirmMsg, (confirm) => {
+        if (confirm) {
+          this.addFile(version);
+        }
+      });
+    } else {
+      this.addFile(version);
+    }
+  }
+
   addFile(version: AudioVersionTemplateModel) {
     let existing = version.fileTemplates.find(f => f.isDestroy);
     if (existing) {
@@ -106,6 +145,18 @@ export class SeriesTemplatesComponent implements OnDestroy {
       let draft = new AudioFileTemplateModel(version.parent, version.doc, count + 1);
       draft.set('label', `Segment ${segLetter}`);
       version.fileTemplates.push(draft);
+    }
+  }
+
+  isLengthMoreStrict(version: AudioVersionTemplateModel) {
+    return (version.lengthMinimum > version.original['lengthMinimum'] ||
+    (version.lengthMaximum !== 0 && version.lengthMaximum < version.original['lengthMaximum']))
+  }
+
+  lengthConfirm(version: AudioVersionTemplateModel, value: string, label: string): string {
+    if (this.hasStories() && this.isLengthMoreStrict(version)) {
+      return `Are you sure you want to use ${value} as the ${label} length for all audio for your ${version.label} template?
+        This change could invalidate your already published episodes.`;
     }
   }
 

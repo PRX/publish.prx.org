@@ -1,4 +1,5 @@
-import { cit, create, stubPipe } from '../../../testing';
+import { cit, create, provide, stubPipe } from '../../../testing';
+import { ModalService } from '../../core';
 import { AudioFileTemplateModel } from '../../shared';
 import { FileTemplateComponent } from './file-template.component';
 
@@ -6,7 +7,10 @@ describe('FileTemplateComponent', () => {
 
   create(FileTemplateComponent);
 
+  provide(ModalService);
+
   stubPipe('capitalize');
+  stubPipe('duration');
 
   cit('renders undestroyed file templates', (fix, el, comp) => {
     expect(el).not.toQuery('publish-fancy-field');

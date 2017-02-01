@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ModalService } from '../../core';
 import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared';
 
 @Component({
@@ -13,13 +14,15 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
           </publish-fancy-field>
         </div>
         <div class="lengths">
-          <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"></publish-fancy-duration>
-          <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"></publish-fancy-duration>
+          <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"
+            [advancedConfirm]="lengthConfirm(file['lengthMinimum'] | duration, 'minimum')"></publish-fancy-duration>
+          <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"
+            [advancedConfirm]="lengthConfirm(file['lengthMaximum'] | duration, 'maximum')"></publish-fancy-duration>
         </div>
       </div>
 
       <div class="remove">
-        <button *ngIf="canRemoveFile" class="btn-icon icon-cancel" (click)="removeFile()"></button>
+        <button *ngIf="canRemoveFile" type="button" class="btn-icon icon-cancel" (click)="promptToRemoveFile()"></button>
       </div>
 
       <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
@@ -33,6 +36,12 @@ export class FileTemplateComponent {
   @Input() version: AudioVersionTemplateModel;
   @Input() file: AudioFileTemplateModel;
 
+  constructor(private modal: ModalService) {}
+
+  hasStories() {
+    return this.version && this.version.parent && this.version.parent.has('prx:stories') && this.version.parent.count('prx:stories') > 0;
+  }
+
   get invalid(): string {
     return this.file.invalid('label') || this.file.invalid('lengthAny');
   }
@@ -44,11 +53,37 @@ export class FileTemplateComponent {
     }
   }
 
+  promptToRemoveFile() {
+    if (this.hasStories() && !this.file.isNew) {
+      let confirmMsg = `Are you sure you want to remove the ${this.file.label} segment?
+      This change could affect your already published episodes.`;
+      this.modal.prompt('', confirmMsg, (confirm) => {
+        if (confirm) {
+          this.removeFile();
+        }
+      });
+    } else {
+      this.removeFile();
+    }
+  }
+
   removeFile() {
     this.file.isDestroy = true;
     if (this.file.isNew) {
       this.version.removeRelated(this.file);
       this.file.unstore();
+    }
+  }
+
+  isLengthMoreStrict() {
+    return (this.file.lengthMinimum > this.file.original['lengthMinimum'] ||
+    (this.file.lengthMaximum !== 0 && this.file.lengthMaximum < this.file.original['lengthMaximum']));
+  }
+
+  lengthConfirm(value: string, label: string): string {
+    if (this.hasStories() && this.isLengthMoreStrict()) {
+      return `Are you sure you want to use ${value} as the ${label} length for the ${this.file.label} segment?
+        This change could invalidate your already published episodes.`;
     }
   }
 
