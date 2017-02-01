@@ -54,7 +54,7 @@ export class FileTemplateComponent {
   }
 
   promptToRemoveFile() {
-    if (this.hasStories()) {
+    if (this.hasStories() && !this.file.isNew) {
       let confirmMsg = `Are you sure you want to remove the ${this.file.label} segment?
       This change could affect your already published episodes.`;
       this.modal.prompt('', confirmMsg, (confirm) => {
