@@ -75,10 +75,13 @@ export class FileTemplateComponent {
     }
   }
 
+  isLengthMoreStrict() {
+    return (this.file.lengthMinimum > this.file.original['lengthMinimum'] ||
+    (this.file.lengthMaximum !== 0 && this.file.lengthMaximum < this.file.original['lengthMaximum']));
+  }
+
   lengthConfirm(value: string, label: string): string {
-    if (this.hasStories() &&
-      (this.file.lengthMinimum > this.file.original['lengthMinimum'] ||
-      (this.file.lengthMaximum !== 0 && this.file.lengthMaximum < this.file.original['lengthMaximum']))) {
+    if (this.hasStories() && this.isLengthMoreStrict()) {
       return `Are you sure you want to use ${value} as the ${label} length for the ${this.file.label} segment?
         This change could invalidate your already published episodes.`;
     }

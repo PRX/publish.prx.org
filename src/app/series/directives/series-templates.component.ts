@@ -145,10 +145,13 @@ export class SeriesTemplatesComponent implements OnDestroy {
     }
   }
 
+  isLengthMoreStrict(version: AudioVersionTemplateModel) {
+    return (version.lengthMinimum > version.original['lengthMinimum'] ||
+    (version.lengthMaximum !== 0 && version.lengthMaximum < version.original['lengthMaximum']))
+  }
+
   lengthConfirm(version: AudioVersionTemplateModel, value: string, label: string): string {
-    if (this.hasStories() &&
-      (version.lengthMinimum > version.original['lengthMinimum'] ||
-      (version.lengthMaximum !== 0 && version.lengthMaximum < version.original['lengthMaximum']))) {
+    if (this.hasStories() && this.isLengthMoreStrict(version)) {
       return `Are you sure you want to use ${value} as the ${label} length for all audio for your ${version.label} template?
         This change could invalidate your already published episodes.`;
     }
