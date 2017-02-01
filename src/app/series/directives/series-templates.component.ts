@@ -55,7 +55,7 @@ import {
               </div>
               <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t" [version]="v"></publish-file-template>
               <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)" type="button"
-                (click)="promptToAddFile(v)"><i class="icon-plus"></i>Add Segment</button>
+                (click)="promptToAddFile($event, v)"><i class="icon-plus"></i>Add Segment</button>
             </publish-fancy-field>
           </section>
         </div>
@@ -118,7 +118,10 @@ export class SeriesTemplatesComponent implements OnDestroy {
     return version.fileTemplates.filter(f => !f.isDestroy).length < 10;
   }
 
-  promptToAddFile(version: AudioVersionTemplateModel) {
+  promptToAddFile(event: MouseEvent, version: AudioVersionTemplateModel) {
+    if (event.target['blur']) {
+      event.target['blur']();
+    }
     if (this.hasStories()) {
       let confirmMsg = `Are you sure you want to add a segment to your ${version.label} template?
       This change could invalidate your already published episodes.`;
