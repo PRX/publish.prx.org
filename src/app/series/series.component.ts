@@ -78,7 +78,10 @@ export class SeriesComponent implements OnInit {
     this.series.discard();
   }
 
-  confirmDelete(): void {
+  confirmDelete(event: MouseEvent): void {
+    if (event.target['blur']) {
+      event.target['blur']();
+    }
     this.modal.prompt(
       'Really delete?',
       'Are you sure you want to delete this series? This action cannot be undone.',

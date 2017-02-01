@@ -76,7 +76,7 @@ describe('SeriesComponent', () => {
     expect(btn).not.toBeUndefined();
 
     expect(modalAlertTitle).toBeNull();
-    btn.triggerEventHandler('click', null);
+    btn.nativeElement.click();
     expect(modalAlertTitle).toEqual('Really delete?');
   });
 
