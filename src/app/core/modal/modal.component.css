@@ -59,11 +59,11 @@ footer {
 footer button {
   margin-left: 10px;
 }
-footer button:last-child {
+footer button.secondary {
   color: #777;
   background: #fff;
 }
-footer button:last-child:hover {
+footer button.secondary:hover {
   color: #fff;
   background-color: #f59f51;
 }

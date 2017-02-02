@@ -41,7 +41,7 @@ describe('ModalComponent', () => {
 
   cit('shows footer buttons', (fix, el, comp) => {
     comp.shown = true;
-    comp.state = {buttons: ['foo', 'bar']};
+    comp.state = {primaryButton: 'foo', secondaryButton: 'bar'};
     fix.detectChanges();
     expect(el.query(By.css('button.close'))).toBeNull();
     let buttons = el.queryAll(By.css('footer button'));
@@ -68,18 +68,18 @@ describe('ModalComponent', () => {
     expect(comp.shown).toEqual(false);
   });
 
-  cit('matches the escape key to the cancel button', (fix, el, comp) => {
+  cit('matches the escape key to the secondary button', (fix, el, comp) => {
     comp.shown = true;
-    comp.state = {buttons: ['Cancel', 'Okay']};
+    comp.state = {primaryButton: 'Okay', secondaryButton: 'Cancel'};
     fix.detectChanges();
     spyOn(comp, 'buttonClick').and.stub();
     simulateKey('Escape');
     expect(comp.buttonClick).toHaveBeenCalledWith('Cancel');
   });
 
-  cit('matches the enter key to the okay button', (fix, el, comp) => {
+  cit('matches the enter key to the primary button', (fix, el, comp) => {
     comp.shown = true;
-    comp.state = {buttons: ['Cancel', 'Nothing', 'Ok', 'Whatever']};
+    comp.state = {primaryButton: 'Ok', secondaryButton: 'Cancel'};
     fix.detectChanges();
     spyOn(comp, 'buttonClick').and.stub();
     simulateKey('Enter');

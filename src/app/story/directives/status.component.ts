@@ -144,7 +144,7 @@ export class StoryStatusComponent implements DoCheck {
       }
     }
 
-    this.modal.show({title: title, body: `<ul>${msg}</ul>`, buttons: ['Okay']});
+    this.modal.show({title: title, body: `<ul>${msg}</ul>`, secondaryButton: 'Okay'});
   }
 
   toggleEdit() {

@@ -115,7 +115,7 @@ export class StoryComponent implements OnInit {
           thatsOkay.next(okay);
           thatsOkay.complete();
         },
-        ['Discard', 'Cancel']
+        'Discard'
       );
       return thatsOkay;
     } else {

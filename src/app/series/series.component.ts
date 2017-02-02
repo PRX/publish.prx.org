@@ -113,7 +113,7 @@ export class SeriesComponent implements OnInit {
           thatsOkay.next(okay);
           thatsOkay.complete();
         },
-        ['Discard', 'Cancel']
+        'Discard'
       );
       return thatsOkay;
     } else {

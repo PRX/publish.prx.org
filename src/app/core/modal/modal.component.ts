@@ -9,15 +9,17 @@ import { ModalService, ModalState } from './modal.service';
     <div *ngIf="shown" class="modal"
       [style.height.px]="state.height" [style.marginTop.px]="-state.height / 2"
       [style.width.px]="state.width" [style.marginLeft.px]="-state.width / 2">
-      <button *ngIf="!state.buttons" class="close icon-cancel" (click)="close()"></button>
+      <button *ngIf="!state.primaryButton && !state.secondaryButton" class="close icon-cancel" (click)="close()"></button>
       <header *ngIf="state.title">
         <h1>{{state.title}}</h1>
       </header>
       <section *ngIf="state.body" [innerHTML]="state.body">
       </section>
-      <footer *ngIf="state.buttons">
-        <button *ngFor="let label of state.buttons" [class]="buttonClass(label)"
-          (click)="buttonClick(label)">{{label}}</button>
+      <footer *ngIf="state.primaryButton || state.secondaryButton">
+        <button *ngIf="state.primaryButton" class="button primary"
+          (click)="buttonClick(state.primaryButton)">{{state.primaryButton}}</button>
+        <button *ngIf="state.secondaryButton" class="button secondary"
+          (click)="buttonClick(state.secondaryButton)">{{state.secondaryButton}}</button>
       </footer>
     </div>
     `
@@ -42,20 +44,10 @@ export class ModalComponent {
 
   onKey(event: KeyboardEvent) {
     if ((event.key && event.key === 'Escape') || event.keyCode === 27) {
-      let cancel = (this.state.buttons || []).find(name => {
-        return ['cancel', 'no', 'nope'].indexOf(name.toLowerCase()) > -1;
-      });
-      cancel ? this.buttonClick(cancel) : this.close();
+      this.state.secondaryButton ? this.buttonClick(this.state.secondaryButton) : this.close();
     } else if ((event.key && event.key === 'Enter') || event.keyCode === 13) {
-      let okay = (this.state.buttons || []).find(name => {
-        return ['ok', 'okay', 'yes', 'discard'].indexOf(name.toLowerCase()) > -1;
-      });
-      okay ? this.buttonClick(okay) : this.close();
+      this.state.primaryButton ? this.buttonClick(this.state.primaryButton) : this.close();
     }
-  }
-
-  buttonClass(label: string) {
-    return 'button';
   }
 
   buttonClick(label: string) {
