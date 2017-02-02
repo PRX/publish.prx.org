@@ -24,9 +24,7 @@ import { StoryModel } from '../../shared';
       <div class="hero-actions" *ngIf="story">
         <publish-button [model]="story" working=0 disabled=0 plain=1
           [visible]="isChanged" (click)="discard()">Discard</publish-button>
-        <publish-button *ngIf="story.isNew" green=1 visible=1 [model]="story"
-          [disabled]="isInvalid" (click)="save()">Create</publish-button>
-        <publish-button *ngIf="!story.isNew" [model]="story" [visible]="isChanged"
+        <publish-button [model]="story" [visible]="isChanged || story.isNew"
           [disabled]="isInvalid" (click)="save()">Save</publish-button>
         <publish-button *ngIf="!story.isNew" working=0 disabled=1
           [visible]="!isChanged">Saved</publish-button>

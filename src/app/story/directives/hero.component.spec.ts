@@ -40,11 +40,11 @@ describe('StoryHeroComponent', () => {
   cit('unstrictly saves new stories', (fix, el, comp) => {
     comp.story = {isNew: true, changed: () => null,  invalid: () => 'bad'};
     fix.detectChanges();
-    expect(el).toContainText('Create');
-    expectDisabled(el, 'Create', true);
+    expect(el).toContainText('Save');
+    expectDisabled(el, 'Save', true);
     comp.story.invalid = (f, strict) => strict ? 'bad' : null;
     fix.detectChanges();
-    expectDisabled(el, 'Create', false);
+    expectDisabled(el, 'Save', false);
   });
 
   cit('unstrictly saves unpublished stories', (fix, el, comp) => {
