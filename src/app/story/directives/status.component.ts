@@ -96,10 +96,7 @@ export class StoryStatusComponent implements DoCheck {
   }
 
   setStatus() {
-    if (this.story.isNew) {
-      this.statusClass = 'status new';
-      this.statusText = 'New';
-    } else if (!this.story.publishedAt) {
+    if (this.story.isNew || !this.story.publishedAt) {
       this.statusClass = 'status draft';
       this.statusText = 'Draft';
     } else if (!this.story.isPublished()) {
