@@ -30,7 +30,7 @@ describe('StoryStatusComponent', () => {
 
   cit('shows story status', (fix, el, comp) => {
     mockStory({isNew: true}, comp, fix);
-    expect(el).toQueryText('.status', 'New');
+    expect(el).toQueryText('.status', 'Draft');
     mockStory({isNew: false}, comp, fix);
     expect(el).toQueryText('.status', 'Draft');
     mockStory({publishedAt: new Date(), isPublished: () => false}, comp, fix);
