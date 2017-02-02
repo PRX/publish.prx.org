@@ -33,13 +33,13 @@ export class ModalService {
     }
   }
 
-  prompt(title: string, message: string, callback: Function) {
+  prompt(title: string, message: string, callback: Function, buttons = ['Okay', 'Cancel']) {
     this.emit({
       title: title,
       body: message ? `<p>${message}</p>` : undefined,
-      buttons: ['Okay', 'Cancel'],
+      buttons,
       buttonCallback: (label: string) => {
-        if (callback) { callback(label === 'Okay'); }
+        if (callback) { callback(buttons.length > 0 && label === buttons[0]); }
       }
     });
   }

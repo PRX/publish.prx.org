@@ -48,7 +48,7 @@ export class ModalComponent {
       cancel ? this.buttonClick(cancel) : this.close();
     } else if ((event.key && event.key === 'Enter') || event.keyCode === 13) {
       let okay = (this.state.buttons || []).find(name => {
-        return ['ok', 'okay', 'yes'].indexOf(name.toLowerCase()) > -1;
+        return ['ok', 'okay', 'yes', 'discard'].indexOf(name.toLowerCase()) > -1;
       });
       okay ? this.buttonClick(okay) : this.close();
     }

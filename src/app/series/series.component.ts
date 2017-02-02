@@ -104,15 +104,16 @@ export class SeriesComponent implements OnInit {
       let thatsOkay = new Subject<boolean>();
       this.modal.prompt(
         'Unsaved changes',
-        `This series has unsaved changes. Click 'Okay' to discard the changes and
-          continue or 'Cancel' to complete and ${this.series.isNew ? 'create' : 'save'} the series.`,
+        `This series has unsaved changes. You may discard the changes and
+          continue or click 'Cancel' to complete and ${this.series.isNew ? 'create' : 'save'} the series.`,
         (okay: boolean) => {
           if (okay) {
             this.discard();
           }
           thatsOkay.next(okay);
           thatsOkay.complete();
-        }
+        },
+        ['Discard', 'Cancel']
       );
       return thatsOkay;
     } else {
