@@ -29,9 +29,6 @@
         <publish-fancy-field label="Category" [model]="podcast" name="category"
           [select]="categories" (change)="setSubCategories()" small=1>
         </publish-fancy-field>
-        <publish-fancy-field *ngIf="!subCategories.length" label="Sub-Category"
-          [select]="[]" small=1>
-        </publish-fancy-field>
         <publish-fancy-field *ngIf="subCategories.length" label="Sub-Category"
           [model]="podcast" name="subCategory" [select]="subCategories" small=1>
         </publish-fancy-field>
