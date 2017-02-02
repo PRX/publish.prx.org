@@ -29,9 +29,6 @@
         <publish-fancy-field label="Category" [model]="podcast" name="category"
           [select]="categories" (change)="setSubCategories()" small=1>
         </publish-fancy-field>
-        <publish-fancy-field *ngIf="!subCategories.length" label="Sub-Category"
-          [select]="[]" small=1>
-        </publish-fancy-field>
         <publish-fancy-field *ngIf="subCategories.length" label="Sub-Category"
           [model]="podcast" name="subCategory" [select]="subCategories" small=1>
         </publish-fancy-field>
@@ -92,15 +89,15 @@
       </div>
       <publish-fancy-field textinput [model]="podcast" name="publicFeedUrl" *ngIf="!podcast?.hasPublicFeed">
         <div class="fancy-hint">
-          If you already have a public url for your podcast feed (e.g., feedburner), enter it here.
+          If you already have a public URL for your podcast feed (e.g., feedburner), enter it here.
         </div>
       </publish-fancy-field>
     </publish-fancy-field>
 
     <publish-fancy-field label="Enclosure Prefix Url" textinput [model]="podcast" name="enclosurePrefix">
       <div class="fancy-hint">
-        The enclosure prefix URL, an optional prefix URL for your podcast feed. This URL may be used
-        to set a redirect prefix on audio requests, for example, to track download statistics.
+        If you have an enclosure prefix URL to set a redirect on audio requests for your podcast
+        feed (e.g., podtrac or blubrry), enter it here.
       </div>
     </publish-fancy-field>
 
