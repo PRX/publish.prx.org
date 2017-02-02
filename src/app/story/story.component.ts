@@ -107,7 +107,7 @@ export class StoryComponent implements OnInit {
       this.modal.prompt(
         'Unsaved changes',
         `This episode has unsaved changes. Click 'Okay' to discard the changes and
-          continue or 'Cancel' to complete and ${this.story.isNew ? 'create' : 'save'} the episode.`,
+          continue or 'Cancel' to complete and save the episode.`,
         (okay: boolean) => {
           if (okay) {
             this.story.discard();
