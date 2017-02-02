@@ -18,8 +18,6 @@ import { StoryModel } from '../../shared';
           <button *ngIf="!editStatus" class="btn-link edit-status" (click)="toggleEdit()">Edit</button>
           <publish-button *ngIf="editStatus" [model]="story" visible=1 orange=1 disabled=0
             [working]="isPublishing" (click)="togglePublish()">Unpublish</publish-button>
-          <publish-button *ngIf="editStatus" [model]="story" visible=1 red=1 disabled=0 working=0
-            (click)="confirmDelete($event)">Delete</publish-button>
         </template>
       </dd>
 
@@ -159,25 +157,6 @@ export class StoryStatusComponent implements DoCheck {
       this.isPublishing = false;
       this.editStatus = false;
     });
-  }
-
-  confirmDelete(event: MouseEvent): void {
-    if (event.target['blur']) {
-      event.target['blur']();
-    }
-    this.modal.prompt(
-      'Really delete?',
-      'Are you sure you want to delete this episode?  This action cannot be undone.',
-      (okay: boolean) => {
-        if (okay) {
-          this.story.discard();
-          this.story.isDestroy = true;
-          this.story.save().subscribe(() => {
-            this.router.navigate(['/']);
-          });
-        }
-      }
-    );
   }
 
 }

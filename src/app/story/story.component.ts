@@ -18,6 +18,7 @@ import { StoryModel } from '../shared';
         <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
       </nav>
       <publish-story-status [id]="id" [story]="story"></publish-story-status>
+      <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
     </publish-tabs>
   `
 })
@@ -120,5 +121,26 @@ export class StoryComponent implements OnInit {
       return true;
     }
   }
+
+confirmDelete(event: MouseEvent): void {
+  if (event.target['blur']) {
+    event.target['blur']();
+  }
+  this.modal.prompt(
+    'Really delete?',
+    'Are you sure you want to delete this episode?  This action cannot be undone.',
+    (okay: boolean) => {
+      if (okay) {
+        if (this.story.changed()) {
+          this.story.discard();
+        }
+        this.story.isDestroy = true;
+        this.story.save().subscribe(() => {
+          this.router.navigate(['/']);
+        });
+      }
+    }
+  );
+}
 
 }
