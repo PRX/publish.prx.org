@@ -14,12 +14,10 @@ import {
     <form *ngIf="series">
       <publish-fancy-field label="Audio Templates">
         <div class="fancy-hint">
-          When adding episodes to your series, you can have different versions of the audio for
-          distribution. For example, it is common to have a podcast version of the audio broken
-          into segments for ad injection, but also a broadcast version with different breaks for
-          local news, different credits, or edits and bleeps to meet FCC permitted language requirements.
-          On this page, you can define basic templates for the versions of audio that will be expected for
-          each episode in this series, as well as requirements for each of those templates.
+          When you add episodes, you may want to have different versions of the audio (e.g., clean v. explicit).
+          This page lets you define templates for the versions each episode in this series should have, including
+          specific segment requirements (note: don't include ads here). Every episode you add to this series will
+          be checked against these requirements for validity.
         </div>
         <button *ngIf="!hasVersions()" class="add-version"
           (click)="addVersion()"><i class="icon-plus"></i>Add a template</button>
@@ -150,7 +148,7 @@ export class SeriesTemplatesComponent implements OnDestroy {
 
   isLengthMoreStrict(version: AudioVersionTemplateModel) {
     return (version.lengthMinimum > version.original['lengthMinimum'] ||
-    (version.lengthMaximum !== 0 && version.lengthMaximum < version.original['lengthMaximum']))
+    (version.lengthMaximum !== 0 && version.lengthMaximum < version.original['lengthMaximum']));
   }
 
   lengthConfirm(version: AudioVersionTemplateModel, value: string, label: string): string {
