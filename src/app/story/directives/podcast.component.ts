@@ -26,6 +26,8 @@ export class PodcastComponent implements OnDestroy {
   episode: FeederEpisodeModel;
   version: AudioVersionModel;
   podcastExplicit: string;
+  podcastAuthorName: string;
+  podcastAuthorEmail: string;
 
   constructor(tab: TabService, private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.init(s));
@@ -56,6 +58,8 @@ export class PodcastComponent implements OnDestroy {
       let dist = new DistributionModel(null, ddoc);
       dist.loadRelated('podcast').subscribe(() => {
         this.podcastExplicit = dist.podcast ? dist.podcast.explicit : null;
+        this.podcastAuthorName = dist.podcast ? dist.podcast.authorName : null;
+        this.podcastAuthorEmail = dist.podcast ? dist.podcast.authorEmail : null;
       });
       this.findPodcastAudioVersion(story, dist);
     });

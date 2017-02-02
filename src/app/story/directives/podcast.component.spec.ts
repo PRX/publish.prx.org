@@ -30,8 +30,8 @@ describe('PodcastComponent', () => {
     fix.detectChanges();
 
     expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(6);
-    expect(el).toContainText('author info');
     expect(el).toContainText('explicit material');
+    expect(el).toContainText('author info');
     expect(el).toContainText('GUID');
   });
 
