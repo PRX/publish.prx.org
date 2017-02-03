@@ -3,7 +3,7 @@ import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { StoryComponent } from './story.component';
-import { ModalService } from '../core';
+import { ModalService, ToastrService } from '../core';
 
 let router = new RouterStub();
 let activatedRoute = new ActivatedRouteStub();
@@ -20,6 +20,7 @@ describe('StoryComponent', () => {
     confirm: (p) => modalAlertTitle = p
   });
   beforeEach(() => modalAlertTitle = null);
+  provide(ToastrService, {success: () => {}});
 
   let auth, series, story;
   beforeEach(() => {

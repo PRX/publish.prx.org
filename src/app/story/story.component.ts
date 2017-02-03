@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
-import { CmsService, ModalService } from '../core';
+import { CmsService, ModalService, ToastrService } from '../core';
 import { StoryModel } from '../shared';
 
 @Component({
@@ -38,7 +38,8 @@ export class StoryComponent implements OnInit {
     private cms: CmsService,
     private route: ActivatedRoute,
     private router: Router,
-    private modal: ModalService
+    private modal: ModalService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -137,6 +138,7 @@ export class StoryComponent implements OnInit {
           }
           this.story.isDestroy = true;
           this.story.save().subscribe(() => {
+            this.toastr.success(`${this.story.title} episode deleted`);
             this.router.navigate(['/']);
           });
         }

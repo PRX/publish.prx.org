@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnChanges, DoCheck } from '@angular/core';
 import { Router } from '@angular/router';
-import { HalDoc } from '../../core';
+import { HalDoc, ToastrService } from '../../core';
 import { StoryModel } from '../../shared';
 
 @Component({
@@ -42,7 +42,8 @@ export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
   isChanged: boolean;
   isInvalid: string;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+              private toastr: ToastrService) {}
 
   ngOnInit() {
     this.updateBanner();
@@ -76,6 +77,7 @@ export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
   save() {
     let wasNew = this.story.isNew;
     this.story.save().subscribe(() => {
+      this.toastr.success(`${this.story.title} episode saved`);
       if (wasNew) {
         this.router.navigate(['/story', this.story.id]);
       }
