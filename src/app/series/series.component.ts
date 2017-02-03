@@ -82,11 +82,11 @@ export class SeriesComponent implements OnInit {
     if (event.target['blur']) {
       event.target['blur']();
     }
-    this.modal.prompt(
+    this.modal.confirm(
       'Really delete?',
       'Are you sure you want to delete this series? This action cannot be undone.',
-      (okay: boolean) => {
-        if (okay) {
+      (confirm: boolean) => {
+        if (confirm) {
           if (this.series.changed()) {
             this.discard();
           }
@@ -102,17 +102,18 @@ export class SeriesComponent implements OnInit {
   canDeactivate(next: any, prev: any): boolean | Observable<boolean> {
     if (this.series && this.series.changed() && !this.series.isDestroy) {
       let thatsOkay = new Subject<boolean>();
-      this.modal.prompt(
+      this.modal.confirm(
         'Unsaved changes',
-        `This series has unsaved changes. Click 'Okay' to discard the changes and
-          continue or 'Cancel' to complete and ${this.series.isNew ? 'create' : 'save'} the series.`,
-        (okay: boolean) => {
-          if (okay) {
+        `This series has unsaved changes. You may discard the changes and
+          continue or click 'Cancel' to complete and ${this.series.isNew ? 'create' : 'save'} the series.`,
+        (confirm: boolean) => {
+          if (confirm) {
             this.discard();
           }
-          thatsOkay.next(okay);
+          thatsOkay.next(confirm);
           thatsOkay.complete();
-        }
+        },
+        'Discard'
       );
       return thatsOkay;
     } else {

@@ -22,7 +22,7 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
       </div>
 
       <div class="remove">
-        <button *ngIf="canRemoveFile" type="button" class="btn-icon icon-cancel" (click)="promptToRemoveFile()"></button>
+        <button *ngIf="canRemoveFile" type="button" class="btn-icon icon-cancel" (click)="confirmRemoveFile()"></button>
       </div>
 
       <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
@@ -53,11 +53,11 @@ export class FileTemplateComponent {
     }
   }
 
-  promptToRemoveFile() {
+  confirmRemoveFile() {
     if (this.hasStories() && !this.file.isNew) {
       let confirmMsg = `Are you sure you want to remove the ${this.file.label} segment?
       This change could affect your already published episodes.`;
-      this.modal.prompt('', confirmMsg, (confirm) => {
+      this.modal.confirm('', confirmMsg, (confirm) => {
         if (confirm) {
           this.removeFile();
         }

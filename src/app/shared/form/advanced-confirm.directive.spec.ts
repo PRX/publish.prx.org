@@ -14,7 +14,7 @@ describe('AdvancedConfirmDirective', () => {
   let modalAlertMessage: any;
   beforeEach(() => modalAlertMessage = null);
   provide(ModalService, {
-    prompt: (title, message, callback) => modalAlertMessage = message
+    confirm: (title, message, callback) => modalAlertMessage = message
   });
 
   cit('forces user to confirm changes to advanced fields', (fix, el, comp) => {

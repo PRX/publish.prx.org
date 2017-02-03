@@ -6,7 +6,8 @@ export interface ModalState {
   hide: boolean;
   title: string;
   body: string;
-  buttons: string[];
+  primaryButton: string;
+  secondaryButton: string;
   buttonCallback: Function;
   height: number;
   width: number;
@@ -33,13 +34,14 @@ export class ModalService {
     }
   }
 
-  prompt(title: string, message: string, callback: Function) {
+  confirm(title: string, message: string, callback: Function, primaryButtonLabel = 'Okay', secondaryButtonLabel = 'Cancel') {
     this.emit({
       title: title,
       body: message ? `<p>${message}</p>` : undefined,
-      buttons: ['Okay', 'Cancel'],
+      primaryButton: primaryButtonLabel,
+      secondaryButton: secondaryButtonLabel,
       buttonCallback: (label: string) => {
-        if (callback) { callback(label === 'Okay'); }
+        if (callback) { callback(label === primaryButtonLabel); }
       }
     });
   }

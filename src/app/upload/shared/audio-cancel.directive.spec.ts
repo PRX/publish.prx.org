@@ -26,10 +26,10 @@ describe('AudioCancelDirective', () => {
   let modalAlertTitle: any;
   beforeEach(() => modalAlertTitle = null);
   provide(ModalService, {
-    prompt: (p) => modalAlertTitle = p
+    confirm: (p) => modalAlertTitle = p
   });
 
-  cit('prompts before deleting audio', (fix, el, comp) => {
+  cit('confirms before deleting audio', (fix, el, comp) => {
     comp.file = {canceled: false, destroy: () => true};
     comp.version = {removeUpload: () => true};
     fix.detectChanges();

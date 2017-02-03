@@ -18,7 +18,7 @@ describe('SeriesComponent', () => {
   let modalAlertTitle: any;
   provide(ModalService, {
     alert: (a) => modalAlertTitle = a,
-    prompt: (p) => modalAlertTitle = p
+    confirm: (p) => modalAlertTitle = p
   });
 
   let auth;
@@ -80,7 +80,7 @@ describe('SeriesComponent', () => {
     expect(modalAlertTitle).toEqual('Really delete?');
   });
 
-  cit('prompts for leaving with unsaved changes', (fix, el, comp) => {
+  cit('confirms discarding unsaved changes before leaving', (fix, el, comp) => {
     activatedRoute.testParams = {id: '99'};
     auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
     fix.detectChanges();
@@ -90,7 +90,7 @@ describe('SeriesComponent', () => {
     expect(modalAlertTitle).toMatch(/unsaved changes/i);
   });
 
-  cit('does not prompt for unsaved changes after delete', (fix, el, comp) => {
+  cit('does not confirm for unsaved changes after delete', (fix, el, comp) => {
     activatedRoute.testParams = {id: '99'};
     auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
     fix.detectChanges();

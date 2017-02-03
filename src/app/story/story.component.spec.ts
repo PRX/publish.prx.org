@@ -17,7 +17,7 @@ describe('StoryComponent', () => {
   let modalAlertTitle: any;
   provide(ModalService, {
     alert: (a) => modalAlertTitle = a,
-    prompt: (p) => modalAlertTitle = p
+    confirm: (p) => modalAlertTitle = p
   });
   beforeEach(() => modalAlertTitle = null);
 
@@ -57,7 +57,7 @@ describe('StoryComponent', () => {
     expect(comp.story.parent).toBeNull();
   });
 
-  cit('prompts for leaving with unsaved changes', (fix, el, comp) => {
+  cit('confirms discarding unsaved changes before leaving', (fix, el, comp) => {
     activatedRoute.testParams = {id: 1234};
     fix.detectChanges();
     expect(comp.canDeactivate()).toEqual(true);
@@ -66,7 +66,7 @@ describe('StoryComponent', () => {
     expect(modalAlertTitle).toMatch(/unsaved changes/i);
   });
 
-  cit('does not prompt for unsaved changes after delete', (fix, el, comp) => {
+  cit('does not confirm for unsaved changes after delete', (fix, el, comp) => {
     activatedRoute.testParams = {id: 1234};
     fix.detectChanges();
     comp.story.isDestroy = true;
