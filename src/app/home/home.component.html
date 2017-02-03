@@ -5,11 +5,15 @@
       <a *ngIf="totalCount" class="all" [routerLink]="['search', { tab: 'series'}]">View All {{totalCount}} &raquo;</a>
     </header>
     <publish-spinner *ngIf="!isLoaded"></publish-spinner>
-    <div *ngIf="noSeries" class="empty">
-      <p class="empty">You have no series available to manage via the Publish app.
+    <div *ngIf="noSeries">
+      <div class="empty">You have no series available to manage via the Publish app.
         <br/>Older PRX series must be managed on
         <a href="https://www.prx.org/series/manage">the old version of PRX.org</a>.
-      </p>
+        <a [routerLink]="['series/new']" class="new-series">
+          <i class="icon-plus"></i>
+          <p>New Series</p>
+        </a>
+      </div>
       <publish-home-series noseries=true [auth]="auth" rows=4></publish-home-series>
     </div>
     <div *ngIf="oneSeries">
