@@ -15,7 +15,7 @@ describe('StoryStatusComponent', () => {
   let modalAlertBody: any;
   provide(ModalService, {
     show: (data) => modalAlertBody = data.body,
-    prompt: (title, body) => modalAlertBody = body
+    confirm: (title, body) => modalAlertBody = body
   });
   beforeEach(() => modalAlertBody = null);
 

@@ -34,9 +34,9 @@ describe('ModalService', () => {
     });
 
     let callbacked = false;
-    modal.prompt('hello', '<a href="blah">world</a>', (okay: boolean) => {
+    modal.confirm('hello', '<a href="blah">world</a>', (confirm: boolean) => {
       callbacked = true;
-      expect(okay).toEqual(true);
+      expect(confirm).toEqual(true);
     });
     expect(callbacked).toBeTruthy();
   });

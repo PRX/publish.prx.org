@@ -34,7 +34,7 @@ export class ModalService {
     }
   }
 
-  prompt(title: string, message: string, callback: Function, primaryButtonLabel = 'Okay', secondaryButtonLabel = 'Cancel') {
+  confirm(title: string, message: string, callback: Function, primaryButtonLabel = 'Okay', secondaryButtonLabel = 'Cancel') {
     this.emit({
       title: title,
       body: message ? `<p>${message}</p>` : undefined,

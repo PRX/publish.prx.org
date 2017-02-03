@@ -13,14 +13,14 @@ export class AdvancedConfirmDirective implements Directive {
   @Input() publishName: string;
   @Input() publishEvent = 'blur';
 
-  @HostListener('blur') onBlur() { return this.publishEvent === 'blur' && this.prompt(); }
-  @HostListener('change') onChange() { return this.publishEvent === 'change' && this.prompt(); }
+  @HostListener('blur') onBlur() { return this.publishEvent === 'blur' && this.confirm(); }
+  @HostListener('change') onChange() { return this.publishEvent === 'change' && this.confirm(); }
 
   constructor(private modal: ModalService) {}
 
-  prompt() {
+  confirm() {
     if (this.publishAdvancedConfirm && this.shouldConfirm()) {
-      this.modal.prompt('', this.publishAdvancedConfirm, this.resetFieldOnCancel.bind(this));
+      this.modal.confirm('', this.publishAdvancedConfirm, this.resetFieldOnCancel.bind(this));
     }
   }
 

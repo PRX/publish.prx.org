@@ -19,7 +19,7 @@ export class AudioCancelDirective {
     if (this.publishAudioCancel.isUploading) {
       this.cancelAndDestroy();
     } else {
-      this.modal.prompt(
+      this.modal.confirm(
         'Really delete audio file?',
         'This action cannot be undone.',
         (okay: boolean) => okay && this.cancelAndDestroy()

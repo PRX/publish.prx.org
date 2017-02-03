@@ -104,7 +104,7 @@ export class StoryComponent implements OnInit {
   canDeactivate(next: any, prev: any): boolean | Observable<boolean> {
     if (this.story && this.story.changed() && !this.story.isDestroy) {
       let thatsOkay = new Subject<boolean>();
-      this.modal.prompt(
+      this.modal.confirm(
         'Unsaved changes',
         `This episode has unsaved changes. You may discard the changes and
           continue or click 'Cancel' to complete and save the episode.`,
@@ -127,7 +127,7 @@ export class StoryComponent implements OnInit {
     if (event.target['blur']) {
       event.target['blur']();
     }
-    this.modal.prompt(
+    this.modal.confirm(
       'Really delete?',
       'Are you sure you want to delete this episode?  This action cannot be undone.',
       (okay: boolean) => {

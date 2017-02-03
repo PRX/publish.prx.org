@@ -79,16 +79,16 @@ export class PodcastComponent implements OnDestroy {
 
   get guidConfirm(): string {
     if (this.episode) {
-      let prompt = 'Are you sure you want to change the permanent GUID for this episode';
+      let confirmMsg = 'Are you sure you want to change the permanent GUID for this episode';
       if (this.episode.original['guid']) {
-        prompt += ` from "${this.episode.original['guid']}"`;
+        confirmMsg += ` from "${this.episode.original['guid']}"`;
       }
       if (this.episode.guid) {
-        prompt += ` to "${this.episode.guid}"? This should only be done in special cases.`;
+        confirmMsg += ` to "${this.episode.guid}"? This should only be done in special cases.`;
       } else {
-        prompt += '?';
+        confirmMsg += '?';
       }
-      return prompt;
+      return confirmMsg;
     }
   }
 
