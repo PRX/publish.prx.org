@@ -20,9 +20,9 @@ export class AudioCancelDirective {
       this.cancelAndDestroy();
     } else {
       this.modal.confirm(
-        'Really delete audio file?',
-        'This action cannot be undone.',
-        (okay: boolean) => okay && this.cancelAndDestroy()
+        'Really delete?',
+        'Are you sure you want to remove this audio file?',
+        (confirm: boolean) => confirm && this.cancelAndDestroy()
       );
     }
   }

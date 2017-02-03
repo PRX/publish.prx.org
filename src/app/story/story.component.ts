@@ -108,11 +108,11 @@ export class StoryComponent implements OnInit {
         'Unsaved changes',
         `This episode has unsaved changes. You may discard the changes and
           continue or click 'Cancel' to complete and save the episode.`,
-        (okay: boolean) => {
-          if (okay) {
+        (confirm: boolean) => {
+          if (confirm) {
             this.story.discard();
           }
-          thatsOkay.next(okay);
+          thatsOkay.next(confirm);
           thatsOkay.complete();
         },
         'Discard'
@@ -130,8 +130,8 @@ export class StoryComponent implements OnInit {
     this.modal.confirm(
       'Really delete?',
       'Are you sure you want to delete this episode?  This action cannot be undone.',
-      (okay: boolean) => {
-        if (okay) {
+      (confirm: boolean) => {
+        if (confirm) {
           if (this.story.changed()) {
             this.story.discard();
           }

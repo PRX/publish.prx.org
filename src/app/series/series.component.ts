@@ -106,11 +106,11 @@ export class SeriesComponent implements OnInit {
         'Unsaved changes',
         `This series has unsaved changes. You may discard the changes and
           continue or click 'Cancel' to complete and ${this.series.isNew ? 'create' : 'save'} the series.`,
-        (okay: boolean) => {
-          if (okay) {
+        (confirm: boolean) => {
+          if (confirm) {
             this.discard();
           }
-          thatsOkay.next(okay);
+          thatsOkay.next(confirm);
           thatsOkay.complete();
         },
         'Discard'
