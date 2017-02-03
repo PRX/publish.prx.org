@@ -1,6 +1,6 @@
 import { Component, Input, DoCheck } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalService } from '../../core';
+import { ModalService, ToastrService } from '../../core';
 import { StoryModel } from '../../shared';
 
 @Component({
@@ -77,7 +77,9 @@ export class StoryStatusComponent implements DoCheck {
   editStatus: boolean;
   isPublishing: boolean;
 
-  constructor(private modal: ModalService, private router: Router) {}
+  constructor(private modal: ModalService,
+              private toastr: ToastrService,
+              private router: Router) {}
 
   ngDoCheck() {
     if (this.story) {
@@ -154,6 +156,7 @@ export class StoryStatusComponent implements DoCheck {
   togglePublish() {
     this.isPublishing = true;
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
+      this.toastr.success(`Episode ${this.story.publishedAt ? 'published' : 'unpublished'}`);
       this.isPublishing = false;
       this.editStatus = false;
     });
