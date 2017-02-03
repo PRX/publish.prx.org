@@ -138,7 +138,7 @@ export class StoryComponent implements OnInit {
           }
           this.story.isDestroy = true;
           this.story.save().subscribe(() => {
-            this.toastr.success(`${this.story.title} episode deleted`);
+            this.toastr.success('Episode deleted');
             this.router.navigate(['/']);
           });
         }

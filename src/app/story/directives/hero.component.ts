@@ -77,7 +77,7 @@ export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
   save() {
     let wasNew = this.story.isNew;
     this.story.save().subscribe(() => {
-      this.toastr.success(`${this.story.title} episode saved`);
+      this.toastr.success('Episode saved');
       if (wasNew) {
         this.router.navigate(['/story', this.story.id]);
       }

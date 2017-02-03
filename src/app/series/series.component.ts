@@ -69,7 +69,7 @@ export class SeriesComponent implements OnInit {
   save() {
     let wasNew = this.series.isNew;
     this.series.save().subscribe(() => {
-      this.toastr.success(`${this.series.title} series ${wasNew ? 'created' : 'saved'}`);
+      this.toastr.success(`Series ${wasNew ? 'created' : 'saved'}`);
       if (wasNew) {
         this.router.navigate(['/series', this.series.id]);
       }
@@ -94,7 +94,7 @@ export class SeriesComponent implements OnInit {
           }
           this.series.isDestroy = true;
           this.series.save().subscribe(() => {
-            this.toastr.success(`${this.series.title} series deleted`);
+            this.toastr.success('Series deleted');
             this.router.navigate(['/']);
           });
         }

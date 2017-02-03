@@ -1,7 +1,7 @@
 import { cit, create, provide, stubPipe } from '../../../testing';
 import { Router } from '@angular/router';
 import { RouterStub } from '../../../testing/stub.router';
-import { ModalService } from '../../core';
+import { ModalService, ToastrService } from '../../core';
 import { StoryStatusComponent } from './status.component';
 
 describe('StoryStatusComponent', () => {
@@ -18,6 +18,7 @@ describe('StoryStatusComponent', () => {
     confirm: (title, body) => modalAlertBody = body
   });
   beforeEach(() => modalAlertBody = null);
+  provide(ToastrService);
 
   const mockStory = (story, comp, fix) => {
     comp.story = story;
