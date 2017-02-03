@@ -23,6 +23,8 @@ describe('HomeComponent', () => {
   cit('shows an empty no-series indicator', (fix, el, comp) => {
     expect(el).not.toContainText('View All');
     expect(el).toContainText('You have no series');
+    expect(el).toQuery('.empty');
+    expect(el).toQuery('.new-series');
     expect(el).toQuery('publish-home-series');
     expect(el).toQueryAttr('publish-home-series', 'noseries', 'true');
     expect(el).toQueryAttr('publish-home-series', 'rows', '4');
