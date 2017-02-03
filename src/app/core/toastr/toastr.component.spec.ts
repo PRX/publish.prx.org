@@ -9,7 +9,7 @@ const simulateKey = (key: string) => {
   document.dispatchEvent(e);
 };
 
-describe('ModalComponent', () => {
+describe('ToastrComponent', () => {
 
   create(ToastrComponent);
 
