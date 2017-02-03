@@ -45,8 +45,14 @@ export class CmsService {
     return this.follow('prx:authorization');
   }
 
-  get account(): HalObservable<HalDoc> {
+  get defaultAccount(): HalObservable<HalDoc> {
     return this.auth.follow('prx:default-account');
+  }
+
+  get individualAccount(): HalObservable<HalDoc> {
+    return <HalObservable<HalDoc>> this.auth.followItems('prx:accounts').map(accountDocs => {
+      return accountDocs.find(d => d['type'] === 'IndividualAccount');
+    });
   }
 
   follow(rel: string, params: {} = null): HalObservable<HalDoc> {

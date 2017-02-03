@@ -29,7 +29,7 @@ export class NavUserComponent {
   userImageDoc: HalDoc;
 
   constructor(private cms: CmsService) {
-    cms.account.subscribe((doc) => {
+    cms.individualAccount.subscribe((doc) => {
       this.userImageDoc = doc;
       this.userName = doc['name'];
     });

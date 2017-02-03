@@ -66,7 +66,7 @@ export class StoryComponent implements OnInit {
     } else if (this.seriesId) {
       this.cms.auth.follow('prx:series', {id: this.seriesId}).subscribe(s => this.setStory(s, null));
     } else {
-      this.cms.account.subscribe(a => this.setStory(a, null));
+      this.cms.defaultAccount.subscribe(a => this.setStory(a, null));
     }
   }
 

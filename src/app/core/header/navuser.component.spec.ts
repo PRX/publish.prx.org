@@ -14,7 +14,10 @@ describe('NavUserComponent', () => {
 
   beforeEach(() => {
     let auth = cms.mock('prx:authorization', {});
-    auth.mock('prx:default-account', {name: 'TheAccountName'});
+    auth.mockItems('prx:accounts', [
+      {name: 'TheAccountName', type: 'IndividualAccount'},
+      {name: 'DefaultName', type: 'DefaultAccount'}
+    ]);
   });
 
   cit('displays the account name', (fix, el, comp) => {
