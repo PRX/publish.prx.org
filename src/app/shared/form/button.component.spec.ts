@@ -1,4 +1,4 @@
-import { cit, create } from '../../../testing';
+import { cit, create, By } from '../../../testing';
 import { ButtonComponent } from './button.component';
 
 class MockModel {
@@ -98,6 +98,18 @@ describe('ButtonComponent', () => {
       fix.detectChanges();
       expect(el).toQuery('button.working');
       expect(el).toQuery('publish-spinner');
+    });
+
+    cit('prevents double click resulting in double submit when working', (fix, el, comp) => {
+      spyOn(comp.click, 'emit');
+      comp.model = new MockModel({changed: true});
+      comp.working = false;
+      fix.detectChanges();
+      el.query(By.css('button')).nativeElement.click();
+      comp.working = true;
+      fix.detectChanges();
+      el.query(By.css('button')).nativeElement.click();
+      expect(comp.click.emit).toHaveBeenCalledTimes(1);
     });
 
   });
