@@ -55,7 +55,9 @@ export class ButtonComponent {
 
   onClick(event: Event) {
     event.stopPropagation();
-    this.click.emit(event);
+    if (!this.isWorking) {
+      this.click.emit(event);
+    }
   }
 
   private decode(val: any): any {
