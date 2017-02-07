@@ -1,3 +1,4 @@
+import { fakeAsync, tick } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 import { HalDoc } from './haldoc';
 import { HalRemote } from './halremote';
@@ -9,6 +10,9 @@ class MockRemote extends HalRemote {
   get(link: any, params: {} = null): Observable<{}> {
     let key = link['href'];
     return Observable.of(this.getData[key]);
+  }
+  put(link, params, data): Observable<{}> {
+    return Observable.of([data]);
   }
 }
 
@@ -33,6 +37,13 @@ describe('HalDoc', () => {
       let doc = makeDoc({foo: 'bar', something: {nested: {here: 'okay'}}});
       expect(doc['foo']).toEqual('bar');
       expect(doc['something']['nested']['here']).toEqual('okay');
+    });
+
+    it('allows fields to be nulled', () => {
+      let doc = makeDoc({foo: 'bar', something: {nested: {here: 'okay'}}, _links: {self: 'somewhere not here'}});
+      doc.update({something: {nested: {here: 'okay'}}}).subscribe((updatedDoc) => {
+        expect(updatedDoc['foo']).toBeUndefined();
+      });
     });
   });
 

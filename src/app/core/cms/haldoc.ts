@@ -223,6 +223,11 @@ export class HalDoc {
   }
 
   private setData(data: {}) {
+    Object.keys(this).forEach((key) => {
+      if (this.hasOwnProperty(key) && !(this[key] instanceof Function) && key !== 'remote') {
+        delete this[key];
+      }
+    });
     Object.keys(data).forEach((key) => {
       if (data.hasOwnProperty(key)) {
         this[key] = data[key];
