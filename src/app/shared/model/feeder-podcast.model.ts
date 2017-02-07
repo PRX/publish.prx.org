@@ -24,6 +24,8 @@ export class FeederPodcastModel extends BaseModel {
   hasPublicFeed: boolean = false;
 
   VALIDATORS = {
+    category: [REQUIRED()],
+    explicit: [REQUIRED()],
     link: [REQUIRED(), URL('Not a valid URL')],
     newFeedUrl: [URL('Not a valid URL')],
     publicFeedUrl: [URL('Not a valid URL')],
