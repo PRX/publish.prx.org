@@ -74,21 +74,4 @@ export class FeederEpisodeModel extends BaseModel {
     }
   }
 
-  createLink(url: string): string {
-    let urlLength = url.length;
-    if (urlLength < 'https://'.length) {
-      if (['http://'.slice(0, urlLength), 'https://'.slice(0, urlLength)].indexOf(url) > -1) {
-        return url;
-      }
-    }
-    return /^https?:\/\//i.test(url) ? url : `http://${url}`;
-  }
-
-  set(field: string, value: any, forceOriginal = false) {
-    if (this.URLS.indexOf(field) > -1) {
-      value = this.createLink(value);
-    }
-    super.set(field, value, forceOriginal);
-  }
-  
 }
