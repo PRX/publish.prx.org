@@ -39,12 +39,12 @@ export class MockCmsService {
     return this.follow('prx:authorization');
   }
 
-  get defaultAccount(): HalObservable<HalDoc> {
+  get defaultAccount(): HalObservable<MockHalDoc> {
     return this.auth.follow('prx:default-account');
   }
 
-  get individualAccount(): HalObservable<HalDoc> {
-    return <HalObservable<HalDoc>> this.auth.followItems('prx:accounts').map(accountDocs => {
+  get individualAccount(): HalObservable<MockHalDoc> {
+    return <HalObservable<MockHalDoc>> this.auth.followItems('prx:accounts').map(accountDocs => {
       return accountDocs.find(d => d['type'] === 'IndividualAccount');
     });
   }

@@ -27,6 +27,8 @@ export abstract class BaseModel {
   private relatedReplays: RelatedLoader = {};
   private relatedLoaders: RelatedLoader = {};
 
+  public URLS: string[] = [];
+
   abstract key(): string;
   abstract related(): RelatedMap;
   abstract decode(): void;
@@ -57,6 +59,9 @@ export abstract class BaseModel {
   }
 
   set(field: string, value: any, forceOriginal = false) {
+    if (this.URLS.indexOf(field) > -1) {
+      value = this.createLink(value);
+    }
     this[field] = value;
     if (this.SETABLE.indexOf(field) > -1) {
       if (forceOriginal) { this.original[field] = value; }
@@ -316,6 +321,16 @@ export abstract class BaseModel {
       }
     }
     return models;
+  }
+
+  createLink(url: string): string {
+    let urlLength = url.length;
+    if (urlLength < 'https://'.length) {
+      if (['http://'.slice(0, urlLength), 'https://'.slice(0, urlLength)].indexOf(url) > -1) {
+        return url;
+      }
+    }
+    return /^https?:\/\//i.test(url) ? url : `http://${url}`;
   }
 
 }

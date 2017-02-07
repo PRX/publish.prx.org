@@ -121,11 +121,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
 
   createLink() {
     if (!this.isURLInvalid() && this.linkURL && this.linkURL.length > 0) {
-      let url = this.linkURL;
-      if (!/^https?:\/\//i.test(url)) {
-        url = 'http://' + url;
-      }
-
+      let url = this.model.createLink(this.linkURL);
       this.editor.createLinkItem(url, this.linkTitle);
 
       this.showPrompt = false;
