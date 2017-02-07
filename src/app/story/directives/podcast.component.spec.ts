@@ -29,10 +29,11 @@ describe('PodcastComponent', () => {
     comp.version = 'foo';
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(6);
+    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(7);
     expect(el).toContainText('explicit material');
     expect(el).toContainText('author info');
     expect(el).toContainText('GUID');
+    expect(el).toContainText('public URL');
   });
 
 });
