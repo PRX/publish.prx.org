@@ -12,7 +12,7 @@ const isset = (val: any): boolean => val !== false && val !== undefined;
 export class FancyFieldComponent {
 
   @Input() model: BaseModel;
-  @Output() change = new EventEmitter<any>();
+  @Output() onChange = new EventEmitter<any>();
 
   // Name of model attribute, and optional explicit changed/invalid bindings
   @Input() name: string;
@@ -93,11 +93,11 @@ export class FancyFieldComponent {
     return classes.join(' ');
   }
 
-  onChange(value: any): void {
+  doOnChange(value: any): void {
     if (this.name) {
       this.model.set(this.name, value);
     }
-    this.change.emit(value);
+    this.onChange.emit(value);
   }
 
   // options can either be ['val1'] or [['display1', 'val1']]
