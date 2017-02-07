@@ -1,4 +1,3 @@
-import { fakeAsync, tick } from '@angular/core/testing';
 import { Observable } from 'rxjs/Observable';
 import { HalDoc } from './haldoc';
 import { HalRemote } from './halremote';
