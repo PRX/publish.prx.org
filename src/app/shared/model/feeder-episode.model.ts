@@ -1,7 +1,7 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
-import { REQUIRED, UNLESS_NEW } from './invalid';
+import { REQUIRED, UNLESS_NEW, URL } from './invalid';
 
 export class FeederEpisodeModel extends BaseModel {
 
@@ -10,13 +10,16 @@ export class FeederEpisodeModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['guid', 'authorName', 'authorEmail'];
+  SETABLE = ['guid', 'authorName', 'authorEmail', 'webLink'];
+  URLS = ['webLink'];
   guid: string = '';
   authorName: string = '';
   authorEmail: string = '';
+  webLink: string = '';
 
   VALIDATORS = {
-    guid: [UNLESS_NEW(REQUIRED())]
+    guid: [UNLESS_NEW(REQUIRED())],
+    webLink: [URL('Not a valid URL')]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
@@ -41,6 +44,7 @@ export class FeederEpisodeModel extends BaseModel {
   decode() {
     this.id = '' + (this.doc['id'] || '');
     this.guid = this.doc['guid'] || '';
+    this.webLink = this.doc['url'] || '';
     let author = this.doc['author'] || {};
     this.authorName = author['name'] || '';
     this.authorEmail = author['email'] || '';
@@ -56,6 +60,7 @@ export class FeederEpisodeModel extends BaseModel {
     } else {
       data.author = null;
     }
+    data.url = this.webLink || null;
     return data;
   }
 
@@ -69,4 +74,21 @@ export class FeederEpisodeModel extends BaseModel {
     }
   }
 
+  createLink(url: string): string {
+    let urlLength = url.length;
+    if (urlLength < 'https://'.length) {
+      if (['http://'.slice(0, urlLength), 'https://'.slice(0, urlLength)].indexOf(url) > -1) {
+        return url;
+      }
+    }
+    return /^https?:\/\//i.test(url) ? url : `http://${url}`;
+  }
+
+  set(field: string, value: any, forceOriginal = false) {
+    if (this.URLS.indexOf(field) > -1) {
+      value = this.createLink(value);
+    }
+    super.set(field, value, forceOriginal);
+  }
+  
 }

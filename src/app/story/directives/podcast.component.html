@@ -1,5 +1,10 @@
 <publish-spinner *ngIf="!episode"></publish-spinner>
 <form *ngIf="episode">
+  <publish-fancy-field label="Episode URL" textinput [model]="episode" name="webLink">
+    <div class="fancy-hint">
+      If you have a public URL for this podcast episode, enter it here.
+    </div>
+  </publish-fancy-field>
 
   <publish-fancy-field *ngIf="version" label="Explicit">
     <div class="fancy-hint">
