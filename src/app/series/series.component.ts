@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 
-import { CmsService, ModalService } from '../core';
+import { CmsService, ModalService, ToastrService } from '../core';
 import { SeriesModel } from '../shared';
 
 @Component({
@@ -22,6 +22,7 @@ export class SeriesComponent implements OnInit {
   constructor(
     private cms: CmsService,
     private modal: ModalService,
+    private toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -68,6 +69,7 @@ export class SeriesComponent implements OnInit {
   save() {
     let wasNew = this.series.isNew;
     this.series.save().subscribe(() => {
+      this.toastr.success(`Series ${wasNew ? 'created' : 'saved'}`);
       if (wasNew) {
         this.router.navigate(['/series', this.series.id]);
       }
@@ -92,6 +94,7 @@ export class SeriesComponent implements OnInit {
           }
           this.series.isDestroy = true;
           this.series.save().subscribe(() => {
+            this.toastr.success('Series deleted');
             this.router.navigate(['/']);
           });
         }

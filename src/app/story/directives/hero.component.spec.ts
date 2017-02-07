@@ -1,6 +1,7 @@
 import { cit, create, provide, stubPipe, niceEl, By } from '../../../testing';
 import { Router } from '@angular/router';
 import { RouterStub } from '../../../testing/stub.router';
+import { ToastrService } from '../../core';
 import { StoryHeroComponent } from './hero.component';
 
 describe('StoryHeroComponent', () => {
@@ -8,6 +9,7 @@ describe('StoryHeroComponent', () => {
   create(StoryHeroComponent);
 
   provide(Router, RouterStub);
+  provide(ToastrService, {success: () => {}});
 
   stubPipe('timeago');
 

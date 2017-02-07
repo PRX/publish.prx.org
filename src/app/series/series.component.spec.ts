@@ -2,7 +2,7 @@ import { cit, create, cms, provide, stubPipe, By } from '../../testing';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ModalService } from '../core';
+import { ModalService, ToastrService } from '../core';
 import { SeriesComponent } from './series.component';
 
 let activatedRoute = new ActivatedRouteStub();
@@ -20,6 +20,7 @@ describe('SeriesComponent', () => {
     alert: (a) => modalAlertTitle = a,
     confirm: (p) => modalAlertTitle = p
   });
+  provide(ToastrService, {success: () => {}});
 
   let auth;
   beforeEach(() => {

@@ -10,6 +10,7 @@ import { FooterComponent } from './footer';
 import { HeaderComponent, NavItemComponent, NavUserComponent } from './header';
 import { ModalComponent, ModalService } from './modal';
 import { MimeTypeService, UploadService } from './upload';
+import { ToastrComponent, ToastrService } from './toastr';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { MimeTypeService, UploadService } from './upload';
     HeaderComponent,
     NavItemComponent,
     NavUserComponent,
-    ModalComponent
+    ModalComponent,
+    ToastrComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ import { MimeTypeService, UploadService } from './upload';
     HeaderComponent,
     NavItemComponent,
     NavUserComponent,
-    ModalComponent
+    ModalComponent,
+    ToastrComponent
   ],
   providers: [
     AuthService,
@@ -39,7 +42,8 @@ import { MimeTypeService, UploadService } from './upload';
     MimeTypeService,
     ModalService,
     PlayerService,
-    UploadService
+    UploadService,
+    ToastrService
   ]
 })
 
