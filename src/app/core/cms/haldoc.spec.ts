@@ -10,6 +10,9 @@ class MockRemote extends HalRemote {
     let key = link['href'];
     return Observable.of(this.getData[key]);
   }
+  put(link, params, data): Observable<{}> {
+    return Observable.of([data]);
+  }
 }
 
 describe('HalDoc', () => {
@@ -33,6 +36,13 @@ describe('HalDoc', () => {
       let doc = makeDoc({foo: 'bar', something: {nested: {here: 'okay'}}});
       expect(doc['foo']).toEqual('bar');
       expect(doc['something']['nested']['here']).toEqual('okay');
+    });
+
+    it('allows fields to be nulled', () => {
+      let doc = makeDoc({foo: 'bar', something: {nested: {here: 'okay'}}, _links: {self: 'somewhere not here'}});
+      doc.update({something: {nested: {here: 'okay'}}}).subscribe((updatedDoc) => {
+        expect(updatedDoc['foo']).toBeUndefined();
+      });
     });
   });
 
