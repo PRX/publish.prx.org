@@ -3,7 +3,7 @@ import { RouterStub, ActivatedRouteStub } from '../../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SeriesBasicComponent } from './series-basic.component';
 import { SeriesComponent } from '../series.component';
-import { ModalService, ToastrService, CmsService } from '../../core';
+import { ModalService, ToastrService } from '../../core';
 import { TabService } from '../../shared';
 
 let activatedRoute = new ActivatedRouteStub();
@@ -50,6 +50,12 @@ describe('SeriesBasicComponent', () => {
     fix.detectChanges();
     expect(el).toQuery('publish-image-upload');
     expect(el).toContainText('cover image');
+  });
+
+  cit('when user has access to more than one account, allows setting owner for new series', (fix, el, comp) => {
+    comp.series = {isNew: true, changed: () => false};
+    fix.detectChanges();
+    expect(el).toContainText('Select the account');
   });
 
 });
