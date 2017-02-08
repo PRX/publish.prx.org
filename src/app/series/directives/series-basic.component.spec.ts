@@ -1,12 +1,32 @@
-import { cit, create, provide, By } from '../../../testing';
+import { cit, create, provide, By, cms } from '../../../testing';
+import { RouterStub, ActivatedRouteStub } from '../../../testing/stub.router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SeriesBasicComponent } from './series-basic.component';
+import { SeriesComponent } from '../series.component';
+import { ModalService, ToastrService, CmsService } from '../../core';
 import { TabService } from '../../shared';
+
+let activatedRoute = new ActivatedRouteStub();
+let router = new RouterStub();
 
 describe('SeriesBasicComponent', () => {
 
   create(SeriesBasicComponent);
 
   provide(TabService);
+  provide(Router, router);
+  provide(ActivatedRoute, activatedRoute);
+  provide(ModalService);
+  provide(ToastrService, {success: () => {}});
+  provide(SeriesComponent);
+
+  beforeEach(() => {
+    let auth = cms.mock('prx:authorization', {});
+    auth.mockItems('prx:accounts', [
+      {name: 'TheAccountName', type: 'IndividualAccount'},
+      {name: 'DefaultName', type: 'DefaultAccount'}
+    ]);
+  });
 
   cit('does not render until the series is loaded', (fix, el, comp) => {
     expect(el).not.toQuery('publish-fancy-field');
@@ -14,7 +34,8 @@ describe('SeriesBasicComponent', () => {
     comp.series = {changed: () => false};
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(4);
+    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(5);
+    expect(el).toContainText('series is owned by');
     expect(el).toContainText('name of your series');
     expect(el).toContainText('short description');
     expect(el).toContainText('cover image');

@@ -30,13 +30,13 @@ describe('SeriesComponent', () => {
 
   cit('loads a series by id', (fix, el, comp) => {
     activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {id: 99, title: 'my series title'});
+    auth.mock('prx:series', {id: 99, title: 'my series title'}).mock('prx:account', {id: 78});
     fix.detectChanges();
     expect(el).toContainText('my series title');
     expect(comp.series.id).toEqual(99);
   });
 
-  cit('creates new series from the default account', (fix, el, comp) => {
+  cit('defaults new series to the default account', (fix, el, comp) => {
     activatedRoute.testParams = {};
     auth.mock('prx:default-account', {id: 88});
     fix.detectChanges();
@@ -45,7 +45,7 @@ describe('SeriesComponent', () => {
 
   cit('refuses to edit v3 series', (fix, el, comp) => {
     activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {appVersion: 'v3'});
+    auth.mock('prx:series', {appVersion: 'v3'}).mock('prx:account', {id: 78});
     expect(modalAlertTitle).toBeNull();
     fix.detectChanges();
     expect(modalAlertTitle).toEqual('Cannot Edit Series');
@@ -68,7 +68,9 @@ describe('SeriesComponent', () => {
 
   cit('confirms deletion', (fix, el, comp) => {
     activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {appVersion: 'v4'}).mockItems('prx:stories', []);
+    let series = auth.mock('prx:series', {appVersion: 'v4'});
+    series.mockItems('prx:stories', []);
+    series.mock('prx:account', {id: 88});
     fix.detectChanges();
 
     let btn = el.queryAll(By.css('button')).find(e => {
@@ -83,7 +85,8 @@ describe('SeriesComponent', () => {
 
   cit('confirms discarding unsaved changes before leaving', (fix, el, comp) => {
     activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
+    auth = cms.mock('prx:authorization', {});
+    auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'}).mock('prx:account', {id: 78});
     fix.detectChanges();
     expect(comp.canDeactivate()).toEqual(true);
     spyOn(comp.series, 'changed').and.returnValue(true);
@@ -93,7 +96,8 @@ describe('SeriesComponent', () => {
 
   cit('does not confirm for unsaved changes after delete', (fix, el, comp) => {
     activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
+    auth = cms.mock('prx:authorization', {});
+    auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'}).mock('prx:account', {id: 78});
     fix.detectChanges();
     comp.series.isDestroy = true;
     expect(comp.canDeactivate()).toEqual(true);

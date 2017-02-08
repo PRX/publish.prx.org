@@ -19,8 +19,9 @@ export class SeriesModel extends BaseModel implements HasUpload {
   public images: ImageModel[] = [];
   public versionTemplates: AudioVersionTemplateModel[] = [];
   public distributions: DistributionModel[] = [];
+  public accountId: number;
 
-  SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap'];
+  SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap', 'accountId'];
 
   VALIDATORS = {
     title:            [REQUIRED(), LENGTH(1, 255)],
@@ -35,6 +36,9 @@ export class SeriesModel extends BaseModel implements HasUpload {
   constructor(account: HalDoc, series?: HalDoc, loadRelated = true) {
     super();
     this.init(account, series, loadRelated);
+    if (account) {
+      this.set('accountId', account.id, true);
+    }
     this.loadRelated('versionTemplates').subscribe(() => {
       if (this.isNew && this.versionTemplates.length === 0) {
         this.defaultVersionTemplate();
