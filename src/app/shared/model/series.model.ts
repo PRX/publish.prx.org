@@ -50,7 +50,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
     if (this.doc) {
       return `prx.series.${this.doc.id}`;
     } else {
-      return `prx.series.new.${this.parent.id}`; // new in series
+      return `prx.series.new`; // new in series
     }
   }
 
