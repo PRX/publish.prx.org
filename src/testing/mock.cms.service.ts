@@ -49,6 +49,10 @@ export class MockCmsService {
     });
   }
 
+  get accounts(): HalObservable<MockHalDoc[]> {
+    return <HalObservable<MockHalDoc[]>> this.auth.followItems('prx:accounts')
+  }
+
   follow(rel: string, params: {} = null): HalObservable<MockHalDoc> {
     return this.mockRoot.follow(rel, params);
   }
