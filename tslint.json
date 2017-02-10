@@ -93,12 +93,8 @@
       "check-type"
     ],
 
-    "directive-selector-prefix": [true, "publish"],
-    "component-selector-prefix": [true, "publish"],
-    "directive-selector-name": [true, "camelCase"],
-    "component-selector-name": [true, "kebab-case"],
-    "directive-selector-type": [true, "attribute"],
-    "component-selector-type": [true, "element"],
+    "directive-selector": [true, "attribute", "publish", "camelCase"],
+    "component-selector": [true, "element", "publish", "kebab-case"],
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,
     "use-host-property-decorator": true,
