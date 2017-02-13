@@ -1,5 +1,6 @@
 import { cit, create, provide, stubPipe } from '../../../testing';
 import { Router } from '@angular/router';
+import { Angulartics2 } from 'angulartics2';
 import { RouterStub } from '../../../testing/stub.router';
 import { ModalService, ToastrService } from '../../core';
 import { StoryStatusComponent } from './status.component';
@@ -19,6 +20,7 @@ describe('StoryStatusComponent', () => {
   });
   beforeEach(() => modalAlertBody = null);
   provide(ToastrService);
+  provide(Angulartics2, {trackLocation: () => {}});
 
   const mockStory = (story, comp, fix) => {
     comp.story = story;

@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { Angulartics2, Angulartics2GoogleAnalytics } from 'angulartics2';
 import { cit, create, provide, By } from '../testing';
 import { AppComponent } from './app.component';
 
@@ -19,6 +20,17 @@ describe('AppComponent', () => {
     account: new Subject<any>()
   });
   provide(ModalService, {state: new Subject<boolean>()});
+  provide(Angulartics2, {
+    settings: {pageTracking: {}},
+    trackLocation: () => {},
+    pageTrack: new Subject<any>(),
+    eventTrack: new Subject<any>(),
+    exceptionTrack: new Subject<any>(),
+    setUsername: new Subject<string>(),
+    setUserProperties: new Subject<any>(),
+    userTimings: new Subject<any>()
+  });
+  provide(Angulartics2GoogleAnalytics);
 
   cit('only shows header links when logged in', (fix, el, comp) => {
     comp.loggedIn = true;
