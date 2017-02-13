@@ -1,5 +1,6 @@
 import { Component, Input, DoCheck } from '@angular/core';
 import { Router } from '@angular/router';
+import { Angulartics2 } from 'angulartics2';
 import { ModalService, ToastrService } from '../../core';
 import { StoryModel } from '../../shared';
 
@@ -79,7 +80,8 @@ export class StoryStatusComponent implements DoCheck {
 
   constructor(private modal: ModalService,
               private toastr: ToastrService,
-              private router: Router) {}
+              private router: Router,
+              private angulartics2: Angulartics2) {}
 
   ngDoCheck() {
     if (this.story) {
@@ -156,6 +158,7 @@ export class StoryStatusComponent implements DoCheck {
   togglePublish() {
     this.isPublishing = true;
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
+      this.angulartics2.eventTrack.next({ action: this.story.publishedAt ? 'publish' : 'unpublish', properties: { category: 'episode', label: 'episode/' + this.story.doc.id }});
       this.toastr.success(`Episode ${this.story.publishedAt ? 'published' : 'unpublished'}`);
       this.isPublishing = false;
       this.editStatus = false;
