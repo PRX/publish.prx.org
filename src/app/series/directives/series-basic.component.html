@@ -1,0 +1,36 @@
+<form *ngIf="series">
+  <publish-fancy-field *ngIf="accountOptions?.length > 1" label="Owner" required>
+    <publish-fancy-field name="accountId" [select]="accountOptions" [model]="series"
+      [advancedConfirm]="newOwnerConfirm(series['accountId'])" small=1>
+      <div class="fancy-hint">
+        Who is the owner of your series?
+      </div>
+    </publish-fancy-field>
+  </publish-fancy-field>
+
+  <publish-fancy-field textinput required [model]="series" name="title" label="Series Title" required>
+    <div class="fancy-hint">What's the name of your series?</div>
+  </publish-fancy-field>
+
+  <publish-fancy-field textinput required [model]="series" name="shortDescription" label="Teaser" required>
+    <div class="fancy-hint">A short description of your series.</div>
+  </publish-fancy-field>
+
+  <publish-fancy-field label="Description">
+    <div class="fancy-hint">A full description of your series.</div>
+    <publish-wysiwyg [model]="series" name="description" [content]="series.description"
+      [images]="series.images" [changed]="descriptionChanged"></publish-wysiwyg>
+  </publish-fancy-field>
+
+  <publish-fancy-field label="Profile Image">
+    <div class="fancy-hint">This image will be used as the cover image for your series.</div>
+    <publish-image-upload [model]="series" purpose="profile" minWidth=1400 minHeight=1400></publish-image-upload>
+  </publish-fancy-field>
+
+  <publish-fancy-field label="Thumbnail Image">
+    <div class="fancy-hint">Optionally provide an alternate image to use for smaller
+      display purposes. If not provided, a rescaled thumbnail of your profile image
+      will be used.</div>
+    <publish-image-upload [model]="series" purpose="thumbnail" suggestSize="300 x 300"></publish-image-upload>
+  </publish-fancy-field>
+</form>
