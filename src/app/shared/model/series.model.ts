@@ -123,7 +123,10 @@ export class SeriesModel extends BaseModel implements HasUpload {
     data.descriptionMd = this.description;
     data.shortDescription = this.shortDescription;
     if (this.changed('accountId')) {
-      data.set_account_uri = `api/v1/accounts/${this.accountId}`;
+      let newAccountURI = this.doc
+                              .expand('prx:account')
+                              .replace(`${this.original['accountId']}`, `${this.accountId}`);
+      data.set_account_uri = newAccountURI;
     }
     return data;
   }
