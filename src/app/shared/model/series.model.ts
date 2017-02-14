@@ -37,7 +37,9 @@ export class SeriesModel extends BaseModel implements HasUpload {
   constructor(account: HalDoc, series?: HalDoc, loadRelated = true) {
     super();
     this.init(account, series, loadRelated);
-    this.set('accountId', account.id, true);
+    if (account) {
+      this.set('accountId', account.id, true);
+    }
     this.hasStories = series ? series.count('prx:stories') > 0 : false;
     this.loadRelated('versionTemplates').subscribe(() => {
       if (this.isNew && this.versionTemplates.length === 0) {
