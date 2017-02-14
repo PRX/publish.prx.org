@@ -2,7 +2,6 @@ import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CmsService, HalDoc } from '../../core';
 import { SeriesModel, TabService } from '../../shared';
-import { SeriesComponent } from '../series.component';
 
 @Component({
   templateUrl: 'series-basic.component.html'
@@ -16,8 +15,7 @@ export class SeriesBasicComponent implements OnDestroy {
   accountOptions: string[][];
 
   constructor(tab: TabService,
-              private cms: CmsService,
-              private parent: SeriesComponent) {
+              private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
     });
