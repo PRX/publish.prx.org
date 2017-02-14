@@ -17,7 +17,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
   itunesCategoryDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12';
   audioVersionOptions: string[][];
-  hasStories: boolean;
 
   tabSub: Subscription;
   state: string;
@@ -29,7 +28,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
-      this.hasStories = s.doc ? s.doc.count('prx:stories') > 0 : false;
       this.series.loadRelated('versionTemplates').subscribe(() => {
         let realTemplates = this.series.versionTemplates.filter(t => t.doc);
         this.audioVersionOptions = realTemplates.map(tpl => {
@@ -125,7 +123,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   get versionTemplateConfirm(): string {
-    if (this.distribution && this.audioVersionOptions && this.hasStories) {
+    if (this.distribution && this.audioVersionOptions && this.series.hasStories) {
       let url = this.distribution.versionTemplateUrl;
       let match = this.audioVersionOptions.find(opt => opt[1] === url);
       let name = match ? match[0] : ''; // options are [[display, value]]
