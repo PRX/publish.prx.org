@@ -157,9 +157,11 @@ export class StoryStatusComponent implements DoCheck {
 
   togglePublish() {
     this.isPublishing = true;
-    this.story.setPublished(!this.story.publishedAt).subscribe(() => {
-      this.angulartics2.eventTrack.next({ action: this.story.publishedAt ? 'publish' : 'unpublish', properties: { category: 'episode', label: 'episode/' + this.story.doc.id }});
-      this.toastr.success(`Episode ${this.story.publishedAt ? 'published' : 'unpublished'}`);
+    let isToBePublished = !!this.story.publishedAt;
+    this.story.setPublished(!isToBePublished).subscribe(() => {
+      this.angulartics2.eventTrack.next({ action: isToBePublished ? 'publish' : 'unpublish',
+        properties: { category: 'episode', label: 'episode/' + this.story.doc.id }});
+      this.toastr.success(`Episode ${isToBePublished ? 'published' : 'unpublished'}`);
       this.isPublishing = false;
       this.editStatus = false;
     });
