@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { AuthService, CmsService } from './core';
 
 @Component({
@@ -10,7 +11,8 @@ export class AppComponent {
 
   loggedIn: boolean = true; // until proven otherwise
 
-  constructor(authService: AuthService, cmsService: CmsService) {
+  constructor(authService: AuthService, cmsService: CmsService,
+              angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     authService.token.subscribe((token) => {
       if (token) {
         let refresher: any;

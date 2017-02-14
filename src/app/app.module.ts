@@ -1,5 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
 
 import { AppComponent } from './app.component';
 import { AppErrorService } from './app-error.service';
@@ -17,6 +18,7 @@ import { SearchModule } from './search';
     routingComponents
   ],
   imports: [
+    Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
     BrowserModule,
     CoreModule,
     SeriesModule,

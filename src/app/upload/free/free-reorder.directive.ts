@@ -18,9 +18,8 @@ export class FreeReorderDirective extends DragulaDirective implements OnInit, On
   }
 
   ngOnInit() {
-    this.bag = UUID.UUID();
     this.dragulaModel = this.publishFreeReorder.files;
-    this.myDragula.setOptions(this.bag, {
+    this.myDragula.setOptions(UUID.UUID(), {
       moves: (el: Element, source: Element, handle: Element) => {
         return handle.classList.contains('drag-handle');
       }
