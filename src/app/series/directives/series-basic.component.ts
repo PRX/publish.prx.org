@@ -27,27 +27,28 @@ export class SeriesBasicComponent implements OnDestroy {
     });
   }
 
-  setAccount(accountId: string) {
-    let account = this.accounts.find((a) => a.id === +accountId);
-    if (account) {
-      this.series.set('accountId', account.id);
-      this.parent.setSeries(account, null);
-    }
-  }
-
-  get accountName(): string {
-    let account = {};
-    if (this.accounts && this.series.parent) {
-      account = this.accounts.find((a) => a.id === this.series.parent.id);
-    }
-    return account['name'];
-  }
-
   ngOnDestroy(): any {
     this.tabSub.unsubscribe();
   }
 
   get descriptionChanged(): boolean {
     return this.series && this.series.changed('description', false);
+  }
+
+  newOwnerConfirm(newId: number): string {
+    let prompt, newName;
+    if (newId && this.accounts.find((a) => a.id === +newId)) {
+      newName = this.accounts.find((a) => a.id === +newId)['name'];
+    }
+    if (!this.series.isNew && this.series.hasStories) {
+      prompt = `Are you sure you want to change the owner of this series
+       from ${this.series.parent['name']}`;
+       if (newName) {
+         prompt += ` to ${newName}`;
+       }
+       prompt += `? This will change the account for all stories in the series,
+       and will affect who can access the series.`;
+    }
+    return prompt;
   }
 }
