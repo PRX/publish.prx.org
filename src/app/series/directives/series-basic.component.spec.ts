@@ -39,7 +39,7 @@ describe('SeriesBasicComponent', () => {
 
     expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(7);
     expect(el).toContainText('Who is the owner');
-    expect(el).toContainText('name of your series');
+    expect(el).toContainText('name of this series');
     expect(el).toContainText('short description');
     expect(el).toContainText('full description');
     expect(el).toContainText('cover image');
