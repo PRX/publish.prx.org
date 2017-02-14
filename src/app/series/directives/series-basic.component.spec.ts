@@ -58,7 +58,7 @@ describe('SeriesBasicComponent', () => {
     expect(el).toContainText('cover image');
   });
 
-  cit('when user has access to more than one account, allows setting owner for new series', (fix, el, comp) => {
+  cit('when user has access to more than one account, allows setting owner for series', (fix, el, comp) => {
     comp.series = {isNew: true, changed: () => false, account: {name: 'DefaultAccount', id: '222'}};
     fix.detectChanges();
     expect(el).toContainText('Who is the owner');
