@@ -11,15 +11,16 @@ import { HasUpload, applyMixins } from './upload';
 export class SeriesModel extends BaseModel implements HasUpload {
 
   public id: number;
-  public title: string = '';
-  public description: string = '';
-  public shortDescription: string = '';
+  public title = '';
+  public description = '';
+  public shortDescription = '';
   public createdAt: Date;
   public updatedAt: Date;
   public images: ImageModel[] = [];
   public versionTemplates: AudioVersionTemplateModel[] = [];
   public distributions: DistributionModel[] = [];
   public accountId: number;
+  public hasStories: boolean;
 
   SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap', 'accountId'];
 
@@ -39,6 +40,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
     if (account) {
       this.set('accountId', account.id, true);
     }
+    this.hasStories = series ? series.count('prx:stories') > 0 : false;
     this.loadRelated('versionTemplates').subscribe(() => {
       if (this.isNew && this.versionTemplates.length === 0) {
         this.defaultVersionTemplate();
@@ -120,6 +122,12 @@ export class SeriesModel extends BaseModel implements HasUpload {
     data.title = this.title;
     data.descriptionMd = this.description;
     data.shortDescription = this.shortDescription;
+    if (this.changed('accountId')) {
+      let newAccountURI = this.doc
+                              .expand('prx:account')
+                              .replace(`${this.original['accountId']}`, `${this.accountId}`);
+      data.set_account_uri = newAccountURI;
+    }
     return data;
   }
 

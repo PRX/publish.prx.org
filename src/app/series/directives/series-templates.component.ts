@@ -77,7 +77,7 @@ export class SeriesTemplatesComponent implements OnDestroy {
   }
 
   hasStories() {
-    return this.series && this.series.doc && this.series.doc.has('prx:stories') && this.series.doc.count('prx:stories') > 0;
+    return this.series && this.series.hasStories;
   }
 
   hasVersions() {
