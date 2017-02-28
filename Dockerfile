@@ -11,8 +11,6 @@ EXPOSE 4200
 
 ADD . ./
 
-# TODO: someday https://github.com/sass/node-sass/issues/1589 will happen,
-# and building this will be way faster.
 RUN npm set progress=false && \
     npm install --no-optional --unsafe-perm && \
     npm run build
