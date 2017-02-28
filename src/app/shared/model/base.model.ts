@@ -11,9 +11,9 @@ interface RelatedLoader { [key: string]: Observable<BaseModel | BaseModel[]>; }
  */
 export abstract class BaseModel {
 
-  public isSaving: boolean = false;
-  public isNew: boolean = false;
-  public isDestroy: boolean = false;
+  public isSaving = false;
+  public isNew = false;
+  public isDestroy = false;
 
   public doc: HalDoc;
   public parent: HalDoc;

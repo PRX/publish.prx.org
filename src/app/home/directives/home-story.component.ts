@@ -36,7 +36,7 @@ export class HomeStoryComponent implements OnInit {
 
   storyTitle: string;
   storyDate: Date;
-  storyDuration: number = 0;
+  storyDuration = 0;
   storyImage: HalDoc;
 
   statusClass: string;

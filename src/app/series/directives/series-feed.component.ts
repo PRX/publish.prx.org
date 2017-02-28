@@ -53,7 +53,7 @@ import { SeriesModel, StoryModel, TabService } from '../../shared';
 
 export class SeriesFeedComponent implements OnDestroy {
 
-  isLoaded: boolean = false;
+  isLoaded = false;
   noStories: boolean;
   series: SeriesModel;
   publicStories: StoryModel[] = [];

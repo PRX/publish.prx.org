@@ -9,7 +9,7 @@ import { AuthService, CmsService } from './core';
 
 export class AppComponent {
 
-  loggedIn: boolean = true; // until proven otherwise
+  loggedIn = true; // until proven otherwise
 
   constructor(authService: AuthService, cmsService: CmsService,
               angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
