@@ -4,12 +4,12 @@
 module.exports = function (config) {
   config.set({
     basePath: '',
-    frameworks: ['jasmine', 'angular-cli'],
+    frameworks: ['jasmine', '@angular/cli'],
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
-      // require('karma-phantomjs-launcher'),
-      // require('karma-spec-reporter'),
+      require('karma-phantomjs-launcher'),
+      require('karma-spec-reporter'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
       require('@angular/cli/plugins/karma')
@@ -38,8 +38,8 @@ module.exports = function (config) {
       environment: 'dev'
     },
     reporters: process.env.CODECOV
-              ? ['progress', 'coverage-istanbul']
-              : ['progress', 'kjhtml'],
+              ? ['spec', 'coverage-istanbul']
+              : ['spec', 'kjhtml'],
     specReporter: {
       maxLogLines: 5,
       suppressErrorSummary: true,
