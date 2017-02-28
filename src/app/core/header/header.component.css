@@ -87,7 +87,6 @@ nav {
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display: box;
   display: flex;
   -webkit-box-pack: end;
   -moz-box-pack: end;
