@@ -37,7 +37,7 @@ export class HomeSeriesComponent implements OnInit {
   @Input() series: HalDoc;
   @Input() auth: HalDoc;
   @Input() noseries: boolean;
-  @Input() rows: number = 1;
+  @Input() rows = 1;
 
   count: number = -1;
   id: number;

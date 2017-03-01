@@ -53,8 +53,8 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('url') private url: NgModel;
   linkURL: string;
   linkTitle: string;
-  hasSelection: boolean = false;
-  showPrompt: boolean = false;
+  hasSelection = false;
+  showPrompt = false;
 
   constructor(private chgRef: ChangeDetectorRef) {}
 

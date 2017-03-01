@@ -14,7 +14,7 @@ import { SearchSeries } from '../search-series.model';
 
     <div class="form-group">
       <p class="right">
-        <label [attr.for]="orderBy">Order by</label>
+        <label for="orderBy">Order by</label>
         <select id="orderBy" name="orderBy" [(ngModel)]="model.orderBy" (ngModelChange)="modelChange.emit(model)">
           <option *ngFor="let orderBy of orderByOptions" [value]="orderBy.id">{{orderBy.name}}</option>
         </select>

@@ -21,7 +21,7 @@ export class LoginComponent {
 
   iframeUrl: SafeResourceUrl;
   errorMsg: string;
-  private isInitialLoad: boolean = true;
+  private isInitialLoad = true;
 
   constructor(
     private element: ElementRef,

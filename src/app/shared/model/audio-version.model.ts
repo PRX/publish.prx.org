@@ -11,7 +11,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
 
   public id: number;
   public label: string;
-  public explicit: string = '';
+  public explicit = '';
 
   // save in-progress uploads to localstorage
   SETABLE = ['label', 'explicit', 'hasUploadMap'];
@@ -24,7 +24,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
   public series: HalDoc;
   public template: HalDoc;
   public fileTemplates: HalDoc[] = [];
-  public hasFileTemplates: boolean = false;
+  public hasFileTemplates = false;
   public filesAndTemplates: {tpl: HalDoc, file: AudioFileModel}[] = [];
   public files: AudioFileModel[];
 
@@ -197,8 +197,8 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
       for (let t of this.fileTemplates) {
         this.filesAndTemplates.push({file: null, tpl: t});
       }
-      for (let f of this.files.filter(f => !f.isDestroy)) {
-        let ft = this.filesAndTemplates.find(ft => ft.tpl && ft.tpl['position'] === f.position);
+      for (let f of this.files.filter(file => !file.isDestroy)) {
+        let ft = this.filesAndTemplates.find(ftmp => ftmp.tpl && ftmp.tpl['position'] === f.position);
         if (ft) {
           f.setTemplate(ft.tpl);
           ft.file = f;

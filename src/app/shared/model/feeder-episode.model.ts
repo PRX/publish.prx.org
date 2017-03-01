@@ -12,10 +12,10 @@ export class FeederEpisodeModel extends BaseModel {
   // writeable
   SETABLE = ['guid', 'authorName', 'authorEmail', 'webLink'];
   URLS = ['webLink'];
-  guid: string = '';
-  authorName: string = '';
-  authorEmail: string = '';
-  webLink: string = '';
+  guid = '';
+  authorName = '';
+  authorEmail = '';
+  webLink = '';
 
   VALIDATORS = {
     guid: [UNLESS_NEW(REQUIRED())],

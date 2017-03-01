@@ -6,9 +6,12 @@ import { CmsService } from '../app/core/cms/cms.service';
 import { MockCmsService } from './mock.cms.service';
 import { StubRouterLinkDirective } from './stub.routerlink.directive';
 
-interface ComponentTestCallback {
-  (fix: ComponentFixture<any>, el: DebugElement, comp: any, done?: Function): any;
-}
+type ComponentTestCallback = (
+  fix: ComponentFixture<any>,
+  el: DebugElement,
+  comp: any,
+  done?: Function
+) => any;
 
 // component test-it up!
 export function cit(desc: string, testFn: ComponentTestCallback) {

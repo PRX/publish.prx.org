@@ -6,6 +6,8 @@ html(lang='en')
     base(href='/')
     meta(name='viewport' content='width=device-width, initial-scale=1')
     link(rel='icon' type='image/x-icon' href='/assets/images/favicon.png')
+    for style in css
+      link(rel='stylesheet' href=style)
     if newRelicHeader
       != newRelicHeader
   body(margin: 0)
@@ -14,6 +16,6 @@ html(lang='en')
         h3(style='font-size:18px;font-weight:200;color:#bbb') Loading...
     script(type='text/javascript')
       != 'window.ENV=' + JSON.stringify(env)
-    for script in scripts
+    for script in js
       script(src=script)
     script(src='/assets/google-analytics.js').

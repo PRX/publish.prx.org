@@ -8,9 +8,9 @@ import { AudioVersionTemplateModel } from './audio-version-template.model';
 export class DistributionModel extends BaseModel {
 
   id: number;
-  kind: string = '';
-  url: string = '';
-  versionTemplateUrl: string = '';
+  kind = '';
+  url = '';
+  versionTemplateUrl = '';
 
   // external related models
   podcast: FeederPodcastModel;

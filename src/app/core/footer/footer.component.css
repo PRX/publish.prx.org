@@ -28,7 +28,6 @@ footer {
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display: box;
   display: flex;
   -webkit-box-lines: multiple;
   -moz-box-lines: multiple;
@@ -137,7 +136,6 @@ ul.social {
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display: box;
   display: flex;
   -webkit-box-pack: center;
   -moz-box-pack: center;

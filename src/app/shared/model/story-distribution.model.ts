@@ -7,8 +7,8 @@ import { FeederEpisodeModel } from './feeder-episode.model';
 export class StoryDistributionModel extends BaseModel {
 
   id: number;
-  kind: string = '';
-  url: string = '';
+  kind = '';
+  url = '';
 
   // external related models
   episode: FeederEpisodeModel;

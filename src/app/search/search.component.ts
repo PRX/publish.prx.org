@@ -26,7 +26,7 @@ export class SearchComponent implements OnInit {
   seriesResults: SeriesModel[] = [];
 
   currentPage: number;
-  showNumPages: number = 10;
+  showNumPages = 10;
   pagesBegin: number;
   pagesEnd: number;
 

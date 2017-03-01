@@ -6,9 +6,9 @@ export class ImageModel extends UploadableModel {
 
   public id: number;
   public filename: string;
-  public caption: string = '';
-  public credit: string = '';
-  public purpose: string = '';
+  public caption = '';
+  public credit = '';
+  public purpose = '';
 
   SETABLE = ['caption', 'credit', 'purpose'];
 

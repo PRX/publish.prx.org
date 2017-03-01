@@ -11,8 +11,8 @@ import { HalDoc } from '../../core';
 
 export class ImageLoaderComponent implements OnChanges {
 
-  static PLACEHOLDER_IMAGE: string = '/assets/images/placeholder.png';
-  static PLACEHOLDER_ERROR: string = '/assets/images/placeholder_error.png';
+  static PLACEHOLDER_IMAGE = '/assets/images/placeholder.png';
+  static PLACEHOLDER_ERROR = '/assets/images/placeholder_error.png';
 
   @Input() public src: string;
   @Input() public imageDoc: HalDoc;

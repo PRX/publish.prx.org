@@ -16,8 +16,6 @@ const DEFAULT_AUDIO = '//s3.amazonaws.com/production.mediajoint.prx.org/public/c
 export class PlayerComponent implements OnDestroy, DoCheck {
 
   private tabSub: Subscription;
-  private story: StoryModel;
-
   private feedUrl: string;
   private episodeGuid: string;
   private title: string;
@@ -26,6 +24,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
   private imageUrl: string;
   private subscriptionUrl: string;
 
+  story: StoryModel;
   shouldUseFeeder: boolean;
   previewingUnpublished: boolean;
   loadError: string;

@@ -71,7 +71,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
 
   story: StoryModel;
   tabSub: Subscription;
-  showReleasedAt: boolean = false;
+  showReleasedAt = false;
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.story = s);

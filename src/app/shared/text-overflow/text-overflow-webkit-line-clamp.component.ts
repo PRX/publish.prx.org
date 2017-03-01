@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'publish-text-overflow-webkit-line-clamp',
   template: `
-    <div [style.max-height]="(numLines * lineHeight) + unit" 
+    <div [style.max-height]="(numLines * lineHeight) + unit"
       [style.line-height]="lineHeight + unit"
       [style.-webkit-line-clamp]="numLines">
       <ng-content></ng-content>
@@ -13,7 +13,7 @@ import { Component, Input } from '@angular/core';
 })
 
 export class TextOverflowWebkitLineClampComponent {
-  @Input() numLines: number = 3;
-  @Input() lineHeight: number = 1.2;
-  @Input() unit: string = 'em';
+  @Input() numLines = 3;
+  @Input() lineHeight = 1.2;
+  @Input() unit = 'em';
 }

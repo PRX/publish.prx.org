@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-export var DEFAULT_MIMETYPES: any = {
+export const DEFAULT_MIMETYPES: any = {
   'aif': 'audio\/x-aiff',
   'aifc': 'audio\/x-aiff',
   'aiff': 'audio\/x-aiff',
@@ -33,7 +33,7 @@ export var DEFAULT_MIMETYPES: any = {
 @Injectable()
 export class MimeTypeService {
 
-  private serviceDefault: string = 'application\/octet-stream';
+  private serviceDefault = 'application\/octet-stream';
 
   lookupFileMimetype(file: File, overrideDefault?: string) {
     let typeDefault = overrideDefault || this.serviceDefault;
