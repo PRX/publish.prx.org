@@ -10,16 +10,16 @@ export class FeederEpisodeModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['guid', 'authorName', 'authorEmail', 'webLink'];
-  URLS = ['webLink'];
+  SETABLE = ['guid', 'authorName', 'authorEmail', 'episodeUrl'];
+  URLS = ['episodeUrl'];
   guid = '';
   authorName = '';
   authorEmail = '';
-  webLink = '';
+  episodeUrl = '';
 
   VALIDATORS = {
     guid: [UNLESS_NEW(REQUIRED())],
-    webLink: [URL('Not a valid URL')]
+    episodeUrl: [REQUIRED(), URL('Not a valid URL')]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
@@ -44,7 +44,7 @@ export class FeederEpisodeModel extends BaseModel {
   decode() {
     this.id = '' + (this.doc['id'] || '');
     this.guid = this.doc['guid'] || '';
-    this.webLink = this.doc['url'] || '';
+    this.episodeUrl = this.doc['url'] || '';
     let author = this.doc['author'] || {};
     this.authorName = author['name'] || '';
     this.authorEmail = author['email'] || '';
@@ -60,7 +60,7 @@ export class FeederEpisodeModel extends BaseModel {
     } else {
       data.author = null;
     }
-    data.url = this.webLink || null;
+    data.url = this.episodeUrl || null;
     return data;
   }
 
