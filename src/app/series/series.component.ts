@@ -13,11 +13,11 @@ import { SeriesModel } from '../shared';
 
 export class SeriesComponent implements OnInit {
 
-  private id: number;
-  private base: string;
-  private series: SeriesModel;
-  private storyCount: number;
-  private storyNoun: string;
+  id: number;
+  base: string;
+  series: SeriesModel;
+  storyCount: number;
+  storyNoun: string;
 
   constructor(
     private cms: CmsService,

@@ -11,7 +11,7 @@ import { Component, Input } from '@angular/core';
 })
 
 export class TextOverflowFadeComponent {
-  @Input() numLines: number = 3;
-  @Input() lineHeight: number = 1.2;
-  @Input() unit: string = 'em';
+  @Input() numLines = 3;
+  @Input() lineHeight = 1.2;
+  @Input() unit = 'em';
 }

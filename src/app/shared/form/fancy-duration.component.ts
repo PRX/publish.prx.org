@@ -19,17 +19,17 @@ import { BaseModel } from '../model/base.model';
       <template [ngIf]="model">
         <input [id]="hoursName" type="number" min="0" [ngModel]="hours | padzero"
           #hoursInput (click)="selectAllContent(hoursInput)"
-          [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model" 
+          [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model"
           (ngModelChange)="set('hours', $event)" [class.changed]="hoursChanged"/>
         <b>:</b>
         <input [id]="minutesName" type="number" min="0" [ngModel]="minutes | padzero"
           #minutesInput (click)="selectAllContent(minutesInput)"
-          [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model" 
+          [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model"
           (ngModelChange)="set('minutes', $event)" [class.changed]="minutesChanged"/>
         <b>:</b>
         <input [id]="secondsName" type="number" min="0" [ngModel]="seconds | padzero"
           #secondsInput (click)="selectAllContent(secondsInput)"
-          [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model" 
+          [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model"
           (ngModelChange)="set('seconds', $event)" [class.changed]="secondsChanged"/>
       </template>
     </div>
@@ -44,9 +44,9 @@ export class FancyDurationComponent implements DoCheck {
   @Input() tiny: boolean;
   @Input() advancedConfirm: string;
 
-  hours: number = 0;
-  minutes: number = 0;
-  seconds: number = 0;
+  hours = 0;
+  minutes = 0;
+  seconds = 0;
   hoursName: string;
   minutesName: string;
   secondsName: string;

@@ -22,9 +22,9 @@ import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
 
 export class HeroComponent implements OnInit {
 
-  @Input() loading: boolean = false;
-  @Input() orange: boolean = false;
-  @Input() blue: boolean = false;
+  @Input() loading = false;
+  @Input() orange = false;
+  @Input() blue = false;
 
   @ViewChild('refHero') heroEl: ElementRef;
 

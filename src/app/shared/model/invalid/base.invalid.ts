@@ -1,9 +1,7 @@
 /**
  * Model validations
  */
-export interface BaseInvalid {
-  (key: string, value: any, strict?: boolean, model?: any): string;
-}
+export type BaseInvalid = (key: string, value: any, strict?: boolean, model?: any) => string;
 
 export const UNLESS_NEW = (validator: BaseInvalid) => {
   return (key: string, value: any, strict?: boolean, model?: any) => {
