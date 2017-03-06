@@ -17,7 +17,7 @@ describe('FeederEpisodeModel', () => {
     let episode = new FeederEpisodeModel(series, dist, doc);
     expect(episode.authorName).toEqual('John Q. Public');
     expect(episode.authorEmail).toEqual('john@q.public.com');
-    expect(episode.webLink).toEqual('http://this.is.a.podcast/episode/3');
+    expect(episode.episodeUrl).toEqual('http://this.is.a.podcast/episode/3');
   });
 
   it('encodes author name and email and web link', () => {
@@ -27,7 +27,7 @@ describe('FeederEpisodeModel', () => {
     expect(episode.encode()['author']).toEqual({name: 'name'});
     episode.set('authorEmail', 'email');
     expect(episode.encode()['author']).toEqual({name: 'name',  email: 'email'});
-    episode.set('webLink', 'http://google.com');
+    episode.set('episodeUrl', 'http://google.com');
     expect(episode.encode()['url']).toEqual('http://google.com');
   });
 
@@ -48,10 +48,10 @@ describe('FeederEpisodeModel', () => {
 
   it('ensures URLs have http(s)', () => {
     let webEpisode = new FeederEpisodeModel(series, dist);
-    webEpisode.set('webLink', 'show.me');
-    expect(webEpisode.webLink).toEqual('http://show.me');
-    webEpisode.set('webLink', 'https://notfeeder.prx.org');
-    expect(webEpisode.webLink).toEqual('https://notfeeder.prx.org');
+    webEpisode.set('episodeUrl', 'show.me');
+    expect(webEpisode.episodeUrl).toEqual('http://show.me');
+    webEpisode.set('episodeUrl', 'https://notfeeder.prx.org');
+    expect(webEpisode.episodeUrl).toEqual('https://notfeeder.prx.org');
   });
 
 });
