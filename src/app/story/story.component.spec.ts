@@ -101,26 +101,26 @@ describe('StoryComponent', () => {
     expect(el).toContainText('Embeddable Player');
   });
 
-  cit('shows the podcast distribution tab for existing stories', (fix, el, comp) => {
+  cit('shows the podcast tab for existing stories', (fix, el, comp) => {
     activatedRoute.testParams = {id: 1234};
     story.mockItems('prx:distributions', [{kind: 'foobar'}]);
     fix.detectChanges();
-    expect(el).not.toContainText('Podcast Distribution');
+    expect(el).not.toContainText('Podcast Episode Info');
     story.mockItems('prx:distributions', [{kind: 'foobar'}, {kind: 'episode'}]);
     comp.loadStory();
     fix.detectChanges();
-    expect(el).toContainText('Podcast Distribution');
+    expect(el).toContainText('Podcast Episode Info');
   });
 
-  cit('shows the podcast distribution tab for new stories', (fix, el, comp) => {
+  cit('shows the podcast tab for new stories', (fix, el, comp) => {
     activatedRoute.testParams = {seriesId: 5678};
     series.mockItems('prx:distributions', [{kind: 'foobar'}]);
     fix.detectChanges();
-    expect(el).not.toContainText('Podcast Distribution');
+    expect(el).not.toContainText('Podcast Episode Info');
     series.mockItems('prx:distributions', [{kind: 'foobar'}, {kind: 'podcast'}]);
     comp.loadStory();
     fix.detectChanges();
-    expect(el).toContainText('Podcast Distribution');
+    expect(el).toContainText('Podcast Episode Info');
   });
 
 });
