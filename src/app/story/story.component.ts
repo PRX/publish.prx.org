@@ -14,7 +14,7 @@ import { StoryModel } from '../shared';
     <publish-tabs [model]="story">
       <nav>
         <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
-        <a *ngIf="distPodcast" routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Distribution</a>
+        <a *ngIf="distPodcast" routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Episode Info</a>
         <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
       </nav>
       <publish-story-status [id]="id" [story]="story"></publish-story-status>
