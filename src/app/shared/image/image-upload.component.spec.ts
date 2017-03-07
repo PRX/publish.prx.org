@@ -128,7 +128,7 @@ AAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABpJREFUeNpi/P//PwM5gImBTDCqcV
     comp.reader.addEventListener('loadend', () => {
       comp.browserImage.addEventListener('load', () => {
         fix.detectChanges();
-        expect(el).toContainText(`is required to be square`);
+        expect(el).toContainText('width and height must be the same');
         expect(comp.model.images.length).toEqual(0);
         done();
       });
