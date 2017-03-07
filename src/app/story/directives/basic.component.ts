@@ -36,8 +36,8 @@ import { StoryModel, TabService } from '../../shared';
       </publish-fancy-field>
 
       <publish-fancy-field label="Cover Image">
-      <div class="fancy-hint">Provide an image for your episode, if desired.</div>
-        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400 [strict]="strict"></publish-image-upload>
+      <div class="fancy-hint">Provide an image for your episode, if desired. Image dimensions must be square.</div>
+        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400  square="true" [strict]="strict"></publish-image-upload>
       </publish-fancy-field>
 
       <hr/>

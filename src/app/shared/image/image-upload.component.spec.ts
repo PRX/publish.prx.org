@@ -12,6 +12,8 @@ describe('ImageUploadComponent', () => {
   });
 
   let imageDataURI = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+  let notSquareImageDataURI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAJCAYAAAACTR1pAA\
+AAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABpJREFUeNpi/P//PwM5gImBTDCqcVBpBAgwAAtnAw/QRSp6AAAAAElFTkSuQmCC';
 
   function dataURItoBlob(dataURI) {
     let binary = atob(dataURI.split(',')[1]);
@@ -111,6 +113,22 @@ describe('ImageUploadComponent', () => {
       comp.browserImage.addEventListener('load', () => {
         fix.detectChanges();
         expect(el).toContainText(`should be at least ${comp.minWidth} x ${comp.minHeight} px`);
+        expect(comp.model.images.length).toEqual(0);
+        done();
+      });
+    });
+  });
+
+  cit('optionally requires image to be square', (fix, el, comp, done) => {
+    comp.model = model;
+    comp.model.isChanged = true;
+    comp.minWidth = comp.minHeight = 1;
+    comp.square = true;
+    comp.addUpload(dataURItoBlob(notSquareImageDataURI));
+    comp.reader.addEventListener('loadend', () => {
+      comp.browserImage.addEventListener('load', () => {
+        fix.detectChanges();
+        expect(el).toContainText('width and height must be the same');
         expect(comp.model.images.length).toEqual(0);
         done();
       });
