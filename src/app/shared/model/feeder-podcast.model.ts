@@ -1,7 +1,7 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
-import { REQUIRED, URL } from './invalid';
+import { REQUIRED, URL, LENGTH } from './invalid';
 
 export class FeederPodcastModel extends BaseModel {
 
@@ -10,7 +10,8 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix',
+    'authorName', 'authorEmail', 'summary'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -21,6 +22,7 @@ export class FeederPodcastModel extends BaseModel {
   enclosurePrefix = '';
   authorName = '';
   authorEmail = '';
+  summary = '';
   hasPublicFeed = false;
 
   VALIDATORS = {
@@ -29,7 +31,8 @@ export class FeederPodcastModel extends BaseModel {
     link: [REQUIRED(), URL('Not a valid URL')],
     newFeedUrl: [URL('Not a valid URL')],
     publicFeedUrl: [URL('Not a valid URL')],
-    enclosurePrefix: [URL('Not a valid URL')]
+    enclosurePrefix: [URL('Not a valid URL')],
+    summary: [LENGTH(0, 4000)]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
@@ -87,6 +90,7 @@ export class FeederPodcastModel extends BaseModel {
       this.category = '';
       this.subCategory = '';
     }
+    this.summary = this.doc['summary'];
   }
 
   encode(): {} {
@@ -120,6 +124,7 @@ export class FeederPodcastModel extends BaseModel {
     } else {
       data.itunesCategories = [];
     }
+    data.summary = this.summary;
     return data;
   }
 

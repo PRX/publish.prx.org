@@ -1,8 +1,8 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
-import { ProseMirrorMarkdownEditor, ProseMirrorImage } from './prosemirror.markdown.editor';
+import { ProseMirrorMarkdownEditor, ProseMirrorImage, ProseMirrorFormatTypes } from './prosemirror.markdown.editor';
 
 @Component({
   selector: 'publish-wysiwyg',
@@ -43,6 +43,8 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() model: BaseModel;
   @Input() name: string;
   @Input() content: string;
+  @Input() inputFormat = ProseMirrorFormatTypes.MARKDOWN;
+  @Input() outputFormat = ProseMirrorFormatTypes.MARKDOWN;
   @Input() changed: boolean;
   @Input() images: ImageModel[];
   setModelValue = '';
@@ -62,6 +64,8 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
     if (this.model) {
       this.editor = new ProseMirrorMarkdownEditor(this.el,
                                                   this.content,
+                                                  this.inputFormat,
+                                                  this.outputFormat,
                                                   this.mapImages(),
                                                   this.setModel.bind(this),
                                                   this.promptForLink.bind(this));
@@ -90,7 +94,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   mapImages(): ProseMirrorImage[] {
-    return this.images.filter(img => !img.isDestroy).map(img => {
+    return this.images && this.images.filter(img => !img.isDestroy).map(img => {
       let name = img.filename || '[untitled]';
       return new ProseMirrorImage(name, img.enclosureHref, img.caption, img.credit);
     });

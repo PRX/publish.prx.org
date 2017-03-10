@@ -26,7 +26,8 @@ export class SeriesModel extends BaseModel implements HasUpload {
 
   VALIDATORS = {
     title:            [REQUIRED(), LENGTH(1, 255)],
-    shortDescription: [REQUIRED()]
+    shortDescription: [REQUIRED()],
+    description: [LENGTH(0, 4000)]
   };
 
   // HasUpload mixin

@@ -1,7 +1,7 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
-import { REQUIRED, UNLESS_NEW, URL } from './invalid';
+import { REQUIRED, UNLESS_NEW, URL, LENGTH } from './invalid';
 
 export class FeederEpisodeModel extends BaseModel {
 
@@ -10,16 +10,18 @@ export class FeederEpisodeModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['guid', 'authorName', 'authorEmail', 'episodeUrl'];
+  SETABLE = ['guid', 'authorName', 'authorEmail', 'episodeUrl', 'summary'];
   URLS = ['episodeUrl'];
   guid = '';
   authorName = '';
   authorEmail = '';
   episodeUrl = '';
+  summary = '';
 
   VALIDATORS = {
     guid: [UNLESS_NEW(REQUIRED())],
-    episodeUrl: [REQUIRED(), URL('Not a valid URL')]
+    episodeUrl: [REQUIRED(), URL('Not a valid URL')],
+    summary: [LENGTH(0, 4000)]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
@@ -48,6 +50,7 @@ export class FeederEpisodeModel extends BaseModel {
     let author = this.doc['author'] || {};
     this.authorName = author['name'] || '';
     this.authorEmail = author['email'] || '';
+    this.summary = this.doc['summary'];
   }
 
   encode(): {} {
@@ -61,6 +64,7 @@ export class FeederEpisodeModel extends BaseModel {
       data.author = null;
     }
     data.url = this.episodeUrl || null;
+    data.summary = this.summary;
     return data;
   }
 
