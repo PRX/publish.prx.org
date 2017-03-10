@@ -69,7 +69,11 @@ export class HomeSeriesComponent implements OnInit {
     let limit = Math.min(total, max);
     this.storyLoaders = Array(limit + 1);
 
-    this.series.followItems('prx:stories', {per: limit, filters: 'v4'}).subscribe((stories) => {
+    this.series.followItems('prx:stories', {
+      per: limit,
+      filters: 'v4',
+      sorts: 'released_at: desc, published_at: desc'
+    }).subscribe((stories) => {
       this.storyLoaders = null;
       this.stories = [this.getDraftStory(this.series)];
       for (let story of stories) {
@@ -83,7 +87,11 @@ export class HomeSeriesComponent implements OnInit {
     this.storyLoaders = Array(1); // just one
 
     let account = this.auth.follow('prx:default-account');
-    let stories = this.auth.followItems('prx:stories', {filters: 'noseries,v4', per: limit});
+    let stories = this.auth.followItems('prx:stories', {
+      filters: 'noseries,v4',
+      per: limit,
+      sorts: 'released_at: desc, published_at: desc'
+    });
 
     Observable.concat(account, stories).toArray().subscribe((results) => {
       let accountDoc = <HalDoc> results[0];
