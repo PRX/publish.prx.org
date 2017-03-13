@@ -79,7 +79,8 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
         this.editor.setSavedState();
       }
 
-      if (this.setModelValue !== this.model[this.name]) {
+      if (this.setModelValue !== this.model[this.name] &&
+        this.inputFormat !== ProseMirrorFormatTypes.HTML) {// TODO: fix this!
         this.editor.resetEditor();
       } else if (!this.changed) {
         this.editor.setSavedState();

@@ -9,8 +9,6 @@ import { MenuBarEditorView, icons, MenuItem, Dropdown, DropdownSubmenu,
   wrapItem, blockTypeItem, joinUpItem, liftItem } from 'prosemirror-menu';
 import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { EditorState, Plugin, Selection } from 'prosemirror-state';
-import { Transaction } from 'prosemirror-state/transaction';
-import { EditorTransform } from 'prosemirror-state/transform';
 import { DOMParser, Mark, MarkType, Node, ResolvedPos, Schema } from 'prosemirror-model';
 
 export class ProseMirrorImage {
@@ -42,7 +40,7 @@ export class ProseMirrorMarkdownEditor {
     this.savedState = EditorState.create(this.stateConfig());
     this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(this.savedState));
     if (this.inputFormat === ProseMirrorFormatTypes.MARKDOWN && this.outputFormat === ProseMirrorFormatTypes.HTML) {
-      this.toggleMarksExceptLinks();
+      this.plainTextPlusLinks();
     }
   }
 
@@ -94,7 +92,8 @@ export class ProseMirrorMarkdownEditor {
     return config;
   }
 
-  toggleMarksExceptLinks() {
+  plainTextPlusLinks() {
+    // remove unsupported marks
     let transaction = this.view.editor.state.tr
       .removeMark(0, this.view.editor.state.doc.nodeSize - 2, markdownSchema.marks.strong)
       .removeMark(0, this.view.editor.state.doc.nodeSize - 2, markdownSchema.marks.em)
@@ -102,18 +101,52 @@ export class ProseMirrorMarkdownEditor {
 
     this.view.updateState(this.view.editor.state.apply(transaction));
 
-    /* This removes images but also removes links too :(
+    /* This removes images but also removes links too :( don't use this
     this.view.updateState(this.view.editor.state.apply(this.view.editor.state.tr.clearMarkup(0, this.view.editor.state.doc.nodeSize - 2)));
     */
 
-    const removeImage = (node) => {
-      if (node.type.name === markdownSchema.nodes.image.name) {
-        console.log("how to remove image node?");
-        //node.remove(); not a function
+    // get the plain text plus links content
+    let content = [];
+    const getContent = (node) => {
+      console.log(node.textContent);
+
+      if (node.type.name === 'text') {
+        if (markdownSchema.marks.link.isInSet(node.marks)) {
+          console.log('link node', node);
+          content.push(node);
+        } else {
+          if (content.length > 0 && typeof content[content.length - 1] === 'string') {
+            content[content.length - 1] += ' ' + node.textContent;
+          } else {
+            content.push(node.textContent);
+          }
+        }
       }
-      node.forEach((node, offset, index) => removeImage(node));
+      node.forEach((child, offset, index) => getContent(child));
     };
-    removeImage(this.view.editor.state.doc);
+    getContent(this.view.editor.state.doc);
+
+    // clear the content
+    transaction = this.view.editor.state.tr.delete(0, this.view.editor.state.doc.nodeSize - 2);
+    this.view.updateState(this.view.editor.state.apply(transaction));
+
+    // build the content back up
+    transaction = this.view.editor.state.tr;
+    content.forEach(node => {
+      if (typeof node === 'string') {
+        transaction = transaction.insertText(node, transaction.doc.nodeSize - 2);
+      } else {
+        transaction = transaction.insert(transaction.doc.nodeSize - 2, node);
+      }
+    });
+    this.view.updateState(this.view.editor.state.apply(transaction));
+
+    // join nodes, needs work
+    /*transaction = this.view.editor.state.tr;
+    this.view.editor.state.doc.forEach((child, offset, index) => {
+      transaction = transaction.join(child.nodeSize);
+    });
+    this.view.updateState(this.view.editor.state.apply(transaction));*/
   }
 
   createLinkItem(url, title) {
@@ -343,19 +376,23 @@ export class ProseMirrorMarkdownEditor {
   buildMenuItemsPlugin() {
     let r = {};
 
-    if (this.outputSchema.marks.strong) {
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.marks.strong) {
       r['toggleStrong'] = this.markItem(this.outputSchema.marks.strong, {title: 'Toggle strong style', icon: icons.strong});
     }
-    if (this.outputSchema.marks.em) {
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.marks.em) {
       r['toggleEm'] = this.markItem(this.outputSchema.marks.em, {title: 'Toggle emphasis', icon: icons.em});
     }
-    if (this.outputSchema.marks.code) { // this one is bonus
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.marks.code) { // this one is bonus
       r['toggleCode'] = this.markItem(this.outputSchema.marks.code, {title: 'Toggle code font', icon: icons.code});
     }
     if (this.outputSchema.marks.link) {
       r['toggleLink'] = this.linkItem(this.outputSchema.marks.link);
     }
-    if (this.outputSchema.nodes.image && this.images && this.images.length > 0) {
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.nodes.image && this.images && this.images.length > 0) {
       if (this.images.length === 1) {
         r['insertImage'] = this.insertImageItem(this.images[0], 'Image: ' + this.images[0].name);
       } else {
@@ -364,37 +401,43 @@ export class ProseMirrorMarkdownEditor {
         }
       }
     }
-    if (this.outputSchema.nodes.bullet_list) { // lists are bonus
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.nodes.bullet_list) { // lists are bonus
       r['wrapBulletList'] = this.wrapListItem(this.outputSchema.nodes.bullet_list, {
         title: 'Wrap in bullet list',
         icon: icons.bulletList
       });
     }
-    if (this.outputSchema.nodes.ordered_list) { // bonus
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.nodes.ordered_list) { // bonus
       r['wrapOrderedList'] = this.wrapListItem(this.outputSchema.nodes.ordered_list, {
         title: 'Wrap in ordered list',
         icon: icons.orderedList
       });
     }
-    if (this.outputSchema.nodes.blockquote) { // bonus
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.nodes.blockquote) { // bonus
       r['wrapBlockQuote'] = wrapItem(this.outputSchema.nodes.blockquote, {
         title: 'Wrap in block quote',
         icon: icons.blockquote
       });
     }
-    if (this.outputSchema.nodes.paragraph) {
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.nodes.paragraph) {
       r['makeParagraph'] = blockTypeItem(this.outputSchema.nodes.paragraph, {
         title: 'Change to paragraph',
         label: 'Plain'
       });
     }
-    if (this.outputSchema.nodes.code_block) {// bonus
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.nodes.code_block) {// bonus
       r['makeCodeBlock'] = blockTypeItem(this.outputSchema.nodes.code_block, {
         title: 'Change to code block',
         label: 'Code'
       });
     }
-    if (this.outputSchema.nodes.heading) {
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.nodes.heading) {
       for (let i = 1; i <= 6; i++) {
         r['makeHead' + i] = blockTypeItem(this.outputSchema.nodes.heading, {
           title: 'Change to heading ' + i,
@@ -403,7 +446,8 @@ export class ProseMirrorMarkdownEditor {
         });
       }
     }
-    if (this.outputSchema.nodes.horizontal_rule) {// bonus
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
+      this.outputSchema.nodes.horizontal_rule) {// bonus
       r['insertHorizontalRule'] = new MenuItem({
         title: 'Insert horizontal rule',
         label: 'Horizontal rule',
@@ -416,31 +460,37 @@ export class ProseMirrorMarkdownEditor {
       });
     }
 
+    let deps;
     let cut = arr => arr.filter(x => x);
-    if (this.images && this.images.length > 1) {
-      let imageSubs = Object.keys(r).filter(key => key.match(/insertImage+/)).map(key => r[key]);
-      let imageSubMenu = new DropdownSubmenu(imageSubs, {label: 'Image'});
-      r['insertMenu'] = new Dropdown(cut([imageSubMenu, r['insertHorizontalRule']]), {label: 'Insert'});
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN) {
+      if (this.images && this.images.length > 1) {
+        let imageSubs = Object.keys(r).filter(key => key.match(/insertImage+/)).map(key => r[key]);
+        let imageSubMenu = new DropdownSubmenu(imageSubs, {label: 'Image'});
+        r['insertMenu'] = new Dropdown(cut([imageSubMenu, r['insertHorizontalRule']]), {label: 'Insert'});
+      } else {
+        r['insertMenu'] = new Dropdown(cut([r['insertImage'], r['insertHorizontalRule']]), {label: 'Insert'});
+      }
+      r['typeMenu'] = new Dropdown(cut([r['makeParagraph'], r['makeCodeBlock'], r['makeHead1'] && new DropdownSubmenu(cut([
+        r['makeHead1'], r['makeHead2'], r['makeHead3'], r['makeHead4'], r['makeHead5'], r['makeHead6']
+      ]), {label: 'Heading'})]), {label: 'Type...'});
+
+      r['inlineMenu'] = [cut([r['toggleStrong'], r['toggleEm'], r['toggleCode'], r['toggleLink']]), [r['insertMenu']]];
+      r['blockMenu'] = [cut([r['typeMenu'], r['wrapBulletList'], r['wrapOrderedList'], r['wrapBlockQuote'], joinUpItem,
+        liftItem])];
+      r['fullMenu'] = r['inlineMenu'].concat(r['blockMenu']);
+
+      deps = [
+        inputRules({rules: allInputRules.concat(this.buildInputRules())}),
+        keymap(this.buildKeymap()),
+        keymap(baseKeymap)
+      ];
+      // seems odd but testing throws this error: RangeError: Adding different instances of a keyed plugin (plugin$)
+      deps[0].key = 'inputRules';
+      deps[1].key = 'mdKeymap';
     } else {
-      r['insertMenu'] = new Dropdown(cut([r['insertImage'], r['insertHorizontalRule']]), {label: 'Insert'});
+      r['fullMenu'] = [[r['toggleLink']]];
+      deps = [];
     }
-    r['typeMenu'] = new Dropdown(cut([r['makeParagraph'], r['makeCodeBlock'], r['makeHead1'] && new DropdownSubmenu(cut([
-      r['makeHead1'], r['makeHead2'], r['makeHead3'], r['makeHead4'], r['makeHead5'], r['makeHead6']
-    ]), {label: 'Heading'})]), {label: 'Type...'});
-
-    r['inlineMenu'] = [cut([r['toggleStrong'], r['toggleEm'], r['toggleCode'], r['toggleLink']]), [r['insertMenu']]];
-    r['blockMenu'] = [cut([r['typeMenu'], r['wrapBulletList'], r['wrapOrderedList'], r['wrapBlockQuote'], joinUpItem,
-      liftItem])];
-    r['fullMenu'] = r['inlineMenu'].concat(r['blockMenu']);
-
-    let deps = [
-      inputRules({rules: allInputRules.concat(this.buildInputRules())}),
-      keymap(this.buildKeymap()),
-      keymap(baseKeymap)
-    ];
-    // seems odd but testing throws this error: RangeError: Adding different instances of a keyed plugin (plugin$)
-    deps[0].key = 'inputRules';
-    deps[1].key = 'mdKeymap';
 
     return deps.concat(new Plugin({
       props: {
