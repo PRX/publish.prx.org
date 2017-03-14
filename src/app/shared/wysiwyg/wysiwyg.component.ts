@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, DoCheck, SimpleChanges, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
@@ -39,7 +39,7 @@ import { ProseMirrorMarkdownEditor, ProseMirrorImage } from './prosemirror.markd
   styleUrls: ['wysiwyg.component.css']
 })
 
-export class WysiwygComponent implements OnInit, DoCheck, OnDestroy {
+export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() model: BaseModel;
   @Input() name: string;
   @Input() content: string;
@@ -55,13 +55,11 @@ export class WysiwygComponent implements OnInit, DoCheck, OnDestroy {
   linkTitle: string;
   hasSelection = false;
   showPrompt = false;
-  lastImages: ImageModel[];
 
   constructor(private chgRef: ChangeDetectorRef) {}
 
   ngOnInit() {
     if (this.model) {
-      this.lastImages = this.images;
       this.editor = new ProseMirrorMarkdownEditor(this.el,
                                                   this.content,
                                                   this.mapImages(),
@@ -70,13 +68,12 @@ export class WysiwygComponent implements OnInit, DoCheck, OnDestroy {
     }
   }
 
-  ngDoCheck() {
+  ngOnChanges(changes: SimpleChanges) {
     if (this.editor) {
-      let valChanged = this.model[this.name] !== this.editor.value;
-      let imagesChanged = this.images !== this.lastImages;
-      if (valChanged || imagesChanged) {
-        this.lastImages = this.images;
-        this.editor.update(this.model[this.name], this.mapImages());
+      if (changes['images']) {
+        this.editor.update(this.content, this.mapImages());
+      } else if (changes['content']) {
+        this.editor.update(this.content);
       }
     }
   }

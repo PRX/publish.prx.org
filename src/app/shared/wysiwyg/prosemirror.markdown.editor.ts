@@ -22,7 +22,7 @@ export class ProseMirrorMarkdownEditor {
   view: MenuBarEditorView;
 
   constructor(private el: ElementRef,
-              public value: string,
+              private value: string,
               private images: ProseMirrorImage[],
               private setModel: Function,
               private promptForLink: Function) {
@@ -30,11 +30,13 @@ export class ProseMirrorMarkdownEditor {
     this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(state));
   }
 
-  update(value: string, images: ProseMirrorImage[]) {
-    this.value = value;
-    this.images = images;
-    let state = EditorState.create(this.stateConfig());
-    this.view.update(this.viewProps(state));
+  update(value: string, images?: ProseMirrorImage[]) {
+    if (value !== this.value || images) {
+      this.value = value;
+      this.images = images || this.images;
+      let state = EditorState.create(this.stateConfig());
+      this.view.update(this.viewProps(state));
+    }
   }
 
   destroy() {
