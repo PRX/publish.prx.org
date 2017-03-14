@@ -29,3 +29,4 @@ PLAY_HOST=https://play-staging.prx.tech
 # monitoring
 NEW_RELIC_APP_NAME=
 NEW_RELIC_LICENSE_KEY=
+GA_KEY=
