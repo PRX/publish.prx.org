@@ -1,8 +1,8 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { ModalService } from './core';
+import { ModalService } from '../core';
 
 @Injectable()
-export class AppErrorService implements ErrorHandler {
+export class ErrorService implements ErrorHandler {
 
   private defaultHandler: ErrorHandler;
 
