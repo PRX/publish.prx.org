@@ -11,7 +11,6 @@ export class ErrorService implements ErrorHandler {
   }
 
   handleError(err) {
-    console.log('-- i am handling it okay? --');
     this.modal.show({
       title: 'Uncaught ' + (err.name || 'Error'),
       body: `
