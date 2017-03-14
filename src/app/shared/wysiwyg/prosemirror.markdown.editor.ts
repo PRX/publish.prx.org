@@ -49,8 +49,8 @@ export class ProseMirrorMarkdownEditor {
     return {
       state,
       onAction: (action) => {
-        this.value = defaultMarkdownSerializer.serialize(this.view.editor.state.doc);
         this.view.updateState(this.view.editor.state.applyAction(action));
+        this.value = defaultMarkdownSerializer.serialize(this.view.editor.state.doc);
         this.setModel(this.value);
       }
     };
