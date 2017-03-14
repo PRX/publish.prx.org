@@ -20,29 +20,23 @@ export class ProseMirrorImage {
 export class ProseMirrorMarkdownEditor {
 
   view: MenuBarEditorView;
-  savedState: EditorState;
 
   constructor(private el: ElementRef,
               private value: string,
               private images: ProseMirrorImage[],
               private setModel: Function,
               private promptForLink: Function) {
-    this.savedState = EditorState.create(this.stateConfig());
-    this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(this.savedState));
+    let state = EditorState.create(this.stateConfig());
+    this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(state));
   }
 
-  update(images: ProseMirrorImage[]) {
-    this.images = images;
-    let state = this.view.editor.state.reconfigure(this.stateConfig());
-    this.view.update(this.viewProps(state));
-  }
-
-  resetEditor() {
-    this.view.updateState(this.savedState);
-  }
-
-  setSavedState() {
-    this.savedState = this.view.editor.state;
+  update(value: string, images?: ProseMirrorImage[]) {
+    if (value !== this.value || images) {
+      this.value = value;
+      this.images = images || this.images;
+      let state = EditorState.create(this.stateConfig());
+      this.view.update(this.viewProps(state));
+    }
   }
 
   destroy() {
@@ -58,7 +52,8 @@ export class ProseMirrorMarkdownEditor {
       state,
       onAction: (action) => {
         this.view.updateState(this.view.editor.state.applyAction(action));
-        this.setModel(defaultMarkdownSerializer.serialize(this.view.editor.state.doc));
+        this.value = defaultMarkdownSerializer.serialize(this.view.editor.state.doc);
+        this.setModel(this.value);
       }
     };
   }

@@ -71,14 +71,9 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges) {
     if (this.editor) {
       if (changes['images']) {
-        this.editor.update(this.mapImages());
-        this.editor.setSavedState();
-      }
-
-      if (this.setModelValue !== this.model[this.name]) {
-        this.editor.resetEditor();
-      } else if (!this.changed) {
-        this.editor.setSavedState();
+        this.editor.update(this.content, this.mapImages());
+      } else if (changes['content']) {
+        this.editor.update(this.content);
       }
     }
   }
