@@ -25,3 +25,7 @@ USE_CLOUDFRONT=true
 
 # embeddable player
 PLAY_HOST=https://play-staging.prx.tech
+
+# monitoring
+NEW_RELIC_APP_NAME=
+NEW_RELIC_LICENSE_KEY=
