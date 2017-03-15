@@ -6,19 +6,22 @@ ENV TINI_VERSION v0.9.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static /tini
 RUN chmod +x /tini
 
-WORKDIR /app
+ENV APP_HOME /app
+ENV PHANTOM true
+RUN mkdir -p $APP_HOME
+WORKDIR $APP_HOME
 EXPOSE 4200
 
-ADD . ./
+ENTRYPOINT ["/tini", "--", "./bin/application"]
+CMD [ "serve" ]
 
+ADD ./package.json ./
 RUN apk --update add --virtual build-dependencies git python build-base curl bash && \
   curl -Ls "https://github.com/dustinblackman/phantomized/releases/download/2.1.1/dockerized-phantomjs.tar.gz" | tar xz -C / && \
   npm install --unsafe-perm --loglevel error && \
-  npm run build && \
   apk del build-dependencies && \
   npm cache clean && \
   rm -rf /usr/share/man /tmp/* /var/tmp/* /var/cache/apk/* /root/.npm /root/.node-gyp
 
-ENV PHANTOM true
-ENTRYPOINT ["/tini", "--", "./bin/application"]
-CMD [ "serve" ]
+ADD . ./
+RUN npm run build
