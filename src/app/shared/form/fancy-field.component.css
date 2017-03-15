@@ -59,6 +59,12 @@ input, textarea {
 input:focus, textarea:focus {
   color: #000;
 }
+input[type='checkbox'] {
+  width: 20px;
+  vertical-align: middle;
+}
+input[type='checkbox'] + label {
+}
 textarea {
   height: 100px;
 }
