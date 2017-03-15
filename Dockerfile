@@ -11,9 +11,14 @@ EXPOSE 4200
 
 ADD . ./
 
-RUN npm set progress=false && \
-    npm install --no-optional --unsafe-perm && \
-    npm run build
+RUN apk --update add --virtual build-dependencies git python build-base curl bash && \
+  curl -Ls "https://github.com/dustinblackman/phantomized/releases/download/2.1.1/dockerized-phantomjs.tar.gz" | tar xz -C / && \
+  npm install --unsafe-perm --loglevel error && \
+  npm run build && \
+  apk del build-dependencies && \
+  npm cache clean && \
+  rm -rf /usr/share/man /tmp/* /var/tmp/* /var/cache/apk/* /root/.npm /root/.node-gyp
 
+ENV PHANTOM true
 ENTRYPOINT ["/tini", "--", "./bin/application"]
 CMD [ "serve" ]
