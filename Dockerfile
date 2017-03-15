@@ -16,10 +16,10 @@ ENTRYPOINT ["/tini", "--", "./bin/application"]
 CMD [ "serve" ]
 
 ADD ./package.json ./
-RUN apk --update add --virtual build-dependencies git python build-base curl bash && \
+RUN apk --update add curl && \
   curl -Ls "https://github.com/dustinblackman/phantomized/releases/download/2.1.1/dockerized-phantomjs.tar.gz" | tar xz -C / && \
   npm install --unsafe-perm --loglevel error && \
-  apk del build-dependencies && \
+  apk del curl && \
   npm cache clean && \
   rm -rf /usr/share/man /tmp/* /var/tmp/* /var/cache/apk/* /root/.npm /root/.node-gyp
 
