@@ -122,6 +122,13 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
   }
 
+  get completeConfirm(): string {
+    if (this.podcast) {
+      let confirmMsg = 'Are you sure you want to set this as complete, and there will be no more episodes in the podcast?';
+      return confirmMsg;
+    }
+  }
+
   get versionTemplateConfirm(): string {
     if (this.distribution && this.audioVersionOptions && this.series.hasStories) {
       let url = this.distribution.versionTemplateUrl;
