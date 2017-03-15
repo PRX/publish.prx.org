@@ -123,7 +123,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   get completeConfirm(): string {
-    if (this.podcast) {
+    if (this.podcast && this.podcast.complete) {
       let confirmMsg = 'Are you sure you want to set this as complete, and there will be no more episodes in the podcast?';
       return confirmMsg;
     }

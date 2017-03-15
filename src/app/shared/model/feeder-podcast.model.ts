@@ -10,7 +10,7 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail', 'copyright'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail', 'copyright', 'complete'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
