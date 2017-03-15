@@ -10,7 +10,7 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail', 'copyright'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -21,6 +21,8 @@ export class FeederPodcastModel extends BaseModel {
   enclosurePrefix = '';
   authorName = '';
   authorEmail = '';
+  copyright = '';
+  complete = false;
   hasPublicFeed = false;
 
   VALIDATORS = {
@@ -53,17 +55,23 @@ export class FeederPodcastModel extends BaseModel {
 
   decode() {
     this.id = this.doc['id'];
-    this.publishedUrl = this.doc['publishedUrl'] || '';
+
+    this.copyright = this.doc['copyright'] || '';
+    this.enclosurePrefix = this.doc['enclosurePrefix'] || '';
+    this.link = this.doc['link'] || '';
+    this.newFeedUrl = this.doc['newFeedUrl'] || '';
+
     this.explicit = this.doc['explicit'] || '';
     if (this.explicit) {
       this.explicit = this.explicit.charAt(0).toUpperCase() + this.explicit.slice(1);
     }
-    this.link = this.doc['link'] || '';
-    this.newFeedUrl = this.doc['newFeedUrl'] || '';
+
+    this.publishedUrl = this.doc['publishedUrl'] || '';
     if (this.doc['url']) {
       this.publicFeedUrl = this.doc['url'];
       this.hasPublicFeed = true;
     }
+
     if (this.doc['author']) {
       if (this.doc['author']['name']) {
         this.authorName = this.doc['author']['name'];
@@ -72,7 +80,6 @@ export class FeederPodcastModel extends BaseModel {
         this.authorEmail = this.doc['author']['email'];
       }
     }
-    this.enclosurePrefix = this.doc['enclosurePrefix'] || '';
 
     // just ignore all but first category/subcategory
     let cat = (this.doc['itunesCategories'] || [])[0];
@@ -92,14 +99,17 @@ export class FeederPodcastModel extends BaseModel {
   encode(): {} {
     let data = <any> {};
 
-    // unset things with nulls instead of blank strings
+    // unset with nulls instead of blank strings
+    data.copyright = this.copyright || null;
+    data.enclosurePrefix = this.enclosurePrefix || null;
+    data.link = this.link || null;
+    data.newFeedUrl = this.newFeedUrl || null;
+    data.url = this.publicFeedUrl || null;
+
     data.explicit = this.explicit || null;
     if (data.explicit) {
       data.explicit = data.explicit.toLowerCase();
     }
-    data.link = this.link || null;
-    data.newFeedUrl = this.newFeedUrl || null;
-    data.url = this.publicFeedUrl || null;
 
     if (this.authorName || this.authorEmail) {
       data.author = {
@@ -107,8 +117,6 @@ export class FeederPodcastModel extends BaseModel {
         email: this.authorEmail
        };
     }
-
-    data.enclosurePrefix = this.enclosurePrefix || null;
 
     // we can always send a categories array
     data.itunesCategories = [];

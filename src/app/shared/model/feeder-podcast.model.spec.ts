@@ -70,4 +70,9 @@ describe('FeederPodcastModel', () => {
     expect(podcast.enclosurePrefix).toEqual('http://redirect.me');
   });
 
+  it ('allows user to set other feed attributes', () => {
+    let podcast = new FeederPodcastModel(series, dist);
+    podcast.set('copyright', 'Copyright © 2017 PRX. All rights reserved.');
+    expect(podcast.copyright).toEqual('Copyright © 2017 PRX. All rights reserved.');
+  });
 });
