@@ -79,4 +79,8 @@ describe('SeriesPodcastComponent', () => {
     expect(comp.podcast.set).toHaveBeenCalledWith('subCategory', '');
   });
 
+  cit('gets a list of language options', (fix, el, comp) => {
+    let langs = comp.getLanguageOptions();
+    expect(langs.length).toEqual(210);
+  });
 });
