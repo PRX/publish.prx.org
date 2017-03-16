@@ -3,6 +3,11 @@
 
 declare var System: any;
 
+declare module 'langmap' {
+  export namespace languageMappingList {
+  }
+}
+
 // extend jasmine matchers
 declare module jasmine {
   interface Matchers {
