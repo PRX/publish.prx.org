@@ -107,6 +107,10 @@
       </div>
     </publish-fancy-field>
 
+    <publish-fancy-field label="Language" [model]="podcast" name="language" [select]="languageOptions">
+      <div class="fancy-hint">Select which language your podcast is in.</div>
+    </publish-fancy-field>
+
     <publish-advanced-section>
       <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" [advancedConfirm]="newFeedUrlConfirm">
         <div class="fancy-hint">
