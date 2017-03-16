@@ -74,5 +74,14 @@ describe('FeederPodcastModel', () => {
     let podcast = new FeederPodcastModel(series, dist);
     podcast.set('copyright', 'Copyright © 2017 PRX. All rights reserved.');
     expect(podcast.copyright).toEqual('Copyright © 2017 PRX. All rights reserved.');
+
+    podcast.set('complete', true);
+    expect(podcast.complete).toEqual(true);
+  });
+
+  it('makes language lower case', () => {
+    let doc = dist.mock('some-feeder', {language: 'en-US'});
+    let podcast = new FeederPodcastModel(series, dist, doc);
+    expect(podcast.language).toEqual('en-us');
   });
 });
