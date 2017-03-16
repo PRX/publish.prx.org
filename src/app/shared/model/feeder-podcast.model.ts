@@ -10,7 +10,7 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail', 'copyright', 'complete'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail', 'copyright', 'complete', 'language'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -23,6 +23,7 @@ export class FeederPodcastModel extends BaseModel {
   authorEmail = '';
   copyright = '';
   complete = false;
+  language = '';
   hasPublicFeed = false;
 
   VALIDATORS = {
@@ -54,23 +55,12 @@ export class FeederPodcastModel extends BaseModel {
   }
 
   decode() {
-    this.id = this.doc['id'];
-
+    this.complete = this.doc['complete'];
     this.copyright = this.doc['copyright'] || '';
     this.enclosurePrefix = this.doc['enclosurePrefix'] || '';
+    this.id = this.doc['id'];
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
-
-    this.explicit = this.doc['explicit'] || '';
-    if (this.explicit) {
-      this.explicit = this.explicit.charAt(0).toUpperCase() + this.explicit.slice(1);
-    }
-
-    this.publishedUrl = this.doc['publishedUrl'] || '';
-    if (this.doc['url']) {
-      this.publicFeedUrl = this.doc['url'];
-      this.hasPublicFeed = true;
-    }
 
     if (this.doc['author']) {
       if (this.doc['author']['name']) {
@@ -94,22 +84,35 @@ export class FeederPodcastModel extends BaseModel {
       this.category = '';
       this.subCategory = '';
     }
+
+    this.explicit = this.doc['explicit'] || '';
+    if (this.explicit) {
+      this.explicit = this.explicit.charAt(0).toUpperCase() + this.explicit.slice(1);
+    }
+
+    this.language = this.doc['language'] || '';
+    if (this.language) {
+      this.language = this.language.toLowerCase();
+    }
+
+    this.publishedUrl = this.doc['publishedUrl'] || '';
+    if (this.doc['url']) {
+      this.publicFeedUrl = this.doc['url'];
+      this.hasPublicFeed = true;
+    }
   }
 
   encode(): {} {
     let data = <any> {};
 
     // unset with nulls instead of blank strings
+    data.complete = this.complete;
     data.copyright = this.copyright || null;
     data.enclosurePrefix = this.enclosurePrefix || null;
+    data.language = this.language || null;
     data.link = this.link || null;
     data.newFeedUrl = this.newFeedUrl || null;
     data.url = this.publicFeedUrl || null;
-
-    data.explicit = this.explicit || null;
-    if (data.explicit) {
-      data.explicit = data.explicit.toLowerCase();
-    }
 
     if (this.authorName || this.authorEmail) {
       data.author = {
@@ -128,6 +131,12 @@ export class FeederPodcastModel extends BaseModel {
     } else {
       data.itunesCategories = [];
     }
+
+    data.explicit = this.explicit || null;
+    if (data.explicit) {
+      data.explicit = data.explicit.toLowerCase();
+    }
+
     return data;
   }
 
@@ -140,5 +149,4 @@ export class FeederPodcastModel extends BaseModel {
       newModel.set(fld, this[fld]);
     }
   }
-
 }
