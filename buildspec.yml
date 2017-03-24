@@ -6,7 +6,7 @@ phases:
   install:
     commands:
       - apt-get update -y
-      - apt-get install -y jq
+      - apt-get install -y jq docker-compose
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
