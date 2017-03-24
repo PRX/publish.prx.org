@@ -16,7 +16,7 @@ publish-image  {
   left: 0;
   width: 25px;
   height: 25px;
-  background: rgba(255,165,0,.9)url('../../../assets/images/bt_play.svg') center center/8px no-repeat;
+  background: rgba(255,165,0,.9) url('/assets/images/bt_play.svg') center center/8px no-repeat;
   content: '';
 }
 
