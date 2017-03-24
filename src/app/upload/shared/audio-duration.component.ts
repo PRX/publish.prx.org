@@ -4,8 +4,8 @@ import { AudioFileModel } from '../../shared';
 @Component({
   selector: 'publish-audio-duration',
   template: `
-    <span *ngIf="file.duration">({{file.duration | duration}})</span>
-    <span *ngIf="!file.duration && file.size">({{file.size | filesize}})</span>
+    <span *ngIf="file?.duration">({{file.duration | duration}})</span>
+    <span *ngIf="file?.size && !file.duration">({{file.size | filesize}})</span>
   `
 })
 

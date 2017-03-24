@@ -49,7 +49,7 @@ export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
     this.updateBanner();
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: any) {
     this.updateBanner();
   }
 

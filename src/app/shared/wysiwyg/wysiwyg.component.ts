@@ -47,10 +47,10 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() images: ImageModel[];
   setModelValue = '';
 
-  @ViewChild('contentEditable') private el: ElementRef;
+  @ViewChild('contentEditable') el: ElementRef;
   editor: ProseMirrorMarkdownEditor;
 
-  @ViewChild('url') private url: NgModel;
+  @ViewChild('url') url: NgModel;
   linkURL: string;
   linkTitle: string;
   hasSelection = false;
