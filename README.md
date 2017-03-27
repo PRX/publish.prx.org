@@ -59,9 +59,7 @@ Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from abo
 
 ## Local Install
 
-Due to the complexity of installing node-sass in alpine-linux, it may be easier
-to just develop locally for the time being.  Just make sure you have a modern
-node version installed (6.x.x, ideally).
+Make sure you're running the node version in `.nvmrc`, and you're off!
 
 ``` sh
 # install dependencies
@@ -73,28 +71,29 @@ echo 4200 > ~/.pow/publish.prx
 # dev server
 npm start
 open http://publish.prx.dev
+
+# run tests in Chrome
+npm test
 ```
 
 ## Docker Install
 
 Or if you really want to, you can develop via docker-compose.
-This guide assumes you already have npm, docker and dinghy installed.
-
-TODO: hot reloading not supported yet - this just builds the prod js.
+This guide assumes you already have docker and dinghy installed.
 
 ``` sh
 # build a docker image
 docker-compose build
 
-# install dev dependencies locally, so docker can mount those folders
-npm install
-
 # make sure your AUTH_CLIENT_ID is the .docker one
 vim .env
 
-# run the docker image, will detect changes to local file system
+# run the dev server
 docker-compose up
 
 # open up a browser to view
 open http://publish.prx.docker
+
+# run tests in PhantomJS
+docker-compose run publish test
 ```
