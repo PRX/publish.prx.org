@@ -12,7 +12,7 @@ RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 EXPOSE 4200
 
-ENTRYPOINT ["/tini", "--", "./bin/application"]
+ENTRYPOINT ["/tini", "--", "/bin/sh", "./bin/application"]
 CMD [ "serve" ]
 
 ADD ./package.json ./
