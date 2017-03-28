@@ -26,7 +26,6 @@ export const ProseMirrorFormatTypes = {
 export class ProseMirrorMarkdownEditor {
 
   view: MenuBarEditorView;
-  savedState: EditorState;
   outputSchema: Schema;
 
   constructor(private el: ElementRef,
@@ -37,25 +36,20 @@ export class ProseMirrorMarkdownEditor {
               private setModel: Function,
               private promptForLink: Function) {
     this.outputSchema = this.outputFormat === ProseMirrorFormatTypes.HTML ? basicSchema : markdownSchema;
-    this.savedState = EditorState.create(this.stateConfig());
-    this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(this.savedState));
+    let state = EditorState.create(this.stateConfig());
+    this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(state));
     if (this.inputFormat === ProseMirrorFormatTypes.MARKDOWN && this.outputFormat === ProseMirrorFormatTypes.HTML) {
       this.plainTextPlusLinks();
     }
   }
 
-  update(images: ProseMirrorImage[]) {
-    this.images = images;
-    let state = this.view.editor.state.reconfigure(this.stateConfig());
-    this.view.update(this.viewProps(state));
-  }
-
-  resetEditor() {
-    this.view.updateState(this.savedState);
-  }
-
-  setSavedState() {
-    this.savedState = this.view.editor.state;
+  update(content: string, images?: ProseMirrorImage[]) {
+    if (content !== this.content || images) {
+      this.content = content;
+      this.images = images || this.images;
+      let state = EditorState.create(this.stateConfig());
+      this.view.update(this.viewProps(state));
+    }
   }
 
   destroy() {

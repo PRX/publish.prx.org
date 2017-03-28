@@ -19,11 +19,6 @@ describe('ProseMirrorMarkdownEditor', () => {
   }
 
   describe('constructor', () => {
-    it('should save initial state', () => {
-      let pmEditor = createProseMirrorMarkdownEditor();
-      expect(pmEditor.savedState).toBeDefined();
-    });
-
     it('should create MenuBarEditorView', () => {
       let pmEditor = createProseMirrorMarkdownEditor();
       expect(pmEditor.view).toBeDefined();
@@ -41,30 +36,20 @@ describe('ProseMirrorMarkdownEditor', () => {
       pmEditor.destroy();
     });
 
-    it('should update view', () => {
+    it('should update view when value changes', () => {
       spyOn(pmEditor.view, 'update');
-      pmEditor.update([]);
+      pmEditor.update('');
+      expect(pmEditor.view.update).not.toHaveBeenCalled();
+      pmEditor.update('foo');
       expect(pmEditor.view.update).toHaveBeenCalled();
     });
-  });
 
-  describe('resetEditor', () => {
-    let pmEditor;
-    let savedState;
-
-    beforeEach(function () {
-      pmEditor = createProseMirrorMarkdownEditor();
-      savedState = pmEditor.savedState;
-    });
-
-    afterEach(function () {
-      pmEditor.destroy();
-    });
-
-    it('should update view state', () => {
-      spyOn(pmEditor.view, 'updateState');
-      pmEditor.resetEditor();
-      expect(pmEditor.view.updateState).toHaveBeenCalledWith(savedState);
+    it('should update view when images are passed', () => {
+      spyOn(pmEditor.view, 'update');
+      pmEditor.update('');
+      expect(pmEditor.view.update).not.toHaveBeenCalled();
+      pmEditor.update('', []);
+      expect(pmEditor.view.update).toHaveBeenCalled();
     });
   });
 });

@@ -10,12 +10,7 @@ function initGoogleAnalytics(i, s, o, g, r, a, m) {
   m.parentNode.insertBefore(a, m);
 }
 
-if (window.location.host.match(/prx.org/)) {
+if (window.ENV && window.ENV.GA_KEY) {
   initGoogleAnalytics(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-  ga('create', 'UA-164824-57', 'auto');
-} else if (window.location.host.match(/prx.tech/)) {
-  initGoogleAnalytics(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-  ga('create', 'UA-164824-58', 'auto');
+  ga('create', window.ENV.GA_KEY, 'auto');
 }

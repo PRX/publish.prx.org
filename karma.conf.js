@@ -52,7 +52,7 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    browsers: [process.env.PHANTOM ? 'PhantomJS' : 'Chrome'],
     singleRun: false
   });
 };

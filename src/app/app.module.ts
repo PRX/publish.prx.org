@@ -3,9 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
 
 import { AppComponent } from './app.component';
-import { AppErrorService } from './app-error.service';
 import { routing, routingProviders, routingComponents } from './app.routing';
 
+import { ErrorService } from './error';
 import { CoreModule } from './core';
 import { SharedModule } from './shared';
 import { SeriesModule } from './series';
@@ -28,7 +28,7 @@ import { SearchModule } from './search';
     routing
   ],
   providers: [
-    {provide: ErrorHandler, useClass: AppErrorService},
+    {provide: ErrorHandler, useClass: ErrorService},
     routingProviders
   ],
   bootstrap: [AppComponent]

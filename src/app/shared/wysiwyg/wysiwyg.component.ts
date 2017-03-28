@@ -49,10 +49,10 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() images: ImageModel[];
   setModelValue = '';
 
-  @ViewChild('contentEditable') private el: ElementRef;
+  @ViewChild('contentEditable') el: ElementRef;
   editor: ProseMirrorMarkdownEditor;
 
-  @ViewChild('url') private url: NgModel;
+  @ViewChild('url') url: NgModel;
   linkURL: string;
   linkTitle: string;
   hasSelection = false;
@@ -75,15 +75,9 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges) {
     if (this.editor) {
       if (changes['images']) {
-        this.editor.update(this.mapImages());
-        this.editor.setSavedState();
-      }
-
-      if (this.setModelValue !== this.model[this.name] &&
-        this.inputFormat !== ProseMirrorFormatTypes.HTML) {// TODO: fix this!
-        this.editor.resetEditor();
-      } else if (!this.changed) {
-        this.editor.setSavedState();
+        this.editor.update(this.content, this.mapImages());
+      } else if (changes['content']) {
+        this.editor.update(this.content);
       }
     }
   }
