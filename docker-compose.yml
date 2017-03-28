@@ -1,23 +1,26 @@
-publish:
-  build: .
-  volumes:
-    - ./bin:/app/bin
-    - ./e2e:/app/e2e
-    - ./lib:/app/lib
-    - ./src:/app/src
-    - ./.angular-cli.json:/app/.angular-cli.json
-    - ./codecov.yml:/app/codecov.yml
-    - ./karma.conf.js:/app/karma.conf.js
-    - ./newrelic.js:/app/newrelic.js
-    - ./package.json:/app/package.json
-    - ./protractor.conf.js:/app/protractor.conf.js
-    - ./tsconfig.json:/app/tsconfig.json
-    - ./tslint.json:/app/tslint.json
-  env_file:
-    - .env
-  ports:
-    - "4200:4200"
-    - "4201:4201"
-  command: start
-  environment:
-    VIRTUAL_HOST: publish.prx.docker
+version: "2"
+services:
+  publish:
+    build: .
+    image: publish_app
+    volumes:
+      - ./bin:/app/bin
+      - ./e2e:/app/e2e
+      - ./lib:/app/lib
+      - ./src:/app/src
+      - ./.angular-cli.json:/app/.angular-cli.json
+      - ./codecov.yml:/app/codecov.yml
+      - ./karma.conf.js:/app/karma.conf.js
+      - ./newrelic.js:/app/newrelic.js
+      - ./package.json:/app/package.json
+      - ./protractor.conf.js:/app/protractor.conf.js
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tslint.json:/app/tslint.json
+    env_file:
+      - .env
+    ports:
+      - "4200:4200"
+      - "4201:4201"
+    command: start
+    environment:
+      VIRTUAL_HOST: publish.prx.docker
