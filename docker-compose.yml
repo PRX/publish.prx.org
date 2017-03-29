@@ -16,6 +16,7 @@ services:
       - ./protractor.conf.js:/app/protractor.conf.js
       - ./tsconfig.json:/app/tsconfig.json
       - ./tslint.json:/app/tslint.json
+      - ./.git:/app/.git
     env_file:
       - .env
     ports:

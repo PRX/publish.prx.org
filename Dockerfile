@@ -16,7 +16,7 @@ ENTRYPOINT ["/tini", "--", "/bin/sh", "./bin/application"]
 CMD [ "serve" ]
 
 ADD ./package.json ./
-RUN apk --update add curl && \
+RUN apk --update add curl git && \
   curl -Ls "https://github.com/dustinblackman/phantomized/releases/download/2.1.1/dockerized-phantomjs.tar.gz" | tar xz -C / && \
   npm install --unsafe-perm --loglevel error && \
   apk del curl && \
