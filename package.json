@@ -26,6 +26,7 @@
     "lint": "tslint \"src/**/*.ts\"",
     "test": "ng test",
     "e2e": "ng e2e",
+    "testonce": "ng test --watch=false --browsers=PhantomJS",
     "ci": "CODECOV=true ng test --watch=false --browsers=PhantomJS && codecov",
     "build": "ng build --prod",
     "serve": "node lib/server.js dist"
