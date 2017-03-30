@@ -139,7 +139,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   get completeConfirm(): string {
     if (this.podcast && this.podcast.complete) {
-      let confirmMsg = 'Are you sure this podcast is complete? Apps will assume this is show over, and won\'t look new episodes.';
+      let confirmMsg = 'Are you sure this podcast is complete? Apps will assume this show is over, and won\'t look for new episodes.';
       return confirmMsg;
     }
   }
