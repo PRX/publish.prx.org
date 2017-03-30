@@ -10,7 +10,8 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail', 'copyright', 'complete', 'language'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'copyright', 'complete', 'language',
+             'authorName', 'authorEmail', 'ownerName', 'ownerEmail','managingEditorName', 'managingEditorEmail'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -62,14 +63,16 @@ export class FeederPodcastModel extends BaseModel {
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
 
-    if (this.doc['author']) {
-      if (this.doc['author']['name']) {
-        this.authorName = this.doc['author']['name'];
+    ['author', 'owner', 'managingEditor'].forEach((role) => {
+      if (this.doc[role]) {
+        if (this.doc[role]['name']) {
+          this[`${role}Name`] = this.doc[role]['name'];
+        }
+        if (this.doc[role]['email']) {
+          this[`${role}Email`] = this.doc[role]['email'];
+        }
       }
-      if (this.doc['author']['email']) {
-        this.authorEmail = this.doc['author']['email'];
-      }
-    }
+    });
 
     // just ignore all but first category/subcategory
     let cat = (this.doc['itunesCategories'] || [])[0];
@@ -114,12 +117,14 @@ export class FeederPodcastModel extends BaseModel {
     data.newFeedUrl = this.newFeedUrl || null;
     data.url = this.publicFeedUrl || null;
 
-    if (this.authorName || this.authorEmail) {
-      data.author = {
-        name: this.authorName,
-        email: this.authorEmail
-       };
-    }
+    ['author', 'owner', 'managingEditor'].forEach((role) => {
+      if (this[`${role}Name`] || this[`${role}Email`]) {
+        data[role] = {
+          name: this[`${role}Name`],
+          email: this[`${role}Email`]
+        };
+      }
+    });
 
     // we can always send a categories array
     data.itunesCategories = [];
