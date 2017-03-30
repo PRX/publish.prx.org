@@ -11,7 +11,7 @@ export class FeederPodcastModel extends BaseModel {
 
   // writeable
   SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'copyright', 'complete', 'language',
-             'authorName', 'authorEmail', 'ownerName', 'ownerEmail','managingEditorName', 'managingEditorEmail'];
+             'authorName', 'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName', 'managingEditorEmail'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -118,12 +118,10 @@ export class FeederPodcastModel extends BaseModel {
     data.url = this.publicFeedUrl || null;
 
     ['author', 'owner', 'managingEditor'].forEach((role) => {
-      if (this[`${role}Name`] || this[`${role}Email`]) {
-        data[role] = {
-          name: this[`${role}Name`],
-          email: this[`${role}Email`]
-        };
-      }
+      data[role] = {
+        name: this[`${role}Name`] || null,
+        email: this[`${role}Email`] || null
+      };
     });
 
     // we can always send a categories array
