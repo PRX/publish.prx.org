@@ -12,12 +12,12 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --region $ECR_REGION)
+      - echo "CODECOV_TOKEN=$CODECOV_TOKEN" >> .env
   build:
     commands:
-      - docker build -t $ECR_REPOSITORY_NAME:$((ECR_IMAGE_TAG+1)) .
-      - docker tag $ECR_REPOSITORY_NAME:$((ECR_IMAGE_TAG+1)) $AWS_ACCOUNT_ID.dkr.ecr.$ECR_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$((ECR_IMAGE_TAG+1))
-      - echo "CODECOV_TOKEN=$CODECOV_TOKEN" >> .env
-      - docker-compose run publish ci
+      - docker-compose build
+      - docker-compose run publish testonce
+      - docker tag publish_app $AWS_ACCOUNT_ID.dkr.ecr.$ECR_REGION.amazonaws.com/$ECR_REPOSITORY_NAME:$((ECR_IMAGE_TAG+1))
       - touch $BUILD_PHASE_MARKER
   post_build:
     commands:
