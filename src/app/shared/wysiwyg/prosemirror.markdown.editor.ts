@@ -9,7 +9,7 @@ import { MenuBarEditorView, icons, MenuItem, Dropdown, DropdownSubmenu,
   wrapItem, blockTypeItem, joinUpItem, liftItem } from 'prosemirror-menu';
 import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { EditorState, Plugin, Selection } from 'prosemirror-state';
-import { DOMParser, Mark, MarkType, Node, ResolvedPos, Schema } from 'prosemirror-model';
+import { DOMParser, Fragment, Mark, MarkType, Node, Schema, Slice } from 'prosemirror-model';
 
 export class ProseMirrorImage {
   constructor(public name: string,
@@ -66,9 +66,11 @@ export class ProseMirrorMarkdownEditor {
       dispatchTransaction: (transaction) => {
         this.view.updateState(this.view.editor.state.apply(transaction));
         if (this.outputFormat === ProseMirrorFormatTypes.HTML) {
-          this.setModel(this.view.editor.docView.dom.innerHTML);
+          this.content = this.view.editor.docView.dom.innerHTML;
+          this.setModel(this.content);
         } else {
-          this.setModel(defaultMarkdownSerializer.serialize(this.view.editor.state.doc));
+          this.content = defaultMarkdownSerializer.serialize(this.view.editor.state.doc);
+          this.setModel(this.content);
         }
       }
     };
@@ -99,46 +101,34 @@ export class ProseMirrorMarkdownEditor {
     this.view.updateState(this.view.editor.state.apply(this.view.editor.state.tr.clearMarkup(0, this.view.editor.state.doc.nodeSize - 2)));
     */
 
-    // get the plain text plus links content
     let content = [];
     const getContent = (node) => {
-      console.log(node.textContent);
-
       if (node.type.name === 'text') {
         if (markdownSchema.marks.link.isInSet(node.marks)) {
-          console.log('link node', node);
           content.push(node);
         } else {
-          if (content.length > 0 && typeof content[content.length - 1] === 'string') {
-            content[content.length - 1] += ' ' + node.textContent;
-          } else {
-            content.push(node.textContent);
-          }
+          content.push(basicSchema.text(node.textContent));
         }
       }
       node.forEach((child, offset, index) => getContent(child));
     };
     getContent(this.view.editor.state.doc);
 
+    console.log(Fragment.fromArray(content));
+
     // clear the content
     transaction = this.view.editor.state.tr.delete(0, this.view.editor.state.doc.nodeSize - 2);
     this.view.updateState(this.view.editor.state.apply(transaction));
 
-    // build the content back up
-    transaction = this.view.editor.state.tr;
-    content.forEach(node => {
-      if (typeof node === 'string') {
-        transaction = transaction.insertText(node, transaction.doc.nodeSize - 2);
-      } else {
-        transaction = transaction.insert(transaction.doc.nodeSize - 2, node);
-      }
-    });
+    transaction = this.view.editor.state.tr.insert(0, Fragment.fromArray(content));
+    console.log('apply', this.view.editor.state.apply(transaction));
     this.view.updateState(this.view.editor.state.apply(transaction));
 
-    // join nodes, needs work
     /*transaction = this.view.editor.state.tr;
-    this.view.editor.state.doc.forEach((child, offset, index) => {
-      transaction = transaction.join(child.nodeSize);
+    content.forEach((node) => {
+      // inserts empty nodes for text on their own line
+      // does actually insert link node but on it's own line
+      transaction = transaction.insert(transaction.doc.nodeSize - 2, node);
     });
     this.view.updateState(this.view.editor.state.apply(transaction));*/
   }
