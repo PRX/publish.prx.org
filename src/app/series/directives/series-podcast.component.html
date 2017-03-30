@@ -55,12 +55,32 @@
       <div class="fancy-hint">A link to the homepage for your podcast.</div>
     </publish-fancy-field>
 
+    <publish-fancy-field label="Owner Information">
+      <div class="fancy-hint">Set the iTunes owner name and email for this podcast.</div>
+      <div class="span-fields">
+        <publish-fancy-field label="Name" textinput [model]="podcast" name="ownerName" small=1>
+        </publish-fancy-field>
+        <publish-fancy-field label="Email" textinput [model]="podcast" name="ownerEmail" small=1>
+        </publish-fancy-field>
+      </div>
+    </publish-fancy-field>
+
     <publish-fancy-field label="Author Information">
-      <div class="fancy-hint">Set the author name and email to be associated with this podcast.</div>
+      <div class="fancy-hint">Set the author name and email for this podcast.</div>
       <div class="span-fields">
         <publish-fancy-field label="Name" textinput [model]="podcast" name="authorName" small=1>
         </publish-fancy-field>
         <publish-fancy-field label="Email" textinput [model]="podcast" name="authorEmail" small=1>
+        </publish-fancy-field>
+      </div>
+    </publish-fancy-field>
+
+    <publish-fancy-field label="Managing Editor Information">
+      <div class="fancy-hint">Set the managing editor name and email for this podcast.</div>
+      <div class="span-fields">
+        <publish-fancy-field label="Name" textinput [model]="podcast" name="managingEditorName" small=1>
+        </publish-fancy-field>
+        <publish-fancy-field label="Email" textinput [model]="podcast" name="managingEditorEmail" small=1>
         </publish-fancy-field>
       </div>
     </publish-fancy-field>

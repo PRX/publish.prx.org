@@ -139,7 +139,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   get completeConfirm(): string {
     if (this.podcast && this.podcast.complete) {
-      let confirmMsg = 'Are you sure you want to set this as complete, and there will be no more episodes in the podcast?';
+      let confirmMsg = 'Are you sure this podcast is complete? Apps will assume this is show over, and won\'t look new episodes.';
       return confirmMsg;
     }
   }
@@ -155,5 +155,4 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
       `;
     }
   }
-
 }
