@@ -23,6 +23,7 @@ export class FancyFieldComponent {
   @Input() hideinvalid: boolean;
   @Input() advancedConfirm: string;
   @Input() strict: boolean;
+  @Input() prompt: string;
 
   // Form field types (intercepted with defaults)
   type: string;
@@ -36,6 +37,8 @@ export class FancyFieldComponent {
   @Input()
   set select(opts: any) { this.type = 'select'; this.setOptions(opts); }
   get select() { return this._select; }
+  @Input()
+  set checkbox(any: any) { this.type = 'checkbox'; }
 
   // Field attributes
   _small = false;

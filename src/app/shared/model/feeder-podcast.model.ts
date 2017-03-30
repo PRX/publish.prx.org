@@ -10,7 +10,8 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'authorName', 'authorEmail'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'copyright', 'complete', 'language',
+             'authorName', 'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName', 'managingEditorEmail'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -21,6 +22,9 @@ export class FeederPodcastModel extends BaseModel {
   enclosurePrefix = '';
   authorName = '';
   authorEmail = '';
+  copyright = '';
+  complete = false;
+  language = '';
   hasPublicFeed = false;
 
   VALIDATORS = {
@@ -52,27 +56,23 @@ export class FeederPodcastModel extends BaseModel {
   }
 
   decode() {
+    this.complete = this.doc['complete'];
+    this.copyright = this.doc['copyright'] || '';
+    this.enclosurePrefix = this.doc['enclosurePrefix'] || '';
     this.id = this.doc['id'];
-    this.publishedUrl = this.doc['publishedUrl'] || '';
-    this.explicit = this.doc['explicit'] || '';
-    if (this.explicit) {
-      this.explicit = this.explicit.charAt(0).toUpperCase() + this.explicit.slice(1);
-    }
     this.link = this.doc['link'] || '';
     this.newFeedUrl = this.doc['newFeedUrl'] || '';
-    if (this.doc['url']) {
-      this.publicFeedUrl = this.doc['url'];
-      this.hasPublicFeed = true;
-    }
-    if (this.doc['author']) {
-      if (this.doc['author']['name']) {
-        this.authorName = this.doc['author']['name'];
+
+    ['author', 'owner', 'managingEditor'].forEach((role) => {
+      if (this.doc[role]) {
+        if (this.doc[role]['name']) {
+          this[`${role}Name`] = this.doc[role]['name'];
+        }
+        if (this.doc[role]['email']) {
+          this[`${role}Email`] = this.doc[role]['email'];
+        }
       }
-      if (this.doc['author']['email']) {
-        this.authorEmail = this.doc['author']['email'];
-      }
-    }
-    this.enclosurePrefix = this.doc['enclosurePrefix'] || '';
+    });
 
     // just ignore all but first category/subcategory
     let cat = (this.doc['itunesCategories'] || [])[0];
@@ -87,28 +87,42 @@ export class FeederPodcastModel extends BaseModel {
       this.category = '';
       this.subCategory = '';
     }
+
+    this.explicit = this.doc['explicit'] || '';
+    if (this.explicit) {
+      this.explicit = this.explicit.charAt(0).toUpperCase() + this.explicit.slice(1);
+    }
+
+    this.language = this.doc['language'] || '';
+    if (this.language) {
+      this.language = this.language.toLowerCase();
+    }
+
+    this.publishedUrl = this.doc['publishedUrl'] || '';
+    if (this.doc['url']) {
+      this.publicFeedUrl = this.doc['url'];
+      this.hasPublicFeed = true;
+    }
   }
 
   encode(): {} {
     let data = <any> {};
 
-    // unset things with nulls instead of blank strings
-    data.explicit = this.explicit || null;
-    if (data.explicit) {
-      data.explicit = data.explicit.toLowerCase();
-    }
+    // unset with nulls instead of blank strings
+    data.complete = this.complete;
+    data.copyright = this.copyright || null;
+    data.enclosurePrefix = this.enclosurePrefix || null;
+    data.language = this.language || null;
     data.link = this.link || null;
     data.newFeedUrl = this.newFeedUrl || null;
     data.url = this.publicFeedUrl || null;
 
-    if (this.authorName || this.authorEmail) {
-      data.author = {
-        name: this.authorName,
-        email: this.authorEmail
-       };
-    }
-
-    data.enclosurePrefix = this.enclosurePrefix || null;
+    ['author', 'owner', 'managingEditor'].forEach((role) => {
+      data[role] = {
+        name: this[`${role}Name`] || null,
+        email: this[`${role}Email`] || null
+      };
+    });
 
     // we can always send a categories array
     data.itunesCategories = [];
@@ -120,6 +134,12 @@ export class FeederPodcastModel extends BaseModel {
     } else {
       data.itunesCategories = [];
     }
+
+    data.explicit = this.explicit || null;
+    if (data.explicit) {
+      data.explicit = data.explicit.toLowerCase();
+    }
+
     return data;
   }
 
@@ -132,5 +152,4 @@ export class FeederPodcastModel extends BaseModel {
       newModel.set(fld, this[fld]);
     }
   }
-
 }
