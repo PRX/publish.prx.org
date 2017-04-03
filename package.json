@@ -64,6 +64,7 @@
     "prosemirror-view": "^0.14.1",
     "pug": "^2.0.0-beta6",
     "rxjs": "^5.1.0",
+    "styleguide.prx.org": "git@github.com:PRX/styleguide.prx.org.git",
     "url-template": "^2.0.8",
     "zone.js": "^0.7.6"
   },

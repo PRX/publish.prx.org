@@ -16,6 +16,7 @@ import { StoryModel } from '../shared';
         <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
         <a *ngIf="distPodcast" routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Episode Info</a>
         <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
+        <a *ngIf="id" routerLinkActive="active" [routerLink]="[base, 'downloads']">Download Metrics</a>
       </nav>
       <publish-story-status [id]="id" [story]="story"></publish-story-status>
       <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>

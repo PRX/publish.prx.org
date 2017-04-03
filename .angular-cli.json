@@ -19,8 +19,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "../node_modules/pikaday/css/pikaday.css",
-        "../node_modules/pikaday/css/triangle.css",
+        "../node_modules/styleguide.prx.org/dist/app.css",
         "styles.css"
       ],
       "scripts": [
