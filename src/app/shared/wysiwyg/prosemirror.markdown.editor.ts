@@ -9,7 +9,7 @@ import { MenuBarEditorView, icons, MenuItem, Dropdown, DropdownSubmenu,
   wrapItem, blockTypeItem, joinUpItem, liftItem } from 'prosemirror-menu';
 import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { EditorState, Plugin, Selection } from 'prosemirror-state';
-import { DOMParser, Fragment, Mark, MarkType, Node, Schema, Slice } from 'prosemirror-model';
+import { DOMParser, Mark, MarkType, Node, Schema } from 'prosemirror-model';
 
 export class ProseMirrorImage {
   constructor(public name: string,
@@ -39,7 +39,7 @@ export class ProseMirrorMarkdownEditor {
     let state = EditorState.create(this.stateConfig());
     this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(state));
     if (this.inputFormat === ProseMirrorFormatTypes.MARKDOWN && this.outputFormat === ProseMirrorFormatTypes.HTML) {
-      this.plainTextPlusLinks();
+      this.plainTextWithLinks();
     }
   }
 
@@ -88,49 +88,37 @@ export class ProseMirrorMarkdownEditor {
     return config;
   }
 
-  plainTextPlusLinks() {
-    // remove unsupported marks
-    let transaction = this.view.editor.state.tr
-      .removeMark(0, this.view.editor.state.doc.nodeSize - 2, markdownSchema.marks.strong)
-      .removeMark(0, this.view.editor.state.doc.nodeSize - 2, markdownSchema.marks.em)
-      .removeMark(0, this.view.editor.state.doc.nodeSize - 2, markdownSchema.marks.code);
-
-    this.view.updateState(this.view.editor.state.apply(transaction));
-
-    /* This removes images but also removes links too :( don't use this
-    this.view.updateState(this.view.editor.state.apply(this.view.editor.state.tr.clearMarkup(0, this.view.editor.state.doc.nodeSize - 2)));
-    */
-
-    let content = [];
+  plainTextWithLinks() {
+    let content = '';
     const getContent = (node) => {
       if (node.type.name === 'text') {
-        if (markdownSchema.marks.link.isInSet(node.marks)) {
-          content.push(node);
+        if (content.length > 0 && node.textContent.length > 0
+          && !node.textContent.match(/^\s+/)
+          && !content.match(/^.+\s$/)) {
+          content += ' ';
+        }
+        let linkMark: Mark;
+        node.marks.forEach(mark => {
+          if (markdownSchema.marks.link.isInSet([mark])) {
+            linkMark = mark;
+          }
+        });
+        if (linkMark) {
+          content += `[${node.textContent}](${linkMark.attrs.href}`;
+          if (node.marks[0].attrs.title) {
+            content += `${linkMark.attrs.title})`;
+          } else {
+            content += ')';
+          }
         } else {
-          content.push(basicSchema.text(node.textContent));
+          content += node.textContent;
         }
       }
       node.forEach((child, offset, index) => getContent(child));
     };
     getContent(this.view.editor.state.doc);
 
-    console.log(Fragment.fromArray(content));
-
-    // clear the content
-    transaction = this.view.editor.state.tr.delete(0, this.view.editor.state.doc.nodeSize - 2);
-    this.view.updateState(this.view.editor.state.apply(transaction));
-
-    transaction = this.view.editor.state.tr.insert(0, Fragment.fromArray(content));
-    console.log('apply', this.view.editor.state.apply(transaction));
-    this.view.updateState(this.view.editor.state.apply(transaction));
-
-    /*transaction = this.view.editor.state.tr;
-    content.forEach((node) => {
-      // inserts empty nodes for text on their own line
-      // does actually insert link node but on it's own line
-      transaction = transaction.insert(transaction.doc.nodeSize - 2, node);
-    });
-    this.view.updateState(this.view.editor.state.apply(transaction));*/
+    this.update(content);
   }
 
   createLinkItem(url, title) {
