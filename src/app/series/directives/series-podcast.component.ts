@@ -2,6 +2,7 @@ import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SeriesModel, DistributionModel, FeederPodcastModel,
          TabService, CATEGORIES, SUBCATEGORIES } from '../../shared';
+import * as languageMappingList from 'langmap';
 
 @Component({
   styleUrls: ['series-podcast.component.css'],
@@ -24,8 +25,10 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   initialDistributions: DistributionModel[];
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
+  languageOptions: string[][];
 
   constructor(tab: TabService) {
+    this.languageOptions = this.getLanguageOptions();
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
       this.series.loadRelated('versionTemplates').subscribe(() => {
@@ -36,6 +39,18 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
       });
       this.loadDistributions();
     });
+  }
+
+  getLanguageOptions(): string[][] {
+    let result:string[][] = [];
+    for (let key in languageMappingList) {
+      if (languageMappingList.hasOwnProperty(key)) {
+        let name:string = `${languageMappingList[key]['englishName']} (${key.toLowerCase()})`;
+        let val:string = key.toLowerCase();
+        result.push([name, val]);
+      }
+    }
+    return result;
   }
 
   ngDoCheck() {
@@ -122,6 +137,13 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
   }
 
+  get completeConfirm(): string {
+    if (this.podcast && this.podcast.complete) {
+      let confirmMsg = 'Are you sure this podcast is complete? Apps will assume this show is over, and won\'t look for new episodes.';
+      return confirmMsg;
+    }
+  }
+
   get versionTemplateConfirm(): string {
     if (this.distribution && this.audioVersionOptions && this.series.hasStories) {
       let url = this.distribution.versionTemplateUrl;
@@ -133,5 +155,4 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
       `;
     }
   }
-
 }

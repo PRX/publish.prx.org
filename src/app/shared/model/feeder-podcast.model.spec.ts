@@ -5,7 +5,7 @@ describe('FeederPodcastModel', () => {
 
   let series = cms.mock('prx:series', {id: 'series1'});
   let dist = series.mock('prx:distributions', {id: 'dist1', kind: 'podcast'});
-  let authorDist = series.mock('prx:accounts', {name: 'Foo', email: 'Bar'});
+  let roleDist = series.mock('prx:accounts', {name: 'Foo', email: 'Bar'});
 
   beforeEach(() => window.localStorage.clear());
 
@@ -52,10 +52,14 @@ describe('FeederPodcastModel', () => {
   });
 
   it('allows user to override account name and set author email for podcast', () => {
-    let doc = authorDist.mock('some-feeder', {author: {name: 'Foo2', email: 'Bar2'}});
-    let podcast = new FeederPodcastModel(series, dist, doc);
-    expect(podcast.authorName).toEqual('Foo2');
-    expect(podcast.authorEmail).toEqual('Bar2');
+    ['author', 'owner', 'managingEditor'].forEach((role) => {
+      let roleObj = {};
+      roleObj[role] = {name: 'Foo2', email: 'Bar2'};
+      let doc = roleDist.mock('some-feeder', roleObj);
+      let podcast = new FeederPodcastModel(series, dist, doc);
+      expect(podcast[`${role}Name`]).toEqual('Foo2');
+      expect(podcast[`${role}Email`]).toEqual('Bar2');
+    });
   });
 
   it('ensures URLs have http(s)', () => {
@@ -70,4 +74,18 @@ describe('FeederPodcastModel', () => {
     expect(podcast.enclosurePrefix).toEqual('http://redirect.me');
   });
 
+  it ('allows user to set other feed attributes', () => {
+    let podcast = new FeederPodcastModel(series, dist);
+    podcast.set('copyright', 'Copyright © 2017 PRX. All rights reserved.');
+    expect(podcast.copyright).toEqual('Copyright © 2017 PRX. All rights reserved.');
+
+    podcast.set('complete', true);
+    expect(podcast.complete).toEqual(true);
+  });
+
+  it('makes language lower case', () => {
+    let doc = dist.mock('some-feeder', {language: 'en-US'});
+    let podcast = new FeederPodcastModel(series, dist, doc);
+    expect(podcast.language).toEqual('en-us');
+  });
 });

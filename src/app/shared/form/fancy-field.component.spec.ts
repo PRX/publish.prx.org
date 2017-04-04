@@ -7,9 +7,11 @@ describe('FancyFieldComponent', () => {
     template: `
       <publish-fancy-field [model]="model" [name]="name" [changed]="changed" [invalid]="invalid"
         [textinput]="textinput" [number]="number" [textarea]="textarea" [select]="select"
-        [label]="label" [invalidlabel]="invalidlabel" [small]="small" [required]="required">
+        [label]="label" [invalidlabel]="invalidlabel" [small]="small" [required]="required"
+        [checkbox]="checkbox "[prompt]="prompt">
         <div class="fancy-hint" *ngIf="hint">{{hint}}</div>
         <h1 *ngIf="nested">{{nested}}</h1>
+        <label class="prompt" [for]="name">{{prompt}}</label>
       </publish-fancy-field>
     `
   });
@@ -20,7 +22,6 @@ describe('FancyFieldComponent', () => {
     expect(el).toQuery('.field');
     expect(el).not.toQuery('h1');
     expect(el).not.toQuery('h3');
-    expect(el).not.toQuery('label');
     expect(el).toQueryText('p.hint', '');
   });
 
@@ -50,6 +51,12 @@ describe('FancyFieldComponent', () => {
     comp.hint = 'the hint content';
     fix.detectChanges();
     expect(el).toQueryText('p.hint', 'the hint content');
+  });
+
+  cit('renders the prompt', (fix, el, comp) => {
+    comp.prompt = 'the prompt content';
+    fix.detectChanges();
+    expect(el).toQueryText('label.prompt', 'the prompt content');
   });
 
   cit('renders arbitrary nested content', (fix, el, comp) => {
@@ -150,5 +157,4 @@ describe('FancyFieldComponent', () => {
     fix.detectChanges();
     expect(el).toQueryText('p.error', 'some message Newer Label something');
   });
-
 });
