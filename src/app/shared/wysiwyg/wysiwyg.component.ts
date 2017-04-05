@@ -62,7 +62,6 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     if (this.model) {
-      this.setModelValue = this.content.slice(0);
       this.editor = new ProseMirrorMarkdownEditor(this.el,
                                                   this.content,
                                                   this.inputFormat,
@@ -78,7 +77,6 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
       if (changes['images']) {
         this.editor.update(this.content, this.mapImages());
       } else if (changes['content']) {
-        this.setModelValue = this.content.slice(0);
         this.editor.update(this.content);
       }
     }

@@ -40,6 +40,7 @@ export class ProseMirrorMarkdownEditor {
     this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(state));
     if (this.inputFormat === ProseMirrorFormatTypes.MARKDOWN && this.outputFormat === ProseMirrorFormatTypes.HTML) {
       this.plainTextWithLinks();
+      this.content = this.removeParagraph(this.view.editor.docView.dom.innerHTML);
     }
   }
 
@@ -66,8 +67,11 @@ export class ProseMirrorMarkdownEditor {
       dispatchTransaction: (transaction) => {
         this.view.updateState(this.view.editor.state.apply(transaction));
         if (this.outputFormat === ProseMirrorFormatTypes.HTML) {
-          this.content = this.view.editor.docView.dom.innerHTML;
-          this.setModel(this.content);
+          let newContent = this.removeParagraph(this.view.editor.docView.dom.innerHTML);
+          if (this.content !== newContent) {
+            this.content = newContent;
+            this.setModel(this.content);
+          }
         } else {
           this.content = defaultMarkdownSerializer.serialize(this.view.editor.state.doc);
           this.setModel(this.content);
@@ -86,6 +90,10 @@ export class ProseMirrorMarkdownEditor {
       config['doc'] = defaultMarkdownParser.parse(this.content ? this.content : '');
     }
     return config;
+  }
+
+  removeParagraph(content) {
+    return content.replace('<p>', '').replace('</p>', '');
   }
 
   plainTextWithLinks() {
