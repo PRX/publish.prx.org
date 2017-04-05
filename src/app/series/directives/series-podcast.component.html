@@ -88,14 +88,14 @@
     <publish-fancy-field label="Summary" *ngIf="podcast && podcast.summary">
       <div class="fancy-hint">The iTunes summary for this podcast. You may create links, but other formatting is not supported.</div>
       <publish-wysiwyg [model]="podcast" name="summary" [content]="podcast.summary"
-                       inputFormat="HTML" outputFormat="HTML" changed="false"></publish-wysiwyg>
+                       inputFormat="HTML" outputFormat="HTML" [changed]="summaryChanged"></publish-wysiwyg>
     </publish-fancy-field>
 
     <publish-fancy-field label="Summary" *ngIf="podcast && !podcast.summary">
       <div class="fancy-hint">If not changed, the summary is created from the description of your series as shown below.
         The iTunes summary only allows for links, so all other formatting has been removed.</div>
       <publish-wysiwyg [model]="podcast" name="summary" [content]="series.description"
-                       [changed]="podcast && podcast.changed('summary', false)" inputFormat="MARKDOWN" outputFormat="HTML">
+                       [changed]="summaryChanged" inputFormat="MARKDOWN" outputFormat="HTML">
       </publish-wysiwyg>
     </publish-fancy-field>
 

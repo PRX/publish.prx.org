@@ -155,4 +155,8 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
       `;
     }
   }
+
+  get summaryChanged(): boolean {
+    return this.podcast && this.podcast.changed('summary', false);
+  }
 }

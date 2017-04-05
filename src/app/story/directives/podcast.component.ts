@@ -23,6 +23,7 @@ export class PodcastComponent implements OnDestroy {
 
   tabSub: Subscription;
   storyDistribution: StoryDistributionModel;
+  story: StoryModel;
   episode: FeederEpisodeModel;
   version: AudioVersionModel;
   podcastExplicit: string;
@@ -38,6 +39,7 @@ export class PodcastComponent implements OnDestroy {
   }
 
   init(story: StoryModel) {
+    this.story = story;
     this.loadStoryDistribution(story);
     this.loadSeriesDistribution(story);
   }
