@@ -40,7 +40,13 @@ export class ProseMirrorMarkdownEditor {
     this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(state));
     if (this.inputFormat === ProseMirrorFormatTypes.MARKDOWN && this.outputFormat === ProseMirrorFormatTypes.HTML) {
       this.plainTextWithLinks();
-      this.content = this.removeParagraph(this.view.editor.docView.dom.innerHTML);
+      this.content = this.removeHTML(this.view.editor.docView.dom.innerHTML);
+    } else if (this.inputFormat === this.outputFormat) {
+      if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN) {
+        this.content = defaultMarkdownSerializer.serialize(this.view.editor.state.doc);
+      } else {
+        this.content = this.removeHTML(this.view.editor.docView.dom.innerHTML);
+      }
     }
   }
 
@@ -67,7 +73,7 @@ export class ProseMirrorMarkdownEditor {
       dispatchTransaction: (transaction) => {
         this.view.updateState(this.view.editor.state.apply(transaction));
         if (this.outputFormat === ProseMirrorFormatTypes.HTML) {
-          let newContent = this.removeParagraph(this.view.editor.docView.dom.innerHTML);
+          let newContent = this.removeHTML(this.view.editor.docView.dom.innerHTML);
           if (this.content !== newContent) {
             this.content = newContent;
             this.setModel(this.content);
@@ -92,8 +98,8 @@ export class ProseMirrorMarkdownEditor {
     return config;
   }
 
-  removeParagraph(content) {
-    return content.replace('<p>', '').replace('</p>', '');
+  removeHTML(content) {
+    return content.replace('<p>', '').replace('</p>', '').replace('<br>', '');
   }
 
   plainTextWithLinks() {
@@ -122,6 +128,7 @@ export class ProseMirrorMarkdownEditor {
           content += node.textContent;
         }
       }
+      // traverse the node tree and pull out the textContent and links via markdown input schema
       node.forEach((child, offset, index) => getContent(child));
     };
     getContent(this.view.editor.state.doc);
@@ -354,95 +361,87 @@ export class ProseMirrorMarkdownEditor {
   }
 
   buildMenuItemsPlugin() {
-    let r = {};
+    let r = {}, deps;
 
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.marks.strong) {
-      r['toggleStrong'] = this.markItem(this.outputSchema.marks.strong, {title: 'Toggle strong style', icon: icons.strong});
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.marks.em) {
-      r['toggleEm'] = this.markItem(this.outputSchema.marks.em, {title: 'Toggle emphasis', icon: icons.em});
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.marks.code) { // this one is bonus
-      r['toggleCode'] = this.markItem(this.outputSchema.marks.code, {title: 'Toggle code font', icon: icons.code});
-    }
-    if (this.outputSchema.marks.link) {
-      r['toggleLink'] = this.linkItem(this.outputSchema.marks.link);
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.nodes.image && this.images && this.images.length > 0) {
-      if (this.images.length === 1) {
-        r['insertImage'] = this.insertImageItem(this.images[0], 'Image: ' + this.images[0].name);
-      } else {
-        for (let i = 0; i < this.images.length; i++) {
-          r['insertImage' + i] = this.insertImageItem(this.images[i], this.images[i].name);
-        }
-      }
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.nodes.bullet_list) { // lists are bonus
-      r['wrapBulletList'] = this.wrapListItem(this.outputSchema.nodes.bullet_list, {
-        title: 'Wrap in bullet list',
-        icon: icons.bulletList
-      });
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.nodes.ordered_list) { // bonus
-      r['wrapOrderedList'] = this.wrapListItem(this.outputSchema.nodes.ordered_list, {
-        title: 'Wrap in ordered list',
-        icon: icons.orderedList
-      });
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.nodes.blockquote) { // bonus
-      r['wrapBlockQuote'] = wrapItem(this.outputSchema.nodes.blockquote, {
-        title: 'Wrap in block quote',
-        icon: icons.blockquote
-      });
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.nodes.paragraph) {
-      r['makeParagraph'] = blockTypeItem(this.outputSchema.nodes.paragraph, {
-        title: 'Change to paragraph',
-        label: 'Plain'
-      });
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.nodes.code_block) {// bonus
-      r['makeCodeBlock'] = blockTypeItem(this.outputSchema.nodes.code_block, {
-        title: 'Change to code block',
-        label: 'Code'
-      });
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.nodes.heading) {
-      for (let i = 1; i <= 6; i++) {
-        r['makeHead' + i] = blockTypeItem(this.outputSchema.nodes.heading, {
-          title: 'Change to heading ' + i,
-          label: 'Level ' + i,
-          attrs: {level: i}
+    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN) {
+      if (this.outputSchema.marks.strong) {
+        r['toggleStrong'] = this.markItem(this.outputSchema.marks.strong, {
+          title: 'Toggle strong style',
+          icon: icons.strong
         });
       }
-    }
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN &&
-      this.outputSchema.nodes.horizontal_rule) {// bonus
-      r['insertHorizontalRule'] = new MenuItem({
-        title: 'Insert horizontal rule',
-        label: 'Horizontal rule',
-        select: (state) => {
-          return this.canInsert(state, this.outputSchema.nodes.horizontal_rule);
-        },
-        run: (state, dispatchTransaction) => {
-          dispatchTransaction(state.tr.replaceSelectionWith(this.outputSchema.nodes.horizontal_rule.create()));
+      if (this.outputSchema.marks.em) {
+        r['toggleEm'] = this.markItem(this.outputSchema.marks.em, {title: 'Toggle emphasis', icon: icons.em});
+      }
+      if (this.outputSchema.marks.code) { // this one is bonus
+        r['toggleCode'] = this.markItem(this.outputSchema.marks.code, {title: 'Toggle code font', icon: icons.code});
+      }
+      if (this.outputSchema.marks.link) {
+        r['toggleLink'] = this.linkItem(this.outputSchema.marks.link);
+      }
+      if (this.outputSchema.nodes.image && this.images && this.images.length > 0) {
+        if (this.images.length === 1) {
+          r['insertImage'] = this.insertImageItem(this.images[0], 'Image: ' + this.images[0].name);
+        } else {
+          for (let i = 0; i < this.images.length; i++) {
+            r['insertImage' + i] = this.insertImageItem(this.images[i], this.images[i].name);
+          }
         }
-      });
-    }
+      }
+      if (this.outputSchema.nodes.bullet_list) { // lists are bonus
+        r['wrapBulletList'] = this.wrapListItem(this.outputSchema.nodes.bullet_list, {
+          title: 'Wrap in bullet list',
+          icon: icons.bulletList
+        });
+      }
+      if (this.outputSchema.nodes.ordered_list) { // bonus
+        r['wrapOrderedList'] = this.wrapListItem(this.outputSchema.nodes.ordered_list, {
+          title: 'Wrap in ordered list',
+          icon: icons.orderedList
+        });
+      }
+      if (this.outputSchema.nodes.blockquote) { // bonus
+        r['wrapBlockQuote'] = wrapItem(this.outputSchema.nodes.blockquote, {
+          title: 'Wrap in block quote',
+          icon: icons.blockquote
+        });
+      }
+      if (this.outputSchema.nodes.paragraph) {
+        r['makeParagraph'] = blockTypeItem(this.outputSchema.nodes.paragraph, {
+          title: 'Change to paragraph',
+          label: 'Plain'
+        });
+      }
+      if (this.outputSchema.nodes.code_block) {// bonus
+        r['makeCodeBlock'] = blockTypeItem(this.outputSchema.nodes.code_block, {
+          title: 'Change to code block',
+          label: 'Code'
+        });
+      }
+      if (this.outputSchema.nodes.heading) {
+        for (let i = 1; i <= 6; i++) {
+          r['makeHead' + i] = blockTypeItem(this.outputSchema.nodes.heading, {
+            title: 'Change to heading ' + i,
+            label: 'Level ' + i,
+            attrs: {level: i}
+          });
+        }
+      }
+      if (this.outputSchema.nodes.horizontal_rule) {// bonus
+        r['insertHorizontalRule'] = new MenuItem({
+          title: 'Insert horizontal rule',
+          label: 'Horizontal rule',
+          select: (state) => {
+            return this.canInsert(state, this.outputSchema.nodes.horizontal_rule);
+          },
+          run: (state, dispatchTransaction) => {
+            dispatchTransaction(state.tr.replaceSelectionWith(this.outputSchema.nodes.horizontal_rule.create()));
+          }
+        });
+      }
 
-    let deps;
-    let cut = arr => arr.filter(x => x);
-    if (this.outputFormat === ProseMirrorFormatTypes.MARKDOWN) {
+      let cut = arr => arr.filter(x => x);
+
       if (this.images && this.images.length > 1) {
         let imageSubs = Object.keys(r).filter(key => key.match(/insertImage+/)).map(key => r[key]);
         let imageSubMenu = new DropdownSubmenu(imageSubs, {label: 'Image'});
@@ -467,7 +466,11 @@ export class ProseMirrorMarkdownEditor {
       // seems odd but testing throws this error: RangeError: Adding different instances of a keyed plugin (plugin$)
       deps[0].key = 'inputRules';
       deps[1].key = 'mdKeymap';
-    } else {
+    } else if (this.outputFormat === ProseMirrorFormatTypes.HTML) {
+      if (this.outputSchema.marks.link) {
+        r['toggleLink'] = this.linkItem(this.outputSchema.marks.link);
+      }
+
       r['fullMenu'] = [[r['toggleLink']]];
       deps = [];
     }
