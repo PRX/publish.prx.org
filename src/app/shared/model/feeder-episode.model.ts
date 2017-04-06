@@ -50,7 +50,7 @@ export class FeederEpisodeModel extends BaseModel {
     let author = this.doc['author'] || {};
     this.authorName = author['name'] || '';
     this.authorEmail = author['email'] || '';
-    this.summary = this.doc['summary'];
+    this.summary = this.doc['summary'] || '';
   }
 
   encode(): {} {
@@ -64,7 +64,7 @@ export class FeederEpisodeModel extends BaseModel {
       data.author = null;
     }
     data.url = this.episodeUrl || null;
-    data.summary = this.summary;
+    data.summary = this.summary || null;
     return data;
   }
 

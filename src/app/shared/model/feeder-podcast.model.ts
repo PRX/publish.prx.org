@@ -143,7 +143,7 @@ export class FeederPodcastModel extends BaseModel {
       data.explicit = data.explicit.toLowerCase();
     }
 
-    data.summary = this.summary;
+    data.summary = this.summary || null;
 
     return data;
   }
