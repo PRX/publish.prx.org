@@ -7,7 +7,7 @@ import { ProseMirrorMarkdownEditor, ProseMirrorImage, ProseMirrorFormatTypes } f
 @Component({
   selector: 'publish-wysiwyg',
   template: `
-    <div #contentEditable [class.changed]="changed" [class.invalid]="invalid"></div>
+    <div #contentEditable [class.changed]="changed" [class.invalid]="invalid" [class.readonly]="!editable"></div>
     <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
 
     <div class="overlay" *ngIf="showPrompt"></div>
@@ -45,8 +45,10 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() content: string;
   @Input() inputFormat = ProseMirrorFormatTypes.MARKDOWN;
   @Input() outputFormat = ProseMirrorFormatTypes.MARKDOWN;
+  @Input() editable = true;
   @Input() changed: boolean;
   @Input() images: ImageModel[];
+  @Output() contentConverted = new EventEmitter<string>();
   setModelValue = '';
 
   @ViewChild('contentEditable') el: ElementRef;
@@ -61,14 +63,16 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private chgRef: ChangeDetectorRef) {}
 
   ngOnInit() {
-    if (this.model) {
+    if (this.model || this.content) {
       this.editor = new ProseMirrorMarkdownEditor(this.el,
                                                   this.content,
                                                   this.inputFormat,
                                                   this.outputFormat,
+                                                  this.editable,
                                                   this.mapImages(),
                                                   this.setModel.bind(this),
-                                                  this.promptForLink.bind(this));
+                                                  this.promptForLink.bind(this),
+                                                  this.setConvertedContent.bind(this));
     }
   }
 
@@ -98,12 +102,19 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   setModel(value: string) {
     if (this.setModelValue.valueOf() !== value.valueOf()) {
       this.setModelValue = value.slice(0);
-      this.model.set(this.name, value);
+      if (this.model && this.name) {
+        this.model.set(this.name, value);
+      }
     }
   }
 
+  setConvertedContent(content: string) {
+    this.setModelValue = content;
+    this.contentConverted.emit(content);
+  }
+
   get invalid(): string {
-    return this.model.invalid(this.name);
+    return this.model && this.name ? this.model.invalid(this.name) : '';
   }
 
   isURLInvalid() {

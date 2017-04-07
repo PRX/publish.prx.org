@@ -26,6 +26,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
   languageOptions: string[][];
+  _summaryPreview: string;
 
   constructor(tab: TabService) {
     this.languageOptions = this.getLanguageOptions();
@@ -154,5 +155,15 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
         This will change the audio files used in all published episodes of your podcast.
       `;
     }
+  }
+
+  summaryPreview(summary: string) {
+    this._summaryPreview = summary;
+  }
+
+  toggleAlternateSummary() {
+    // TODO: add a convertedTextCallback to wysiwyg -> prosemirror and back out to get value
+    // OR maybe not that. maybe a function to call on the PM class? ah jeebus I dunno
+    this.podcast.summary = this._summaryPreview;
   }
 }

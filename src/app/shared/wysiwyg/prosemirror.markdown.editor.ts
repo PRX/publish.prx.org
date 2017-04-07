@@ -32,9 +32,11 @@ export class ProseMirrorMarkdownEditor {
               private content: string,
               private inputFormat: string,
               private outputFormat: string,
+              private editable: boolean,
               private images: ProseMirrorImage[],
               private setModel: Function,
-              private promptForLink: Function) {
+              private promptForLink: Function,
+              private contentConverted: Function) {
     this.outputSchema = this.outputFormat === ProseMirrorFormatTypes.HTML ? basicSchema : markdownSchema;
     let state = EditorState.create(this.stateConfig());
     this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(state));
@@ -48,6 +50,7 @@ export class ProseMirrorMarkdownEditor {
         this.content = this.removeHTML(this.view.editor.docView.dom.innerHTML);
       }
     }
+    this.contentConverted(this.content);
   }
 
   update(content: string, images?: ProseMirrorImage[]) {
@@ -63,12 +66,8 @@ export class ProseMirrorMarkdownEditor {
     this.view.editor.destroy();
   }
 
-  isSelectionEmpty() {
-    return this.view.editor.state.selection.empty;
-  }
-
   viewProps(state: any) {
-    return {
+    let props = {
       state,
       dispatchTransaction: (transaction) => {
         this.view.updateState(this.view.editor.state.apply(transaction));
@@ -84,6 +83,16 @@ export class ProseMirrorMarkdownEditor {
         }
       }
     };
+
+    if (!this.editable) {
+      props['editable'] = () => false;
+    }
+
+    return props;
+  }
+
+  isSelectionEmpty() {
+    return this.view.editor.state.selection.empty;
   }
 
   stateConfig() {
@@ -104,7 +113,7 @@ export class ProseMirrorMarkdownEditor {
 
   plainTextWithLinks() {
     let content = '';
-    const getContent = (node) => {
+    const getContent = (node: Node) => {
       if (node.type.name === 'text') {
         if (content.length > 0 && node.textContent.length > 0
           && !node.textContent.match(/^\s+/)

@@ -432,6 +432,8 @@ declare module 'prosemirror-state/transaction' {
     addStoredMark(mark: Mark|MarkType): Transaction;
     removeStoredMark(mark: Mark|MarkType): Transaction;
   }
+
+  export { Transaction };
 }
 
 declare module 'prosemirror-state/transform' {
@@ -1003,4 +1005,30 @@ declare module 'prosemirror-model/to_dom' {
     static marksFromSchema(schema: Schema): any;
   }
   export { DOMSerializer }
+}
+
+declare module 'prosemirror-view' {
+  import { Transaction } from 'prosemirror-state/transaction';
+
+  class EditorView {
+    constructor(nodes: any, props: any);
+    editor: any;
+    props: any;
+    docView: any;
+    update(props: any);
+    setProps(props: any);
+    updateState(state: any);
+    destroyPluginViews();
+    updatePluginViews(prevState: any);
+    hasFocus(): boolean;
+    someProp(propName: any, f: any);
+    focus();
+    posAtCoords(coords: any): any;
+    coordsAtPos(pos: any): any;
+    endOfTextblock(dir: any, state: any): boolean;
+    destroy();
+    dispatchEvent(event: any);
+    dispatch(tr: Transaction);
+  }
+  export { EditorView };
 }

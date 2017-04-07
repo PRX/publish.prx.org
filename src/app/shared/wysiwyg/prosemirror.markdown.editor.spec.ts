@@ -1,4 +1,4 @@
-import { ProseMirrorMarkdownEditor } from './prosemirror.markdown.editor';
+import { ProseMirrorMarkdownEditor, ProseMirrorFormatTypes } from './prosemirror.markdown.editor';
 import { ElementRef } from '@angular/core';
 
 describe('ProseMirrorMarkdownEditor', () => {
@@ -15,7 +15,8 @@ describe('ProseMirrorMarkdownEditor', () => {
   });
 
   function createProseMirrorMarkdownEditor() {
-    return new ProseMirrorMarkdownEditor(new ElementRef(el), '', [], () => {}, () => {});
+    return new ProseMirrorMarkdownEditor(new ElementRef(el), '', ProseMirrorFormatTypes.MARKDOWN, ProseMirrorFormatTypes.MARKDOWN,
+      true, [], () => {}, () => {}, () => {});
   }
 
   describe('constructor', () => {
