@@ -15,6 +15,10 @@ div >>> .ProseMirror:focus {
   outline: none;
 }
 
+div.readonly >>> .ProseMirror-menubar-wrapper {
+  border: 1px solid #a3a3a3;
+}
+
 div.readonly >>> .ProseMirror {
   color: #939393;
   background-color: #f0f0f0;
