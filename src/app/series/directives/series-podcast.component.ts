@@ -158,6 +158,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   toggleAlternateSummary() {
-    this.podcast.set('summary', this.wysiwyg.getContent());
+    let content = this.wysiwyg.getContent();
+    // if description is empty, assigning empty string to summary is falsey
+    //  so the display doesn't swap to editable wysiwyg
+    this.podcast.set('summary', content ? content : ' ');
   }
 }

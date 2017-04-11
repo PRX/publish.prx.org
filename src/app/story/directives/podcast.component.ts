@@ -97,6 +97,9 @@ export class PodcastComponent implements OnDestroy {
   }
 
   toggleAlternateSummary() {
-    this.episode.set('summary', this.wysiwyg.getContent());
+    let content = this.wysiwyg.getContent();
+    // if description is empty, assigning empty string to summary is falsey
+    //  so the display doesn't swap to editable wysiwyg
+    this.episode.set('summary', content ? content : ' ');
   }
 }

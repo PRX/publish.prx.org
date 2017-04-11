@@ -63,7 +63,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private chgRef: ChangeDetectorRef) {}
 
   ngOnInit() {
-    if (this.model || this.content) {
+    if (this.model || (this.content || this.content === '')) {
       this.setModelValue = this.content;
       this.editor = new ProseMirrorMarkdownEditor(this.el,
                                                   this.content,
