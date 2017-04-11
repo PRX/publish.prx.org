@@ -120,13 +120,13 @@ export class ProseMirrorMarkdownEditor {
   }
 
   plainTextWithLinks() {
-    let content = '';
+    let translatedContent = '';
     const getContent = (node: Node) => {
       if (node.type.name === 'text') {
-        if (content.length > 0 && node.textContent.length > 0
+        if (translatedContent.length > 0 && node.textContent.length > 0
           && !node.textContent.match(/^\s+/)
-          && !content.match(/^.+\s$/)) {
-          content += ' ';
+          && !translatedContent.match(/^.+\s$/)) {
+          translatedContent += ' ';
         }
         let linkMark: Mark;
         node.marks.forEach(mark => {
@@ -135,14 +135,14 @@ export class ProseMirrorMarkdownEditor {
           }
         });
         if (linkMark) {
-          content += `[${node.textContent}](${linkMark.attrs.href}`;
+          translatedContent += `[${node.textContent}](${linkMark.attrs.href}`;
           if (node.marks[0].attrs.title) {
-            content += ` "${linkMark.attrs.title}")`;
+            translatedContent += ` "${linkMark.attrs.title}")`;
           } else {
-            content += ')';
+            translatedContent += ')';
           }
         } else {
-          content += node.textContent;
+          translatedContent += node.textContent;
         }
       }
       // traverse the node tree and pull out the textContent and links via markdown input schema
@@ -150,7 +150,7 @@ export class ProseMirrorMarkdownEditor {
     };
     getContent(this.view.editor.state.doc);
 
-    this.update(content);
+    this.update(translatedContent);
   }
 
   createLinkItem(url, title) {
