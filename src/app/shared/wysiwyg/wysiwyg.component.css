@@ -1,4 +1,4 @@
-div >>> .ProseMirror-content {
+div >>> .ProseMirror {
   padding: 10px 8px;
   min-height: 150px;
   background-color: white;
@@ -10,17 +10,31 @@ div >>> .ProseMirror-menubar-wrapper {
   border: 1px solid #e6e6e6;
 }
 
-div >>> .ProseMirror-content:focus {
+div >>> .ProseMirror:focus {
   color: #000;
   outline: none;
 }
 
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h1,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h2,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h3,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h4,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h5,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h6 {
+div.readonly >>> .ProseMirror-menubar-wrapper {
+  border: 1px solid #a3a3a3;
+}
+
+div.readonly >>> .ProseMirror {
+  color: #939393;
+  background-color: #f0f0f0;
+  min-height: 0px;
+}
+
+div.readonly >>> .ProseMirror-menubar {
+  display: none;
+}
+
+div >>> .ProseMirror h1,
+div >>> .ProseMirror h2,
+div >>> .ProseMirror h3,
+div >>> .ProseMirror h4,
+div >>> .ProseMirror h5,
+div >>> .ProseMirror h6 {
   display: block;
   margin-left: 0;
   margin-right: 0;
@@ -28,46 +42,46 @@ div >>> .ProseMirror-example-setup-style .ProseMirror-content h6 {
   color: #939393;
 }
 
-div >>> .ProseMirror-example-setup-style .ProseMirror-content:focus h1,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content:focus h2,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content:focus h3,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content:focus h4,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content:focus h5,
-div >>> .ProseMirror-example-setup-style .ProseMirror-content:focus h6 {
+div >>> .ProseMirror:focus h1,
+div >>> .ProseMirror:focus h2,
+div >>> .ProseMirror:focus h3,
+div >>> .ProseMirror:focus h4,
+div >>> .ProseMirror:focus h5,
+div >>> .ProseMirror:focus h6 {
   color: #000;
 }
 
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h1 {
+div >>> .ProseMirror h1 {
   font-size: 2em;
   margin-top: 0.67em;
   margin-bottom: 0.67em;
 }
 
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h2 {
+div >>> .ProseMirror h2 {
   font-size: 1.5em;
   margin-top: 0.83em;
   margin-bottom: 0.83em;
 }
 
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h3 {
+div >>> .ProseMirror h3 {
   font-size: 1.17em;
   margin-top: 1em;
   margin-bottom: 1em;
 }
 
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h4 {
+div >>> .ProseMirror h4 {
   font-size: 1em;
   margin-top: 1.33em;
   margin-bottom: 1.33em;
 }
 
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h5 {
+div >>> .ProseMirror h5 {
   font-size: .83em;
   margin-top: 1.67em;
   margin-bottom: 1.67em;
 }
 
-div >>> .ProseMirror-example-setup-style .ProseMirror-content h6 {
+div >>> .ProseMirror h6 {
   font-size: .67em;
   margin-top: 2.33em;
   margin-bottom: 2.33em;

@@ -1,7 +1,7 @@
 import { Observable} from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
-import { REQUIRED, URL } from './invalid';
+import { REQUIRED, URL, LENGTH } from './invalid';
 
 export class FeederPodcastModel extends BaseModel {
 
@@ -10,8 +10,8 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'copyright', 'complete', 'language',
-             'authorName', 'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName', 'managingEditorEmail'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'copyright', 'complete',
+    'language', 'summary', 'authorName', 'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName', 'managingEditorEmail'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -25,6 +25,7 @@ export class FeederPodcastModel extends BaseModel {
   copyright = '';
   complete = false;
   language = '';
+  summary = '';
   hasPublicFeed = false;
 
   VALIDATORS = {
@@ -33,7 +34,8 @@ export class FeederPodcastModel extends BaseModel {
     link: [REQUIRED(), URL('Not a valid URL')],
     newFeedUrl: [URL('Not a valid URL')],
     publicFeedUrl: [URL('Not a valid URL')],
-    enclosurePrefix: [URL('Not a valid URL')]
+    enclosurePrefix: [URL('Not a valid URL')],
+    summary: [LENGTH(0, 4000)]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
@@ -103,6 +105,7 @@ export class FeederPodcastModel extends BaseModel {
       this.publicFeedUrl = this.doc['url'];
       this.hasPublicFeed = true;
     }
+    this.summary = this.doc['summary'];
   }
 
   encode(): {} {
@@ -139,6 +142,8 @@ export class FeederPodcastModel extends BaseModel {
     if (data.explicit) {
       data.explicit = data.explicit.toLowerCase();
     }
+
+    data.summary = this.summary || null;
 
     return data;
   }

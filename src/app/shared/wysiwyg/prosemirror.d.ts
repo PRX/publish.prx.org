@@ -195,6 +195,16 @@ declare module 'prosemirror-markdown/to_markdown' {
   export { MarkdownSerializerState };
 }
 
+declare module 'prosemirror-schema-basic' {
+  export { schema } from 'prosemirror-schema-basic/schema';
+}
+
+declare module 'prosemirror-schema-basic/schema' {
+  import { Schema } from 'prosemirror-model';
+  const schema: Schema;
+  export { schema };
+}
+
 declare module 'prosemirror-menu' {
   export { MenuItem, Dropdown, DropdownSubmenu, renderGrouped, icons, joinUpItem, liftItem, selectParentNodeItem, undoItem, redoItem, wrapItem, blockTypeItem }  from 'prosemirror-menu/menu';
   export { MenuBarEditorView } from 'prosemirror-menu/menubar';
@@ -391,6 +401,39 @@ declare module 'prosemirror-state/selection' {
     isSelectable(node: any): boolean;
   }
   export { NodeSelection }
+}
+
+declare module 'prosemirror-state/transaction' {
+  import { Transform } from 'prosemirror-transform';
+  import { Selection } from 'prosemirror-state';
+  import { EditorState } from 'prosemirror-state/state';
+  import { Step } from 'prosemirror-transform/step';
+  import { Mark, MarkType, Node, Slice } from 'prosemirror-model';
+  import { Plugin, PluginKey } from 'prosemirror-state/plugin';
+
+  class Transaction extends Transform {
+    constructor(state: EditorState);
+    selection: Selection;
+    setSelection(selection: Selection): Transaction;
+    selectionSet: boolean;
+    setStoredMarks(marks: Mark|MarkType): Transaction;
+    storedMarksSet: boolean;
+    addStep(step: Step, doc: Node);
+    setTime(time: number);
+    replaceSelection(slice: Slice): Transaction;
+    replaceSelectionWith(node: Node, inheritMarks: boolean): Transaction;
+    deleteSelection(): Transaction;
+    insertText(text: string, from: number, to: number): Transaction;
+    setMeta(key: string|Plugin|PluginKey, value: any): Transaction;
+    getMeta(key: string|Plugin|PluginKey): any;
+    isGeneric: boolean;
+    scrollIntoView(): Transaction;
+    scrolledIntoView: boolean;
+    addStoredMark(mark: Mark|MarkType): Transaction;
+    removeStoredMark(mark: Mark|MarkType): Transaction;
+  }
+
+  export { Transaction };
 }
 
 declare module 'prosemirror-state/transform' {
@@ -962,4 +1005,30 @@ declare module 'prosemirror-model/to_dom' {
     static marksFromSchema(schema: Schema): any;
   }
   export { DOMSerializer }
+}
+
+declare module 'prosemirror-view' {
+  import { Transaction } from 'prosemirror-state/transaction';
+
+  class EditorView {
+    constructor(nodes: any, props: any);
+    editor: any;
+    props: any;
+    docView: any;
+    update(props: any);
+    setProps(props: any);
+    updateState(state: any);
+    destroyPluginViews();
+    updatePluginViews(prevState: any);
+    hasFocus(): boolean;
+    someProp(propName: any, f: any);
+    focus();
+    posAtCoords(coords: any): any;
+    coordsAtPos(pos: any): any;
+    endOfTextblock(dir: any, state: any): boolean;
+    destroy();
+    dispatchEvent(event: any);
+    dispatch(tr: Transaction);
+  }
+  export { EditorView };
 }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CmsService } from '../../core';
 import {
@@ -7,7 +7,8 @@ import {
   FeederEpisodeModel,
   StoryModel,
   StoryDistributionModel,
-  TabService
+  TabService,
+  WysiwygComponent
 } from '../../shared';
 
 @Component({
@@ -23,11 +24,13 @@ export class PodcastComponent implements OnDestroy {
 
   tabSub: Subscription;
   storyDistribution: StoryDistributionModel;
+  story: StoryModel;
   episode: FeederEpisodeModel;
   version: AudioVersionModel;
   podcastExplicit: string;
   podcastAuthorName: string;
   podcastAuthorEmail: string;
+  @ViewChild('readonlyEditor') wysiwyg: WysiwygComponent;
 
   constructor(tab: TabService, private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.init(s));
@@ -38,6 +41,7 @@ export class PodcastComponent implements OnDestroy {
   }
 
   init(story: StoryModel) {
+    this.story = story;
     this.loadStoryDistribution(story);
     this.loadSeriesDistribution(story);
   }
@@ -92,4 +96,10 @@ export class PodcastComponent implements OnDestroy {
     }
   }
 
+  toggleAlternateSummary() {
+    let content = this.wysiwyg.getContent();
+    // if description is empty, assigning empty string to summary is falsey
+    //  so the display doesn't swap to editable wysiwyg
+    this.episode.set('summary', content ? content : ' ');
+  }
 }

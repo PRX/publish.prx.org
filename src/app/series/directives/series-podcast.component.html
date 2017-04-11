@@ -85,6 +85,26 @@
       </div>
     </publish-fancy-field>
 
+    <publish-fancy-field label="Summary" *ngIf="podcast && podcast.summary">
+      <div class="fancy-hint">The iTunes summary for this podcast. You may create links, but other formatting is not supported.</div>
+      <publish-wysiwyg [model]="podcast" name="summary" [content]="podcast.summary"
+                       inputFormat="HTML" outputFormat="HTML" [changed]="podcast && podcast.changed('summary', false)"></publish-wysiwyg>
+    </publish-fancy-field>
+
+    <publish-fancy-field label="Summary" *ngIf="podcast && !podcast.summary">
+      <div class="fancy-hint">
+        Unless otherwise specified, the summary is created from the description of your series as shown in the preview below.
+        The iTunes summary only allows for links, so all other formatting has been removed.
+        <p>
+          <input type="checkbox" (click)="toggleAlternateSummary()" name="alternateSummary" id="alternateSummary">
+          <label for="alternateSummary">Enter an alternate summary</label>
+        </p>
+      </div>
+      <publish-wysiwyg #readonlyEditor [content]="series.description" [changed]="false" [editable]="false"
+                       inputFormat="MARKDOWN" outputFormat="HTML">
+      </publish-wysiwyg>
+    </publish-fancy-field>
+
     <publish-fancy-field label="PRX Feed" class="prx-feed-url" *ngIf="!distribution.isNew">
       <div class="fancy-hint" *ngIf="podcast?.hasPublicFeed">
         The private URL for your PRX podcast feed, providing the content for <a href="{{podcast.publicFeedUrl}}">your public feed</a>.

@@ -1,7 +1,7 @@
-import { Component, OnDestroy, DoCheck } from '@angular/core';
+import { Component, OnDestroy, DoCheck, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SeriesModel, DistributionModel, FeederPodcastModel,
-         TabService, CATEGORIES, SUBCATEGORIES } from '../../shared';
+         TabService, CATEGORIES, SUBCATEGORIES, WysiwygComponent } from '../../shared';
 import * as languageMappingList from 'langmap';
 
 @Component({
@@ -26,6 +26,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
   languageOptions: string[][];
+  @ViewChild('readonlyEditor') wysiwyg: WysiwygComponent;
 
   constructor(tab: TabService) {
     this.languageOptions = this.getLanguageOptions();
@@ -154,5 +155,12 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
         This will change the audio files used in all published episodes of your podcast.
       `;
     }
+  }
+
+  toggleAlternateSummary() {
+    let content = this.wysiwyg.getContent();
+    // if description is empty, assigning empty string to summary is falsey
+    //  so the display doesn't swap to editable wysiwyg
+    this.podcast.set('summary', content ? content : ' ');
   }
 }
