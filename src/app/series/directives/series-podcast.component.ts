@@ -1,7 +1,7 @@
-import { Component, OnDestroy, DoCheck } from '@angular/core';
+import { Component, OnDestroy, DoCheck, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SeriesModel, DistributionModel, FeederPodcastModel,
-         TabService, CATEGORIES, SUBCATEGORIES } from '../../shared';
+         TabService, CATEGORIES, SUBCATEGORIES, WysiwygComponent } from '../../shared';
 import * as languageMappingList from 'langmap';
 
 @Component({
@@ -26,7 +26,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
   languageOptions: string[][];
-  _summaryPreview: string;
+  @ViewChild('readonlyEditor') wysiwyg: WysiwygComponent;
 
   constructor(tab: TabService) {
     this.languageOptions = this.getLanguageOptions();
@@ -157,13 +157,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
   }
 
-  summaryPreview(summary: string) {
-    this._summaryPreview = summary;
-  }
-
   toggleAlternateSummary() {
-    // TODO: add a convertedTextCallback to wysiwyg -> prosemirror and back out to get value
-    // OR maybe not that. maybe a function to call on the PM class? ah jeebus I dunno
-    this.podcast.summary = this._summaryPreview;
+    this.podcast.set('summary', this.wysiwyg.getContent());
   }
 }

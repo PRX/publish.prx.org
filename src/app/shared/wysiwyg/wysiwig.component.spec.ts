@@ -31,4 +31,13 @@ describe('WysiwygComponent', () => {
     comp.createLink();
     expect(comp.model[comp.name]).toEqual(initialState.descriptionMd);
   });
+
+  cit('formats content from Markdown to HTML', (fix, el, comp) => {
+    comp.content = 'initial state [link](https://publish.prx.org)';
+    comp.editable = false;
+    comp.inputFormat = 'MARKDOWN';
+    comp.outputFormat = 'HTML';
+    fix.detectChanges();
+    expect(comp.getContent()).toEqual('initial state <a href="https://publish.prx.org">link</a>');
+  });
 });

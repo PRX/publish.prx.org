@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CmsService } from '../../core';
 import {
@@ -7,7 +7,8 @@ import {
   FeederEpisodeModel,
   StoryModel,
   StoryDistributionModel,
-  TabService
+  TabService,
+  WysiwygComponent
 } from '../../shared';
 
 @Component({
@@ -29,6 +30,7 @@ export class PodcastComponent implements OnDestroy {
   podcastExplicit: string;
   podcastAuthorName: string;
   podcastAuthorEmail: string;
+  @ViewChild('readonlyEditor') wysiwyg: WysiwygComponent;
 
   constructor(tab: TabService, private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.init(s));
@@ -94,4 +96,7 @@ export class PodcastComponent implements OnDestroy {
     }
   }
 
+  toggleAlternateSummary() {
+    this.episode.set('summary', this.wysiwyg.getContent());
+  }
 }

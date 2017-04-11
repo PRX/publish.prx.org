@@ -10,3 +10,4 @@ export * from './model';
 export * from './spinner';
 export * from './tab';
 export * from './text-overflow';
+export * from './wysiwyg';

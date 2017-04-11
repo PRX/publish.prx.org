@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild,
+  ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
@@ -48,7 +49,6 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() editable = true;
   @Input() changed: boolean;
   @Input() images: ImageModel[];
-  @Output() contentConverted = new EventEmitter<string>();
   setModelValue = '';
 
   @ViewChild('contentEditable') el: ElementRef;
@@ -64,6 +64,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     if (this.model || this.content) {
+      this.setModelValue = this.content;
       this.editor = new ProseMirrorMarkdownEditor(this.el,
                                                   this.content,
                                                   this.inputFormat,
@@ -71,8 +72,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
                                                   this.editable,
                                                   this.mapImages(),
                                                   this.setModel.bind(this),
-                                                  this.promptForLink.bind(this),
-                                                  this.setConvertedContent.bind(this));
+                                                  this.promptForLink.bind(this));
     }
   }
 
@@ -108,9 +108,8 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  setConvertedContent(content: string) {
-    this.setModelValue = content;
-    this.contentConverted.emit(content);
+  getContent():string {
+    return this.editor.getContent();
   }
 
   get invalid(): string {

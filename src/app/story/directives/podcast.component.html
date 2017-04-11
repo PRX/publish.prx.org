@@ -56,10 +56,16 @@
   </publish-fancy-field>
 
   <publish-fancy-field label="Summary" *ngIf="!episode.summary">
-    <div class="fancy-hint">If not changed, the summary is created from the description of your episode as shown below.
-      The iTunes summary only allows for links, so all other formatting has been removed.</div>
-    <publish-wysiwyg [model]="episode" name="summary" [content]="story.description"
-                     [changed]="false" inputFormat="MARKDOWN" outputFormat="HTML" [editable]="false">
+    <div class="fancy-hint">
+      Unless otherwise specified, the summary is created from the description of your episode as shown in the preview below.
+      The iTunes summary only allows for links, so all other formatting has been removed.
+      <p>
+        <input type="checkbox" (click)="toggleAlternateSummary()" name="alternateSummary" id="alternateSummary">
+        <label for="alternateSummary">Enter an alternate summary</label>
+      </p>
+    </div>
+    <publish-wysiwyg #readonlyEditor [content]="story.description" [changed]="false" [editable]="false"
+                     inputFormat="MARKDOWN" outputFormat="HTML">
     </publish-wysiwyg>
   </publish-fancy-field>
 

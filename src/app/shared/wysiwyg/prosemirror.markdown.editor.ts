@@ -35,8 +35,7 @@ export class ProseMirrorMarkdownEditor {
               private editable: boolean,
               private images: ProseMirrorImage[],
               private setModel: Function,
-              private promptForLink: Function,
-              private contentConverted: Function) {
+              private promptForLink: Function) {
     this.outputSchema = this.outputFormat === ProseMirrorFormatTypes.HTML ? basicSchema : markdownSchema;
     let state = EditorState.create(this.stateConfig());
     this.view = new MenuBarEditorView(el.nativeElement, this.viewProps(state));
@@ -50,7 +49,6 @@ export class ProseMirrorMarkdownEditor {
         this.content = this.removeHTML(this.view.editor.docView.dom.innerHTML);
       }
     }
-    this.contentConverted(this.content);
   }
 
   update(content: string, images?: ProseMirrorImage[]) {
@@ -59,6 +57,14 @@ export class ProseMirrorMarkdownEditor {
       this.images = images || this.images;
       let state = EditorState.create(this.stateConfig());
       this.view.update(this.viewProps(state));
+    }
+  }
+
+  getContent() {
+    if (this.outputFormat === ProseMirrorFormatTypes.HTML) {
+      return this.removeHTML(this.view.editor.docView.dom.innerHTML);
+    } else {
+      return defaultMarkdownSerializer.serialize(this.view.editor.state.doc);
     }
   }
 
@@ -129,7 +135,7 @@ export class ProseMirrorMarkdownEditor {
         if (linkMark) {
           content += `[${node.textContent}](${linkMark.attrs.href}`;
           if (node.marks[0].attrs.title) {
-            content += `${linkMark.attrs.title})`;
+            content += ` "${linkMark.attrs.title}")`;
           } else {
             content += ')';
           }
@@ -142,7 +148,7 @@ export class ProseMirrorMarkdownEditor {
     };
     getContent(this.view.editor.state.doc);
 
-    this.update(content);
+    this.update(content);// does this need defaultMarkdownParser.parse(content);
   }
 
   createLinkItem(url, title) {
