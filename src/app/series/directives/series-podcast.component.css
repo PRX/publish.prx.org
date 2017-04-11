@@ -25,3 +25,6 @@
 .feed-url button:hover, .feed-url button:focus {
   background-color: #e28b42;
 }
+input[type=checkbox] {
+  vertical-align: middle;
+}

@@ -9,6 +9,7 @@ describe('PodcastComponent', () => {
   provide(TabService);
 
   cit('does not render until the episode is loaded', (fix, el, comp) => {
+    comp.story = {images: [], changed: () => false};
     comp.episode = null;
     fix.detectChanges();
     expect(el).not.toQuery('form');
@@ -22,6 +23,7 @@ describe('PodcastComponent', () => {
 
   cit('shows the podcast distribution edit fields', (fix, el, comp) => {
     expect(el).not.toQuery('publish-fancy-field');
+    comp.story = {images: [], changed: () => false};
     comp.episode = {
       original: {guid: 'bar'},
       changed: () => false
@@ -29,11 +31,12 @@ describe('PodcastComponent', () => {
     comp.version = 'foo';
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(7);
+    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(8);
     expect(el).toContainText('explicit material');
     expect(el).toContainText('author info');
     expect(el).toContainText('GUID');
     expect(el).toContainText('public URL');
+    expect(el).toContainText('summary');
   });
 
 });

@@ -1,13 +1,14 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild,
+  ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from '../model/base.model';
 import { ImageModel } from '../model/image.model';
-import { ProseMirrorMarkdownEditor, ProseMirrorImage } from './prosemirror.markdown.editor';
+import { ProseMirrorMarkdownEditor, ProseMirrorImage, ProseMirrorFormatTypes } from './prosemirror.markdown.editor';
 
 @Component({
   selector: 'publish-wysiwyg',
   template: `
-    <div #contentEditable [class.changed]="changed" [class.invalid]="invalid"></div>
+    <div #contentEditable [class.changed]="changed" [class.invalid]="invalid" [class.readonly]="!editable"></div>
     <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
 
     <div class="overlay" *ngIf="showPrompt"></div>
@@ -43,6 +44,9 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() model: BaseModel;
   @Input() name: string;
   @Input() content: string;
+  @Input() inputFormat = ProseMirrorFormatTypes.MARKDOWN;
+  @Input() outputFormat = ProseMirrorFormatTypes.MARKDOWN;
+  @Input() editable = true;
   @Input() changed: boolean;
   @Input() images: ImageModel[];
   setModelValue = '';
@@ -59,9 +63,13 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private chgRef: ChangeDetectorRef) {}
 
   ngOnInit() {
-    if (this.model) {
+    if (this.model || (this.content || this.content === '')) {
+      this.setModelValue = this.content;
       this.editor = new ProseMirrorMarkdownEditor(this.el,
                                                   this.content,
+                                                  this.inputFormat,
+                                                  this.outputFormat,
+                                                  this.editable,
                                                   this.mapImages(),
                                                   this.setModel.bind(this),
                                                   this.promptForLink.bind(this));
@@ -85,7 +93,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   mapImages(): ProseMirrorImage[] {
-    return this.images.filter(img => !img.isDestroy).map(img => {
+    return this.images && this.images.filter(img => !img.isDestroy).map(img => {
       let name = img.filename || '[untitled]';
       return new ProseMirrorImage(name, img.enclosureHref, img.caption, img.credit);
     });
@@ -94,12 +102,18 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   setModel(value: string) {
     if (this.setModelValue.valueOf() !== value.valueOf()) {
       this.setModelValue = value.slice(0);
-      this.model.set(this.name, value);
+      if (this.model && this.name) {
+        this.model.set(this.name, value);
+      }
     }
   }
 
+  getContent():string {
+    return this.editor.getContent();
+  }
+
   get invalid(): string {
-    return this.model.invalid(this.name);
+    return this.model && this.name ? this.model.invalid(this.name) : '';
   }
 
   isURLInvalid() {

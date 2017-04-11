@@ -1,4 +1,4 @@
-import { ProseMirrorMarkdownEditor } from './prosemirror.markdown.editor';
+import { ProseMirrorMarkdownEditor, ProseMirrorFormatTypes } from './prosemirror.markdown.editor';
 import { ElementRef } from '@angular/core';
 
 describe('ProseMirrorMarkdownEditor', () => {
@@ -15,7 +15,15 @@ describe('ProseMirrorMarkdownEditor', () => {
   });
 
   function createProseMirrorMarkdownEditor() {
-    return new ProseMirrorMarkdownEditor(new ElementRef(el), '', [], () => {}, () => {});
+    return new ProseMirrorMarkdownEditor(new ElementRef(el), '',
+      ProseMirrorFormatTypes.MARKDOWN, ProseMirrorFormatTypes.MARKDOWN,
+      true, [], () => {}, () => {});
+  }
+
+  function createProseMirrorMarkdownToHtmlEditor(content) {
+    return new ProseMirrorMarkdownEditor(new ElementRef(el), content,
+      ProseMirrorFormatTypes.MARKDOWN, ProseMirrorFormatTypes.HTML,
+      false, [], () => {}, () => {});
   }
 
   describe('constructor', () => {
@@ -50,6 +58,24 @@ describe('ProseMirrorMarkdownEditor', () => {
       expect(pmEditor.view.update).not.toHaveBeenCalled();
       pmEditor.update('', []);
       expect(pmEditor.view.update).toHaveBeenCalled();
+    });
+  });
+
+  describe('getContent', () => {
+    let pmEditor;
+    let content = 'hola, [buenos](https://en.wikipedia.org/wiki/Isla_Mujeres "Isla Mujeres") dias';
+
+    beforeEach(function () {
+      pmEditor = createProseMirrorMarkdownToHtmlEditor(content);
+    });
+
+    afterEach(function () {
+      pmEditor.destroy();
+    });
+
+    it('should provide formatted content', () => {
+      expect(pmEditor.getContent())
+        .toEqual('hola, <a href="https://en.wikipedia.org/wiki/Isla_Mujeres" title="Isla Mujeres">buenos</a> dias');
     });
   });
 });

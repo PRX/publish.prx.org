@@ -1,6 +1,7 @@
 import { cit, create, By, stubPipe } from '../../../testing';
 import { MockHalDoc } from '../../../testing/mock.haldoc';
 import { WysiwygComponent } from './wysiwyg.component';
+import { ProseMirrorFormatTypes } from './prosemirror.markdown.editor';
 import { StoryModel } from '../model/story.model';
 
 describe('WysiwygComponent', () => {
@@ -30,5 +31,14 @@ describe('WysiwygComponent', () => {
     comp.linkURL = '';
     comp.createLink();
     expect(comp.model[comp.name]).toEqual(initialState.descriptionMd);
+  });
+
+  cit('formats content from Markdown to HTML', (fix, el, comp) => {
+    comp.content = 'initial state [link](https://publish.prx.org)';
+    comp.editable = false;
+    comp.inputFormat = ProseMirrorFormatTypes.MARKDOWN;
+    comp.outputFormat = ProseMirrorFormatTypes.HTML;
+    fix.detectChanges();
+    expect(comp.getContent()).toEqual('initial state <a href="https://publish.prx.org">link</a>');
   });
 });
