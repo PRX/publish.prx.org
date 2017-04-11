@@ -104,6 +104,7 @@ export class ProseMirrorMarkdownEditor {
   stateConfig() {
     let config = {plugins: this.buildMenuItemsPlugin()};
     if (this.inputFormat === ProseMirrorFormatTypes.HTML) {
+      // use browser to create element for parsing HTML content
       let domNode = document.createElement('div');
       domNode.innerHTML = this.content;
       config['doc'] = DOMParser.fromSchema(basicSchema).parse(domNode);
@@ -114,6 +115,7 @@ export class ProseMirrorMarkdownEditor {
   }
 
   removeHTML(content) {
+    // prosemirror wraps the single node in a paragraph, when empty prosemirror inserts a <br> into the <p></p>
     return content.replace('<p>', '').replace('</p>', '').replace('<br>', '');
   }
 
@@ -148,7 +150,7 @@ export class ProseMirrorMarkdownEditor {
     };
     getContent(this.view.editor.state.doc);
 
-    this.update(content);// does this need defaultMarkdownParser.parse(content);
+    this.update(content);
   }
 
   createLinkItem(url, title) {
