@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { PlayerService } from './audio';
 import { AuthComponent, AuthService } from './auth';
-import { CmsService } from './cms';
+import { CastleService, CmsService } from './cms';
 import { FooterComponent } from './footer';
 import { HeaderComponent, NavItemComponent, NavUserComponent } from './header';
 import { ModalComponent, ModalService } from './modal';
@@ -38,6 +38,7 @@ import { ToastrComponent, ToastrService } from './toastr';
   ],
   providers: [
     AuthService,
+    CastleService,
     CmsService,
     MimeTypeService,
     ModalService,

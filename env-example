@@ -30,3 +30,6 @@ PLAY_HOST=play-staging.prx.tech
 NEW_RELIC_APP_NAME=
 NEW_RELIC_LICENSE_KEY=
 GA_KEY=
+
+# metrics
+CASTLE_HOST=localhost:4000
