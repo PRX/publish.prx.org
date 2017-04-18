@@ -60,12 +60,12 @@ export class MetricsDownloadsComponent {
 
   requestMetrics() {
     if (this.checkRequest()) {
-      this.castle.followList('prx:podcasts').subscribe(items => {
+      this.castle.followList('prx:episode').subscribe(items => {
         if (items && items.length > 0) {
-          items[0].followList('prx:items').subscribe(podcasts => {
-            let podcast = podcasts.find(p => p.id === 45);
-            if (podcast) {
-              podcast.follow('prx:downloads',
+          items[0].followList('prx:items').subscribe(episodes => {
+            let episode = episodes.find(e => e['guid'] === '27b3643e-df65-476d-bfcb-a61b011cf8a1');
+            if (episode) {
+              episode.follow('prx:downloads',
                 {
                   from: moment(this.beginDate).format(),
                   to: moment(this.endDate).format(),
