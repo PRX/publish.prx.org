@@ -45,6 +45,11 @@ export class MetricsDownloadsComponent {
   dateFormat = '%m/%d';
   beginDate: Date = new Date(moment().subtract(7, 'days').valueOf());
   endDate: Date = new Date(moment().add(1, 'days').valueOf());
+  /* TODO: API tries to guess interval based on date range length, need to update UI accordingly
+   10 days at 15m
+   40 days at 1h
+   2.7 years at 1d
+   */
   interval = '1d';
   error: string;
   chartData: TimeseriesChartModel[];
@@ -60,26 +65,21 @@ export class MetricsDownloadsComponent {
 
   requestMetrics() {
     if (this.checkRequest()) {
-      this.castle.followList('prx:episode').subscribe(items => {
-        if (items && items.length > 0) {
-          items[0].followList('prx:items').subscribe(episodes => {
-            let episode = episodes.find(e => e['guid'] === '27b3643e-df65-476d-bfcb-a61b011cf8a1');
-            if (episode) {
-              episode.follow('prx:downloads',
-                {
-                  from: moment(this.beginDate).format(),
-                  to: moment(this.endDate).format(),
-                  interval: this.interval
-                }).subscribe(metrics => {
-                let dataset = metrics['downloads'].map(datum => {
-                  return new TimeseriesDatumModel(datum[1], moment(datum[0]).valueOf());
-                });
-                this.chartData = [new TimeseriesChartModel(dataset, this.story.title, '#368aa2')];
-              });
-            } else {
-              this.error = 'This podcast has no download metrics.';
-            }
+      // TODO: needs obscure chart with overlay + loading circle
+      this.castle.followList('prx:episode-downloads', {
+        guid: '67f11a0d-1400-4ec7-8e7c-179446d802a0',
+        from: moment(this.beginDate).format(),
+        to: moment(this.endDate).format(),
+        interval: this.interval
+      }).subscribe(metrics => {
+        if (metrics[0] && metrics[0]['downloads'] && metrics[0]['downloads'].length > 0) {
+          let dataset = metrics[0]['downloads'].map(datum => {
+            return new TimeseriesDatumModel(datum[1], moment(datum[0]).valueOf());
           });
+          this.chartData = [new TimeseriesChartModel(dataset, this.story.title, '#368aa2')];
+        } else {
+          this.error = 'This podcast has no download metrics.';
+          this.chartData = null;
         }
       });
     }
