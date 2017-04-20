@@ -53,7 +53,7 @@ export class CastleService {
   }
 
   protected getRemote(): HalRemote {
-    return new HalRemote(this.http, 'castle'/*Env.CASTLE_HOST*/);
+    return new HalRemote(this.http, Env.CASTLE_HOST);
   }
 
 }
