@@ -28,3 +28,13 @@ label {
 prx-line-timeseries-chart {
   margin-top: 20px;
 }
+
+.chart-loading {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  flex-basis: 100%;
+  margin-top: 20px;
+  height: 320px;
+  background: #ddd;
+}

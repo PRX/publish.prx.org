@@ -25,32 +25,30 @@ import { TimeseriesChartModel, TimeseriesDatumModel } from 'styleguide.prx.org';
       <p>
         <label for="interval">Interval:</label>
         <select id="interval" [ngModel]="interval" (ngModelChange)="intervalChange($event)">
-          <option value="15m">15 minutes</option>
-          <option value="1h">hourly</option>
-          <option value="1d">daily</option>
+          <option *ngFor="let i of intervalOptions" [value]="i.value">{{i.name}}</option>
         </select>
       </p>
     </div>
     <p *ngIf="error" class="error">
       {{error}}
     </p>
+    <div *ngIf="!chartData && !error" class="chart-loading"><publish-spinner></publish-spinner></div>
     <prx-line-timeseries-chart *ngIf="chartData" [datasets]="chartData" [dateFormat]="dateFormat"></prx-line-timeseries-chart>
   `,
   styleUrls: ['metrics-downloads.component.css']
 })
 
 export class MetricsDownloadsComponent {
+  INTERVAL_DAILY = {value: '1d', name: 'daily'};
+  INTERVAL_HOURLY = {value: '1h', name: 'hourly'};
+  INTERVAL_15MIN = {value: '15m', name: '15 minutes'};
+  intervalOptions = [this.INTERVAL_15MIN, this.INTERVAL_HOURLY, this.INTERVAL_DAILY];
   story: StoryModel;
   tabSub: Subscription;
   dateFormat = '%m/%d';
   beginDate: Date = new Date(moment().subtract(7, 'days').valueOf());
   endDate: Date = new Date(moment().add(1, 'days').valueOf());
-  /* TODO: API tries to guess interval based on date range length, need to update UI accordingly
-   10 days at 15m
-   40 days at 1h
-   2.7 years at 1d
-   */
-  interval = '1d';
+  interval = this.INTERVAL_DAILY.value;
   error: string;
   chartData: TimeseriesChartModel[];
 
@@ -64,10 +62,10 @@ export class MetricsDownloadsComponent {
   }
 
   requestMetrics() {
+    this.chartData = null;
     if (this.checkRequest()) {
-      // TODO: needs obscure chart with overlay + loading circle
       this.castle.followList('prx:episode-downloads', {
-        guid: '67f11a0d-1400-4ec7-8e7c-179446d802a0',
+        guid: '67f11a0d-1400-4ec7-8e7c-179446d802a0', // TODO: get guid from feeder
         from: moment(this.beginDate).format(),
         to: moment(this.endDate).format(),
         interval: this.interval
@@ -79,49 +77,79 @@ export class MetricsDownloadsComponent {
           this.chartData = [new TimeseriesChartModel(dataset, this.story.title, '#368aa2')];
         } else {
           this.error = 'This podcast has no download metrics.';
-          this.chartData = null;
         }
       });
     }
   }
 
   checkRequest() {
-    if (this.beginDate.valueOf() >= this.endDate.valueOf()) {
-      this.error = 'From date must be earlier than Through date.';
+    if (!this.story.publishedAt) {
+      this.error = 'Metrics are not available for episodes that are not published.';
       return false;
-    } else if (this.endDate.valueOf() - this.beginDate.valueOf() > 1000 * 60 * 60 * 24 * 4
-      && this.interval !== '1d') {
-      this.error = 'Date ranges more than 4 days apart must use daily interval.';
+    } else if (this.beginDate.valueOf() >= this.endDate.valueOf()) {
+      this.error = 'From date should be earlier than Through date.';
+      return false;
+    } else if (this.isMoreThanXDays(40) && this.interval !== this.INTERVAL_DAILY.value) {
+      this.error = 'Date ranges more than 40 days apart should use daily interval.';
+      return false;
+    } else if (this.isMoreThanXDays(10) &&
+      (this.interval !== this.INTERVAL_DAILY.value && this.interval !== this.INTERVAL_HOURLY.value)) {
+      this.error = 'Date ranges more than 10 days apart should use hourly or daily interval.';
       return false;
     } else {
-      this.error = '';
+      this.error = null;
       return true;
     }
   }
 
   beginDateChange(date: Date) {
     this.beginDate = date;
+    this.adjustIntervalOptions();
     this.requestMetrics();
   }
 
   endDateChange(date: Date) {
     this.endDate = date;
+    this.adjustIntervalOptions();
     this.requestMetrics();
   }
 
   intervalChange(interval: string) {
     this.interval = interval;
     switch (this.interval) {
-      case '1d':
+      case this.INTERVAL_DAILY.value:
         this.dateFormat = '%m/%d';
         break;
-      case '1h':
-      case '15m':
+      case this.INTERVAL_HOURLY.value:
+      case this.INTERVAL_15MIN.value:
         this.dateFormat = '%m/%d %H:%M';
         break;
       default:
         break;
     }
     this.requestMetrics();
+  }
+
+  isMoreThanXDays(x: number): boolean {
+    return this.endDate.valueOf() - this.beginDate.valueOf() > (1000 * 60 * 60 * 24 * x); // x days
+  }
+
+  adjustIntervalOptions() {
+    /* API requests limited as follows:
+     10 days at 15m
+     40 days at 1h
+     2.7 years at 1d
+     */
+    if (this.isMoreThanXDays(40)) {
+      this.intervalOptions = [this.INTERVAL_DAILY];
+      this.interval = this.INTERVAL_DAILY.value;
+    } else if (this.isMoreThanXDays(10)) {
+      this.intervalOptions = [this.INTERVAL_HOURLY, this.INTERVAL_DAILY];
+      if (this.interval === this.INTERVAL_15MIN.value) {
+        this.interval = this.INTERVAL_HOURLY.value;
+      }
+    } else {
+      this.intervalOptions = [this.INTERVAL_15MIN, this.INTERVAL_HOURLY, this.INTERVAL_DAILY];
+    }
   }
 }
