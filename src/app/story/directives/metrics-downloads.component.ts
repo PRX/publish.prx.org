@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { CastleService } from '../../core';
-import { StoryModel, TabService } from '../../shared';
+import { FeederEpisodeModel, StoryModel, TabService } from '../../shared';
 import { TimeseriesChartModel, TimeseriesDatumModel } from 'styleguide.prx.org';
 
 @Component({
@@ -44,6 +44,7 @@ export class MetricsDownloadsComponent {
   INTERVAL_15MIN = {value: '15m', name: '15 minutes'};
   intervalOptions = [this.INTERVAL_15MIN, this.INTERVAL_HOURLY, this.INTERVAL_DAILY];
   story: StoryModel;
+  episode: FeederEpisodeModel;
   tabSub: Subscription;
   dateFormat = '%m/%d';
   beginDate: Date = new Date(moment().subtract(7, 'days').valueOf());
@@ -57,7 +58,15 @@ export class MetricsDownloadsComponent {
     this.endDate.setHours(0, 0, 0);
     this.tabSub = tab.model.subscribe((s: StoryModel) => {
       this.story = s;
-      this.requestMetrics();
+      this.story.loadRelated('distributions', true).subscribe(() => {
+        let storyDistribution = this.story.distributions.find(d => d.kind === 'episode');
+        if (storyDistribution) {
+          storyDistribution.loadRelated('episode').subscribe(() => {
+            this.episode = storyDistribution.episode;
+            this.requestMetrics();
+          });
+        }
+      });
     });
   }
 
@@ -65,7 +74,7 @@ export class MetricsDownloadsComponent {
     this.chartData = null;
     if (this.checkRequest()) {
       this.castle.followList('prx:episode-downloads', {
-        guid: '67f11a0d-1400-4ec7-8e7c-179446d802a0', // TODO: get guid from feeder
+        guid: this.episode.id,
         from: moment(this.beginDate).format(),
         to: moment(this.endDate).format(),
         interval: this.interval
@@ -74,7 +83,7 @@ export class MetricsDownloadsComponent {
           let dataset = metrics[0]['downloads'].map(datum => {
             return new TimeseriesDatumModel(datum[1], moment(datum[0]).valueOf());
           });
-          this.chartData = [new TimeseriesChartModel(dataset, this.story.title, '#368aa2')];
+          this.chartData = [new TimeseriesChartModel(dataset, this.story.title, '#61A85D')];
         } else {
           this.error = 'This podcast has no download metrics.';
         }
@@ -83,7 +92,7 @@ export class MetricsDownloadsComponent {
   }
 
   checkRequest() {
-    if (!this.story.publishedAt) {
+    if (!this.story || !this.story.publishedAt) {
       this.error = 'Metrics are not available for episodes that are not published.';
       return false;
     } else if (this.beginDate.valueOf() >= this.endDate.valueOf()) {
