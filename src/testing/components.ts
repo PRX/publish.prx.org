@@ -2,7 +2,7 @@ import { Component, Type, DebugElement, NO_ERRORS_SCHEMA, Pipe, PipeTransform } 
 import { FormsModule } from '@angular/forms';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 
-import { CmsService } from '../app/core/cms/cms.service';
+import { CastleService, CmsService } from '../app/core/cms/';
 import { MockCmsService } from './mock.cms.service';
 import { StubRouterLinkDirective } from './stub.routerlink.directive';
 
@@ -47,7 +47,7 @@ export function create(componentType: Type<any>, runInitialDetect = true) {
   beforeEach(function() {
     this._publishComponent    = componentType;
     this._publishDeclarations = [componentType, StubRouterLinkDirective];
-    this._publishProviders    = [{provide: CmsService, useValue: mockCms}];
+    this._publishProviders    = [{provide: CmsService, useValue: mockCms}, {provide: CastleService, useValue: mockCms}];
     this._publishInitDetect   = runInitialDetect;
   });
 }
