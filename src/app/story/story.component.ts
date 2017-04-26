@@ -16,7 +16,7 @@ import { StoryModel } from '../shared';
         <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
         <a *ngIf="distPodcast" routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Episode Info</a>
         <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
-        <a *ngIf="id" routerLinkActive="active" [routerLink]="[base, 'downloads']">Download Metrics</a>
+        <a *ngIf="distDownloads" routerLinkActive="active" [routerLink]="[base, 'downloads']">Download Metrics</a>
       </nav>
       <publish-story-status [id]="id" [story]="story"></publish-story-status>
       <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
@@ -34,6 +34,7 @@ export class StoryComponent implements OnInit {
   // distribution specific tabs
   distPodcast = false;
   distPlayer = false;
+  distDownloads = false;
 
   constructor(
     private cms: CmsService,
@@ -95,10 +96,12 @@ export class StoryComponent implements OnInit {
     if (this.story && this.story.isNew) {
       this.story.getSeriesDistribution('podcast').subscribe(dist => {
         this.distPodcast = dist ? true : false;
+        this.distDownloads = false;
       });
     } else if (this.story) {
       this.story.loadRelated('distributions').subscribe(() => {
         this.distPodcast = this.story.distributions.some(d => d.kind === 'episode');
+        this.distDownloads = this.distPodcast;
         if (this.distPodcast) {
           this.story.distributions.find(d => d.kind === 'episode').loadRelated('episode');
         }
