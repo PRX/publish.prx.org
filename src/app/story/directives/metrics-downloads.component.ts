@@ -78,16 +78,21 @@ export class MetricsDownloadsComponent {
         from: moment(this.beginDate).format(),
         to: moment(this.endDate).format(),
         interval: this.interval
-      }).subscribe(metrics => {
-        if (metrics[0] && metrics[0]['downloads'] && metrics[0]['downloads'].length > 0) {
-          let dataset = metrics[0]['downloads'].map(datum => {
-            return new TimeseriesDatumModel(datum[1], moment(datum[0]).valueOf());
-          });
-          this.chartData = [new TimeseriesChartModel(dataset, this.story.title, '#61A85D')];
-        } else {
-          this.error = 'This podcast has no download metrics.';
-        }
+      }).subscribe(
+        metrics => this.setMetrics(metrics),
+        err => this.error = 'This podcast has no download metrics.'
+      );
+    }
+  }
+
+  setMetrics(metrics: any) {
+    if (metrics[0] && metrics[0]['downloads'] && metrics[0]['downloads'].length > 0) {
+      let dataset = metrics[0]['downloads'].map(datum => {
+        return new TimeseriesDatumModel(datum[1], moment(datum[0]).valueOf());
       });
+      this.chartData = [new TimeseriesChartModel(dataset, this.story.title, '#61A85D')];
+    } else {
+      this.error = 'This podcast has no download metrics.';
     }
   }
 
