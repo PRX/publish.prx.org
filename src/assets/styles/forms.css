@@ -221,3 +221,8 @@ input[type=checkbox].updown-toggle + label {
   border-bottom: 8px solid #368aa2;
   border-top: 0px;
 }
+
+input[readonly], input[disabled], textarea[readonly], textarea[disabled] {
+  background-color: #f0f0f0;
+  border: 1px solid #a3a3a3;
+}
