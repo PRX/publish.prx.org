@@ -45,7 +45,7 @@
     "connect-gzip-static": "^2.0.1",
     "core-js": "^2.4.1",
     "dotenv": "^4.0.0",
-    "evaporate": "^2.1.0",
+    "evaporate": "^1.6.3",
     "express": "^4.15.2",
     "express-http-proxy": "^1.0.1",
     "langmap": "0.0.14",
