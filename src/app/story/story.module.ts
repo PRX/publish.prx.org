@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../shared';
 import { UploadModule } from '../upload';
-import { ChartsModule, DatepickerModule } from 'styleguide.prx.org';
+import { ChartsModule, DatepickerModule } from 'ngx-prx-styleguide';
 import { storyRouting, storyProviders, storyComponents } from './story.routing';
 
 @NgModule({
