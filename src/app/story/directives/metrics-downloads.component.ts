@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { CastleService } from '../../core';
 import { FeederEpisodeModel, StoryModel, TabService } from '../../shared';
-import { TimeseriesChartModel, TimeseriesDatumModel } from 'styleguide.prx.org';
+import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
 
 @Component({
   template: `
