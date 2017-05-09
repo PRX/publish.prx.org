@@ -5,7 +5,6 @@ import {HalDoc} from './haldoc';
 import {HalObservable} from './halobservable';
 import {HalRemote} from './halremote';
 import {HalLink} from './hallink';
-import {Env} from '../core.env';
 
 @Injectable()
 export class CastleService {
@@ -53,7 +52,8 @@ export class CastleService {
   }
 
   protected getRemote(): HalRemote {
-    return new HalRemote(this.http, Env.CASTLE_HOST);
+    // TEMP: proxy through localhost to get basic auth
+    return new HalRemote(this.http, '/castle');
   }
 
 }
