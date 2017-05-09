@@ -46,4 +46,5 @@ export class Env {
   public static get USE_CLOUDFRONT():       boolean { return getVar('USE_CLOUDFRONT'); }
   public static get PLAY_HOST():            boolean { return getVar('PLAY_HOST'); }
   public static get CASTLE_HOST():           string { return getVar('CASTLE_HOST'); }
+  public static get CASTLE_TEST_EPISODE():   string { return getVar('CASTLE_TEST_EPISODE'); }
 }
