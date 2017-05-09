@@ -81,7 +81,14 @@ export class MetricsDownloadsComponent {
         interval: this.interval
       }).subscribe(
         metrics => this.setMetrics(metrics),
-        err => this.error = 'This podcast has no download metrics.'
+        err => {
+          if (err.name === 'HalHttpError' && err.status === 401) {
+            this.error = 'An error occurred while requesting episode metrics';
+            console.error(err);
+          } else {
+            this.error = 'This podcast has no download metrics.';
+          }
+        }
       );
     }
   }
