@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
+import { Env } from '../../core/core.env';
 import { CastleService } from '../../core';
 import { FeederEpisodeModel, StoryModel, TabService } from '../../shared';
 import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
@@ -74,7 +75,7 @@ export class MetricsDownloadsComponent {
     this.chartData = null;
     if (this.checkRequest()) {
       this.castle.followList('prx:episode-downloads', {
-        guid: this.episode.id,
+        guid: Env.CASTLE_TEST_EPISODE || this.episode.id,
         from: moment(this.beginDate).format(),
         to: moment(this.endDate).format(),
         interval: this.interval
