@@ -4,6 +4,16 @@ import * as TemplateParser from 'url-template';
 import { HalRemoteCache } from './halremote.cache';
 import { HalLink } from './hallink';
 
+export class HalHttpError extends Error {
+  name = 'HalHttpError';
+  constructor(public status: number, msg: string) {
+    super(msg);
+  }
+}
+export class HalLinkError extends Error {
+  name = 'HalLinkError';
+}
+
 /**
  * Http layer for HAL requests
  */
@@ -48,7 +58,7 @@ export class HalRemote {
         return HalRemoteCache.set(href, this.httpRequest('get', href));
       }
     } else {
-      return Observable.throw(new Error('No link object specified!'));
+      return Observable.throw(new HalLinkError('No link object specified!'));
     }
   }
 
@@ -94,7 +104,7 @@ export class HalRemote {
         } else if (res.status === 401 && allowRetry && this.refreshToken) {
           return this.refreshToken().flatMap(() => this.httpRequest(method, href, body, false));
         } else {
-          return Observable.throw(new Error(`Got ${res.status} from ${method.toUpperCase()} ${href}`));
+          return Observable.throw(new HalHttpError(res.status, `Got ${res.status} from ${method.toUpperCase()} ${href}`));
         }
       });
   }
