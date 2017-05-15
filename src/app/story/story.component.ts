@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 
 import { CmsService, ModalService, ToastrService } from '../core';
 import { StoryModel } from '../shared';
+import { Env } from '../core/core.env';
 
 @Component({
   selector: 'publish-story',
@@ -101,7 +102,7 @@ export class StoryComponent implements OnInit {
     } else if (this.story) {
       this.story.loadRelated('distributions').subscribe(() => {
         this.distPodcast = this.story.distributions.some(d => d.kind === 'episode');
-        this.distDownloads = this.distPodcast;
+        this.distDownloads = (this.distPodcast && Env.CASTLE_HOST) ? true : false;
         if (this.distPodcast) {
           this.story.distributions.find(d => d.kind === 'episode').loadRelated('episode');
         }

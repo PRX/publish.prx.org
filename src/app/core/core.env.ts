@@ -10,12 +10,11 @@ const DEFAULTS = {
   AUTH_HOST: 'id.prx.org',
   AUTH_CLIENT_ID: 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D',
   BUCKET_FOLDER: 'dev',
-  PLAY_HOST: 'play.prx.org',
-  CASTLE_HOST: 'localhost:4000'
+  PLAY_HOST: 'play.prx.org'
 };
 
 const addScheme = (name: string, value: any): any => {
-  if (name.match(/_HOST$/) && !value.startsWith('http')) {
+  if (name.match(/_HOST$/) && value && !value.startsWith('http')) {
     let scheme = value.match(/.*\.prxu?\.(?:org|tech)$/) ? 'https' : 'http';
     return `${scheme}://${value}`;
   } else {
