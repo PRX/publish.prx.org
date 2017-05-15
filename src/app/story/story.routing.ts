@@ -5,6 +5,7 @@ import { AuthGuard, DeactivateGuard } from '../shared';
 import { StoryComponent } from './story.component';
 import { StoryHeroComponent } from './directives/hero.component';
 import { BasicComponent } from './directives/basic.component';
+import { MetricsDownloadsComponent } from './directives/metrics-downloads.component';
 import { PodcastComponent } from './directives/podcast.component';
 import { PlayerComponent } from './directives/player.component';
 import { StoryStatusComponent } from './directives/status.component';
@@ -12,7 +13,8 @@ import { StoryStatusComponent } from './directives/status.component';
 const storyChildRoutes = [
   { path: '',        component: BasicComponent },
   { path: 'podcast', component: PodcastComponent },
-  { path: 'player',  component: PlayerComponent }
+  { path: 'player',  component: PlayerComponent },
+  { path: 'downloads',  component: MetricsDownloadsComponent }
 ];
 
 export const storyRoutes: Routes = [
@@ -43,6 +45,7 @@ export const storyComponents: any[] = [
   StoryComponent,
   StoryHeroComponent,
   BasicComponent,
+  MetricsDownloadsComponent,
   PodcastComponent,
   PlayerComponent,
   StoryStatusComponent

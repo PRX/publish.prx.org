@@ -68,3 +68,5 @@ declare namespace AV {
     stop();
   }
 }
+
+declare var require: any;

@@ -20,7 +20,7 @@ describe('StoryHeroComponent', () => {
     if (!button) {
       fail(`Could not find button with text: ${text}`);
     } else {
-      let isDisabled = button.nativeElement.getAttribute('disabled');
+      let isDisabled = button.nativeElement.disabled;
       let ngDisabled = button.nativeElement.getAttribute('ng-reflect-disabled');
       isDisabled = isDisabled || ngDisabled;
       if (shouldBeDisabled && isDisabled === null) {

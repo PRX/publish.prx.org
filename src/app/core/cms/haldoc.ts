@@ -157,7 +157,7 @@ export class HalDoc {
     if (!params && this['_embedded'] && this['_embedded'][rel]) {
       return <HalObservable<HalDoc[]>> this.embedList(rel);
     } else if (this['_links'] && this['_links'][rel]) {
-      return <HalObservable<HalDoc[]>> this.linkList(rel);
+      return <HalObservable<HalDoc[]>> this.linkList(rel, params);
     } else {
       return <HalObservable<HalDoc[]>> this.error(`Unable to find rel ${rel}`);
     }
