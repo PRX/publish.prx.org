@@ -1,6 +1,7 @@
 FROM mhart/alpine-node:6.9.2
 
 MAINTAINER PRX <sysadmin@prx.org>
+LABEL org.prx.app="yes"
 
 ENV TINI_VERSION v0.9.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static /tini
