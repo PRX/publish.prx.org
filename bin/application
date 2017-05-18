@@ -15,11 +15,13 @@ ApplicationParseOpts () {
 }
 
 UpdateEnvironment () {
-  IFS=$'\n'
-  for item in `aws-secrets-get`; do
-    export "$item"
-  done
-  unset IFS
+  if [ -z "$LOCAL_ENV" ]; then
+    IFS=$'\n'
+    for item in `aws-secrets-get`; do
+      export "$item"
+    done
+    unset IFS
+  fi
 }
 
 ApplicationRun () {
