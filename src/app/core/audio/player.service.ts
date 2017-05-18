@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AudioPlayback, AuroraPlayback, NativePlayback, PlaybackMetadata,
   UnsupportedFileError } from './playback';
-import { AudioValidation, AuroraValidation, ValidationMetadata } from './validation';
+import { AudioValidation, AuroraValidation, NativeValidation, ValidationMetadata } from './validation';
 
 @Injectable()
 export class PlayerService {
@@ -35,7 +35,9 @@ export class PlayerService {
   }
 
   checkFile(file: File): Observable<ValidationMetadata> {
-    return this.auroraValidation(file).validate();
+    return this.auroraValidation(file)
+      .validate()
+      .timeoutWith(500, this.nativeValidation(file).validate());
   }
 
   private nativePlayback(fileOrUrl: File | string): AudioPlayback {
@@ -44,6 +46,10 @@ export class PlayerService {
 
   private auroraPlayback(fileOrUrl: File | string): AudioPlayback {
     return this.playback = new AuroraPlayback(fileOrUrl);
+  }
+
+  private nativeValidation(fileOrUrl: File | string): AudioValidation {
+    return new NativeValidation(fileOrUrl);
   }
 
   private auroraValidation(fileOrUrl: File | string): AudioValidation {
