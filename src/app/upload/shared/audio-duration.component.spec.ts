@@ -16,6 +16,13 @@ describe('AudioDurationComponent', () => {
     expect(el).not.toContainText('987');
   });
 
+  cit('shows 0 durations', (fix, el, comp) => {
+    comp.file = {duration: 0, size: 987};
+    fix.detectChanges();
+    expect(el).toContainText('0');
+    expect(el).not.toContainText('987');
+  });
+
   cit('shows filesize', (fix, el, comp) => {
     comp.file = {duration: null, size: 987};
     fix.detectChanges();
