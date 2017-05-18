@@ -23,6 +23,18 @@ describe('AudioInputComponent', () => {
     return version;
   };
 
+  let durationSpy;
+  const setDuration = (comp, milliseconds) => {
+    if (!durationSpy) {
+      comp.version = makeVersion();
+      durationSpy = spyOn(comp.player, 'checkFile');
+    }
+    let data = {format: 'fm', duration: milliseconds, bitrate: 'br', frequency: 'fr'};
+    durationSpy.and.returnValue(Observable.of(data));
+    comp.addFile(<any> 'some-file');
+    return comp.version.file.duration;
+  };
+
   cit('checks uploaded files', (fix, el, comp) => {
     spyOn(comp.player, 'checkFile').and.returnValue({subscribe: () => null});
     comp.addFile(<any> 'some-file');
@@ -45,6 +57,15 @@ describe('AudioInputComponent', () => {
     expect(comp.version.file.duration).toEqual(6);
     expect(comp.version.file.bitrate).toEqual('br');
     expect(comp.version.file.frequency).toEqual('fr');
+  });
+
+  cit('rounds durations', (fix, el, comp) => {
+    expect(setDuration(comp, null)).toBeNull();
+    expect(setDuration(comp, undefined)).toBeNull();
+    expect(setDuration(comp, 0)).toEqual(0);
+    expect(setDuration(comp, 123)).toEqual(1);
+    expect(setDuration(comp, 1200)).toEqual(1);
+    expect(setDuration(comp, 1800)).toEqual(2);
   });
 
   cit('uploads single', (fix, el, comp) => {

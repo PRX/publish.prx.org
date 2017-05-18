@@ -66,6 +66,7 @@ describe('AudioInvalid', () => {
       let invalid = FILE_TEMPLATED();
       expect(invalid('', {})).toMatch('not an audio file');
       expect(invalid('', {duration: null})).toMatch('not an audio file');
+      expect(invalid('', {duration: 0})).toBeNull();
       expect(invalid('', {duration: 1})).toBeNull();
     });
 

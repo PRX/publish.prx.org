@@ -62,7 +62,7 @@ export const FILE_TEMPLATED = (template?: HalDoc): BaseInvalid => {
     if (file.format && file.format !== 'mp3') {
       return 'not an mp3 file';
     }
-    if (!file.duration) {
+    if (file.duration === null || file.duration === undefined) {
       return 'not an audio file';
     }
 
