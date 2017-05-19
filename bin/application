@@ -18,7 +18,8 @@ UpdateEnvironment () {
   if [ -z "$LOCAL_ENV" ]; then
     IFS=$'\n'
     for item in `aws-secrets-get`; do
-      export "$item"
+      clean=`echo $item | sed 's/="\(.*\)"$/=\1/'`
+      export "$clean"
     done
     unset IFS
   fi
