@@ -2,6 +2,8 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
 
+import { HeaderModule } from 'ngx-prx-styleguide';
+
 import { AppComponent } from './app.component';
 import { routing, routingProviders, routingComponents } from './app.routing';
 
@@ -21,6 +23,7 @@ import { SearchModule } from './search';
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
     BrowserModule,
     CoreModule,
+    HeaderModule,
     SeriesModule,
     SharedModule,
     StoryModule,

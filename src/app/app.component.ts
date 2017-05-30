@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
-import { AuthService, CmsService } from './core';
+import { AuthService, CmsService, HalDoc } from './core';
 
 @Component({
   selector: 'publish-root',
@@ -10,6 +10,8 @@ import { AuthService, CmsService } from './core';
 export class AppComponent {
 
   loggedIn = true; // until proven otherwise
+  userName: string;
+  userImageDoc: HalDoc;
 
   constructor(authService: AuthService, cmsService: CmsService,
               angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
@@ -24,6 +26,11 @@ export class AppComponent {
         });
       }
       this.loggedIn = token ? true : false;
+    });
+
+    cmsService.individualAccount.subscribe(doc => {
+      this.userImageDoc = doc;
+      this.userName = doc['name'];
     });
   }
 
