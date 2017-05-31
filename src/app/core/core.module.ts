@@ -4,7 +4,6 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import { PlayerService } from './audio';
-import { AuthComponent, AuthService } from './auth';
 import { CastleService, CmsService } from './cms';
 import { FooterComponent } from './footer';
 import { HeaderComponent, NavItemComponent, NavUserComponent } from './header';
@@ -14,7 +13,6 @@ import { ToastrComponent, ToastrService } from './toastr';
 
 @NgModule({
   declarations: [
-    AuthComponent,
     FooterComponent,
     HeaderComponent,
     NavItemComponent,
@@ -28,7 +26,6 @@ import { ToastrComponent, ToastrService } from './toastr';
     RouterModule
   ],
   exports: [
-    AuthComponent,
     FooterComponent,
     HeaderComponent,
     NavItemComponent,
@@ -37,7 +34,6 @@ import { ToastrComponent, ToastrService } from './toastr';
     ToastrComponent
   ],
   providers: [
-    AuthService,
     CastleService,
     CmsService,
     MimeTypeService,

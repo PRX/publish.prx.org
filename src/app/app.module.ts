@@ -1,6 +1,8 @@
 import { NgModule, ErrorHandler } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
+import { AuthModule, AuthService } from 'ngx-prx-styleguide';
 
 import { AppComponent } from './app.component';
 import { routing, routingProviders, routingComponents } from './app.routing';
@@ -19,8 +21,10 @@ import { SearchModule } from './search';
   ],
   imports: [
     Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
+    CommonModule,
     BrowserModule,
     CoreModule,
+    AuthModule,
     SeriesModule,
     SharedModule,
     StoryModule,
@@ -29,7 +33,8 @@ import { SearchModule } from './search';
   ],
   providers: [
     {provide: ErrorHandler, useClass: ErrorService},
-    routingProviders
+    routingProviders,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })
