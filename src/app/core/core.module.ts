@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { PlayerService } from './audio';
 import { CastleService, CmsService } from './cms';
 import { FooterComponent } from './footer';
-import { HeaderComponent, NavItemComponent, NavUserComponent } from './header';
 import { ModalComponent, ModalService } from './modal';
 import { MimeTypeService, UploadService } from './upload';
 import { ToastrComponent, ToastrService } from './toastr';
@@ -14,9 +13,6 @@ import { ToastrComponent, ToastrService } from './toastr';
 @NgModule({
   declarations: [
     FooterComponent,
-    HeaderComponent,
-    NavItemComponent,
-    NavUserComponent,
     ModalComponent,
     ToastrComponent
   ],
@@ -27,9 +23,6 @@ import { ToastrComponent, ToastrService } from './toastr';
   ],
   exports: [
     FooterComponent,
-    HeaderComponent,
-    NavItemComponent,
-    NavUserComponent,
     ModalComponent,
     ToastrComponent
   ],

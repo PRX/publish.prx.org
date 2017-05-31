@@ -1,13 +1,13 @@
 <prx-auth [host]="authHost" [client]="authClient"></prx-auth>
-<publish-header>
-  <publish-navitem *ngIf="loggedIn" route="/" text="Home"></publish-navitem>
-  <publish-navitem *ngIf="loggedIn" route="/series/new" text="New Series"></publish-navitem>
-  <publish-navitem *ngIf="loggedIn" route="/search" text="Search"></publish-navitem>
-  <publish-navuser *ngIf="loggedIn" #nav>
+<prx-header>
+  <prx-navitem *ngIf="loggedIn" route="/" text="Home"></prx-navitem>
+  <prx-navitem *ngIf="loggedIn" route="/series/new" text="New Series"></prx-navitem>
+  <prx-navitem *ngIf="loggedIn" route="/search" text="Search"></prx-navitem>
+  <prx-navuser *ngIf="loggedIn" [userName]="userName">
     <publish-spinner class="user-loading" inverse=true></publish-spinner>
-    <publish-image *ngIf="nav.userImageDoc" class="user-loaded" [imageDoc]="nav.userImageDoc"></publish-image>
-  </publish-navuser>
-</publish-header>
+    <publish-image *ngIf="userImageDoc" class="user-loaded" [imageDoc]="userImageDoc"></publish-image>
+  </prx-navuser>
+</prx-header>
 <main>
   <article>
     <router-outlet></router-outlet>

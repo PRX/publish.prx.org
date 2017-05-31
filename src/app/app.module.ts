@@ -2,7 +2,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
-import { AuthModule, AuthService } from 'ngx-prx-styleguide';
+import { AuthModule, AuthService, HeaderModule } from 'ngx-prx-styleguide';
 
 import { AppComponent } from './app.component';
 import { routing, routingProviders, routingComponents } from './app.routing';
@@ -25,6 +25,7 @@ import { SearchModule } from './search';
     BrowserModule,
     CoreModule,
     AuthModule,
+    HeaderModule,
     SeriesModule,
     SharedModule,
     StoryModule,

@@ -17,7 +17,8 @@ describe('AppComponent', () => {
   provide(AuthService, {token: authToken});
   provide(CmsService, {
     setToken: token => cmsToken = token,
-    account: new Subject<any>()
+    account: new Subject<any>(),
+    individualAccount: new Subject<any>()
   });
   provide(ModalService, {state: new Subject<boolean>()});
   provide(Angulartics2, {
@@ -35,19 +36,19 @@ describe('AppComponent', () => {
   cit('only shows header links when logged in', (fix, el, comp) => {
     comp.loggedIn = true;
     fix.detectChanges();
-    expect(el.queryAll(By.css('publish-navitem')).length).toEqual(3);
+    expect(el.queryAll(By.css('prx-navitem')).length).toEqual(3);
     comp.loggedIn = false;
     fix.detectChanges();
-    expect(el).not.toQuery('publish-navitem');
+    expect(el).not.toQuery('prx-navitem');
   });
 
   cit('shows user info when logged in', (fix, el, comp) => {
     comp.loggedIn = true;
     fix.detectChanges();
-    expect(el).toQuery('publish-navuser');
+    expect(el).toQuery('prx-navuser');
     comp.loggedIn = false;
     fix.detectChanges();
-    expect(el).not.toQuery('publish-navuser');
+    expect(el).not.toQuery('prx-navuser');
   });
 
   cit('ties together auth and cms', (fix, el, comp) => {

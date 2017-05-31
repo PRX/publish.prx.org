@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
 import { AuthService } from 'ngx-prx-styleguide';
-import { CmsService } from './core';
+import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
 
 @Component({
@@ -15,6 +15,8 @@ export class AppComponent {
   authClient = Env.AUTH_CLIENT_ID;
 
   loggedIn = true; // until proven otherwise
+  userName: string;
+  userImageDoc: HalDoc;
 
   constructor(authService: AuthService, cmsService: CmsService,
               angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
@@ -29,6 +31,11 @@ export class AppComponent {
         });
       }
       this.loggedIn = token ? true : false;
+    });
+
+    cmsService.individualAccount.subscribe(doc => {
+      this.userImageDoc = doc;
+      this.userName = doc['name'];
     });
   }
 
