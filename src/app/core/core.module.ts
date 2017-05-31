@@ -7,7 +7,6 @@ import { PlayerService } from './audio';
 import { AuthComponent, AuthService } from './auth';
 import { CastleService, CmsService } from './cms';
 import { FooterComponent } from './footer';
-import { HeaderComponent, NavItemComponent, NavUserComponent } from './header';
 import { ModalComponent, ModalService } from './modal';
 import { MimeTypeService, UploadService } from './upload';
 import { ToastrComponent, ToastrService } from './toastr';
@@ -16,9 +15,6 @@ import { ToastrComponent, ToastrService } from './toastr';
   declarations: [
     AuthComponent,
     FooterComponent,
-    HeaderComponent,
-    NavItemComponent,
-    NavUserComponent,
     ModalComponent,
     ToastrComponent
   ],
@@ -30,9 +26,6 @@ import { ToastrComponent, ToastrService } from './toastr';
   exports: [
     AuthComponent,
     FooterComponent,
-    HeaderComponent,
-    NavItemComponent,
-    NavUserComponent,
     ModalComponent,
     ToastrComponent
   ],
