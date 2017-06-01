@@ -3,7 +3,7 @@ import { Angulartics2, Angulartics2GoogleAnalytics } from 'angulartics2';
 import { cit, create, provide, By } from '../testing';
 import { AppComponent } from './app.component';
 
-import { AuthService } from './core/auth/auth.service';
+import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService } from './core/cms/cms.service';
 import { ModalService } from './core/modal/modal.service';
 

@@ -1,3 +1,4 @@
+<prx-auth [host]="authHost" [client]="authClient"></prx-auth>
 <prx-header>
   <prx-navitem *ngIf="loggedIn" route="/" text="Home"></prx-navitem>
   <prx-navitem *ngIf="loggedIn" route="/series/new" text="New Series"></prx-navitem>
@@ -13,6 +14,5 @@
   </article>
 </main>
 <publish-footer></publish-footer>
-<publish-auth></publish-auth>
 <publish-modal></publish-modal>
 <publish-toastr></publish-toastr>

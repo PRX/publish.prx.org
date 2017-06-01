@@ -20,8 +20,3 @@ p {
 p.error {
   background: rgba(255, 0, 0, 0.2);
 }
-iframe {
-  width: 100%;
-  display: block;
-  height: 170px;
-}
