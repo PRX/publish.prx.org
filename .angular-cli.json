@@ -22,7 +22,8 @@
         "../node_modules/pikaday/css/pikaday.css",
         "../node_modules/pikaday/css/triangle.css",
         "../node_modules/c3/c3.css",
-        "styles.css"
+        "styles.css",
+        "../node_modules/ngx-prx-styleguide/styles.css"
       ],
       "scripts": [
         "assets/aurora/aurora.js",

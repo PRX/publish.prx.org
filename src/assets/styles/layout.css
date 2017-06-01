@@ -21,19 +21,6 @@ article .asides aside > section {
   background: #f59f51;
   color: #fff;
 }
-main {
-  display: block;/* IE 11 gives auto/no height to main */
-  min-height: 200px;
-  background: #f0f0f0;
-  padding-top: 50px;
-  position: relative;
-}
-@media screen and (min-width: 768px) {
-  main {
-    min-height: 400px;
-    padding-top: 73px;
-  }
-}
 h1,
 h2,
 h3 {
