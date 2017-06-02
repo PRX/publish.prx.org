@@ -3,10 +3,10 @@ import { HalBaseService } from 'ngx-prx-styleguide';
 import { Env } from '../core.env';
 
 @Injectable()
-export class CastleService extends HalBaseService {
+export class FeederService extends HalBaseService {
 
   get host(): string {
-    return Env.CASTLE_HOST;
+    return 'feeder.prx.org'; // TODO
   }
 
   get path(): string {
