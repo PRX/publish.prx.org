@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { HalModule } from 'ngx-prx-styleguide';
 
 import { PlayerService } from './audio';
-import { CastleService, CmsService, FeederService } from './cms';
+import { CastleService, CmsService, FeederService } from './hal';
 import { FooterComponent } from './footer';
 import { ModalComponent, ModalService } from './modal';
 import { MimeTypeService, UploadService } from './upload';

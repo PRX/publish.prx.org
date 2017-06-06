@@ -4,7 +4,7 @@ import { cit, create, provide, By } from '../testing';
 import { AppComponent } from './app.component';
 
 import { AuthService } from 'ngx-prx-styleguide';
-import { CmsService } from './core/cms/cms.service';
+import { CmsService } from './core/hal/cms.service';
 import { ModalService } from './core/modal/modal.service';
 
 let authToken = new Subject<string>();

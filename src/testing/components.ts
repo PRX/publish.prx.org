@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 
-import { CastleService, CmsService, FeederService } from '../app/core/cms/';
+import { CastleService, CmsService, FeederService } from '../app/core/hal/';
 import { StubRouterLinkDirective } from './stub.routerlink.directive';
 
 type ComponentTestCallback = (
