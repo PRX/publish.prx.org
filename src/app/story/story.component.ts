@@ -73,6 +73,7 @@ export class StoryComponent implements OnInit {
             this.toastr.error('No episode found. Redirecting to new episode page');
             console.error(`Story with id ${this.id} not found`);
             setTimeout(() => this.router.navigate(['/story', 'new']), 3000);
+          } else {
             throw(err);
           }
         }
