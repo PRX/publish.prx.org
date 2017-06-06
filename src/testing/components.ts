@@ -1,9 +1,9 @@
 import { Component, Type, DebugElement, NO_ERRORS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { HalService, MockHalService } from 'ngx-prx-styleguide';
 
-import { CastleService, CmsService } from '../app/core/cms/';
-import { MockCmsService } from './mock.cms.service';
+import { CastleService, CmsService, FeederService } from '../app/core/cms/';
 import { StubRouterLinkDirective } from './stub.routerlink.directive';
 
 type ComponentTestCallback = (
@@ -36,18 +36,23 @@ export function cit(desc: string, testFn: ComponentTestCallback) {
 }
 
 // cms mocked in all component tests
-let mockCms: MockCmsService;
-export function currentCms() {
-  return mockCms;
+let mockHal: MockHalService;
+export function currentHal() {
+  return mockHal;
 }
 
 // create a component
 export function create(componentType: Type<any>, runInitialDetect = true) {
-  mockCms = new MockCmsService();
+  mockHal = new MockHalService();
   beforeEach(function() {
     this._publishComponent    = componentType;
     this._publishDeclarations = [componentType, StubRouterLinkDirective];
-    this._publishProviders    = [{provide: CmsService, useValue: mockCms}, {provide: CastleService, useValue: mockCms}];
+    this._publishProviders    = [
+      {provide: HalService, useValue: mockHal},
+      CastleService,
+      CmsService,
+      FeederService
+    ];
     this._publishInitDetect   = runInitialDetect;
   });
 }
