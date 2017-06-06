@@ -8,6 +8,13 @@ import { ModalService, ToastrService } from '../core';
 let router = new RouterStub();
 let activatedRoute = new ActivatedRouteStub();
 
+class MockHalHttpError extends Error {
+  name = 'HalHttpError';
+  constructor(public status: number, msg: string) {
+    super(msg);
+  }
+}
+
 describe('StoryComponent', () => {
 
   create(StoryComponent, false);
@@ -20,7 +27,9 @@ describe('StoryComponent', () => {
     confirm: (p) => modalAlertTitle = p
   });
   beforeEach(() => modalAlertTitle = null);
-  provide(ToastrService, {success: () => {}});
+
+  let toastErrorMsg: any;
+  provide(ToastrService, { success: () => {}, error: (msg) => toastErrorMsg = msg });
 
   let auth, series, story;
   beforeEach(() => {
@@ -38,6 +47,13 @@ describe('StoryComponent', () => {
     expect(comp.id).toEqual(1234);
     expect(comp.seriesId).toBeFalsy();
     expect(comp.story.title).toEqual('ExistingStoryTitle');
+  });
+
+  cit('pops error if story does not exist', (fix, el, comp) => {
+    auth.mockError('prx:story', new MockHalHttpError(404, 'Story does not exist.'));
+    comp.id = 100;
+    comp.loadStory();
+    expect(toastErrorMsg).toEqual('No episode found. Redirecting to new episode page');
   });
 
   cit('renders a new story in a series', (fix, el, comp) => {

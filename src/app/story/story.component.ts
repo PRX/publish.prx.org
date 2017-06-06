@@ -60,13 +60,24 @@ export class StoryComponent implements OnInit {
 
   loadStory() {
     if (this.id) {
-      this.cms.auth.follow('prx:story', {id: this.id}).subscribe(story => {
-        if (story.has('prx:series')) {
-          story.follow('prx:series').subscribe(series => this.setStory(series, story));
-        } else {
-          this.setStory(null, story);
+      this.cms.auth.follow('prx:story', {id: this.id}).subscribe(
+        story => {
+          if (story.has('prx:series')) {
+            story.follow('prx:series').subscribe(series => this.setStory(series, story));
+          } else {
+            this.setStory(null, story);
+          }
+        },
+        err => {
+          if (err.status === 404 && err.name === 'HalHttpError') {
+            this.toastr.error('No episode found. Redirecting to new episode page');
+            console.error(`Story with id ${this.id} not found`);
+            setTimeout(() => this.router.navigate(['/story', 'new']), 3000);
+          } else {
+            throw(err);
+          }
         }
-      });
+      );
     } else if (this.seriesId) {
       this.cms.auth.follow('prx:series', {id: this.seriesId}).subscribe(s => this.setStory(s, null));
     } else {
