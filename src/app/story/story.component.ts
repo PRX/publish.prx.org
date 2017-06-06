@@ -71,7 +71,9 @@ export class StoryComponent implements OnInit {
         err => {
           if (err.status === 404 && err.name === 'HalHttpError') {
             this.toastr.error('No episode found. Redirecting to new episode page');
+            console.error(`Story with id ${this.id} not found`);
             setTimeout(() => this.router.navigate(['/story', 'new']), 3000);
+            throw(err);
           }
         }
       );

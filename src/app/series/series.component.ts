@@ -48,6 +48,7 @@ export class SeriesComponent implements OnInit {
             this.toastr.error('No series found. Redirecting to new series page');
             console.error(`Series with id ${this.id} not found`);
             setTimeout(() => this.router.navigate(['/series', 'new']), 3000);
+            throw(err);
           }
         }
       );
