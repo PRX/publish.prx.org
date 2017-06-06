@@ -1,5 +1,4 @@
 import { cit, create, cms, provide, stubPipe, By } from '../../testing';
-import { MockHalHttpError } from '../../testing/mock.haldoc';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -8,6 +7,13 @@ import { SeriesComponent } from './series.component';
 
 let activatedRoute = new ActivatedRouteStub();
 let router = new RouterStub();
+
+class MockHalHttpError extends Error {
+  name = 'HalHttpError';
+  constructor(public status: number, msg: string) {
+    super(msg);
+  }
+}
 
 describe('SeriesComponent', () => {
 
@@ -40,9 +46,7 @@ describe('SeriesComponent', () => {
   });
 
   cit('pops error if series does not exist', (fix, el, comp) => {
-    spyOn(auth, 'follow').and.callFake((params: any) => {
-      return Observable.throw(new MockHalHttpError(404, 'Series does not exist.'));
-    });
+    auth.mockError('prx:series', new MockHalHttpError(404, 'Series does not exist.'));
     comp.id = 100;
     comp.loadSeries();
     expect(toastErrorMsg).toEqual('No series found. Redirecting to new series page');

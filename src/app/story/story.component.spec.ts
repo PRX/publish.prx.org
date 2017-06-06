@@ -1,5 +1,4 @@
 import { cit, create, provide, cms, By } from '../../testing';
-import { MockHalHttpError } from '../../testing/mock.haldoc';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -8,6 +7,13 @@ import { ModalService, ToastrService } from '../core';
 
 let router = new RouterStub();
 let activatedRoute = new ActivatedRouteStub();
+
+class MockHalHttpError extends Error {
+  name = 'HalHttpError';
+  constructor(public status: number, msg: string) {
+    super(msg);
+  }
+}
 
 describe('StoryComponent', () => {
 
@@ -44,9 +50,7 @@ describe('StoryComponent', () => {
   });
 
   cit('pops error if story does not exist', (fix, el, comp) => {
-    spyOn(auth, 'follow').and.callFake((params: any) => {
-      return Observable.throw(new MockHalHttpError(404, 'Story does not exist.'));
-    });
+    auth.mockError('prx:story', new MockHalHttpError(404, 'Story does not exist.'));
     comp.id = 100;
     comp.loadStory();
     expect(toastErrorMsg).toEqual('No episode found. Redirecting to new episode page');
