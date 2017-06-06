@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { HalDoc, HalObservable, HalRemote } from '../app/core/cms';
+import { HalDoc, HalObservable, HalRemote, HalHttpError } from '../app/core/cms';
 
 /*
  * Mock version of a haldoc
@@ -158,4 +158,11 @@ export class MockHalDoc extends HalDoc {
     return this.remote.expand(link, params);
   }
 
+}
+
+export class MockHalHttpError extends Error {
+  name = 'HalHttpError';
+  constructor(public status: number, msg: string) {
+    super(msg);
+  }
 }

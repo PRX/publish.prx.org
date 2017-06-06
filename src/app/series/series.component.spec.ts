@@ -1,4 +1,5 @@
 import { cit, create, cms, provide, stubPipe, By } from '../../testing';
+import { MockHalHttpError } from '../../testing/mock.haldoc';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -20,7 +21,8 @@ describe('SeriesComponent', () => {
     alert: (a) => modalAlertTitle = a,
     confirm: (p) => modalAlertTitle = p
   });
-  provide(ToastrService, {success: () => {}});
+  let mockToastr = { success: () => {}, error: () => {} };
+  provide(ToastrService, mockToastr);
 
   let auth;
   beforeEach(() => {
@@ -34,6 +36,21 @@ describe('SeriesComponent', () => {
     fix.detectChanges();
     expect(el).toContainText('my series title');
     expect(comp.series.id).toEqual(99);
+  });
+
+  cit('redirects if series ID does not exist', (fix, el, comp) => {
+    spyOn(auth, 'follow').and.callFake((params: any) => {
+      return Observable.throw(new MockHalHttpError(404, 'Series does not exist.'));
+    });
+    spyOn(router, 'navigate').and.stub();
+    spyOn(mockToastr, 'error').and.stub();
+    auth.follow().subscribe((s) => fail('shouldnt have gotten'), (e) => console.log(e));
+
+    activatedRoute.testParams = {id: '100'};
+    // expect(auth.follow).toThrow('Series does not exist.');
+    comp.loadSeries();
+    expect(router.navigate).toHaveBeenCalled();
+    expect(mockToastr.error).toHaveBeenCalled();
   });
 
   cit('defaults new series to the default account', (fix, el, comp) => {
