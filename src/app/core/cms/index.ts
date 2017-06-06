@@ -4,4 +4,4 @@ export { HalDoc } from './haldoc';
 export { HalLink } from './hallink';
 export { HalObservable } from './halobservable';
 export { HalRemoteCache } from './halremote.cache';
-export { HalRemote } from './halremote';
+export { HalRemote, HalHttpError } from './halremote';
