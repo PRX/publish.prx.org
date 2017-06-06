@@ -21,8 +21,9 @@ describe('SeriesComponent', () => {
     alert: (a) => modalAlertTitle = a,
     confirm: (p) => modalAlertTitle = p
   });
-  let mockToastr = { success: () => {}, error: () => {} };
-  provide(ToastrService, mockToastr);
+
+  let toastErrorMsg: any;
+  provide(ToastrService, { success: () => {}, error: (msg) => toastErrorMsg = msg });
 
   let auth;
   beforeEach(() => {
@@ -38,16 +39,13 @@ describe('SeriesComponent', () => {
     expect(comp.series.id).toEqual(99);
   });
 
-  cit('redirects if series ID does not exist', (fix, el, comp) => {
+  cit('pops error if series does not exist', (fix, el, comp) => {
     spyOn(auth, 'follow').and.callFake((params: any) => {
       return Observable.throw(new MockHalHttpError(404, 'Series does not exist.'));
     });
-    spyOn(router, 'navigate').and.stub();
-    spyOn(mockToastr, 'error').and.stub();
     comp.id = 100;
     comp.loadSeries();
-    expect(router.navigate).toHaveBeenCalled();
-    expect(mockToastr.error).toHaveBeenCalled();
+    expect(toastErrorMsg).toEqual('No series found. Redirecting to new series page');
   });
 
   cit('defaults new series to the default account', (fix, el, comp) => {

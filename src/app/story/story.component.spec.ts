@@ -1,4 +1,5 @@
 import { cit, create, provide, cms, By } from '../../testing';
+import { MockHalHttpError } from '../../testing/mock.haldoc';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -20,7 +21,9 @@ describe('StoryComponent', () => {
     confirm: (p) => modalAlertTitle = p
   });
   beforeEach(() => modalAlertTitle = null);
-  provide(ToastrService, {success: () => {}});
+
+  let toastErrorMsg: any;
+  provide(ToastrService, { success: () => {}, error: (msg) => toastErrorMsg = msg });
 
   let auth, series, story;
   beforeEach(() => {
@@ -38,6 +41,15 @@ describe('StoryComponent', () => {
     expect(comp.id).toEqual(1234);
     expect(comp.seriesId).toBeFalsy();
     expect(comp.story.title).toEqual('ExistingStoryTitle');
+  });
+
+  cit('pops error if story does not exist', (fix, el, comp) => {
+    spyOn(auth, 'follow').and.callFake((params: any) => {
+      return Observable.throw(new MockHalHttpError(404, 'Story does not exist.'));
+    });
+    comp.id = 100;
+    comp.loadStory();
+    expect(toastErrorMsg).toEqual('No episode found. Redirecting to new episode page');
   });
 
   cit('renders a new story in a series', (fix, el, comp) => {

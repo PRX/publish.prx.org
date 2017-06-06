@@ -47,7 +47,7 @@ export class SeriesComponent implements OnInit {
           if (err.status === 404 && err.name === 'HalHttpError') {
             this.toastr.error('No series found. Redirecting to new series page');
             console.error(`Series with id ${this.id} not found`);
-            window.setTimeout(() => this.router.navigate(['/series', 'new']), 3000);
+            setTimeout(() => this.router.navigate(['/series', 'new']), 3000);
           }
         }
       );
