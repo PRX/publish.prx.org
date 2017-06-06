@@ -44,10 +44,7 @@ describe('SeriesComponent', () => {
     });
     spyOn(router, 'navigate').and.stub();
     spyOn(mockToastr, 'error').and.stub();
-    auth.follow().subscribe((s) => fail('shouldnt have gotten'), (e) => console.log(e));
-
-    activatedRoute.testParams = {id: '100'};
-    // expect(auth.follow).toThrow('Series does not exist.');
+    comp.id = 100;
     comp.loadSeries();
     expect(router.navigate).toHaveBeenCalled();
     expect(mockToastr.error).toHaveBeenCalled();
