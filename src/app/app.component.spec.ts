@@ -51,10 +51,4 @@ describe('AppComponent', () => {
     expect(el).not.toQuery('prx-navuser');
   });
 
-  cit('ties together auth and cms', (fix, el, comp) => {
-    expect(cmsToken).toBeNull();
-    authToken.next('something');
-    expect(cmsToken).toEqual('something');
-  });
-
 });
