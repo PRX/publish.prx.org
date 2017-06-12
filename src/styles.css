@@ -1,10 +1,8 @@
 /*
  * Global style manifest
  */
-@import '/assets/styles/reset.css';
-@import '/assets/styles/app.css';
+@import '/assets/styles/dragula.css';
 @import '/assets/styles/forms.css';
-@import '/assets/styles/layout.css';
 @import '/assets/styles/loading.css';
 @import '/assets/styles/pikaday-custom.css';
 @import '/assets/fontello/css/fontello.css';
