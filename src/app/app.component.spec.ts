@@ -4,7 +4,7 @@ import { cit, create, provide, By } from '../testing';
 import { AppComponent } from './app.component';
 
 import { AuthService } from 'ngx-prx-styleguide';
-import { CmsService } from './core/cms/cms.service';
+import { CmsService } from './core/hal/cms.service';
 import { ModalService } from './core/modal/modal.service';
 
 let authToken = new Subject<string>();
@@ -49,12 +49,6 @@ describe('AppComponent', () => {
     comp.loggedIn = false;
     fix.detectChanges();
     expect(el).not.toQuery('prx-navuser');
-  });
-
-  cit('ties together auth and cms', (fix, el, comp) => {
-    expect(cmsToken).toBeNull();
-    authToken.next('something');
-    expect(cmsToken).toEqual('something');
   });
 
 });

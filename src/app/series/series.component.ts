@@ -37,11 +37,22 @@ export class SeriesComponent implements OnInit {
 
   loadSeries() {
     if (this.id) {
-      this.cms.auth.follow('prx:series', {id: this.id}).subscribe(s => {
-        s.follow('prx:account').subscribe(a => {
-          this.setSeries(a, s);
-        });
-      });
+      this.cms.auth.follow('prx:series', {id: this.id}).subscribe(
+        s => {
+          s.follow('prx:account').subscribe(a => {
+            this.setSeries(a, s);
+          });
+        },
+        err => {
+          if (err.status === 404 && err.name === 'HalHttpError') {
+            this.toastr.error('No series found. Redirecting to new series page');
+            console.error(`Series with id ${this.id} not found`);
+            setTimeout(() => this.router.navigate(['/series', 'new']), 3000);
+          } else {
+            throw(err);
+          }
+        }
+      );
     } else {
       this.cms.defaultAccount.subscribe(a => this.setSeries(a, null));
     }

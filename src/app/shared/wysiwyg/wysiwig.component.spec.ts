@@ -1,5 +1,5 @@
 import { cit, create, By, stubPipe } from '../../../testing';
-import { MockHalDoc } from '../../../testing/mock.haldoc';
+import { MockHalDoc } from 'ngx-prx-styleguide';
 import { WysiwygComponent } from './wysiwyg.component';
 import { ProseMirrorFormatTypes } from './prosemirror.markdown.editor';
 import { StoryModel } from '../model/story.model';

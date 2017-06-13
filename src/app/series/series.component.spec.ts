@@ -8,6 +8,13 @@ import { SeriesComponent } from './series.component';
 let activatedRoute = new ActivatedRouteStub();
 let router = new RouterStub();
 
+class MockHalHttpError extends Error {
+  name = 'HalHttpError';
+  constructor(public status: number, msg: string) {
+    super(msg);
+  }
+}
+
 describe('SeriesComponent', () => {
 
   create(SeriesComponent, false);
@@ -20,7 +27,9 @@ describe('SeriesComponent', () => {
     alert: (a) => modalAlertTitle = a,
     confirm: (p) => modalAlertTitle = p
   });
-  provide(ToastrService, {success: () => {}});
+
+  let toastErrorMsg: any;
+  provide(ToastrService, { success: () => {}, error: (msg) => toastErrorMsg = msg });
 
   let auth;
   beforeEach(() => {
@@ -34,6 +43,13 @@ describe('SeriesComponent', () => {
     fix.detectChanges();
     expect(el).toContainText('my series title');
     expect(comp.series.id).toEqual(99);
+  });
+
+  cit('pops error if series does not exist', (fix, el, comp) => {
+    auth.mockError('prx:series', new MockHalHttpError(404, 'Series does not exist.'));
+    comp.id = 100;
+    comp.loadSeries();
+    expect(toastErrorMsg).toEqual('No series found. Redirecting to new series page');
   });
 
   cit('defaults new series to the default account', (fix, el, comp) => {
