@@ -53,11 +53,6 @@ p.error {
 input, textarea {
   width: 100%;
   padding: 10px 8px;
-  color: #939393;
-  background: #fff;
-}
-input:focus, textarea:focus {
-  color: #000;
 }
 input[type='checkbox'] {
   width: 20px;
@@ -68,18 +63,6 @@ textarea {
 select {
   width: 100%;
   max-width: 250px;
-  font-size: 16px;
-  border-color: #939393;
-  color: #343434;
-  background: #fff;
-}
-select:focus {
-  color: #000;
-}
-select[disabled] {
-  border-color: #bebebe;
-  color: #bebebe;
-  background: #efefef;
 }
 
 /**
