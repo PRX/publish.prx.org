@@ -18,25 +18,26 @@ export class AppComponent {
   userName: string;
   userImageDoc: HalDoc;
 
-  constructor(authService: AuthService, cmsService: CmsService,
-              angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
-    authService.token.subscribe((token) => {
-      if (token) {
-        let refresher: any;
-        cmsService.setToken(token, cb => {
-          if (!refresher) {
-            refresher = authService.refreshToken();
-          }
-          return refresher;
-        });
-      }
-      this.loggedIn = token ? true : false;
-    });
+  constructor(
+    private auth: AuthService,
+    private cms: CmsService,
+    private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
+  ) {
+    auth.token.subscribe(token => this.loadAccount(token));
+  }
 
-    cmsService.individualAccount.subscribe(doc => {
-      this.userImageDoc = doc;
-      this.userName = doc['name'];
-    });
+  loadAccount(token: string) {
+    if (token) {
+      this.loggedIn = true;
+      this.cms.individualAccount.subscribe(doc => {
+        this.userImageDoc = doc;
+        this.userName = doc['name'];
+      });
+    } else {
+      this.loggedIn = false;
+      this.userImageDoc = null;
+      this.userName = null;
+    }
   }
 
 }

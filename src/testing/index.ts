@@ -1,7 +1,7 @@
 /// <reference path="../../node_modules/@types/jasmine/index.d.ts"/>
 
-import { MockCmsService } from './mock.cms.service';
-import { currentCms } from './components';
+import { MockHalService } from 'ngx-prx-styleguide';
+import { currentHal } from './components';
 import { matchers } from './matchers';
 
 // custom jasmine matchers
@@ -13,7 +13,7 @@ export { findComponent, niceEl } from './helpers';
 export { By } from '@angular/platform-browser';
 
 // HACKY: export a getter to the current cms-mocks instance
-export const cms: MockCmsService = null;
+export const cms: MockHalService = null;
 Object.defineProperty(module.exports, 'cms', {
-  get: () => currentCms() || new MockCmsService()
+  get: () => currentHal() || new MockHalService()
 });

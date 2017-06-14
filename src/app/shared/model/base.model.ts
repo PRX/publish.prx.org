@@ -1,6 +1,7 @@
 import { Observable, ReplaySubject } from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseInvalid } from './invalid';
+import { BaseStorage } from './base.storage';
 
 interface ValidatorMap  { [key: string]: BaseInvalid[]; }
 interface RelatedMap    { [key: string]: Observable<any>; }
@@ -265,23 +266,22 @@ export abstract class BaseModel {
 
   store() {
     this.lastStored = new Date();
-    if (window && window.localStorage && this.key()) {
+    if (this.key()) {
       let changed = {};
       this.SETABLE.filter(f => this.changed(f)).forEach(f => changed[f] = this[f]);
       if (Object.keys(changed).length > 0) {
         changed['lastStored'] = this.lastStored;
-        window.localStorage.setItem(this.key(), JSON.stringify(changed));
+        BaseStorage.setItem(this.key(), changed);
       } else {
-        window.localStorage.removeItem(this.key());
+        BaseStorage.removeItem(this.key());
       }
     }
   }
 
   restore() {
-    if (window && window.localStorage && this.key()) {
-      let json = window.localStorage.getItem(this.key());
-      if (json) {
-        let data = JSON.parse(json);
+    if (this.key()) {
+      let data = BaseStorage.getItem(this.key());
+      if (data) {
         for (let key of Object.keys(data)) {
           if (this.SETABLE.indexOf(key) > -1) {
             this[key] = data[key];
@@ -295,14 +295,14 @@ export abstract class BaseModel {
   }
 
   unstore() {
-    if (window && window.localStorage && this.key()) {
-      window.localStorage.removeItem(this.key());
+    if (this.key()) {
+      BaseStorage.removeItem(this.key());
     }
   }
 
   isStored(): boolean {
-    if (window && window.localStorage && this.key()) {
-      return window.localStorage.getItem(this.key()) ? true : false;
+    if (this.key()) {
+      return BaseStorage.getItem(this.key()) ? true : false;
     } else {
       return false;
     }

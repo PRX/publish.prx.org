@@ -1,5 +1,5 @@
 import { cit, create, cms, stubPipe } from '../../../testing';
-import { MockHalDoc } from '../../../testing/mock.haldoc';
+import { MockHalDoc } from 'ngx-prx-styleguide';
 import { HomeSeriesComponent } from './home-series.component';
 
 
