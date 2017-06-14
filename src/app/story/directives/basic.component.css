@@ -13,7 +13,3 @@ publish-upload {
 publish-upload:last-child {
   margin-bottom: 0;
 }
-
-input[type=checkbox] {
-  vertical-align: middle;
-}

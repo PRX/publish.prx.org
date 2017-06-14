@@ -61,7 +61,6 @@ input:focus, textarea:focus {
 }
 input[type='checkbox'] {
   width: 20px;
-  vertical-align: middle;
 }
 textarea {
   height: 100px;
