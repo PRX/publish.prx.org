@@ -4,7 +4,7 @@ import { SearchSeries } from '../search-series.model';
 
 @Component({
   selector: 'publish-search-series',
-  styleUrls: ['search-series-form.component.css'],
+  styleUrls: ['search-form.component.css'],
   template: `
   <form>
     <div class="form-group">

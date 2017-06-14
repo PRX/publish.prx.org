@@ -4,7 +4,7 @@ import { SearchStory } from '../search-story.model';
 
 @Component({
   selector: 'publish-search-story-form',
-  styleUrls: ['search-story-form.component.css'],
+  styleUrls: ['search-form.component.css'],
   template: `
     <form>
       <div class="form-group">
