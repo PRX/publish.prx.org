@@ -87,6 +87,15 @@ div >>> .ProseMirror h6 {
   margin-bottom: 2.33em;
 }
 
+div >>> .ProseMirror p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+div >>> .ProseMirror p:first-child {
+  margin-top: 0;
+}
+
 div.changed {
   outline: 5px auto #f09b4c;
 }
