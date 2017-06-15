@@ -24,7 +24,6 @@
 }
 .new-image label {
   padding: 6px 10px;
-  margin-bottom: 0;
 }
 .new-image input:focus + label, .new-image label:hover {
   background-color: #2b7187;
