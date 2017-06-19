@@ -1,0 +1,33 @@
+form {
+  display: block;
+}
+
+input {
+  width: 100%;
+  border: 0;
+  padding: 6px;
+  color: #939393;
+  background: #fff;
+}
+
+option[disabled] {
+  display: none;
+}
+
+.form-group {
+  margin: 10px 0;
+}
+.form-group > .left {
+  float: left;
+}
+.form-group > .right {
+  float: right;
+}
+.form-group:before,
+.form-group:after {
+  content: "";
+  display: table;
+}
+.form-group:after {
+  clear: both;
+}
