@@ -62,8 +62,8 @@ Enter in the client id in `.env`, setting `AUTH_CLIENT_ID` to the value from abo
 Make sure you're running the node version in `.nvmrc`, and you're off!
 
 ``` sh
-# install dependencies
-npm install
+# install dependencies (https://yarnpkg.com/en/docs/install)
+yarn install
 
 # setup pow proxy (see http://pow.cx/)
 echo 4200 > ~/.pow/publish.prx
