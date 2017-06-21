@@ -42,5 +42,4 @@ newrelic_agent.log
 Thumbs.db
 
 # dot environment
-src/assets/dotenv.js
-/.env
+/.*env
