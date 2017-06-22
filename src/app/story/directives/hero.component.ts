@@ -12,7 +12,7 @@ import { StoryModel } from '../../shared';
         <h1 *ngIf="id">Edit Episode</h1>
         <h1 *ngIf="!id">Create Episode</h1>
         <a *ngIf="series" class="series" [routerLink]="['/series', series.id]">
-          <publish-image [imageDoc]="series"></publish-image>
+          <prx-image [imageDoc]="series"></prx-image>
           <h3>{{series.title || '(Untitled Series)'}}</h3>
         </a>
       </div>

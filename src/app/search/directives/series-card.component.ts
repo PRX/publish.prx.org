@@ -6,7 +6,7 @@ import { SeriesModel } from '../../shared';
   styleUrls: ['series-card.component.css'],
   template: `
     <section class="series-image">
-      <a [routerLink]="seriesLink"><publish-image [imageDoc]="series.doc"></publish-image></a>
+      <a [routerLink]="seriesLink"><prx-image [imageDoc]="series.doc"></prx-image></a>
       <div class="stack stk-one"></div>
       <div class="stack stk-two"></div>
       <div class="stack stk-three"></div>

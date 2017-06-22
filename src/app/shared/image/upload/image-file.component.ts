@@ -27,8 +27,8 @@ import { UploadService } from '../../../core';
           <div class="meter"><span [style.width.%]="image.progress * 100"></span></div>
         </div>
 
-        <publish-image *ngIf="!image.isUploading" [src]="image.enclosureHref">
-        </publish-image>
+        <prx-image *ngIf="!image.isUploading" [src]="image.enclosureHref">
+        </prx-image>
 
         <div *ngIf="!canceled" class="cancel">
           <i class="icon-cancel" (click)="onCancel($event)"></i>

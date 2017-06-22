@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ImageModule } from 'ngx-prx-styleguide';
 import { SharedModule } from '../shared';
 import { searchRouting, searchProviders, searchComponents } from './search.routing';
 
@@ -12,6 +13,7 @@ import { searchRouting, searchProviders, searchComponents } from './search.routi
     CommonModule,
     FormsModule,
     SharedModule,
+    ImageModule,
     searchRouting
   ],
   providers: [
