@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { cms } from '../../../../testing';
 import { HasUpload, applyMixins } from './has-upload.mixin';
 

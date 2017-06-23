@@ -1,4 +1,4 @@
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { UnauthGuard } from './unauth.guard';
 
 const mockAuthService = {

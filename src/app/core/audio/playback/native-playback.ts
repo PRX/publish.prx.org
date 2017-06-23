@@ -1,4 +1,6 @@
-import { Observable, Subscriber } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscriber } from 'rxjs/Subscriber';
+import 'rxjs/add/observable/throw';
 import { PlaybackMetadata, AudioPlayback, UnsupportedFileError } from './playback';
 
 /*

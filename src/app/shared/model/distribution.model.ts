@@ -1,4 +1,6 @@
-import { Observable} from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
 import { REQUIRED } from './invalid';

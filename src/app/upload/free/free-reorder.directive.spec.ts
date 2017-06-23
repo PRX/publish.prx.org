@@ -1,6 +1,6 @@
 import { cit, create, direct, provide } from '../../../testing';
 import { Component } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { FreeReorderDirective } from './free-reorder.directive';
 import { DragulaService } from 'ng2-dragula/ng2-dragula';
 

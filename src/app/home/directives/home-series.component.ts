@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/concat';
+import 'rxjs/add/operator/toArray';
 
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';

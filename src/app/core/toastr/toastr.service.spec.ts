@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { ToastrService, ToastrState } from './toastr.service';
 
 describe('ToastrService', () => {

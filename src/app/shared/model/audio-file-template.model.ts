@@ -1,4 +1,4 @@
-import { Observable} from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { HalDoc } from '../../core';
 import { BaseModel } from './base.model';
 import { REQUIRED, LENGTH, FILE_LENGTH } from './invalid';

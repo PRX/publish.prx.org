@@ -1,5 +1,6 @@
 import { cit, create, provide } from '../../../testing';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { AudioInputComponent } from './audio-input.component';
 import { PlayerService } from '../../core/audio/player.service';
 import { UploadService } from '../../core/upload/upload.service';

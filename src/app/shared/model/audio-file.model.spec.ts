@@ -1,5 +1,6 @@
 import { cms } from '../../../testing';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/empty';
 import { AudioFileModel } from './audio-file.model';
 
 describe('AudioFileModel', () => {

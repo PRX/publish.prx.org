@@ -1,4 +1,5 @@
-import { Observable, Subscriber } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subscriber } from 'rxjs/Subscriber';
 import { ValidationMetadata, AudioValidation } from './validation';
 
 export class AuroraValidation implements AudioValidation {

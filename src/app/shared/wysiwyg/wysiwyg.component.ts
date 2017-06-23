@@ -108,7 +108,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  getContent():string {
+  getContent(): string {
     return this.editor.getContent();
   }
 

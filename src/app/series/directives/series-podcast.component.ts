@@ -1,5 +1,5 @@
 import { Component, OnDestroy, DoCheck, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { SeriesModel, DistributionModel, FeederPodcastModel,
          TabService, CATEGORIES, SUBCATEGORIES, WysiwygComponent } from '../../shared';
 import * as languageMappingList from 'langmap';
@@ -43,11 +43,11 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   getLanguageOptions(): string[][] {
-    let result:string[][] = [];
+    let result: string[][] = [];
     for (let key in languageMappingList) {
       if (languageMappingList.hasOwnProperty(key)) {
-        let name:string = `${languageMappingList[key]['englishName']} (${key.toLowerCase()})`;
-        let val:string = key.toLowerCase();
+        let name = `${languageMappingList[key]['englishName']} (${key.toLowerCase()})`;
+        let val = key.toLowerCase();
         result.push([name, val]);
       }
     }

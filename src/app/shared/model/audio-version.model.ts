@@ -1,4 +1,7 @@
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/forkJoin';
+import 'rxjs/add/operator/finally';
+import 'rxjs/add/operator/map';
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioFileModel } from './audio-file.model';

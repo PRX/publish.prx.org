@@ -1,5 +1,5 @@
 import { cit, create, provide, By } from '../../../testing';
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { PlayerService } from '../../core/audio/player.service';
 import { AudioPlayerComponent } from './audio-player.component';
 

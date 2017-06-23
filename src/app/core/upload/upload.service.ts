@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, ConnectableObservable, Subscriber } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
+import { Subscriber } from 'rxjs/Subscriber';
+import 'rxjs/add/operator/publish';
 import Evaporate from 'evaporate';
 
 import { Env } from '../core.env';

@@ -1,5 +1,5 @@
 import { cit, create, provide, cms } from '../../../testing';
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { PlayerComponent } from './player.component';
 import { StoryModel, DistributionModel, TabService } from '../../shared';
 

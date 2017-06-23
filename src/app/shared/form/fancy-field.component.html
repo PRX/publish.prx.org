@@ -13,7 +13,7 @@
     <ng-content></ng-content>
   </div>
 
-  <template [ngIf]="model">
+  <ng-container *ngIf="model">
     <ng-content select=".prefix"></ng-content>
     <input *ngIf="type == 'textinput'" [id]="name" type="text"
       [ngModel]="model[name]" (ngModelChange)="doOnChange($event)"
@@ -36,14 +36,14 @@
       <option *ngFor="let opt of select" [value]="opt[1]">{{opt[0]}}</option>
     </select>
     <ng-content select=".suffix"></ng-content>
-  </template>
+  </ng-container>
 
-  <template [ngIf]="!model">
+  <ng-container *ngIf="!model">
     <input *ngIf="type == 'textinput'" [id]="name" type="text" disabled=true/>
     <input *ngIf="type == 'checkbox'" [id]="name" type="checkbox" disabled=true/>
     <textarea *ngIf="type == 'textarea'" [id]="name" disabled=true></textarea>
     <select *ngIf="type == 'select'" [id]="name" disabled=true></select>
-  </template>
+  </ng-container>
 
   <p *ngIf="formattedInvalid" class="error">{{formattedInvalid | capitalize}}</p>
 </div>

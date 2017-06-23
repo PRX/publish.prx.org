@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { Angulartics2, Angulartics2GoogleAnalytics } from 'angulartics2';
 import { cit, create, provide, By } from '../testing';
 import { AppComponent } from './app.component';

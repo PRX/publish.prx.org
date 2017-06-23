@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { CmsService, HalDoc } from '../../core';
 import { SeriesModel, TabService } from '../../shared';
 
