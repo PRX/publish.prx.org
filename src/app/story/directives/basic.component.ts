@@ -28,7 +28,7 @@ import { StoryModel, TabService } from '../../shared';
       <hr/>
 
       <publish-fancy-field required label="Audio Files">
-        <publish-spinner *ngIf="!story?.versions"></publish-spinner>
+        <prx-spinner *ngIf="!story?.versions"></prx-spinner>
         <publish-upload *ngFor="let v of story?.versions" [version]="v" [strict]="strict"></publish-upload>
         <h1 *ngIf="story?.versions?.length === 0">
           You have no audio templates for this episode. How did that happen?

@@ -27,7 +27,7 @@ import { StoryModel } from '../../shared';
     </header>
     <div class="story-list">
       <publish-home-story *ngFor="let s of stories" [story]="s"></publish-home-story>
-      <div *ngFor="let l of storyLoaders" class="story"><publish-spinner></publish-spinner></div>
+      <div *ngFor="let l of storyLoaders" class="story"><prx-spinner></prx-spinner></div>
     </div>
   `
 })

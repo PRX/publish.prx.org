@@ -7,7 +7,6 @@ export * from './guard';
 export * from './hero';
 export * from './image';
 export * from './model';
-export * from './spinner';
 export * from './tab';
 export * from './text-overflow';
 export * from './wysiwyg';

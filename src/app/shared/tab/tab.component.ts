@@ -14,7 +14,7 @@ import { TabService } from './tab.service';
           <ng-content></ng-content>
         </div>
         <div class="page">
-          <publish-spinner *ngIf="!model"></publish-spinner>
+          <prx-spinner *ngIf="!model"></prx-spinner>
           <router-outlet></router-outlet>
         </div>
       </section>

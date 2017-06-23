@@ -31,11 +31,11 @@ describe('HeroComponent', () => {
 
   cit('shows a spinner when info is missing', (fix, el, comp) => {
     expect(el).not.toQuery('h2');
-    expect(el).toQuery('publish-spinner');
+    expect(el).toQuery('prx-spinner');
     comp.showInfo = true;
     fix.detectChanges();
     expect(el).toQueryText('h2', 'The Infos');
-    expect(el).not.toQuery('publish-spinner');
+    expect(el).not.toQuery('prx-spinner');
   });
 
   cit('shows the actions', (fix, el, comp) => {

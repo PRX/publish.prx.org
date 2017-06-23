@@ -4,7 +4,7 @@
       <h2>Your Series</h2>
       <a *ngIf="totalCount" class="all" [routerLink]="['search', { tab: 'series'}]">View All {{totalCount}} &raquo;</a>
     </header>
-    <publish-spinner *ngIf="!isLoaded"></publish-spinner>
+    <prx-spinner *ngIf="!isLoaded"></prx-spinner>
     <div *ngIf="noSeries">
       <div class="empty">You have no series available to manage via the Publish app.
         <br/>Older PRX series must be managed on

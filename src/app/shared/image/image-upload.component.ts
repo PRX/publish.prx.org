@@ -6,7 +6,7 @@ import { StoryModel, SeriesModel, ImageModel } from '../model';
   selector: 'publish-image-upload',
   styleUrls: ['image-upload.component.css'],
   template: `
-    <publish-spinner *ngIf="!images"></publish-spinner>
+    <prx-spinner *ngIf="!images"></prx-spinner>
 
     <div *ngIf="!hasImages" class="new-image" [class.changed]="hasDestroyed"
       [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">

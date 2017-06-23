@@ -12,7 +12,7 @@ import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
     <div class="hero toolbar" [class.affix]="affixed" (window:scroll)="onScroll()">
       <section>
         <div class="info" #refInfo><ng-content select=".hero-info"></ng-content></div>
-        <publish-spinner *ngIf="refInfo.children.length == 0" inverse=true></publish-spinner>
+        <prx-spinner *ngIf="refInfo.children.length == 0" inverse=true></prx-spinner>
         <div class="actions" #refActions><ng-content select=".hero-actions"></ng-content></div>
       </section>
     </div>

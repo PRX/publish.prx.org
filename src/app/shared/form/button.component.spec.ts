@@ -27,7 +27,7 @@ describe('ButtonComponent', () => {
     expect(el).toQuery('button');
     expect(el).not.toQueryAttr('button', 'disabled', '');
     expect(el).not.toQuery('button.working');
-    expect(el).not.toQuery('publish-spinner');
+    expect(el).not.toQuery('prx-spinner');
   });
 
   describe('visible', () => {
@@ -89,7 +89,7 @@ describe('ButtonComponent', () => {
       comp.model = new MockModel({changed: true, saving: true});
       fix.detectChanges();
       expect(el).toQuery('button.working');
-      expect(el).toQuery('publish-spinner');
+      expect(el).toQuery('prx-spinner');
     });
 
     cit('can override working', (fix, el, comp) => {
@@ -97,7 +97,7 @@ describe('ButtonComponent', () => {
       comp.working = true;
       fix.detectChanges();
       expect(el).toQuery('button.working');
-      expect(el).toQuery('publish-spinner');
+      expect(el).toQuery('prx-spinner');
     });
 
     cit('prevents double click resulting in double submit when working', (fix, el, comp) => {

@@ -5,7 +5,7 @@
       You can include this embeddable player on your website to play the audio for this episode directly.
     </div>
 
-    <publish-spinner *ngIf="!previewUrl && !loadError"></publish-spinner>
+    <prx-spinner *ngIf="!previewUrl && !loadError"></prx-spinner>
 
     <p *ngIf="loadError" class="error">{{loadError}}</p>
 

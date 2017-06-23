@@ -10,7 +10,7 @@ import { BaseModel } from '../model/base.model';
       [class.orange]="orange" [class.plain]="plain" [class.red]="red" [class.green]="green"
       (click)="onClick($event)">
       <ng-content></ng-content>
-      <publish-spinner *ngIf="isWorking"></publish-spinner>
+      <prx-spinner *ngIf="isWorking"></prx-spinner>
     </button>
     `
 })
