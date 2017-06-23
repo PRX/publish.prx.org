@@ -7,7 +7,7 @@ import { StoryModel } from '../../shared';
   selector: 'publish-story-hero',
   styleUrls: ['hero.component.css'],
   template: `
-    <publish-hero>
+    <prx-hero>
       <div class="hero-title">
         <h1 *ngIf="id">Edit Episode</h1>
         <h1 *ngIf="!id">Create Episode</h1>
@@ -29,7 +29,7 @@ import { StoryModel } from '../../shared';
         <publish-button *ngIf="!story.isNew" working=0 disabled=1
           [visible]="!isChanged">Saved</publish-button>
       </div>
-    </publish-hero>
+    </prx-hero>
     `
 })
 

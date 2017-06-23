@@ -8,7 +8,6 @@ import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
 import { AdvancedConfirmDirective, AdvancedSectionComponent, ButtonComponent, CapitalizePipe,
          CopyInputDirective, FancyDurationComponent, FancyFieldComponent, PadZeroPipe } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
-import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TabComponent } from './tab';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
@@ -29,7 +28,6 @@ import { ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
     FileSelectDirective,
     FileSizePipe,
     FocusDirective,
-    HeroComponent,
     ImageFileComponent,
     ImageUploadComponent,
     PadZeroPipe,
@@ -56,7 +54,6 @@ import { ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
     FileSelectDirective,
     FileSizePipe,
     FocusDirective,
-    HeroComponent,
     ImageUploadComponent,
     TabComponent,
     TimeAgoPipe,
