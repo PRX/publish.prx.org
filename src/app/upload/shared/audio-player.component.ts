@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { PlayerService, PlaybackMetadata } from '../../core';
 import { AudioFileModel } from '../../shared';
 

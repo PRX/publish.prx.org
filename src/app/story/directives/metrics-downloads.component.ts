@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import * as moment from 'moment';
 import { Env } from '../../core/core.env';
 import { CastleService } from '../../core';

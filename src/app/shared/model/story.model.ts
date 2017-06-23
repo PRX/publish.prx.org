@@ -1,4 +1,10 @@
-import { Observable} from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/from';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/concatAll';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/toArray';
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from './base.model';
 import { AudioVersionModel } from './audio-version.model';

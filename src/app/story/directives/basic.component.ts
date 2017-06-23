@@ -1,5 +1,5 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { StoryModel, TabService } from '../../shared';
 
 @Component({

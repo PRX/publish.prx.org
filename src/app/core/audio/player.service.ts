@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/timeoutWith';
+import 'rxjs/add/observable/throw';
 import { AudioPlayback, AuroraPlayback, NativePlayback, PlaybackMetadata,
   UnsupportedFileError } from './playback';
 import { AudioValidation, AuroraValidation, NativeValidation, ValidationMetadata } from './validation';

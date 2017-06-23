@@ -1,7 +1,7 @@
 import { cit, create, provide, cms, By } from '../../testing';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { StoryComponent } from './story.component';
 import { ModalService, ToastrService } from '../core';
 

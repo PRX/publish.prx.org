@@ -1,5 +1,5 @@
 import { Component, OnDestroy, DoCheck, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { SeriesModel, DistributionModel, FeederPodcastModel,
          TabService, CATEGORIES, SUBCATEGORIES, WysiwygComponent } from '../../shared';
 import * as languageMappingList from 'langmap';

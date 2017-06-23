@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/throw';
 import { HalDoc, Upload } from '../../core';
 import { UploadableModel } from './upload';
 

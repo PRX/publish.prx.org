@@ -1,5 +1,6 @@
 import { cit, create, provide } from '../../../testing';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { SeriesPodcastComponent } from './series-podcast.component';
 import { TabService } from '../../shared';
 
