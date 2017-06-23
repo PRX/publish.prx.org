@@ -7,7 +7,7 @@ import { StoryModel } from '../../shared';
   styleUrls: ['story-card.component.css'],
   template: `
     <section class="story-image">
-      <publish-image [imageDoc]="story.doc"></publish-image>
+      <prx-image [imageDoc]="story.doc"></prx-image>
       <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
     </section>
     <section class="story-detail">

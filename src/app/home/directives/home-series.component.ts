@@ -14,7 +14,7 @@ import { StoryModel } from '../../shared';
     </header>
     <header *ngIf="!noseries">
       <a [routerLink]="['series', id]">
-        <publish-image [imageDoc]="series"></publish-image>
+        <prx-image [imageDoc]="series"></prx-image>
       </a>
       <p class="count">
         <span *ngIf="count === 0">0 Episodes</span>
