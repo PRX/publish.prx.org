@@ -20,7 +20,7 @@ describe('ImageFileComponent', () => {
   cit('shows the image', (fix, el, comp) => {
     comp.image = mockImage();
     fix.detectChanges();
-    expect(el).toQuery('publish-image');
+    expect(el).toQuery('prx-image');
     expect(el).toQuery('.info');
   });
 

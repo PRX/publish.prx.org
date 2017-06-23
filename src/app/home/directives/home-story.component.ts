@@ -14,7 +14,7 @@ import { StoryModel } from '../../shared';
     </ng-container>
     <ng-container *ngIf="!isPlusSign">
       <a [routerLink]="editLink">
-        <publish-image [imageDoc]="storyImage" ></publish-image>
+        <prx-image [imageDoc]="storyImage" ></prx-image>
       </a>
       <h2>
         <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>

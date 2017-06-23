@@ -5,7 +5,7 @@
   <prx-navitem *ngIf="loggedIn" route="/search" text="Search"></prx-navitem>
   <prx-navuser *ngIf="loggedIn" [userName]="userName">
     <publish-spinner class="user-loading" inverse=true></publish-spinner>
-    <publish-image *ngIf="userImageDoc" class="user-loaded" [imageDoc]="userImageDoc"></publish-image>
+    <prx-image *ngIf="userImageDoc" class="user-loaded" [imageDoc]="userImageDoc"></prx-image>
   </prx-navuser>
 </prx-header>
 <main>

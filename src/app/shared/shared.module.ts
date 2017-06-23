@@ -9,11 +9,12 @@ import { AdvancedConfirmDirective, AdvancedSectionComponent, ButtonComponent, Ca
          CopyInputDirective, FancyDurationComponent, FancyFieldComponent, PadZeroPipe } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { HeroComponent } from './hero';
-import { ImageFileComponent, ImageLoaderComponent, ImageUploadComponent } from './image';
+import { ImageFileComponent, ImageUploadComponent } from './image';
 import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
+import { ImageModule } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,6 @@ import { FocusDirective, WysiwygComponent } from './wysiwyg';
     FocusDirective,
     HeroComponent,
     ImageFileComponent,
-    ImageLoaderComponent,
     ImageUploadComponent,
     PadZeroPipe,
     SpinnerComponent,
@@ -59,7 +59,6 @@ import { FocusDirective, WysiwygComponent } from './wysiwyg';
     FileSizePipe,
     FocusDirective,
     HeroComponent,
-    ImageLoaderComponent,
     ImageUploadComponent,
     SpinnerComponent,
     TabComponent,
@@ -73,7 +72,8 @@ import { FocusDirective, WysiwygComponent } from './wysiwyg';
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule
+    RouterModule,
+    ImageModule
   ],
   providers: [
     AuthGuard,
