@@ -14,12 +14,12 @@ import { StoryModel } from '../../shared';
       <dt>Status</dt>
       <dd>
         <span [class]="statusClass">{{statusText}}</span>
-        <template [ngIf]="isPublished">
+        <ng-container *ngIf="isPublished">
           <button *ngIf="editStatus" class="btn-link edit-status" (click)="toggleEdit()">Hide</button>
           <button *ngIf="!editStatus" class="btn-link edit-status" (click)="toggleEdit()">Edit</button>
           <publish-button *ngIf="editStatus" [model]="story" visible=1 orange=1 disabled=0
             [working]="isPublishing" (click)="togglePublish()">Unpublish</publish-button>
-        </template>
+        </ng-container>
       </dd>
 
       <dt *ngIf="isPublished && isScheduled">Publishing</dt>
@@ -38,21 +38,21 @@ import { StoryModel } from '../../shared';
           (click)="showProblems()">{{normalInvalidCount}}</button>
       </dd>
       <dd *ngIf="id">
-        <template [ngIf]="strictInvalid">
+        <ng-container *ngIf="strictInvalid">
           <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
           <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
           <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
-        </template>
-        <template [ngIf]="notPublished && !strictInvalid">
+        </ng-container>
+        <ng-container *ngIf="notPublished && !strictInvalid">
           <p *ngIf="changed">Ready after save</p>
           <p *ngIf="!changed">Ready to publish</p>
           <publish-button [model]="story" visible=1 orange=1 [disabled]="changed"
             [working]="isPublishing" (click)="togglePublish()">Publish</publish-button>
-        </template>
-        <template [ngIf]="isPublished && !strictInvalid">
+        </ng-container>
+        <ng-container *ngIf="isPublished && !strictInvalid">
           <p *ngIf="changed">Unsaved changes</p>
           <p *ngIf="!changed">Complete</p>
-        </template>
+        </ng-container>
       </dd>
 
     </dl>

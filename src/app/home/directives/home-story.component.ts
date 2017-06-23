@@ -6,13 +6,13 @@ import { StoryModel } from '../../shared';
   selector: 'publish-home-story',
   styleUrls: ['home-story.component.css'],
   template: `
-    <template [ngIf]="isPlusSign">
+    <ng-container *ngIf="isPlusSign">
       <a [routerLink]="editLink" class="plus-sign">
         <i class="icon-plus"></i>
         <p>New Episode</p>
       </a>
-    </template>
-    <template [ngIf]="!isPlusSign">
+    </ng-container>
+    <ng-container *ngIf="!isPlusSign">
       <a [routerLink]="editLink">
         <publish-image [imageDoc]="storyImage" ></publish-image>
       </a>
@@ -23,7 +23,7 @@ import { StoryModel } from '../../shared';
       <p class="duration">{{storyDuration | duration}}</p>
       <p class="modified">{{storyDate | date:"MM/dd/yy"}}</p>
       <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
-    </template>
+    </ng-container>
   `
 })
 

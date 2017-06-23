@@ -9,14 +9,14 @@ import { BaseModel } from '../model/base.model';
       <h4 *ngIf="label">
         <label [attr.for]="hoursName">{{label}}</label>
       </h4>
-      <template [ngIf]="!model">
+      <ng-container *ngIf="!model">
         <input [id]="hoursName" type="number" disabled=true/>
         <b>:</b>
         <input [id]="minutesName" type="number" disabled=true/>
         <b>:</b>
         <input [id]="secondsName" type="number" disabled=true/>
-      </template>
-      <template [ngIf]="model">
+      </ng-container>
+      <ng-container *ngIf="model">
         <input [id]="hoursName" type="number" min="0" [ngModel]="hours | padzero"
           #hoursInput (click)="selectAllContent(hoursInput)"
           [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model"
@@ -31,7 +31,7 @@ import { BaseModel } from '../model/base.model';
           #secondsInput (click)="selectAllContent(secondsInput)"
           [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model"
           (ngModelChange)="set('seconds', $event)" [class.changed]="secondsChanged"/>
-      </template>
+      </ng-container>
     </div>
   `
 })

@@ -23,7 +23,7 @@ import {
           (click)="addVersion()"><i class="icon-plus"></i>Add a template</button>
       </publish-fancy-field>
 
-      <template ngFor let-v [ngForOf]="series.versionTemplates">
+      <ng-container *ngFor="let v of series.versionTemplates">
         <div *ngIf="!v.isDestroy" class="version">
           <header>
             <strong>{{v?.label}}</strong>
@@ -57,7 +57,7 @@ import {
             </publish-fancy-field>
           </section>
         </div>
-      </template>
+      </ng-container>
     </form>
   `
 })

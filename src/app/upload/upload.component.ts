@@ -12,12 +12,12 @@ import { AudioVersionModel } from '../shared';
 
     <section *ngIf="version.hasFileTemplates">
       <div class="uploads">
-        <template ngFor let-ft [ngForOf]="version.filesAndTemplates">
+        <ng-container *ngFor="let ft of version.filesAndTemplates">
           <publish-templated-upload *ngIf="ft.tpl" [template]="ft.tpl"
             [file]="ft.file" [version]="version" publishClick></publish-templated-upload>
           <publish-illegal-upload *ngIf="!ft.tpl" [file]="ft.file"
             [version]="version"></publish-illegal-upload>
-        </template>
+        </ng-container>
       </div>
     </section>
 
