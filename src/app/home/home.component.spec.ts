@@ -14,10 +14,10 @@ describe('HomeComponent', () => {
   });
 
   cit('shows a loading spinner', (fix, el, comp) => {
-    expect(el).not.toQuery('publish-spinner');
+    expect(el).not.toQuery('prx-spinner');
     comp.isLoaded = false;
     fix.detectChanges();
-    expect(el).toQuery('publish-spinner');
+    expect(el).toQuery('prx-spinner');
   });
 
   cit('shows an empty no-series indicator', (fix, el, comp) => {

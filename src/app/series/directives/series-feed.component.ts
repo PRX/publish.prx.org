@@ -5,7 +5,7 @@ import { SeriesModel, StoryModel, TabService } from '../../shared';
 @Component({
   template: `
   <div>
-    <publish-spinner *ngIf="!isLoaded"></publish-spinner>
+    <prx-spinner *ngIf="!isLoaded"></prx-spinner>
     <section *ngIf="series">
       <div class="hint" *ngIf="noStories">
         You have no published episodes in this series.

@@ -13,7 +13,7 @@ describe('SeriesFeedComponent', () => {
   cit('shows a loading spinner', (fix, el, comp) => {
     comp.isLoaded = false;
     fix.detectChanges();
-    expect(el).toQuery('publish-spinner');
+    expect(el).toQuery('prx-spinner');
   });
 
   cit('does not render until the series is loaded', (fix, el, comp) => {

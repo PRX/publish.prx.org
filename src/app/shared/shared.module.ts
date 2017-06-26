@@ -8,13 +8,11 @@ import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
 import { AdvancedConfirmDirective, AdvancedSectionComponent, ButtonComponent, CapitalizePipe,
          CopyInputDirective, FancyDurationComponent, FancyFieldComponent, PadZeroPipe } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
-import { HeroComponent } from './hero';
 import { ImageFileComponent, ImageUploadComponent } from './image';
-import { SpinnerComponent } from './spinner';
 import { TabComponent } from './tab';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
-import { ImageModule } from 'ngx-prx-styleguide';
+import { ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [
@@ -30,11 +28,9 @@ import { ImageModule } from 'ngx-prx-styleguide';
     FileSelectDirective,
     FileSizePipe,
     FocusDirective,
-    HeroComponent,
     ImageFileComponent,
     ImageUploadComponent,
     PadZeroPipe,
-    SpinnerComponent,
     TabComponent,
     TimeAgoPipe,
     TimepickerComponent,
@@ -58,9 +54,7 @@ import { ImageModule } from 'ngx-prx-styleguide';
     FileSelectDirective,
     FileSizePipe,
     FocusDirective,
-    HeroComponent,
     ImageUploadComponent,
-    SpinnerComponent,
     TabComponent,
     TimeAgoPipe,
     TimepickerComponent,
@@ -73,7 +67,8 @@ import { ImageModule } from 'ngx-prx-styleguide';
     CommonModule,
     FormsModule,
     RouterModule,
-    ImageModule
+    ImageModule,
+    SpinnerModule
   ],
   providers: [
     AuthGuard,

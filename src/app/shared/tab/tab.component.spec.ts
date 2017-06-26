@@ -32,10 +32,10 @@ describe('TabComponent', () => {
   });
 
   cit('shows a spinner until the model is bound', (fix, el, comp) => {
-    expect(el).toQuery('publish-spinner');
+    expect(el).toQuery('prx-spinner');
     comp.testModel = {};
     fix.detectChanges();
-    expect(el).not.toQuery('publish-spinner');
+    expect(el).not.toQuery('prx-spinner');
   });
 
   cit('tells the tab service about the model', (fix, el, comp) => {

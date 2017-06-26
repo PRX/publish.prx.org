@@ -33,7 +33,7 @@ import { TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-styleguide';
     <p *ngIf="error" class="error">
       {{error}}
     </p>
-    <div *ngIf="!chartData && !error" class="chart-loading"><publish-spinner></publish-spinner></div>
+    <div *ngIf="!chartData && !error" class="chart-loading"><prx-spinner></prx-spinner></div>
     <prx-line-timeseries-chart *ngIf="chartData" [datasets]="chartData" [dateFormat]="dateFormat"></prx-line-timeseries-chart>
   `,
   styleUrls: ['metrics-downloads.component.css']

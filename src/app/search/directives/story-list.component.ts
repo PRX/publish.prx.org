@@ -11,7 +11,7 @@ import { StoryModel } from '../../shared';
     <div *ngIf="!noStories">
       <div class="story-list">
         <publish-story-card *ngFor="let s of stories" [story]="s"></publish-story-card>
-        <div *ngIf="!isLoaded" class="story-loading"><publish-spinner></publish-spinner></div>
+        <div *ngIf="!isLoaded" class="story-loading"><prx-spinner></prx-spinner></div>
         <div *ngFor="let i of emptyCards" class="empty-story-card"></div>
       </div>
     </div>
