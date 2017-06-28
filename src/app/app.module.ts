@@ -1,7 +1,7 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
-import { AuthModule, HeaderModule, ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
+import { AuthModule, HeaderModule, ImageModule, ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 import { AppComponent } from './app.component';
 import { routing, routingProviders, routingComponents } from './app.routing';
@@ -25,6 +25,7 @@ import { SearchModule } from './search';
     AuthModule,
     HeaderModule,
     ImageModule,
+    ModalModule,
     SeriesModule,
     SharedModule,
     SpinnerModule,

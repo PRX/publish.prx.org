@@ -1,5 +1,5 @@
 import { cit, contain, provide, By } from '../../../testing';
-import { ModalService } from '../../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import { AdvancedConfirmDirective } from './advanced-confirm.directive';
 
 describe('AdvancedConfirmDirective', () => {

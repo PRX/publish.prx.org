@@ -12,7 +12,7 @@ import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TabComponent } from './tab';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
-import { ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
+import { DatepickerModule, HeroModule, ImageModule, ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [
@@ -48,12 +48,15 @@ import { ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
     CapitalizePipe,
     CopyInputDirective,
     DatepickerComponent,
+    DatepickerModule,
     DurationPipe,
     FancyDurationComponent,
     FancyFieldComponent,
     FileSelectDirective,
     FileSizePipe,
     FocusDirective,
+    HeroModule,
+    ImageModule,
     ImageUploadComponent,
     TabComponent,
     TimeAgoPipe,
@@ -61,13 +64,17 @@ import { ImageModule, SpinnerModule } from 'ngx-prx-styleguide';
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
+    SpinnerModule,
     WysiwygComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     RouterModule,
+    DatepickerModule,
+    HeroModule,
     ImageModule,
+    ModalModule,
     SpinnerModule
   ],
   providers: [

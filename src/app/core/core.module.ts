@@ -7,14 +7,13 @@ import { HalModule } from 'ngx-prx-styleguide';
 import { PlayerService } from './audio';
 import { CastleService, CmsService, FeederService } from './hal';
 import { FooterComponent } from './footer';
-import { ModalComponent, ModalService } from './modal';
 import { MimeTypeService, UploadService } from './upload';
 import { ToastrComponent, ToastrService } from './toastr';
+import { HeaderModule, ModalModule, ModalService } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [
     FooterComponent,
-    ModalComponent,
     ToastrComponent
   ],
   imports: [
@@ -25,7 +24,8 @@ import { ToastrComponent, ToastrService } from './toastr';
   ],
   exports: [
     FooterComponent,
-    ModalComponent,
+    HeaderModule,
+    ModalModule,
     ToastrComponent
   ],
   providers: [

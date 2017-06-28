@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { ModalService } from '../../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import {
   SeriesModel,
   TabService,
