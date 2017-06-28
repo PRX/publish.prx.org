@@ -19,17 +19,17 @@ import { BaseModel } from 'ngx-prx-styleguide';
       <ng-container *ngIf="model">
         <input [id]="hoursName" type="number" min="0" [ngModel]="hours | padzero"
           #hoursInput (click)="selectAllContent(hoursInput)"
-          [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model"
+          [prxAdvancedConfirm]="advancedConfirm" [prxName]="name" [prxModel]="model"
           (ngModelChange)="set('hours', $event)" [class.changed]="hoursChanged"/>
         <b>:</b>
         <input [id]="minutesName" type="number" min="0" [ngModel]="minutes | padzero"
           #minutesInput (click)="selectAllContent(minutesInput)"
-          [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model"
+          [prxAdvancedConfirm]="advancedConfirm" [prxName]="name" [prxModel]="model"
           (ngModelChange)="set('minutes', $event)" [class.changed]="minutesChanged"/>
         <b>:</b>
         <input [id]="secondsName" type="number" min="0" [ngModel]="seconds | padzero"
           #secondsInput (click)="selectAllContent(secondsInput)"
-          [publishAdvancedConfirm]="advancedConfirm" [publishName]="name" [publishModel]="model"
+          [prxAdvancedConfirm]="advancedConfirm" [prxName]="name" [prxModel]="model"
           (ngModelChange)="set('seconds', $event)" [class.changed]="secondsChanged"/>
       </ng-container>
     </div>

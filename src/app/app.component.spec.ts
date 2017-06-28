@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 
 import { AuthService } from 'ngx-prx-styleguide';
 import { CmsService } from './core/hal/cms.service';
-import { ModalService } from './core/modal/modal.service';
+import { ModalService } from './core';
 
 let authToken = new Subject<string>();
 let cmsToken: string = null;

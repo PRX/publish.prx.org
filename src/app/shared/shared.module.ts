@@ -5,26 +5,22 @@ import { RouterModule } from '@angular/router';
 
 import { DatepickerComponent, TimeAgoPipe, TimepickerComponent } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
-import { AdvancedConfirmDirective, AdvancedSectionComponent, ButtonComponent, CapitalizePipe,
-         CopyInputDirective, FancyDurationComponent, FancyFieldComponent, PadZeroPipe } from './form';
+import { AdvancedSectionComponent, ButtonComponent, CopyInputDirective, FancyDurationComponent, PadZeroPipe } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TabComponent } from './tab';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
-import { DatepickerModule, HeroModule, ImageModule, ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
+import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [
-    AdvancedConfirmDirective,
     AdvancedSectionComponent,
     ButtonComponent,
-    CapitalizePipe,
     CopyInputDirective,
     DatepickerComponent,
     DurationPipe,
     FancyDurationComponent,
-    FancyFieldComponent,
     FileSelectDirective,
     FileSizePipe,
     FocusDirective,
@@ -40,18 +36,16 @@ import { DatepickerModule, HeroModule, ImageModule, ModalModule, SpinnerModule }
     WysiwygComponent
   ],
   exports: [
-    AdvancedConfirmDirective,
     AdvancedSectionComponent,
     CommonModule,
     FormsModule,
     ButtonComponent,
-    CapitalizePipe,
     CopyInputDirective,
     DatepickerComponent,
     DatepickerModule,
     DurationPipe,
     FancyDurationComponent,
-    FancyFieldComponent,
+    FancyFormModule,
     FileSelectDirective,
     FileSizePipe,
     FocusDirective,
@@ -72,6 +66,7 @@ import { DatepickerModule, HeroModule, ImageModule, ModalModule, SpinnerModule }
     FormsModule,
     RouterModule,
     DatepickerModule,
+    FancyFormModule,
     HeroModule,
     ImageModule,
     ModalModule,

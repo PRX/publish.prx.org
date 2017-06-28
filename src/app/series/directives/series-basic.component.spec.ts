@@ -29,7 +29,7 @@ describe('SeriesBasicComponent', () => {
   });
 
   cit('does not render until the series is loaded', (fix, el, comp) => {
-    expect(el).not.toQuery('publish-fancy-field');
+    expect(el).not.toQuery('prx-fancy-field');
     expect(el).not.toQuery('publish-wysiwyg');
     comp.series = {
       changed: () => false,
@@ -37,7 +37,7 @@ describe('SeriesBasicComponent', () => {
     };
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(7);
+    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(7);
     expect(el).toContainText('Who is the owner');
     expect(el).toContainText('name of this series');
     expect(el).toContainText('short description');

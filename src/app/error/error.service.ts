@@ -1,5 +1,5 @@
 import { Injectable, ErrorHandler } from '@angular/core';
-import { ModalService } from 'ngx-prx-styleguide';
+import { ModalService } from '../core';
 
 @Injectable()
 export class ErrorService implements ErrorHandler {

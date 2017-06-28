@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ModalService } from 'ngx-prx-styleguide';
+import { ModalService } from '../../core';
 import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared';
 
 @Component({
@@ -10,8 +10,8 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
 
       <div class="main">
         <div class="label">
-          <publish-fancy-field textinput required hideinvalid [model]="file" name="label">
-          </publish-fancy-field>
+          <prx-fancy-field textinput required hideinvalid [model]="file" name="label">
+          </prx-fancy-field>
         </div>
         <div class="lengths">
           <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"

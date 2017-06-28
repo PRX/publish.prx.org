@@ -13,14 +13,14 @@ describe('FileTemplateComponent', () => {
   stubPipe('duration');
 
   cit('renders undestroyed file templates', (fix, el, comp) => {
-    expect(el).not.toQuery('publish-fancy-field');
+    expect(el).not.toQuery('prx-fancy-field');
     comp.file = new AudioFileTemplateModel(null);
     comp.file.isDestroy = true;
     fix.detectChanges();
-    expect(el).not.toQuery('publish-fancy-field');
+    expect(el).not.toQuery('prx-fancy-field');
     comp.file.isDestroy = false;
     fix.detectChanges();
-    expect(el).toQuery('publish-fancy-field');
+    expect(el).toQuery('prx-fancy-field');
   });
 
   cit('only allows removing the last template in a version', (fix, el, comp) => {
