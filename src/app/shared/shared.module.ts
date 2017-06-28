@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { DatepickerComponent, TimeAgoPipe, TimepickerComponent } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
-import { AdvancedSectionComponent, ButtonComponent, CopyInputDirective, FancyDurationComponent, PadZeroPipe } from './form';
+import { AdvancedSectionComponent, ButtonComponent, CopyInputDirective } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TabComponent } from './tab';
@@ -20,13 +20,11 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
     CopyInputDirective,
     DatepickerComponent,
     DurationPipe,
-    FancyDurationComponent,
     FileSelectDirective,
     FileSizePipe,
     FocusDirective,
     ImageFileComponent,
     ImageUploadComponent,
-    PadZeroPipe,
     TabComponent,
     TimeAgoPipe,
     TimepickerComponent,
@@ -44,7 +42,6 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
     DatepickerComponent,
     DatepickerModule,
     DurationPipe,
-    FancyDurationComponent,
     FancyFormModule,
     FileSelectDirective,
     FileSizePipe,

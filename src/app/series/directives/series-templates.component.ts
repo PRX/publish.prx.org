@@ -39,10 +39,10 @@ import {
                 The minimum and maximum HH:MM:SS durations for all the audio files. Used to ensure that each
                 of your episodes is the desired approximate length, and to prevent uploading bad audio.
               </div>
-              <publish-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"
-                [advancedConfirm]="lengthConfirm(v, v['lengthMinimum'] | duration, 'minimum')"></publish-fancy-duration>
-              <publish-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"
-                [advancedConfirm]="lengthConfirm(v, v['lengthMaximum'] | duration, 'maximum')"></publish-fancy-duration>
+              <prx-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"
+                [advancedConfirm]="lengthConfirm(v, v['lengthMinimum'] | duration, 'minimum')"></prx-fancy-duration>
+              <prx-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"
+                [advancedConfirm]="lengthConfirm(v, v['lengthMaximum'] | duration, 'maximum')"></prx-fancy-duration>
             </prx-fancy-field>
 
             <prx-fancy-field label="Segments">

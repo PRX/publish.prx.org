@@ -14,10 +14,10 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
           </prx-fancy-field>
         </div>
         <div class="lengths">
-          <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"
-            [advancedConfirm]="lengthConfirm(file['lengthMinimum'] | duration, 'minimum')"></publish-fancy-duration>
-          <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"
-            [advancedConfirm]="lengthConfirm(file['lengthMaximum'] | duration, 'maximum')"></publish-fancy-duration>
+          <prx-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"
+            [advancedConfirm]="lengthConfirm(file['lengthMinimum'] | duration, 'minimum')"></prx-fancy-duration>
+          <prx-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"
+            [advancedConfirm]="lengthConfirm(file['lengthMaximum'] | duration, 'maximum')"></prx-fancy-duration>
         </div>
       </div>
 
