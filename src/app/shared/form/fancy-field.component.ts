@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { BaseModel } from '../model/base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 
 const isset = (val: any): boolean => val !== false && val !== undefined;
 

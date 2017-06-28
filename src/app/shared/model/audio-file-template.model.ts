@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { HalDoc } from '../../core';
-import { BaseModel } from './base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 import { REQUIRED, LENGTH, FILE_LENGTH } from './invalid';
 
 export class AudioFileTemplateModel extends BaseModel {

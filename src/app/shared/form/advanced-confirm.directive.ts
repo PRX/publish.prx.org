@@ -1,6 +1,6 @@
 import { Directive, Input, HostListener } from '@angular/core';
 import { ModalService } from 'ngx-prx-styleguide';
-import { BaseModel } from '../model/base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 
 @Directive({
   selector: '[publishAdvancedConfirm]'

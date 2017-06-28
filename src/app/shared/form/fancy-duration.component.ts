@@ -1,5 +1,5 @@
 import { Component, Input, DoCheck } from '@angular/core';
-import { BaseModel } from '../model/base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 
 @Component({
   selector: 'publish-fancy-duration',
