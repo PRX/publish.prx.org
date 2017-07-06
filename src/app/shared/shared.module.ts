@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { DatepickerComponent, TimeAgoPipe, TimepickerComponent } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
-import { AdvancedSectionComponent, ButtonComponent, CopyInputDirective } from './form';
+import { AdvancedSectionComponent, CopyInputDirective } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TabComponent } from './tab';
@@ -16,7 +16,6 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
 @NgModule({
   declarations: [
     AdvancedSectionComponent,
-    ButtonComponent,
     CopyInputDirective,
     DatepickerComponent,
     DurationPipe,
@@ -37,7 +36,6 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
     AdvancedSectionComponent,
     CommonModule,
     FormsModule,
-    ButtonComponent,
     CopyInputDirective,
     DatepickerComponent,
     DatepickerModule,

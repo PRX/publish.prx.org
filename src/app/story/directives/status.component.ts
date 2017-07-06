@@ -17,8 +17,8 @@ import { StoryModel } from '../../shared';
         <ng-container *ngIf="isPublished">
           <button *ngIf="editStatus" class="btn-link edit-status" (click)="toggleEdit()">Hide</button>
           <button *ngIf="!editStatus" class="btn-link edit-status" (click)="toggleEdit()">Edit</button>
-          <publish-button *ngIf="editStatus" [model]="story" visible=1 orange=1 disabled=0
-            [working]="isPublishing" (click)="togglePublish()">Unpublish</publish-button>
+          <prx-button *ngIf="editStatus" [model]="story" visible=1 orange=1 disabled=0
+            [working]="isPublishing" (click)="togglePublish()">Unpublish</prx-button>
         </ng-container>
       </dd>
 
@@ -46,8 +46,8 @@ import { StoryModel } from '../../shared';
         <ng-container *ngIf="notPublished && !strictInvalid">
           <p *ngIf="changed">Ready after save</p>
           <p *ngIf="!changed">Ready to publish</p>
-          <publish-button [model]="story" visible=1 orange=1 [disabled]="changed"
-            [working]="isPublishing" (click)="togglePublish()">Publish</publish-button>
+          <prx-button [model]="story" visible=1 orange=1 [disabled]="changed"
+            [working]="isPublishing" (click)="togglePublish()">Publish</prx-button>
         </ng-container>
         <ng-container *ngIf="isPublished && !strictInvalid">
           <p *ngIf="changed">Unsaved changes</p>

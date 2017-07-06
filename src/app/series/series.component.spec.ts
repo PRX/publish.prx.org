@@ -72,7 +72,7 @@ describe('SeriesComponent', () => {
     auth.mock('prx:default-account', {id: 88});
     fix.detectChanges();
 
-    let btn = el.queryAll(By.css('publish-button')).find(e => {
+    let btn = el.queryAll(By.css('prx-button')).find(e => {
       return e.nativeElement.textContent === 'Create';
     });
     expect(btn).not.toBeNull();

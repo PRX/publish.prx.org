@@ -14,7 +14,7 @@ describe('StoryHeroComponent', () => {
   stubPipe('timeago');
 
   const expectDisabled = (el, text, shouldBeDisabled) => {
-    let button = el.queryAll(By.css('publish-button')).find(btn => {
+    let button = el.queryAll(By.css('prx-button')).find(btn => {
       return btn.nativeElement.textContent.trim() === text;
     });
     if (!button) {
