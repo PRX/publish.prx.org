@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
 import { RouterStub } from '../../../testing/stub.router';
 import { ToastrService, ModalService } from '../../core';
-import {  } from 'ngx-prx-styleguide';
 import { StoryStatusComponent } from './status.component';
 
 describe('StoryStatusComponent', () => {
