@@ -2,20 +2,16 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
-import { HalModule } from 'ngx-prx-styleguide';
+import { FooterModule, HalModule, ToastrModule, ToastrService } from 'ngx-prx-styleguide';
 
 import { PlayerService } from './audio';
 import { CastleService, CmsService, FeederService } from './hal';
-import { FooterComponent } from './footer';
 import { ModalComponent, ModalService } from './modal';
 import { MimeTypeService, UploadService } from './upload';
-import { ToastrComponent, ToastrService } from './toastr';
 
 @NgModule({
   declarations: [
-    FooterComponent,
-    ModalComponent,
-    ToastrComponent
+    ModalComponent
   ],
   imports: [
     CommonModule,
@@ -24,9 +20,9 @@ import { ToastrComponent, ToastrService } from './toastr';
     HalModule
   ],
   exports: [
-    FooterComponent,
+    FooterModule,
     ModalComponent,
-    ToastrComponent
+    ToastrModule,
   ],
   providers: [
     CastleService,
