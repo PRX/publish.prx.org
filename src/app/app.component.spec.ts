@@ -3,9 +3,8 @@ import { Angulartics2, Angulartics2GoogleAnalytics } from 'angulartics2';
 import { cit, create, provide, By } from '../testing';
 import { AppComponent } from './app.component';
 
-import { AuthService } from 'ngx-prx-styleguide';
+import { AuthService, ModalService } from 'ngx-prx-styleguide';
 import { CmsService } from './core/hal/cms.service';
-import { ModalService } from './core';
 
 let authToken = new Subject<string>();
 let cmsToken: string = null;

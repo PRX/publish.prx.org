@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { CmsService, ModalService, ToastrService } from '../core';
+import { CmsService, ToastrService } from '../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import { SeriesModel } from '../shared';
 
 @Component({

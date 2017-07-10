@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ModalService } from '../../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared';
 
 @Component({

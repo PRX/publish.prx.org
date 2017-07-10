@@ -1,5 +1,5 @@
 import { cit, create, provide, stubPipe } from '../../../testing';
-import { ModalService } from '../../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import { AudioFileTemplateModel } from '../../shared';
 import { FileTemplateComponent } from './file-template.component';
 
