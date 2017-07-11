@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild,
   ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { BaseModel } from '../model/base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 import { ImageModel } from '../model/image.model';
 import { ProseMirrorMarkdownEditor, ProseMirrorImage, ProseMirrorFormatTypes } from './prosemirror.markdown.editor';
 

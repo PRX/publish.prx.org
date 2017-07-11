@@ -1,6 +1,6 @@
 import { cit, create, provide, By, stubPipe } from '../../../testing';
 import { SeriesTemplatesComponent } from './series-templates.component';
-import { ModalService } from '../../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import { TabService } from '../../shared';
 
 describe('SeriesTemplatesComponent', () => {

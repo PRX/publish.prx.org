@@ -1,5 +1,5 @@
 import { Directive, Input, HostListener } from '@angular/core';
-import { ModalService } from '../../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import { AudioFileModel, AudioVersionModel } from '../../shared';
 
 @Directive({

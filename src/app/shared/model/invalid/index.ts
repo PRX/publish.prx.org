@@ -1,3 +1,3 @@
-export * from './base.invalid';
+export { BaseInvalid, UNLESS_NEW, REQUIRED, LENGTH, IN, FALSEY, TOKENY, URL } from 'ngx-prx-styleguide';
 export * from './audio.invalid';
 export * from './template.invalid';

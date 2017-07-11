@@ -33,17 +33,17 @@
 .version:last-child section {
   margin-bottom: 0;
 }
-.length >>> publish-fancy-duration {
+.length >>> prx-fancy-duration {
   margin-bottom: 12px;
 }
-.length >>> publish-fancy-duration:last-child {
+.length >>> prx-fancy-duration:last-child {
   margin-bottom: 0;
 }
 .length >>> h4 {
   width: 90px;
 }
 @media screen and (min-width: 992px) {
-  .length >>> publish-fancy-duration {
+  .length >>> prx-fancy-duration {
     display: inline-block;
     width: auto;
     margin-right: 20px;

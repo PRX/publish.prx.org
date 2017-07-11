@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ModalService } from '../../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared';
 
 @Component({
@@ -10,14 +10,14 @@ import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared'
 
       <div class="main">
         <div class="label">
-          <publish-fancy-field textinput required hideinvalid [model]="file" name="label">
-          </publish-fancy-field>
+          <prx-fancy-field textinput required hideinvalid [model]="file" name="label">
+          </prx-fancy-field>
         </div>
         <div class="lengths">
-          <publish-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"
-            [advancedConfirm]="lengthConfirm(file['lengthMinimum'] | duration, 'minimum')"></publish-fancy-duration>
-          <publish-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"
-            [advancedConfirm]="lengthConfirm(file['lengthMaximum'] | duration, 'maximum')"></publish-fancy-duration>
+          <prx-fancy-duration [model]="file" tiny="true" name="lengthMinimum" label="Min"
+            [advancedConfirm]="lengthConfirm(file['lengthMinimum'] | duration, 'minimum')"></prx-fancy-duration>
+          <prx-fancy-duration [model]="file" tiny="true" name="lengthMaximum" label="Max"
+            [advancedConfirm]="lengthConfirm(file['lengthMaximum'] | duration, 'maximum')"></prx-fancy-duration>
         </div>
       </div>
 

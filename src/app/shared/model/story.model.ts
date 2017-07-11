@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/toArray';
 import { HalDoc, Upload } from '../../core';
-import { BaseModel } from './base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 import { AudioVersionModel } from './audio-version.model';
 import { ImageModel } from './image.model';
 import { StoryDistributionModel } from './story-distribution.model';

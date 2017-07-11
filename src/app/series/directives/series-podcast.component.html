@@ -1,23 +1,23 @@
 <form [ngSwitch]="state">
 
-  <publish-fancy-field label="Series Podcast" *ngSwitchCase="'new'">
+  <prx-fancy-field label="Series Podcast" *ngSwitchCase="'new'">
     <div class="fancy-hint">The series itself must be created before a podcast distribution
       can be created for it.</div>
-  </publish-fancy-field>
+  </prx-fancy-field>
 
-  <publish-fancy-field label="Series Podcast" *ngSwitchCase="'missing'">
+  <prx-fancy-field label="Series Podcast" *ngSwitchCase="'missing'">
     <div class="fancy-hint">This series must have audio templates before a podcast distribution
       can be created for it.</div>
-  </publish-fancy-field>
+  </prx-fancy-field>
 
-  <publish-fancy-field label="Series Podcast" *ngSwitchCase="'creating'">
+  <prx-fancy-field label="Series Podcast" *ngSwitchCase="'creating'">
     <div class="fancy-hint">No podcast has been configured for this series.</div>
     <button (click)="createDistribution()">Create Podcast</button>
-  </publish-fancy-field>
+  </prx-fancy-field>
 
   <div *ngSwitchCase="'editing'">
 
-    <publish-fancy-field label="iTunes Categories" required=1>
+    <prx-fancy-field label="iTunes Categories" required=1>
       <div class="fancy-hint">Select the
         <a [href]="itunesCategoryDoc"
            title="Podcasts Connect categories - Podcasts Connect Help">
@@ -26,16 +26,16 @@
         that best describe this podcast.
       </div>
       <div class="span-fields">
-        <publish-fancy-field label="Category" [model]="podcast" name="category"
+        <prx-fancy-field label="Category" [model]="podcast" name="category"
           [select]="categories" (change)="setSubCategories()" small=1>
-        </publish-fancy-field>
-        <publish-fancy-field *ngIf="subCategories.length" label="Sub-Category"
+        </prx-fancy-field>
+        <prx-fancy-field *ngIf="subCategories.length" label="Sub-Category"
           [model]="podcast" name="subCategory" [select]="subCategories" small=1>
-        </publish-fancy-field>
+        </prx-fancy-field>
       </div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Explicit" required=1 [model]="podcast" name="explicit" [select]="explicitOpts">
+    <prx-fancy-field label="Explicit" required=1 [model]="podcast" name="explicit" [select]="explicitOpts">
       <div class="fancy-hint">
         In accordance with
         <a [href]="itunesRequirementsDoc"
@@ -44,54 +44,54 @@
         <a [href]="itunesExplicitDoc"
            title="About iTunes Store Parental Advisories - Apple Support">explicit material?</a>
       </div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field required label="Podcast Audio" name="versionTemplateUrl"
+    <prx-fancy-field required label="Podcast Audio" name="versionTemplateUrl"
       [select]="audioVersionOptions" [model]="distribution" [advancedConfirm]="versionTemplateConfirm">
       <div class="fancy-hint">Select which audio template should be used with your podcast.</div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Homepage Link" required textinput [model]="podcast" name="link">
+    <prx-fancy-field label="Homepage Link" required textinput [model]="podcast" name="link">
       <div class="fancy-hint">A link to the homepage for your podcast.</div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Owner Information">
+    <prx-fancy-field label="Owner Information">
       <div class="fancy-hint">Set the iTunes owner name and email for this podcast.</div>
       <div class="span-fields">
-        <publish-fancy-field label="Name" textinput [model]="podcast" name="ownerName" small=1>
-        </publish-fancy-field>
-        <publish-fancy-field label="Email" textinput [model]="podcast" name="ownerEmail" small=1>
-        </publish-fancy-field>
+        <prx-fancy-field label="Name" textinput [model]="podcast" name="ownerName" small=1>
+        </prx-fancy-field>
+        <prx-fancy-field label="Email" textinput [model]="podcast" name="ownerEmail" small=1>
+        </prx-fancy-field>
       </div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Author Information">
+    <prx-fancy-field label="Author Information">
       <div class="fancy-hint">Set the author name and email for this podcast.</div>
       <div class="span-fields">
-        <publish-fancy-field label="Name" textinput [model]="podcast" name="authorName" small=1>
-        </publish-fancy-field>
-        <publish-fancy-field label="Email" textinput [model]="podcast" name="authorEmail" small=1>
-        </publish-fancy-field>
+        <prx-fancy-field label="Name" textinput [model]="podcast" name="authorName" small=1>
+        </prx-fancy-field>
+        <prx-fancy-field label="Email" textinput [model]="podcast" name="authorEmail" small=1>
+        </prx-fancy-field>
       </div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Managing Editor Information">
+    <prx-fancy-field label="Managing Editor Information">
       <div class="fancy-hint">Set the managing editor name and email for this podcast.</div>
       <div class="span-fields">
-        <publish-fancy-field label="Name" textinput [model]="podcast" name="managingEditorName" small=1>
-        </publish-fancy-field>
-        <publish-fancy-field label="Email" textinput [model]="podcast" name="managingEditorEmail" small=1>
-        </publish-fancy-field>
+        <prx-fancy-field label="Name" textinput [model]="podcast" name="managingEditorName" small=1>
+        </prx-fancy-field>
+        <prx-fancy-field label="Email" textinput [model]="podcast" name="managingEditorEmail" small=1>
+        </prx-fancy-field>
       </div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Summary" *ngIf="podcast && podcast.summary">
+    <prx-fancy-field label="Summary" *ngIf="podcast && podcast.summary">
       <div class="fancy-hint">The iTunes summary for this podcast. You may create links, but other formatting is not supported.</div>
       <publish-wysiwyg [model]="podcast" name="summary" [content]="podcast.summary"
                        inputFormat="HTML" outputFormat="HTML" [changed]="podcast && podcast.changed('summary', false)"></publish-wysiwyg>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Summary" *ngIf="podcast && !podcast.summary">
+    <prx-fancy-field label="Summary" *ngIf="podcast && !podcast.summary">
       <div class="fancy-hint">
         Unless otherwise specified, the summary is created from the description of your series as shown in the preview below.
         The iTunes summary only allows for links, so all other formatting has been removed.
@@ -103,9 +103,9 @@
       <publish-wysiwyg #readonlyEditor [content]="series.description" [changed]="false" [editable]="false"
                        inputFormat="MARKDOWN" outputFormat="HTML">
       </publish-wysiwyg>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="PRX Feed" class="prx-feed-url" *ngIf="!distribution.isNew">
+    <prx-fancy-field label="PRX Feed" class="prx-feed-url" *ngIf="!distribution.isNew">
       <div class="fancy-hint" *ngIf="podcast?.hasPublicFeed">
         The private URL for your PRX podcast feed, providing the content for <a href="{{podcast.publicFeedUrl}}">your public feed</a>.
       </div>
@@ -115,9 +115,9 @@
         <a href="https://support.google.com/feedburner/answer/78475?hl=en" title="Feedburner Help">create one.</a>
       </div>
       <input type="text" readonly [ngModel]="podcast?.publishedUrl" name="publishedUrl"/>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Public Feed Url" class="feed-url">
+    <prx-fancy-field label="Public Feed Url" class="feed-url">
       <div *ngIf="podcast?.hasPublicFeed">
         <div class="fancy-hint">
           The public URL for your podcast feed. Feel free to share this URL with listeners. If you need to alter this URL, please
@@ -127,43 +127,43 @@
         <button [publishCopyInput]="pubFeed">Copy</button>
         <a class="button" target="_blank" rel="noopener" [href]="podcast?.publicFeedUrl">Open Link</a>
       </div>
-      <publish-fancy-field textinput [model]="podcast" name="publicFeedUrl" *ngIf="!podcast?.hasPublicFeed">
+      <prx-fancy-field textinput [model]="podcast" name="publicFeedUrl" *ngIf="!podcast?.hasPublicFeed">
         <div class="fancy-hint">
           If you already have a public URL for your podcast feed (e.g., feedburner), enter it here.
         </div>
-      </publish-fancy-field>
-    </publish-fancy-field>
+      </prx-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Enclosure Prefix Url" textinput [model]="podcast" name="enclosurePrefix">
+    <prx-fancy-field label="Enclosure Prefix Url" textinput [model]="podcast" name="enclosurePrefix">
       <div class="fancy-hint">
         If you have an enclosure prefix URL to set a redirect on audio requests for your podcast
         feed (e.g., podtrac or blubrry), enter it here.
       </div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Copyright" textinput [model]="podcast" name="copyright">
+    <prx-fancy-field label="Copyright" textinput [model]="podcast" name="copyright">
       <div class="fancy-hint">
         Copyright notice for content in the podcast.
       </div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
-    <publish-fancy-field label="Language" [model]="podcast" name="language" [select]="languageOptions">
+    <prx-fancy-field label="Language" [model]="podcast" name="language" [select]="languageOptions">
       <div class="fancy-hint">Select which language your podcast is in.</div>
-    </publish-fancy-field>
+    </prx-fancy-field>
 
     <publish-advanced-section>
-      <publish-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" [advancedConfirm]="newFeedUrlConfirm">
+      <prx-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" [advancedConfirm]="newFeedUrlConfirm">
         <div class="fancy-hint">
           If your podcast feed is moving, use this field to point to the new URL where your podcast is located.
           The current feed should be maintained until all of your subscribers have migrated.
         </div>
-      </publish-fancy-field>
+      </prx-fancy-field>
 
-      <publish-fancy-field label="Complete" checkbox [model]="podcast" name="complete" [advancedConfirm]="completeConfirm" prompt="The podcast is complete.">
+      <prx-fancy-field label="Complete" checkbox [model]="podcast" name="complete" [advancedConfirm]="completeConfirm" prompt="The podcast is complete.">
         <div class="fancy-hint">
           Checking the box indicates that the podcast is complete and you will not post any more episodes in the future.
         </div>
-      </publish-fancy-field>
+      </prx-fancy-field>
     </publish-advanced-section>
 
   </div>

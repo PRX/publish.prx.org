@@ -1,6 +1,6 @@
 import { AudioVersionTemplateModel } from '../audio-version-template.model';
 import { AudioFileTemplateModel } from '../audio-file-template.model';
-import { BaseInvalid } from './base.invalid';
+import { BaseInvalid } from 'ngx-prx-styleguide';
 
 /**
  * Audio version template length

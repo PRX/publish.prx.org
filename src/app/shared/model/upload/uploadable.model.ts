@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/takeWhile';
 import { HalDoc, Upload } from '../../../core';
-import { BaseModel } from '../base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 import { FALSEY } from '../invalid';
 
 export abstract class UploadableModel extends BaseModel {

@@ -2,7 +2,7 @@ import { HalDoc } from '../../../core';
 import { AudioFileModel } from '../audio-file.model';
 import { AudioVersionModel } from '../audio-version.model';
 import { DurationPipe } from '../../file';
-import { BaseInvalid } from './base.invalid';
+import { BaseInvalid } from 'ngx-prx-styleguide';
 
 const durationPipe = new DurationPipe();
 
