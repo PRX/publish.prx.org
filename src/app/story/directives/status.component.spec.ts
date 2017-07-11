@@ -2,8 +2,7 @@ import { cit, create, provide, stubPipe } from '../../../testing';
 import { Router } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
 import { RouterStub } from '../../../testing/stub.router';
-import { ToastrService } from '../../core';
-import { ModalService } from 'ngx-prx-styleguide';
+import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryStatusComponent } from './status.component';
 
 describe('StoryStatusComponent', () => {
