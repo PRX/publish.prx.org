@@ -13,3 +13,19 @@ publish-upload {
 publish-upload:last-child {
   margin-bottom: 0;
 }
+
+prx-datepicker.changed {
+  outline: 5px auto #f09b4c;
+}
+
+prx-datepicker.invalid {
+  outline: 5px auto #e32;
+}
+
+prx-timepicker {
+  margin-left: 5px;
+}
+
+prx-timepicker.changed {
+  outline: 5px auto #f09b4c;
+}

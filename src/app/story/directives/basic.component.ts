@@ -55,12 +55,12 @@ import { StoryModel, TabService } from '../../shared';
         to either delay or back-date its release, select the desired release date and time here.
         Otherwise, the episode will be released immediately once published.
         </div>
-        <publish-datepicker *ngIf="showReleasedAt"
-          [date]="story.releasedAt" (onDateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
-        </publish-datepicker>
-        <publish-timepicker *ngIf="showReleasedAt"
-          [date]="story.releasedAt" (onTimeChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
-        </publish-timepicker>
+        <prx-datepicker *ngIf="showReleasedAt"
+          [date]="story.releasedAt" (dateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
+        </prx-datepicker>
+        <prx-timepicker *ngIf="showReleasedAt"
+          [date]="story.releasedAt" (timeChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
+        </prx-timepicker>
       </prx-fancy-field>
 
     </form>
