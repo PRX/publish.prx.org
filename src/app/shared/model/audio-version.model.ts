@@ -3,7 +3,7 @@ import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/finally';
 import 'rxjs/add/operator/map';
 import { HalDoc, Upload } from '../../core';
-import { BaseModel } from './base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 import { AudioFileModel } from './audio-file.model';
 import { VERSION_TEMPLATED, LENGTH, REQUIRED} from './invalid';
 import { HasUpload, applyMixins } from './upload';

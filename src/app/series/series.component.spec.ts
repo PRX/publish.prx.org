@@ -2,7 +2,8 @@ import { cit, create, cms, provide, stubPipe, By } from '../../testing';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import { ModalService, ToastrService } from '../core';
+import { ToastrService } from '../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import { SeriesComponent } from './series.component';
 
 let activatedRoute = new ActivatedRouteStub();
@@ -72,7 +73,7 @@ describe('SeriesComponent', () => {
     auth.mock('prx:default-account', {id: 88});
     fix.detectChanges();
 
-    let btn = el.queryAll(By.css('publish-button')).find(e => {
+    let btn = el.queryAll(By.css('prx-button')).find(e => {
       return e.nativeElement.textContent === 'Create';
     });
     expect(btn).not.toBeNull();

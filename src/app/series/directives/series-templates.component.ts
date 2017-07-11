@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { ModalService } from '../../core';
+import { ModalService } from 'ngx-prx-styleguide';
 import {
   SeriesModel,
   TabService,
@@ -12,7 +12,7 @@ import {
   styleUrls: ['series-templates.component.css'],
   template: `
     <form *ngIf="series">
-      <publish-fancy-field label="Audio Templates">
+      <prx-fancy-field label="Audio Templates">
         <div class="fancy-hint">
           When you add episodes, you may want to have different versions of the audio (e.g., clean v. explicit).
           This page lets you define templates for the versions each episode in this series should have, including
@@ -21,7 +21,7 @@ import {
         </div>
         <button *ngIf="!hasVersions()" class="add-version"
           (click)="addVersion()"><i class="icon-plus"></i>Add a template</button>
-      </publish-fancy-field>
+      </prx-fancy-field>
 
       <ng-container *ngFor="let v of series.versionTemplates">
         <div *ngIf="!v.isDestroy" class="version">
@@ -30,22 +30,22 @@ import {
             <button type="button" class="btn-icon icon-cancel" (click)="confirmRemoveVersion(v)"></button>
           </header>
           <section>
-            <publish-fancy-field required textinput [model]="v" name="label" label="Template Label">
+            <prx-fancy-field required textinput [model]="v" name="label" label="Template Label">
               <div class="fancy-hint">A name for this audio template, such as "Podcast Audio" or "Clean Version"</div>
-            </publish-fancy-field>
+            </prx-fancy-field>
 
-            <publish-fancy-field class="length" [model]="v" label="Total length" invalid="lengthAny">
+            <prx-fancy-field class="length" [model]="v" label="Total length" invalid="lengthAny">
               <div class="fancy-hint">
                 The minimum and maximum HH:MM:SS durations for all the audio files. Used to ensure that each
                 of your episodes is the desired approximate length, and to prevent uploading bad audio.
               </div>
-              <publish-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"
-                [advancedConfirm]="lengthConfirm(v, v['lengthMinimum'] | duration, 'minimum')"></publish-fancy-duration>
-              <publish-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"
-                [advancedConfirm]="lengthConfirm(v, v['lengthMaximum'] | duration, 'maximum')"></publish-fancy-duration>
-            </publish-fancy-field>
+              <prx-fancy-duration [model]="v" name="lengthMinimum" label="Minimum"
+                [advancedConfirm]="lengthConfirm(v, v['lengthMinimum'] | duration, 'minimum')"></prx-fancy-duration>
+              <prx-fancy-duration [model]="v" name="lengthMaximum" label="Maximum"
+                [advancedConfirm]="lengthConfirm(v, v['lengthMaximum'] | duration, 'maximum')"></prx-fancy-duration>
+            </prx-fancy-field>
 
-            <publish-fancy-field label="Segments">
+            <prx-fancy-field label="Segments">
               <div class="fancy-hint">
                 Describe the individual segment audio files required in this template. Give
                 them a label such as "Billboard" or "Part A", and an optional min/max length
@@ -54,7 +54,7 @@ import {
               <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t" [version]="v"></publish-file-template>
               <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)" type="button"
                 (click)="confirmAddFile($event, v)"><i class="icon-plus"></i>Add Segment</button>
-            </publish-fancy-field>
+            </prx-fancy-field>
           </section>
         </div>
       </ng-container>

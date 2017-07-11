@@ -22,7 +22,7 @@ describe('PodcastComponent', () => {
   });
 
   cit('shows the podcast distribution edit fields', (fix, el, comp) => {
-    expect(el).not.toQuery('publish-fancy-field');
+    expect(el).not.toQuery('prx-fancy-field');
     comp.story = {images: [], changed: () => false};
     comp.episode = {
       original: {guid: 'bar'},
@@ -31,7 +31,7 @@ describe('PodcastComponent', () => {
     comp.version = 'foo';
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('publish-fancy-field')).length).toEqual(8);
+    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(8);
     expect(el).toContainText('explicit material');
     expect(el).toContainText('author info');
     expect(el).toContainText('GUID');

@@ -54,8 +54,8 @@ import { UploadService } from '../../../core';
       </div>
 
       <div *ngIf="!canceled" class="info">
-        <publish-fancy-field [model]="image" textinput="true" name="caption" label="Caption" small="true"></publish-fancy-field>
-        <publish-fancy-field [model]="image" textinput="true" name="credit" label="Credit" small="true"></publish-fancy-field>
+        <prx-fancy-field [model]="image" textinput="true" name="caption" label="Caption" small="true"></prx-fancy-field>
+        <prx-fancy-field [model]="image" textinput="true" name="credit" label="Credit" small="true"></prx-fancy-field>
       </div>
 
     </div>

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
 
-import { BaseModel } from '../model/base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 import { TabService } from './tab.service';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import { HalDoc } from '../../core';
-import { BaseModel } from './base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 import { REQUIRED, URL, LENGTH } from './invalid';
 
 export class FeederPodcastModel extends BaseModel {

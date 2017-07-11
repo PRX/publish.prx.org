@@ -22,12 +22,12 @@ import { StoryModel } from '../../shared';
         <p *ngIf="!story?.isNew">Last saved at {{story.updatedAt | timeago}}</p>
       </div>
       <div class="hero-actions" *ngIf="story">
-        <publish-button [model]="story" working=0 disabled=0 plain=1
-          [visible]="isChanged" (click)="discard()">Discard</publish-button>
-        <publish-button [model]="story" [visible]="isChanged || story.isNew"
-          [disabled]="isInvalid" (click)="save()">Save</publish-button>
-        <publish-button *ngIf="!story.isNew" working=0 disabled=1
-          [visible]="!isChanged">Saved</publish-button>
+        <prx-button [model]="story" working=0 disabled=0 plain=1
+          [visible]="isChanged" (click)="discard()">Discard</prx-button>
+        <prx-button [model]="story" [visible]="isChanged || story.isNew"
+          [disabled]="isInvalid" (click)="save()">Save</prx-button>
+        <prx-button *ngIf="!story.isNew" working=0 disabled=1
+          [visible]="!isChanged">Saved</prx-button>
       </div>
     </prx-hero>
     `

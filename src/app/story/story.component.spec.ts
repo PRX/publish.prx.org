@@ -3,7 +3,8 @@ import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { StoryComponent } from './story.component';
-import { ModalService, ToastrService } from '../core';
+import { ToastrService } from '../core';
+import { ModalService } from 'ngx-prx-styleguide';
 
 let router = new RouterStub();
 let activatedRoute = new ActivatedRouteStub();

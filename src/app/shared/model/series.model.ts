@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { HalDoc, Upload } from '../../core';
-import { BaseModel } from './base.model';
+import { BaseModel } from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
 import { AudioVersionTemplateModel } from './audio-version-template.model';
 import { AudioFileTemplateModel } from './audio-file-template.model';
