@@ -10,10 +10,6 @@
   position: absolute;
   right: 4px;
   top: 4px;
-  color: #676767;
-}
-.version header button:hover, .version header button:focus {
-  color: #222;
 }
 .version header strong {
   color: #222;
@@ -55,4 +51,7 @@
 }
 .add-version, .add-segment {
   margin-top: 20px;
+}
+.add-version i, .add-segment i {
+  vertical-align: bottom;
 }

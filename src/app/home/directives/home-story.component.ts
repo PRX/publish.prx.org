@@ -8,8 +8,8 @@ import { StoryModel } from '../../shared';
   template: `
     <ng-container *ngIf="isPlusSign">
       <a [routerLink]="editLink" class="plus-sign">
-        <i class="icon-plus"></i>
-        <p>New Episode</p>
+        <i class="icon-plus" aria-hidden="true"></i>
+        <span>New Episode</span>
       </a>
     </ng-container>
     <ng-container *ngIf="!isPlusSign">

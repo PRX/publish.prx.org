@@ -8,7 +8,7 @@ import { AudioVersionModel, AudioFileModel } from '../../shared';
     <div *ngIf="!file.isDestroy" [publishAudioClasses]="file">
 
       <div class="reorder">
-        <i class="icon-menu drag-handle"></i>
+        <button class="btn-icon icon-menu drag-handle" aria-label="Reorder"></button>
       </div>
 
       <div class="main">
@@ -25,7 +25,7 @@ import { AudioVersionModel, AudioFileModel } from '../../shared';
       </div>
 
       <div class="cancel">
-        <button class="btn-icon icon-cancel" [publishAudioCancel]="file" [version]="version"></button>
+        <button class="btn-icon icon-cancel" [publishAudioCancel]="file" [version]="version" aria-label="Remove"></button>
       </div>
 
     </div>

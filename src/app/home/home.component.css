@@ -43,10 +43,9 @@ header a.create, header a.all {
 }
 .new-series i {
   font-size: 80px;
-  display: table-cell;
-  vertical-align: middle;
+  margin: 56px;
 }
-.new-series p {
+.new-series span {
   position: absolute;
   bottom: 40px;
   left: 0;

@@ -1,15 +1,13 @@
 .plus-sign {
-  display: table;
   height: 100%;
   width: 100%;
   text-align: center;
 }
 .plus-sign i {
   font-size: 80px;
-  display: table-cell;
-  vertical-align: middle;
+  margin: 56px;
 }
-.plus-sign p {
+.plus-sign span {
   position: absolute;
   bottom: 40px;
   left: 0;

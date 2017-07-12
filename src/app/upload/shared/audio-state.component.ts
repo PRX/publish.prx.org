@@ -15,7 +15,7 @@ import { AudioFileModel } from '../../shared';
       <div *ngSwitchCase="'upload-errored'">
         <p>Upload Error: {{file.isUploadError}}</p>
         <div *ngIf="file.upload" class="retry">
-          <button class="btn-link icon-cw" (click)="onRetry()">Try Again</button>
+          <button class="btn-link" (click)="onRetry()"><span class="icon-cw"></span> Try Again</button>
         </div>
       </div>
 
@@ -30,7 +30,7 @@ import { AudioFileModel } from '../../shared';
       <div *ngSwitchCase="'process-errored'">
         <p>{{file.isProcessError}}</p>
         <div class="retry">
-          <button class="btn-link icon-cw" (click)="onRetry()">Try Again</button>
+          <button class="btn-link" (click)="onRetry()"><span class="icon-cw"></span> Try Again</button>
         </div>
       </div>
 

@@ -10,8 +10,8 @@
         <br/>Older PRX series must be managed on
         <a href="https://www.prx.org/series/manage">the old version of PRX.org</a>.
         <a [routerLink]="['series/new']" class="new-series">
-          <i class="icon-plus"></i>
-          <p>New Series</p>
+          <i class="icon-plus" aria-hidden="true"></i>
+          <span>New Series</span>
         </a>
       </div>
       <publish-home-series noseries=true [auth]="auth" rows=4></publish-home-series>
