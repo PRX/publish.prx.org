@@ -1,7 +1,7 @@
 import { cit, create, provide, stubPipe, niceEl, By } from '../../../testing';
 import { Router } from '@angular/router';
 import { RouterStub } from '../../../testing/stub.router';
-import { ToastrService } from '../../core';
+import { ToastrService } from 'ngx-prx-styleguide';
 import { StoryHeroComponent } from './hero.component';
 
 describe('StoryHeroComponent', () => {

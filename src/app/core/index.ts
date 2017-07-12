@@ -4,4 +4,3 @@ export { CoreModule } from './core.module';
 export { PlayerService, PlaybackMetadata, ValidationMetadata } from './audio';
 export { CastleService, CmsService, FeederService, HalDoc } from './hal';
 export { Upload, UploadService, UUID } from './upload';
-export { ToastrService } from './toastr';
