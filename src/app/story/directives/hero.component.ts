@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnChanges, DoCheck } from '@angular/core';
 import { Router } from '@angular/router';
-import { HalDoc, ToastrService } from '../../core';
+import { HalDoc } from '../../core';
+import { ToastrService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../../shared';
 
 @Component({

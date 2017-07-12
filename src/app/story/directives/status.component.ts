@@ -1,8 +1,7 @@
 import { Component, Input, DoCheck } from '@angular/core';
 import { Router } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
-import { ToastrService } from '../../core';
-import { ModalService } from 'ngx-prx-styleguide';
+import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../../shared';
 
 @Component({
