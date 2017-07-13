@@ -18,7 +18,7 @@ import { UploadService } from '../../../core';
         <div *ngIf="!canceled && image.isUploadError" class="uploading errored">
           <p>Upload Error</p>
           <div *ngIf="image.upload" class="retry">
-            <a class="icon-cw" href="" (click)="onRetry($event)">Try Again</a>
+            <button class="btn-link" (click)="onRetry($event)"><span class="icon-cw"></span> Try Again</button>
           </div>
         </div>
 
@@ -31,7 +31,7 @@ import { UploadService } from '../../../core';
         </prx-image>
 
         <div *ngIf="!canceled" class="cancel">
-          <i class="icon-cancel" (click)="onCancel($event)"></i>
+          <button class="icon-cancel" (click)="onCancel($event)"></button>
         </div>
 
         <div *ngIf="!canceled && image.isProcessing" class="processing">
@@ -42,7 +42,7 @@ import { UploadService } from '../../../core';
         <div *ngIf="!canceled && image.isProcessError" class="processing errored">
           <p>{{image.isProcessError}}</p>
           <div class="retry">
-            <a class="icon-cw" href="" (click)="onRetry($event)">Try Again</a>
+            <button class="btn-link" (click)="onRetry($event)"><span class="icon-cw"></span> Try Again</button>
           </div>
         </div>
 

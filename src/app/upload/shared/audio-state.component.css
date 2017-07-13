@@ -12,6 +12,10 @@
   justify-content: flex-start;
   align-items: center;
 }
+.state .retry .icon-cw {
+  font-size: 18px;
+  vertical-align: bottom;
+}
 p {
   color: #000;
   padding-right: 10px;

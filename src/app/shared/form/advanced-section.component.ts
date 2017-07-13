@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
       <hr *ngIf="show">
       <ng-content *ngIf="show"></ng-content>
       <button class="btn-link" (click)="toggleShow()">
-        <i [class.icon-right-dir]="!show" [class.icon-up-dir]="show"></i>{{show ? 'Hide' : 'Show'}} Advanced Settings
+        <i [class.icon-right-dir]="!show" [class.icon-up-dir]="show" aria-hidden="true"></i>{{show ? 'Hide' : 'Show'}} Advanced Settings
       </button>
     </section>
   `,

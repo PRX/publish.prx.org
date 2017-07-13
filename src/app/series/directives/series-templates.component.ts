@@ -20,14 +20,14 @@ import {
           be checked against these requirements for validity.
         </div>
         <button *ngIf="!hasVersions()" class="add-version"
-          (click)="addVersion()"><i class="icon-plus"></i>Add a template</button>
+          (click)="addVersion()"><i class="icon-plus white" aria-hidden="true"></i> Add a template</button>
       </prx-fancy-field>
 
       <ng-container *ngFor="let v of series.versionTemplates">
         <div *ngIf="!v.isDestroy" class="version">
           <header>
             <strong>{{v?.label}}</strong>
-            <button type="button" class="btn-icon icon-cancel" (click)="confirmRemoveVersion(v)"></button>
+            <button type="button" class="btn-icon icon-cancel grey-dove" (click)="confirmRemoveVersion(v)"></button>
           </header>
           <section>
             <prx-fancy-field required textinput [model]="v" name="label" label="Template Label">
@@ -53,7 +53,7 @@ import {
               </div>
               <publish-file-template *ngFor="let t of v.fileTemplates" [file]="t" [version]="v"></publish-file-template>
               <button tabindex=-1 class="add-segment" *ngIf="canAddFile(v)" type="button"
-                (click)="confirmAddFile($event, v)"><i class="icon-plus"></i>Add Segment</button>
+                (click)="confirmAddFile($event, v)"><i class="icon-plus white" aria-hidden="true"></i> Add Segment</button>
             </prx-fancy-field>
           </section>
         </div>

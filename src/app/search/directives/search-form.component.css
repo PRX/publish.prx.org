@@ -20,6 +20,11 @@ option[disabled] {
 .form-group > .left {
   float: left;
 }
+.form-group > .left button {
+  vertical-align: middle;
+  padding: 0px;
+  margin: 0px;
+}
 .form-group > .right {
   float: right;
 }

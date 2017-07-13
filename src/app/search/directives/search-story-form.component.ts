@@ -22,7 +22,7 @@ import { SearchStory } from '../search-story.model';
             <option selected disabled value="undefined">Select Series</option>
             <option *ngFor="let seriesId of allSeriesIds" [value]="seriesId">{{allSeries[seriesId]?.title || 'No Series'}}</option>
           </select>
-          <button class="btn-link" (click)="clearSeries()"><i class="icon-cancel"></i></button>
+          <button class="btn-icon icon-cancel" (click)="clearSeries()"></button>
         </p>
 
         <p class="right">

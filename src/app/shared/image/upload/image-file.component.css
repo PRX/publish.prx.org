@@ -65,13 +65,12 @@
   top: 0;
   right: 0;
 }
-.thumbnail .cancel i {
-  font-size: 22px;
-  color: #368AA2;
-  cursor: pointer;
+.thumbnail .cancel button {
+  margin: 5px;
 }
-.thumbnail .cancel i:hover {
-  color: #2b7187;
+.thumbnail .retry .icon-cw {
+  font-size: 18px;
+  vertical-align: bottom;
 }
 .thumbnail .processing {
   position: absolute;

@@ -43,20 +43,15 @@
   .main {order: 2; flex-basis: 1;}
 }
 
-.reorder i {
+.reorder button {
   font-size: 30px;
   cursor: move;
+  margin: 0;
 }
 .cancel button {
   margin: 4px 0 4px 20px
 }
-.reorder i {
-  color: #368AA2;
-}
-.reorder i:hover, .reorder i:focus {
-  color: #2b7187;
-}
-.audio.canceled .reorder i, .audio.canceled .cancel button {
+.audio.canceled .reorder button, .audio.canceled .cancel button {
   display: none;
 }
 

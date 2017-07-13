@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { DatepickerComponent, TimeAgoPipe, TimepickerComponent } from './date';
+import { TimeAgoPipe } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
 import { AdvancedSectionComponent, CopyInputDirective } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
@@ -17,7 +17,6 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
   declarations: [
     AdvancedSectionComponent,
     CopyInputDirective,
-    DatepickerComponent,
     DurationPipe,
     FileSelectDirective,
     FileSizePipe,
@@ -26,7 +25,6 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
     ImageUploadComponent,
     TabComponent,
     TimeAgoPipe,
-    TimepickerComponent,
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
@@ -37,7 +35,6 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
     CommonModule,
     FormsModule,
     CopyInputDirective,
-    DatepickerComponent,
     DatepickerModule,
     DurationPipe,
     FancyFormModule,
@@ -49,7 +46,6 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
     ImageUploadComponent,
     TabComponent,
     TimeAgoPipe,
-    TimepickerComponent,
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
