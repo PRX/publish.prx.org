@@ -2,10 +2,12 @@
   height: 100%;
   width: 100%;
   text-align: center;
+  display: block;
 }
 .plus-sign i {
   font-size: 80px;
-  margin: 56px;
+  margin-top: 56px;
+  vertical-align: middle;
 }
 .plus-sign span {
   position: absolute;
@@ -14,7 +16,6 @@
   right: 0;
 }
 .plus-sign:hover {
-  color: #2b7187;
   background-color: #ccc;
 }
 .info {

@@ -38,12 +38,12 @@ header a.create, header a.all {
   position: relative;
   background: #ddd;
   margin-top: 10px;
-  display: table;
+  display: block;
   text-align: center;
 }
 .new-series i {
   font-size: 80px;
-  margin: 56px;
+  margin-top: 56px;
 }
 .new-series span {
   position: absolute;
