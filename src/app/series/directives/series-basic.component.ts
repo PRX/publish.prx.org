@@ -1,7 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { CmsService, HalDoc } from '../../core';
-import { SeriesModel, TabService } from '../../shared';
+import { SeriesModel } from '../../shared';
+import { TabService } from 'ngx-prx-styleguide';
 
 @Component({
   templateUrl: 'series-basic.component.html'

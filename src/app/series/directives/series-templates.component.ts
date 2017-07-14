@@ -1,9 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { ModalService } from 'ngx-prx-styleguide';
+import { ModalService, TabService } from 'ngx-prx-styleguide';
 import {
   SeriesModel,
-  TabService,
   AudioVersionTemplateModel,
   AudioFileTemplateModel
 } from '../../shared';

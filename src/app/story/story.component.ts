@@ -14,7 +14,7 @@ import { Env } from '../core/core.env';
   template: `
     <publish-story-hero [id]="id" [story]="story"></publish-story-hero>
 
-    <publish-tabs [model]="story">
+    <prx-tabs [model]="story">
       <nav>
         <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
         <a *ngIf="distPodcast" routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Episode Info</a>
@@ -23,7 +23,7 @@ import { Env } from '../core/core.env';
       </nav>
       <publish-story-status [id]="id" [story]="story"></publish-story-status>
       <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
-    </publish-tabs>
+    </prx-tabs>
   `
 })
 

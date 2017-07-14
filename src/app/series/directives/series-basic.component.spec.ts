@@ -3,8 +3,7 @@ import { RouterStub, ActivatedRouteStub } from '../../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SeriesBasicComponent } from './series-basic.component';
 import { SeriesComponent } from '../series.component';
-import { ModalService, ToastrService } from 'ngx-prx-styleguide';
-import { TabService } from '../../shared';
+import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
 
 let activatedRoute = new ActivatedRouteStub();
 let router = new RouterStub();

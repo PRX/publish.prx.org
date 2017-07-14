@@ -1,6 +1,6 @@
 import { cit, create, provide, By } from '../../../testing';
 import { PodcastComponent } from './podcast.component';
-import { TabService } from '../../shared';
+import { TabService } from 'ngx-prx-styleguide';
 
 describe('PodcastComponent', () => {
 

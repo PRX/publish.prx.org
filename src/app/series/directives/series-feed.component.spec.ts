@@ -1,6 +1,6 @@
 import { cit, create, provide, stubPipe } from '../../../testing';
 import { SeriesFeedComponent } from './series-feed.component';
-import { TabService } from '../../shared';
+import { TabService } from 'ngx-prx-styleguide';
 
 describe('SeriesFeedComponent', () => {
 

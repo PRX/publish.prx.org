@@ -1,5 +1,6 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
+import { TabService } from 'ngx-prx-styleguide';
 import { CmsService } from '../../core';
 import {
   AudioVersionModel,
@@ -7,7 +8,6 @@ import {
   FeederEpisodeModel,
   StoryModel,
   StoryDistributionModel,
-  TabService,
   WysiwygComponent
 } from '../../shared';
 

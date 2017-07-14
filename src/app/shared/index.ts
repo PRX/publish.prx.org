@@ -6,6 +6,5 @@ export * from './form';
 export * from './guard';
 export * from './image';
 export * from './model';
-export * from './tab';
 export * from './text-overflow';
 export * from './wysiwyg';

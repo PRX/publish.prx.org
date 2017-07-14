@@ -8,10 +8,10 @@ import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
 import { AdvancedSectionComponent, CopyInputDirective } from './form';
 import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { ImageFileComponent, ImageUploadComponent } from './image';
-import { TabComponent } from './tab';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
-import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
+import { DatepickerModule, FancyFormModule, HeroModule, ImageModule,
+  ModalModule, SpinnerModule, TabModule, TabService } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [
@@ -23,7 +23,6 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
     FocusDirective,
     ImageFileComponent,
     ImageUploadComponent,
-    TabComponent,
     TimeAgoPipe,
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
@@ -44,7 +43,7 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
     HeroModule,
     ImageModule,
     ImageUploadComponent,
-    TabComponent,
+    TabModule,
     TimeAgoPipe,
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
@@ -61,12 +60,14 @@ import { DatepickerModule, FancyFormModule, HeroModule, ImageModule, ModalModule
     HeroModule,
     ImageModule,
     ModalModule,
-    SpinnerModule
+    SpinnerModule,
+    TabModule
   ],
   providers: [
     AuthGuard,
     DeactivateGuard,
-    UnauthGuard
+    UnauthGuard,
+    TabService
   ]
 })
 

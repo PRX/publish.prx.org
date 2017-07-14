@@ -1,6 +1,7 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { StoryModel, TabService } from '../../shared';
+import { StoryModel } from '../../shared';
+import { TabService } from 'ngx-prx-styleguide';
 
 @Component({
   styleUrls: ['basic.component.css'],
