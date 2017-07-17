@@ -1,6 +1,6 @@
 import { cit, create, provide, By } from '../../../testing';
 import { BasicComponent } from './basic.component';
-import { TabService } from '../../shared';
+import { TabService } from 'ngx-prx-styleguide';
 
 describe('BasicComponent', () => {
 

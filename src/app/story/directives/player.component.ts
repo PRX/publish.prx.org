@@ -1,6 +1,7 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { StoryModel, DistributionModel, TabService } from '../../shared';
+import { StoryModel, DistributionModel } from '../../shared';
+import { TabService } from 'ngx-prx-styleguide';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Env } from '../../core/core.env';
 

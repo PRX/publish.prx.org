@@ -1,7 +1,8 @@
 import { Component, OnDestroy, DoCheck, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
+import { TabService } from 'ngx-prx-styleguide';
 import { SeriesModel, DistributionModel, FeederPodcastModel,
-         TabService, CATEGORIES, SUBCATEGORIES, WysiwygComponent } from '../../shared';
+         CATEGORIES, SUBCATEGORIES, WysiwygComponent } from '../../shared';
 import * as languageMappingList from 'langmap';
 
 @Component({

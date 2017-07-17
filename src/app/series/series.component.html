@@ -27,7 +27,7 @@
   </div>
 </prx-hero>
 
-<publish-tabs [model]="series">
+<prx-tabs [model]="series">
   <nav>
     <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
     <a routerLinkActive="active" [routerLink]="[base, 'templates']">Audio Templates</a>
@@ -39,4 +39,4 @@
   <div class="extras">
     <button *ngIf="id && storyCount == 0" class="delete" (click)="confirmDelete($event)">Delete</button>
   </div>
-</publish-tabs>
+</prx-tabs>

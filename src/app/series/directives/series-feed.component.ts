@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { SeriesModel, StoryModel, TabService } from '../../shared';
+import { TabService } from 'ngx-prx-styleguide';
+import { SeriesModel, StoryModel } from '../../shared';
 
 @Component({
   template: `

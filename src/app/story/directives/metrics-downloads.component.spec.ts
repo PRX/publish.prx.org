@@ -1,6 +1,6 @@
 import { cit, cms as castle, create, provide } from '../../../testing';
 import { MetricsDownloadsComponent } from './metrics-downloads.component';
-import { TabService } from '../../shared';
+import { TabService } from 'ngx-prx-styleguide';
 
 describe('MetricsDownloadsComponent', () => {
 
