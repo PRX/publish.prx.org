@@ -6,11 +6,11 @@ import { RouterModule } from '@angular/router';
 import { TimeAgoPipe } from './date';
 import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
 import { AdvancedSectionComponent, CopyInputDirective } from './form';
-import { AuthGuard, DeactivateGuard, UnauthGuard } from './guard';
 import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
-import { DatepickerModule, FancyFormModule, HeroModule, ImageModule,
+import { AuthGuard, DeactivateGuard, UnauthGuard,
+  DatepickerModule, FancyFormModule, HeroModule, ImageModule,
   ModalModule, SpinnerModule, TabModule, TabService } from 'ngx-prx-styleguide';
 
 @NgModule({
