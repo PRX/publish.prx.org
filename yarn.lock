@@ -3523,9 +3523,9 @@ ng2-dragula@^1.3.1:
   dependencies:
     dragula "^3.7.2"
 
-ngx-prx-styleguide@0.0.13:
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-0.0.13.tgz#ec1f4b6a41aa56089c52de00cfa0d43f10fa1611"
+ngx-prx-styleguide@0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-0.0.14.tgz#8f7f5df9f70863fe1c512c9b88dfd4bb6506adcc"
   dependencies:
     c3 "^0.4.11"
     pikaday "^1.5.1"
