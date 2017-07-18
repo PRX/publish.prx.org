@@ -1,6 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard, DeactivateGuard } from '../shared';
+import { AuthGuard, DeactivateGuard } from 'ngx-prx-styleguide';
 
 import { SeriesComponent } from './series.component';
 import { SeriesBasicComponent } from './directives/series-basic.component';

@@ -1,7 +1,7 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AuthGuard, UnauthGuard } from './shared';
+import { AuthGuard, UnauthGuard } from 'ngx-prx-styleguide';
 import { ErrorComponent } from './error';
 import { HomeComponent, HomeSeriesComponent, HomeStoryComponent } from './home';
 import { LoginComponent } from './login/login.component';
