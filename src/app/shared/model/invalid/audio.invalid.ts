@@ -47,6 +47,10 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
         return `total length must be less than ${max} - currently ${got}`;
       }
 
+      if (version.status === 'invalid') {
+        return version.statusMessage;
+      }
+
     }
 
     return null;

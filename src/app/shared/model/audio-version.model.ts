@@ -15,6 +15,8 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
   public id: number;
   public label: string;
   public explicit = '';
+  public status: string;
+  public statusMessage: string;
 
   // save in-progress uploads to localstorage
   SETABLE = ['label', 'explicit', 'hasUploadMap'];
@@ -107,6 +109,8 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
         this.explicit = '';
         break;
     }
+    this.status = this.doc['status'];
+    this.statusMessage = this.doc['statusMessage'];
   }
 
   encode(): {} {
