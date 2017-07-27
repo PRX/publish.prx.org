@@ -90,6 +90,12 @@ export class SeriesComponent implements OnInit {
       if (wasNew) {
         this.router.navigate(['/series', this.series.id]);
       }
+    },
+    err => {
+      if (err.name === 'HalHttpError' && err.userFriendlyMessage) {
+        this.toastr.error(err.userFriendlyMessage);
+        console.error(err);
+      }
     });
   }
 
