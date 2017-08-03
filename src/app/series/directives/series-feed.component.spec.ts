@@ -46,4 +46,12 @@ describe('SeriesFeedComponent', () => {
     expect(el).toContainText('Second Public Story');
   });
 
+  cit('links to search and new story pages', (fix, el, comp) => {
+    comp.series = {id: 'foo'};
+    comp.isLoaded = true;
+    fix.detectChanges();
+    expect(el).toContainText('Search among');
+    expect(el).toContainText('Create a new');
+  });
+
 });
