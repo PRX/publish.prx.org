@@ -41,18 +41,18 @@ import { SeriesModel, StoryModel } from '../../shared';
         </ul>
 
         <div class="extra" *ngIf="isLoaded">
-          <h5>
-            <a [routerLink]="['/search', { tab: 'stories', seriesId: series.id }]">
-              Search among these episodes.
-            </a>
-          </h5>
-          <h5>
-            <a [routerLink]="['/story/new', series.id]">
-              Create a new episode.
-            </a>
-          </h5>
+          <a [routerLink]="['/search', { tab: 'stories', seriesId: series.id }]">
+            Search among these episodes.
+          </a>
         </div>
       </section>
+
+      <div class="extra" *ngIf="isLoaded">
+        <a [routerLink]="['/story/new', series.id]">
+          Create a new episode.
+        </a>
+      </div>
+
     </section>
     </div>
   `,
