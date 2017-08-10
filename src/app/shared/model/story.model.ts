@@ -149,7 +149,7 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   // clear status messages, as it's easier than refreshing
   saveRelated(): Observable<boolean[]> {
-    if (this.changed('files')) {
+    if (this.changed('versions')) {
       this.status = null;
       this.statusMessage = null;
     }
