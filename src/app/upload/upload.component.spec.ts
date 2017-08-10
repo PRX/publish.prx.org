@@ -14,7 +14,9 @@ describe('UploadComponent', () => {
       files: data.files || [],
       filesAndTemplates: data.filesAndTemplates || [],
       invalid: data.invalid || (() => data.invalid),
-      changed: data.changed || (() => data.changed)
+      changed: data.changed || (() => data.changed),
+      status: data.status,
+      statusMessage: data.statusMessage
     };
   };
 
@@ -54,6 +56,27 @@ describe('UploadComponent', () => {
     fix.detectChanges();
     expect(el.nativeElement.className).toContain('invalid');
     expect(el).toContainText('Something something something');
+  });
+
+  cit('shows remote status messages', (fix, el, comp) => {
+    let isChanged = true;
+    let invalid = 'Local invalid';
+    comp.version = mockVersion({
+      changed: () => isChanged,
+      invalid: (fld) => fld === 'self' && invalid,
+      status: 'invalid',
+      statusMessage: 'Remote invalid'
+    });
+    fix.detectChanges();
+    expect(el).toContainText('Local invalid');
+
+    invalid = null;
+    fix.detectChanges();
+    expect(el).not.toContainText('Local invalid');
+
+    isChanged = false;
+    fix.detectChanges();
+    expect(el).toContainText('Remote invalid');
   });
 
 });

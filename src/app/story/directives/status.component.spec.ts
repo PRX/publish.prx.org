@@ -5,7 +5,7 @@ import { RouterStub } from '../../../testing/stub.router';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryStatusComponent } from './status.component';
 
-describe('StoryStatusComponent', () => {
+fdescribe('StoryStatusComponent', () => {
 
   create(StoryStatusComponent);
 
@@ -50,6 +50,14 @@ describe('StoryStatusComponent', () => {
     expect(el).toContainText('Found 2 problems');
     mockStory({invalid: () => null}, comp, fix);
     fix.detectChanges();
+    expect(el).toContainText('Ready to publish');
+  });
+
+  cit('shows remote status messages', (fix, el, comp) => {
+    mockStory({status: 'invalid', statusMessage: 'Remote invalid'}, comp, fix);
+    expect(el).toContainText('Publish');
+    expect(el).toContainText('Found 1 problem');
+    mockStory({status: 'any', statusMessage: 'Remote invalid'}, comp, fix);
     expect(el).toContainText('Ready to publish');
   });
 
