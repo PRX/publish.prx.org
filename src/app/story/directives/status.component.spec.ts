@@ -5,7 +5,7 @@ import { RouterStub } from '../../../testing/stub.router';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryStatusComponent } from './status.component';
 
-fdescribe('StoryStatusComponent', () => {
+describe('StoryStatusComponent', () => {
 
   create(StoryStatusComponent);
 
