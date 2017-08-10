@@ -14,9 +14,9 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
     let undeleted = version.files.filter(f => !f.isDestroy);
     let count = undeleted.length;
 
-    // wait for uploads to complete
-    if (!version.files.every(f => !f.isUploading)) {
-      return 'wait for uploads to complete';
+    // wait for processing to complete
+    if (strict && version.files.some(f => f.isProcessing)) {
+      return 'wait for uploads to finish processing';
     }
 
     // prevent publishing unless strict checks pass
@@ -45,10 +45,6 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
         let max = durationPipe.transform(template['lengthMaximum']);
         let got = durationPipe.transform(duration);
         return `total length must be less than ${max} - currently ${got}`;
-      }
-
-      if (version.status === 'invalid') {
-        return version.statusMessage;
       }
 
     }

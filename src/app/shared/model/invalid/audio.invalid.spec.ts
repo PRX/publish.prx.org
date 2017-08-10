@@ -31,10 +31,11 @@ describe('AudioInvalid', () => {
       expect(invalid('', {files: [f1, f2, f3]}, true)).toMatch('upload 3 segment');
     });
 
-    it('always waits for uploads', () => {
+    it('strictly waits for processing', () => {
       let invalid = VERSION_TEMPLATED();
-      expect(invalid('', {files: [{}, {isUploading: true}]}, true)).toMatch('wait for uploads');
-      expect(invalid('', {files: [{}, {isUploading: true}]}, false)).toMatch('wait for uploads');
+      expect(invalid('', {files: [{}, {isProcessing: true}]}, true)).toMatch('wait for uploads');
+      expect(invalid('', {files: [{}, {isProcessing: true}]}, false)).toBeNull();
+      expect(invalid('', {files: [{}, {isProcessing: false}]}, true)).toBeNull();
     });
 
     it('strictly checks min duration', () => {
