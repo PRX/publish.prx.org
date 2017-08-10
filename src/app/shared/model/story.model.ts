@@ -20,6 +20,8 @@ export class StoryModel extends BaseModel implements HasUpload {
   public shortDescription = '';
   public description = '';
   public tags = '';
+  public status: string;
+  public statusMessage: string;
   public updatedAt: Date;
   public publishedAt: Date;
   public releasedAt: Date;
@@ -120,6 +122,8 @@ export class StoryModel extends BaseModel implements HasUpload {
     this.shortDescription = this.doc['shortDescription'] || '';
     this.description = this.doc['descriptionMd'] || '';
     this.tags = (this.doc['tags'] || []).join(', ');
+    this.status = this.doc['status'];
+    this.statusMessage = this.doc['statusMessage'];
     this.updatedAt = new Date(this.doc['updatedAt']);
     this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
     this.releasedAt = this.doc['releasedAt'] ? new Date(this.doc['releasedAt']) : null;
@@ -141,6 +145,15 @@ export class StoryModel extends BaseModel implements HasUpload {
     } else {
       return this.account.create('prx:stories', {}, data);
     }
+  }
+
+  // clear status messages, as it's easier than refreshing
+  saveRelated(): Observable<boolean[]> {
+    if (this.changed('files')) {
+      this.status = null;
+      this.statusMessage = null;
+    }
+    return super.saveRelated();
   }
 
   setPublished(published: boolean): Observable<boolean> {

@@ -137,6 +137,15 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
     return this.parent.create('prx:audio-versions', {}, data);
   }
 
+  // clear status messages, as it's easier than refreshing
+  saveRelated(): Observable<boolean[]> {
+    if (this.changed('files')) {
+      this.status = null;
+      this.statusMessage = null;
+    }
+    return super.saveRelated();
+  }
+
   discard() {
     super.discard();
     this.files.sort((f1, f2) => f1.position - f2.position);
