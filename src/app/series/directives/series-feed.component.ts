@@ -46,6 +46,13 @@ import { SeriesModel, StoryModel } from '../../shared';
           </a>
         </div>
       </section>
+
+      <div class="extra" *ngIf="isLoaded">
+        <a [routerLink]="['/story/new', series.id]">
+          Create a new episode.
+        </a>
+      </div>
+
     </section>
     </div>
   `,
