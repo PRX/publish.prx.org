@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import { AudioFileModel } from './audio-file.model';
 
-fdescribe('AudioFileModel', () => {
+describe('AudioFileModel', () => {
 
   let versionMock: any, fileMock: any;
   const makeFile = (data?: any) => {
