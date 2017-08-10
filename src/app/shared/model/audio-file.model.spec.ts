@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/empty';
 import { AudioFileModel } from './audio-file.model';
 
-describe('AudioFileModel', () => {
+fdescribe('AudioFileModel', () => {
 
   let versionMock: any, fileMock: any;
   const makeFile = (data?: any) => {
@@ -33,6 +33,31 @@ describe('AudioFileModel', () => {
       file.VALIDATORS['self'] = null;
       file.setTemplate(<any> {});
       expect(file.VALIDATORS['self'].length).toEqual(1);
+    });
+
+  });
+
+  describe('decode', () => {
+
+    it('translates audio metadata', () => {
+      let file = makeFile({
+        bitRate: 128,
+        frequency: '44.1',
+        channelMode: 'foo',
+        contentType: 'bar',
+        layer: 4
+      });
+      expect(file.bitrate).toEqual(128000);
+      expect(file.frequency).toEqual(44100);
+      expect(file.channelmode).toEqual('foo');
+      expect(file.contenttype).toEqual('bar');
+      expect(file.layer).toEqual(4);
+    });
+
+    it('ignores missing audio metadata', () => {
+      let file = makeFile({});
+      expect(file.bitrate).toBeUndefined();
+      expect(file.frequency).toBeUndefined();
     });
 
   });

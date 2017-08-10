@@ -13,6 +13,10 @@ export class AudioFileModel extends UploadableModel {
   public duration: number;
   public bitrate: number;
   public frequency: number;
+  public channelmode: string;
+  public contenttype: string;
+  public layer: number;
+  public statusMessage: string;
 
   public canceled: boolean;
 
@@ -42,14 +46,12 @@ export class AudioFileModel extends UploadableModel {
   }
 
   stateComplete(status: string): boolean {
-    return status === 'complete';
+    return status === 'complete' || status === 'invalid';
   }
 
   stateError(status: string): string {
     if (this.status === 'not found') {
       return 'Unable to find file - please remove and try again';
-    } else if (this.status === 'invalid') {
-      return 'Not a valid audio file - please remove and try again';
     } else if (this.status === 'failed') {
       return 'Unable to process file - please remove and try again';
     }
@@ -75,6 +77,14 @@ export class AudioFileModel extends UploadableModel {
     this.label = this.doc['label'];
     this.duration = this.doc['duration'];
     this.position = this.doc['position'];
+    this.bitrate = this.doc['bitRate'];
+    if (this.bitrate) { this.bitrate = this.bitrate * 1000; }
+    this.frequency = parseFloat(this.doc['frequency']) || undefined;
+    if (this.frequency) { this.frequency = this.frequency * 1000; }
+    this.channelmode = this.doc['channelMode'];
+    this.contenttype = this.doc['contentType'];
+    this.layer = this.doc['layer'];
+    this.statusMessage = this.doc['statusMessage'];
   }
 
   encode(): {} {
