@@ -15,6 +15,8 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
   public id: number;
   public label: string;
   public explicit = '';
+  public status: string;
+  public statusMessage: string;
 
   // save in-progress uploads to localstorage
   SETABLE = ['label', 'explicit', 'hasUploadMap'];
@@ -107,6 +109,8 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
         this.explicit = '';
         break;
     }
+    this.status = this.doc['status'];
+    this.statusMessage = this.doc['statusMessage'];
   }
 
   encode(): {} {
@@ -131,6 +135,15 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
 
   saveNew(data: {}): Observable<HalDoc> {
     return this.parent.create('prx:audio-versions', {}, data);
+  }
+
+  // clear status messages, as it's easier than refreshing
+  saveRelated(): Observable<boolean[]> {
+    if (this.changed('files')) {
+      this.status = null;
+      this.statusMessage = null;
+    }
+    return super.saveRelated();
   }
 
   discard() {
@@ -219,6 +232,11 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
         file.watchUpload(upload, false);
       }
     }
+  }
+
+  nonMatchingFiles(): string {
+    let invalid = this.invalid('self', true);
+    return (invalid && invalid.match(/non-matching/i)) ? invalid : null;
   }
 
   get noAudioFiles(): boolean {

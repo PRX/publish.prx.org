@@ -37,6 +37,31 @@ describe('AudioFileModel', () => {
 
   });
 
+  describe('decode', () => {
+
+    it('translates audio metadata', () => {
+      let file = makeFile({
+        bitRate: 128,
+        frequency: '44.1',
+        channelMode: 'foo',
+        contentType: 'bar',
+        layer: 4
+      });
+      expect(file.bitrate).toEqual(128000);
+      expect(file.frequency).toEqual(44100);
+      expect(file.channelmode).toEqual('foo');
+      expect(file.contenttype).toEqual('bar');
+      expect(file.layer).toEqual(4);
+    });
+
+    it('ignores missing audio metadata', () => {
+      let file = makeFile({});
+      expect(file.bitrate).toBeUndefined();
+      expect(file.frequency).toBeUndefined();
+    });
+
+  });
+
   describe('key', () => {
 
     it('uses the id for the key', () => {

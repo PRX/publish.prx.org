@@ -53,4 +53,12 @@ describe('StoryStatusComponent', () => {
     expect(el).toContainText('Ready to publish');
   });
 
+  cit('shows remote status messages', (fix, el, comp) => {
+    mockStory({status: 'invalid', statusMessage: 'Remote invalid'}, comp, fix);
+    expect(el).toContainText('Publish');
+    expect(el).toContainText('Found 1 problem');
+    mockStory({status: 'any', statusMessage: 'Remote invalid'}, comp, fix);
+    expect(el).toContainText('Ready to publish');
+  });
+
 });

@@ -89,9 +89,9 @@ export class StoryStatusComponent implements DoCheck {
       this.isPublished = this.story.publishedAt ? true : false;
       this.isScheduled = this.isPublished && !this.story.isPublished();
       this.notPublished = !this.isPublished;
-      this.normalInvalid = this.story.invalid(null, false);
+      this.normalInvalid = this.storyInvalid(false);
       this.normalInvalidCount = this.countProblems(false);
-      this.strictInvalid = this.story.invalid(null, true);
+      this.strictInvalid = this.storyInvalid(true);
       this.strictInvalidCount = this.countProblems(true);
       this.changed = this.story.changed();
     }
@@ -164,6 +164,17 @@ export class StoryStatusComponent implements DoCheck {
       this.isPublishing = false;
       this.editStatus = false;
     });
+  }
+
+  private storyInvalid(strict): string {
+    let invalids = this.story.invalid(null, strict);
+    if (invalids || this.story.status !== 'invalid') {
+      return invalids;
+    } else if (strict && !this.story.changed()) {
+      return this.story.statusMessage;
+    } else {
+      return null;
+    }
   }
 
 }
