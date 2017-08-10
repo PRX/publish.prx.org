@@ -234,6 +234,11 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
     }
   }
 
+  nonMatchingFiles(): string {
+    let invalid = this.invalid('self', true);
+    return (invalid && invalid.match(/non-matching/i)) ? invalid : null;
+  }
+
   get noAudioFiles(): boolean {
     return this.fileTemplates.length < 1 && this.files.every(f => f.isDestroy);
   }

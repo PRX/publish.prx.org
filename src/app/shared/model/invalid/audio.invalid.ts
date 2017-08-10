@@ -47,6 +47,20 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
         return `total length must be less than ${max} - currently ${got}`;
       }
 
+      // file formats must match
+      let nonMatches = [];
+      let labels = {contenttype: 'content type', channelmode: 'channels'};
+      ['contenttype', 'layer', 'frequency', 'bitrate', 'channelmode'].forEach(fld => {
+        let vals = undeleted.map(f => f[fld]).filter(val => val);
+        vals = vals.filter((val, idx) => vals.indexOf(val) === idx);
+        if (vals.length > 1) {
+          nonMatches.push(labels[fld] || fld);
+        }
+      });
+      if (nonMatches.length) {
+        return `Non-matching audio files (${nonMatches.join(' / ')})`;
+      }
+
     }
 
     return null;

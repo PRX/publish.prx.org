@@ -15,6 +15,7 @@ describe('UploadComponent', () => {
       filesAndTemplates: data.filesAndTemplates || [],
       invalid: data.invalid || (() => data.invalid),
       changed: data.changed || (() => data.changed),
+      nonMatchingFiles: () => false,
       status: data.status,
       statusMessage: data.statusMessage
     };

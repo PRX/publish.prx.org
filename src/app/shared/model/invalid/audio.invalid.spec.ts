@@ -52,6 +52,13 @@ describe('AudioInvalid', () => {
       expect(invalid('', {files: [{duration: 3}, {duration: 2}]}, true)).toBeNull();
     });
 
+    it('strictly checks matching audio formats', () => {
+      let invalid = VERSION_TEMPLATED();
+      expect(invalid('', {files: [{bitrate: 123}, {bitrate: 456}]}, false)).toBeNull();
+      expect(invalid('', {files: [{bitrate: 123}, {bitrate: 456}]}, true)).toMatch('Non-matching');
+      expect(invalid('', {files: [{bitrate: 123}, {bitrate: 123}]}, true)).toBeNull();
+    });
+
   });
 
   describe('FILE_TEMPLATED', () => {

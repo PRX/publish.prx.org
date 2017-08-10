@@ -85,6 +85,9 @@ export class UploadComponent implements OnInit, DoCheck {
         this.changedClass = !this.versionUndeletedHaveChanged();
       } else if (this.version.changed(null, false)) {
         this.changedClass = true; // version itself changed, not files
+      } else if (this.version.nonMatchingFiles()) {
+        this.invalidClass = true;
+        this.invalidMessage = this.version.nonMatchingFiles();
       } else if (this.version.status === 'invalid') {
         this.invalidClass = true;
         this.invalidMessage = this.version.statusMessage;
