@@ -3,24 +3,9 @@
   width: 250px;
   margin-right: 40px;
 }
-.prx-feed-url input, .feed-url input {
-  padding: 10px 8px;
-  color: #939393;
-  margin-bottom: 4px;
-}
 .prx-feed-url input {
+  padding: 10px 8px;
+  margin-bottom: 4px;
+  color: #939393;
   width: 100%;
-}
-.feed-url input {
-  min-width: 400px;
-}
-.feed-url button, .feed-url .button {
-  padding-top: 9px;
-  padding-bottom: 8px;
-}
-.feed-url button {
-  background-color: #f59f51;
-}
-.feed-url button:hover, .feed-url button:focus {
-  background-color: #e28b42;
 }
