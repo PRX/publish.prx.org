@@ -117,21 +117,20 @@
       <input type="text" readonly [ngModel]="podcast?.publishedUrl" name="publishedUrl"/>
     </prx-fancy-field>
 
-    <prx-fancy-field label="Public Feed Url" class="feed-url">
-      <div *ngIf="podcast?.hasPublicFeed">
-        <div class="fancy-hint">
-          The public URL for your podcast feed. Feel free to share this URL with listeners. If you need to alter this URL, please
-          do so safely by using the New Feed Url field in the Advanced settings.
-        </div>
-        <input type="text" readonly [ngModel]="podcast?.publicFeedUrl" name="publicFeedUrl" #pubFeed/>
-        <button [publishCopyInput]="pubFeed">Copy</button>
-        <a class="button" target="_blank" rel="noopener" [href]="podcast?.publicFeedUrl">Open Link</a>
+    <prx-fancy-field *ngIf="podcast?.hasPublicFeed" label="Public Feed Url" textinput [model]="podcast" name="publicFeedUrl" [advancedConfirm]="publicFeedChangeConfirm">
+      <div class="fancy-hint">
+        The public URL for your podcast feed. Feel free to share this URL with listeners. If you need to alter this URL once your feed is live, set the <a target="_blank" rel="noopener" href="this.itunesNewFeedURLDoc">New Feed URL</a> as well.
       </div>
-      <prx-fancy-field textinput [model]="podcast" name="publicFeedUrl" *ngIf="!podcast?.hasPublicFeed">
-        <div class="fancy-hint">
-          If you already have a public URL for your podcast feed (e.g., feedburner), enter it here.
-        </div>
-      </prx-fancy-field>
+      <p *ngIf="showNewFeedCheckbox">
+        <input type="checkbox" (change)="setNewFeedToPublicFeed($event)" [checked]="podcast.publicFeedUrl === podcast.newFeedUrl" id="matchFeeds">
+        <label for="matchFeeds">Check to set your podcast's New Feed URL to this URL as well.</label>
+      </p>
+    </prx-fancy-field>
+
+    <prx-fancy-field *ngIf="!podcast?.hasPublicFeed" label="Public Feed Url" textinput [model]="podcast" name="publicFeedUrl">
+      <div class="fancy-hint">
+        If you already have a public URL for your podcast feed (e.g., feedburner), enter it here.
+      </div>
     </prx-fancy-field>
 
     <prx-fancy-field label="Enclosure Prefix Url" textinput [model]="podcast" name="enclosurePrefix">
