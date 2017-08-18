@@ -18,6 +18,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
   itunesCategoryDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12';
+  itunesNewFeedURLDoc = 'https://help.apple.com/itc/podcasts_connect/#/itca489031e0';
   audioVersionOptions: string[][];
 
   tabSub: Subscription;
@@ -121,6 +122,25 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
     if (this.podcast && this.subCategories.indexOf(this.podcast.subCategory) < 0) {
       this.podcast.set('subCategory', '');
+    }
+  }
+
+  setNewFeedToPublicFeed(e: Event) {
+    if (e.currentTarget && e.currentTarget['checked']) {
+      this.podcast.newFeedUrl = this.podcast.publicFeedUrl;
+    }
+  }
+
+  get publicFeedChangeConfirm(): string {
+    if (this.podcast && this.podcast.original['publicFeedUrl']) {
+      let confirmMsg = `Are you sure you want to change your public feed URL
+                       from "${this.podcast.original['publicFeedUrl']}" to "${this.podcast.publicFeedUrl}"?
+                       This will point your subscribers to a new feed location.
+                       If you have existing subscribers at ${this.podcast.original['publicFeedUrl']},
+                       make sure to set the <a target="_blank" rel="noopener"
+                       href="${this.itunesNewFeedURLDoc}">New Feed URL</a>
+                       as well to avoid losing subscribers.`;
+      return confirmMsg;
     }
   }
 

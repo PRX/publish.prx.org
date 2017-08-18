@@ -5,11 +5,13 @@
 }
 .prx-feed-url input, .feed-url input {
   padding: 10px 8px;
-  color: #939393;
   margin-bottom: 4px;
 }
 .prx-feed-url input {
   width: 100%;
+}
+input.changed {
+  outline: 5px auto #f09b4c;
 }
 .feed-url input {
   min-width: 400px;
