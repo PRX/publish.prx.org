@@ -19,7 +19,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
   itunesCategoryDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12';
   itunesNewFeedURLDoc = 'https://help.apple.com/itc/podcasts_connect/#/itca489031e0';
-  showNewFeedCheckbox = false;
   audioVersionOptions: string[][];
 
   tabSub: Subscription;
@@ -71,7 +70,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     } else {
       this.state = null;
     }
-    this.showCheckboxIfUrlChanged();
   }
 
   ngOnDestroy(): any {
@@ -130,15 +128,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   setNewFeedToPublicFeed(e: Event) {
     if (e.currentTarget && e.currentTarget['checked']) {
       this.podcast.newFeedUrl = this.podcast.publicFeedUrl;
-    }
-  }
-
-  showCheckboxIfUrlChanged() {
-    if (this.podcast) {
-      let changedOne = this.podcast.changed('publicFeedUrl') && !this.podcast.changed('newFeedUrl');
-      if (this.showNewFeedCheckbox || changedOne) {
-        this.showNewFeedCheckbox = true;
-      }
     }
   }
 

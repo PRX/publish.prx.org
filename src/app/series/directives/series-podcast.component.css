@@ -10,6 +10,9 @@
 .prx-feed-url input {
   width: 100%;
 }
+input.changed {
+  outline: 5px auto #f09b4c;
+}
 .feed-url input {
   min-width: 400px;
 }
