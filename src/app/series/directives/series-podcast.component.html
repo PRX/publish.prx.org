@@ -117,10 +117,17 @@
       <input type="text" readonly [ngModel]="podcast?.publishedUrl" name="publishedUrl"/>
     </prx-fancy-field>
 
-    <prx-fancy-field *ngIf="podcast?.hasPublicFeed" label="Public Feed Url" textinput [model]="podcast" name="publicFeedUrl" [advancedConfirm]="publicFeedChangeConfirm">
+    <prx-fancy-field *ngIf="podcast?.hasPublicFeed" label="Public Feed Url" class="feed-url">
       <div class="fancy-hint">
         The public URL for your podcast feed. Feel free to share this URL with listeners. If you need to alter this URL once you have subscribers, set the <a target="_blank" rel="noopener" href="this.itunesNewFeedURLDoc">New Feed URL</a> as well.
       </div>
+      <input type="text"
+             [ngModel]="podcast?.publicFeedUrl"
+             name="publicFeedUrl" #pubFeed
+             [prxAdvancedConfirm]="publicFeedChangeConfirm" [prxModel]="podcast" prxName="publicFeedUrl" (ngModelChange)="podcast.set('publicFeedUrl', $event)"
+      />
+      <button [publishCopyInput]="pubFeed">Copy</button>
+      <a class="button" target="_blank" rel="noopener" [href]="podcast?.publicFeedUrl">Open Link</a>
       <p *ngIf="showNewFeedCheckbox">
         <input type="checkbox" (change)="setNewFeedToPublicFeed($event)" [checked]="podcast.publicFeedUrl === podcast.newFeedUrl" id="matchFeeds">
         <label for="matchFeeds">Check to set your podcast's New Feed URL to this URL as well.</label>
