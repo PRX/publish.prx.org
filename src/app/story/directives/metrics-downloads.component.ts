@@ -34,7 +34,7 @@ import { TabService, TimeseriesChartModel, TimeseriesDatumModel } from 'ngx-prx-
       {{error}}
     </p>
     <div *ngIf="!chartData && !error" class="chart-loading"><prx-spinner></prx-spinner></div>
-    <prx-line-timeseries-chart *ngIf="chartData" [datasets]="chartData" [dateFormat]="dateFormat"></prx-line-timeseries-chart>
+    <prx-timeseries-chart *ngIf="chartData" type="line" [datasets]="chartData" [formatX]="dateFormat"></prx-timeseries-chart>
   `,
   styleUrls: ['metrics-downloads.component.css']
 })
@@ -96,9 +96,9 @@ export class MetricsDownloadsComponent {
   setMetrics(metrics: any) {
     if (metrics[0] && metrics[0]['downloads'] && metrics[0]['downloads'].length > 0) {
       let dataset = metrics[0]['downloads'].map(datum => {
-        return new TimeseriesDatumModel(datum[1], moment(datum[0]).valueOf());
+        return { value: datum[1], date: moment(datum[0]).valueOf() };
       });
-      this.chartData = [new TimeseriesChartModel(dataset, this.story.title, '#61A85D')];
+      this.chartData = [{ data: dataset, label: this.story.title, color: '#61A85D' }];
     } else {
       this.error = 'This podcast has no download metrics.';
     }
