@@ -11,11 +11,13 @@ import { StoryModel, SeriesModel, ImageModel } from '../model';
     <div *ngIf="!hasImages" class="new-image" [class.changed]="hasDestroyed"
       [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
 
-      <p *ngIf="!suggestSize" class="size">
-        Minimum size: {{minWidth}} x {{minHeight}} px
-        Maximum size: {{maxWidth}} x {{maxHeight}} px
-      </p>
-      <p *ngIf="suggestSize" class="size">Suggested size: {{suggestSize}} px</p>
+      <div class="size">
+        <p *ngIf="!suggestSize">
+          Minimum size: {{minWidth}} x {{minHeight}} px
+          Maximum size: {{maxWidth}} x {{maxHeight}} px
+        </p>
+        <p *ngIf="suggestSize">Suggested size: {{suggestSize}} px</p>
+      </div>
       <input type="file" [attr.id]="'image-file-' + purpose" accept="image/*"
        publishFileSelect (file)="addUpload($event)" class.invalid="imgError"/>
       <label class="button" [attr.for]="'image-file-' + purpose">Add Image</label>
