@@ -11,7 +11,10 @@ import { StoryModel, SeriesModel, ImageModel } from '../model';
     <div *ngIf="!hasImages" class="new-image" [class.changed]="hasDestroyed"
       [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
 
-      <p *ngIf="!suggestSize" class="size">Minimum size: {{minWidth}} x {{minHeight}} px</p>
+      <p *ngIf="!suggestSize" class="size">
+        Minimum size: {{minWidth}} x {{minHeight}} px
+        Maximum size: {{maxWidth}} x {{maxHeight}} px
+      </p>
       <p *ngIf="suggestSize" class="size">Suggested size: {{suggestSize}} px</p>
       <input type="file" [attr.id]="'image-file-' + purpose" accept="image/*"
        publishFileSelect (file)="addUpload($event)" class.invalid="imgError"/>
@@ -33,6 +36,8 @@ export class ImageUploadComponent implements DoCheck {
   @Input() purpose: string;
   @Input() minWidth = 144;
   @Input() minHeight = 144;
+  @Input() maxWidth = 144;
+  @Input() maxHeight = 144;
   @Input() suggestSize: string;
   @Input() square = false;
 

@@ -24,7 +24,11 @@
 
   <prx-fancy-field label="Profile Image">
     <div class="fancy-hint">This image will be used as the cover image for this series. Image dimensions must be square.</div>
-    <publish-image-upload [model]="series" purpose="profile" minWidth=1400 minHeight=1400 square="true"></publish-image-upload>
+    <publish-image-upload [model]="series" purpose="profile"
+      minWidth=1400 minHeight=1400
+      maxWidth=3000 maxHeight=3000
+      square="true">
+    </publish-image-upload>
   </prx-fancy-field>
 
   <prx-fancy-field label="Thumbnail Image">
