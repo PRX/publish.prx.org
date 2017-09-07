@@ -104,8 +104,11 @@ export class ImageUploadComponent implements DoCheck {
         if (this.browserImage.width < this.minWidth || this.browserImage.height < this.minHeight) {
           this.imgError = `The image provided is only ${this.browserImage.width} x ${this.browserImage.height} px
                            but should be at least ${this.minWidth} x ${this.minHeight} px.`;
+        } else if (this.browserImage.width > this.maxWidth || this.browserImage.height > this.maxHeight){
+          this.imgError = `The image provided is ${this.browserImage.width} x ${this.browserImage.height} px
+                           but should not exceed ${this.maxWidth} x ${this.maxHeight} px.`;
         } else if (this.square && this.browserImage.width !== this.browserImage.height) {
-          this.imgError = `Image width and height must be the same, but the image provided is 
+          this.imgError = `Image width and height must be the same, but the image provided is
                            ${this.browserImage.width} x ${this.browserImage.height} px.`;
         } else {
           let upload = this.uploadService.add(file);
