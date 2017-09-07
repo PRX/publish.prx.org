@@ -10,15 +10,17 @@ export class AudioVersionTemplateModel extends BaseModel {
 
   public id: number;
   public label: string = null;
+  public contentType = 'audio/mpeg';
   public lengthMinimum: number = null;
   public lengthMaximum: number = null;
   public fileTemplates: AudioFileTemplateModel[];
   private newIndex: number = null;
 
-  SETABLE = ['label', 'lengthMinimum', 'lengthMaximum'];
+  SETABLE = ['label', 'contentType', 'lengthMinimum', 'lengthMaximum'];
 
   VALIDATORS = {
     label: [REQUIRED(), LENGTH(1, 255)],
+    contentType: [REQUIRED(), IN(['audio/mpeg', 'audio/mp2', 'video/mpeg', 'video/x-mpeg'])],
     lengthMinimum: [VERSION_LENGTH(this)],
     lengthMaximum: [VERSION_LENGTH(this)]
   };
@@ -62,6 +64,7 @@ export class AudioVersionTemplateModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.label = this.doc['label'] || '';
+    this.contentType = this.doc['contentType'] || 'audio/mpeg';
     this.lengthMinimum = this.doc['lengthMinimum'] || null;
     this.lengthMaximum = this.doc['lengthMaximum'] || null;
   }
@@ -69,6 +72,7 @@ export class AudioVersionTemplateModel extends BaseModel {
   encode(): {} {
     let data = <any> {};
     data.label = this.label;
+    data.contentType = this.contentType;
     data.lengthMinimum = this.lengthMinimum || 0;
     data.lengthMaximum = this.lengthMaximum || 0;
     return data;
@@ -94,6 +98,10 @@ export class AudioVersionTemplateModel extends BaseModel {
     } else {
       return found;
     }
+  }
+
+  get isAudio(): boolean {
+    return !!this.contentType.match(/^audio\//);
   }
 
 }

@@ -17,6 +17,8 @@ export class SeriesTemplatesComponent implements OnDestroy {
   series: SeriesModel;
   tabSub: Subscription;
 
+  contentTypeOptions = [['MP3 Audio', 'audio/mpeg'], ['MPEG Video', 'video/mpeg']];
+
   constructor(tab: TabService, private modal: ModalService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
