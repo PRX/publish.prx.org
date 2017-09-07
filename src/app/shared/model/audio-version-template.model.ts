@@ -3,7 +3,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { HalDoc } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
-import { REQUIRED, LENGTH, VERSION_LENGTH } from './invalid';
+import { REQUIRED, LENGTH, IN, VERSION_LENGTH } from './invalid';
 import { AudioFileTemplateModel } from './audio-file-template.model';
 
 export class AudioVersionTemplateModel extends BaseModel {
@@ -13,6 +13,7 @@ export class AudioVersionTemplateModel extends BaseModel {
   public lengthMinimum: number = null;
   public lengthMaximum: number = null;
   public fileTemplates: AudioFileTemplateModel[];
+  private newIndex: number = null;
 
   SETABLE = ['label', 'lengthMinimum', 'lengthMaximum'];
 
@@ -22,18 +23,23 @@ export class AudioVersionTemplateModel extends BaseModel {
     lengthMaximum: [VERSION_LENGTH(this)]
   };
 
-  constructor(series?: HalDoc, versionTemplate?: HalDoc, loadRelated = true) {
+  constructor(series?: HalDoc, docOrIndex?: HalDoc | number, loadRelated = true) {
     super();
-    this.init(series, versionTemplate, loadRelated);
+    if (docOrIndex instanceof HalDoc) {
+      this.init(series, docOrIndex, loadRelated);
+    } else {
+      this.newIndex = docOrIndex || 0;
+      this.init(series, null, loadRelated);
+    }
   }
 
   key() {
     if (this.doc) {
       return `prx.audio-version-template.${this.doc.id}`;
     } else if (this.parent) {
-      return `prx.audio-version-template.new.${this.parent.id}`;
+      return `prx.audio-version-template.new.${this.parent.id}.${this.newIndex}`;
     } else {
-      return 'prx.audio-version-template.new.new';
+      return `prx.audio-version-template.new.new.${this.newIndex}`;
     }
   }
 
