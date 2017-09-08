@@ -19,14 +19,6 @@
           <div class="fancy-hint">A name for this audio template, such as "Podcast Audio" or "Clean Version"</div>
         </prx-fancy-field>
 
-        <prx-fancy-field required [select]="contentTypeOptions" [model]="v"
-          name="contentType" label="File Type" [disabled]="!v.isNew">
-          <div class="fancy-hint">
-            All files uploaded to this template must have this file type. This cannot
-            be changed once you save this template.
-          </div>
-        </prx-fancy-field>
-
         <prx-fancy-field *ngIf="v.isAudio" class="length" [model]="v" label="Total length" invalid="lengthAny">
           <div class="fancy-hint">
             The minimum and maximum HH:MM:SS durations for all the audio files. Used to ensure that each
@@ -53,9 +45,11 @@
   </ng-container>
 
   <section>
-    <button class="add-version" (click)="addVersion()"><i class="icon-plus white" aria-hidden="true"></i>
-      <ng-container *ngIf="!hasVersions()">Add a template</ng-container>
-      <ng-container *ngIf="hasVersions()">Add another template</ng-container>
+    <button class="add-version" (click)="addAudioVersion()">
+      <i class="icon-plus white" aria-hidden="true"></i> Add audio template
+    </button>
+    <button class="add-version" (click)="addVideoVersion()">
+      <i class="icon-plus white" aria-hidden="true"></i> Add video template
     </button>
   </section>
 </form>

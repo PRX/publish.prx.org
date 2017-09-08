@@ -17,8 +17,6 @@ export class SeriesTemplatesComponent implements OnDestroy {
   series: SeriesModel;
   tabSub: Subscription;
 
-  contentTypeOptions = [['MP3 Audio', 'audio/mpeg'], ['MPEG Video', 'video/mpeg']];
-
   constructor(tab: TabService, private modal: ModalService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
@@ -42,17 +40,32 @@ export class SeriesTemplatesComponent implements OnDestroy {
     return t && t.isNew && !t.changed();
   }
 
-  addVersion() {
+  addAudioVersion(): AudioVersionTemplateModel {
     let draft = new AudioVersionTemplateModel(this.series.doc, this.series.versionTemplates.length);
+    draft.set('contentType', 'audio/mpeg');
     if (this.hasDefaultVersion()) {
-      this.series.versionTemplates[0].set('label', 'Default Podcast Audio');
+      this.series.versionTemplates[0].set('label', '', true);
+      this.series.versionTemplates[0].set('label', 'Podcast Audio'); // force change
       draft.set('label', 'Some Other Audio');
     } else if (this.hasVersions()) {
       draft.set('label', 'Some Other Audio');
     } else {
       draft.set('label', 'Podcast Audio');
     }
+
+    let file = new AudioFileTemplateModel(this.series.doc, null, 1);
+    file.set('label', 'Main Segment');
+    draft.fileTemplates.push(file);
+
     this.series.versionTemplates.push(draft);
+    return draft;
+  }
+
+  addVideoVersion() {
+    let draft = this.addAudioVersion();
+    draft.set('contentType', 'video/mpeg');
+    draft.set('label', 'Podcast Video');
+    draft.fileTemplates[0].set('label', 'Video Segment');
   }
 
   confirmRemoveVersion(version: AudioVersionTemplateModel) {
