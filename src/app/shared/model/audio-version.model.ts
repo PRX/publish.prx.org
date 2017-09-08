@@ -78,7 +78,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
     const fileSort = (f1, f2) => f1.position - f2.position;
 
     let files = this.getUploads('prx:audio').map(audios => {
-      let docs = audios.map(docOrUuid => new AudioFileModel(this.doc, docOrUuid));
+      let docs = audios.map(docOrUuid => new AudioFileModel(this.template, this.doc, docOrUuid));
       this.setUploads('prx:audio', docs.map(d => d.uuid));
       return docs.sort(fileSort);
     });
@@ -155,7 +155,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
   }
 
   addUpload(upload: Upload, position?: number): AudioFileModel {
-    let audio = new AudioFileModel(this.doc, upload);
+    let audio = new AudioFileModel(this.template, this.doc, upload);
     if (position) {
       audio.set('position', position);
       this.files = [...this.files]; // trigger change detection

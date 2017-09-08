@@ -10,13 +10,13 @@ describe('AudioFileModel', () => {
     versionMock = cms.mock('prx:version', {id: 'the-version-id'});
     fileMock = null;
     if (typeof data === 'string') {
-      return new AudioFileModel(versionMock, data);
+      return new AudioFileModel(<any> {}, versionMock, data);
     } else if (data) {
       data.status = 'complete';
       fileMock = versionMock.mock('prx:audio', data);
-      return new AudioFileModel(versionMock, fileMock);
+      return new AudioFileModel(<any> {}, versionMock, fileMock);
     } else {
-      return new AudioFileModel(versionMock, null);
+      return new AudioFileModel(<any> {}, versionMock, null);
     }
   };
 
@@ -73,7 +73,7 @@ describe('AudioFileModel', () => {
     });
 
     it('will just call it a new file if nothing else', () => {
-      let nothin = new AudioFileModel(null, null);
+      let nothin = new AudioFileModel(null, null, null);
       expect(nothin.key()).toMatch(/\.new$/);
     });
 

@@ -27,11 +27,13 @@ export class AudioFileModel extends UploadableModel {
     self: [FILE_TEMPLATED()]
   };
 
+  public versionTemplate: HalDoc;
   public template: HalDoc;
 
-  constructor(audioVersion?: HalDoc, file?: HalDoc | Upload | string) {
+  constructor(versionTpl?: HalDoc, version?: HalDoc, file?: HalDoc | Upload | string) {
     super();
-    this.initUpload(audioVersion, file);
+    this.versionTemplate = versionTpl;
+    this.initUpload(version, file);
   }
 
   setTemplate(template: HalDoc) {
@@ -39,9 +41,9 @@ export class AudioFileModel extends UploadableModel {
     if (template) {
       this.set('position', template['position']);
       this.set('label', template['label']);
-      this.VALIDATORS['self'] = [FILE_TEMPLATED(template)];
+      this.VALIDATORS['self'] = [FILE_TEMPLATED(this.versionTemplate, template)];
     } else {
-      this.VALIDATORS['self'] = [FILE_TEMPLATED()];
+      this.VALIDATORS['self'] = [FILE_TEMPLATED(this.versionTemplate)];
     }
   }
 
