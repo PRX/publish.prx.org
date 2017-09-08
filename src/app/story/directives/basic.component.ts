@@ -38,7 +38,11 @@ import { TabService } from 'ngx-prx-styleguide';
 
       <prx-fancy-field label="Cover Image">
       <div class="fancy-hint">Provide an image for your episode, if desired. Image dimensions must be square.</div>
-        <publish-image-upload [model]="story" minWidth=1400 minHeight=1400  square="true" [strict]="strict"></publish-image-upload>
+        <publish-image-upload [model]="story"
+          minWidth=1400 minHeight=1400
+          maxWidth=3000 maxHeight=3000
+          square="true" [strict]="strict">
+        </publish-image-upload>
       </prx-fancy-field>
 
       <hr/>

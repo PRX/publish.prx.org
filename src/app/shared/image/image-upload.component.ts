@@ -11,8 +11,13 @@ import { StoryModel, SeriesModel, ImageModel } from '../model';
     <div *ngIf="!hasImages" class="new-image" [class.changed]="hasDestroyed"
       [style.width]="thumbnailWidth" [style.height]="thumbnailHeight">
 
-      <p *ngIf="!suggestSize" class="size">Minimum size: {{minWidth}} x {{minHeight}} px</p>
-      <p *ngIf="suggestSize" class="size">Suggested size: {{suggestSize}} px</p>
+      <div class="size">
+        <p *ngIf="!suggestSize">
+          Minimum size: {{minWidth}} x {{minHeight}} px
+          Maximum size: {{maxWidth}} x {{maxHeight}} px
+        </p>
+        <p *ngIf="suggestSize">Suggested size: {{suggestSize}} px</p>
+      </div>
       <input type="file" [attr.id]="'image-file-' + purpose" accept="image/*"
        publishFileSelect (file)="addUpload($event)" class.invalid="imgError"/>
       <label class="button" [attr.for]="'image-file-' + purpose">Add Image</label>
@@ -33,6 +38,8 @@ export class ImageUploadComponent implements DoCheck {
   @Input() purpose: string;
   @Input() minWidth = 144;
   @Input() minHeight = 144;
+  @Input() maxWidth: number;
+  @Input() maxHeight: number;
   @Input() suggestSize: string;
   @Input() square = false;
 
@@ -96,13 +103,7 @@ export class ImageUploadComponent implements DoCheck {
     this.reader.onloadend = () => {
       this.browserImage = new Image();
       this.browserImage.onload = () => {
-        if (this.browserImage.width < this.minWidth || this.browserImage.height < this.minHeight) {
-          this.imgError = `The image provided is only ${this.browserImage.width} x ${this.browserImage.height} px
-                           but should be at least ${this.minWidth} x ${this.minHeight} px.`;
-        } else if (this.square && this.browserImage.width !== this.browserImage.height) {
-          this.imgError = `Image width and height must be the same, but the image provided is 
-                           ${this.browserImage.width} x ${this.browserImage.height} px.`;
-        } else {
+        if (this.fileDimensionsAcceptable(this.browserImage.width, this.browserImage.height)) {
           let upload = this.uploadService.add(file);
           let imageModel = this.model.addImage(upload);
           if (this.purpose) {
@@ -116,6 +117,24 @@ export class ImageUploadComponent implements DoCheck {
     this.reader.readAsDataURL(file);
   }
 
+  fileDimensionsAcceptable(width: number, height: number): boolean {
+    if (!this.suggestSize) {
+      if (width < this.minWidth || height < this.minHeight) {
+        this.imgError = `The image provided is only ${width} x ${height} px
+                         but should be at least ${this.minWidth} x ${this.minHeight} px.`;
+        return false;
+      } else if ((this.maxWidth && width > this.maxWidth) || (this.maxHeight && height > this.maxHeight)) {
+        this.imgError = `The image provided is ${width} x ${height} px
+                         but should not exceed ${this.maxWidth} x ${this.maxHeight} px.`;
+        return false;
+      } else if (this.square && width !== height) {
+        this.imgError = `Image width and height must be the same, but the image provided is
+                         ${width} x ${height} px.`;
+        return false;
+      }
+    }
+    return true;
+  }
   // for backwards compatibility, try to set something as the 'profile' image
   setSomethingAsProfile(images: ImageModel[]) {
     let allBlank = images.every(i => i.purpose === '');
