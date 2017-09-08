@@ -7,7 +7,7 @@ import { AudioVersionModel } from '../shared';
   template: `
     <header>
       <strong>{{version.label}}</strong>
-      <span>{{versionDescription}}</span>
+      <span>{{versionDescription()}}</span>
     </header>
 
     <section *ngIf="version.hasFileTemplates">
@@ -44,32 +44,23 @@ import { AudioVersionModel } from '../shared';
   `
 })
 
-export class UploadComponent implements OnInit, DoCheck {
+export class UploadComponent implements DoCheck {
 
   @Input() version: AudioVersionModel;
   @Input() strict: boolean;
 
-  versionDescription: string;
-
-  DESCRIPTIONS = {
-    'DEFAULT': 'The audio files for your episode, in mp3 format.',
-    'Piece Audio': 'The standard version of your episode you would most like people to hear and buy',
-    'Promos': 'The promotional version of your audio'
-  };
+  DESCRIPTIONS = [
+    {test: /piece audio/i, desc: 'The standard version of your episode you would most like people to hear and buy'},
+    {test: /promos/i, desc: 'The promotional version of your audio'},
+    {test: /video/i, desc: 'The video file for your episode'},
+    {test: /./, desc: 'The audio files for your episode, in mp3 format.'}
+  ];
 
   @HostBinding('class.changed') changedClass = false;
 
   @HostBinding('class.invalid') invalidClass = false;
 
   invalidMessage: string = null;
-
-  ngOnInit() {
-    if (this.version && this.DESCRIPTIONS[this.version.label]) {
-      this.versionDescription = this.DESCRIPTIONS[this.version.label];
-    } else {
-      this.versionDescription = this.DESCRIPTIONS.DEFAULT;
-    }
-  }
 
   ngDoCheck() {
     this.changedClass = false;
@@ -93,6 +84,15 @@ export class UploadComponent implements OnInit, DoCheck {
         this.invalidMessage = this.version.statusMessage;
       }
     }
+  }
+
+  versionDescription(): string {
+    let label = this.version['label'] || '';
+    let desc = this.DESCRIPTIONS.find(d => d.test.test(label));
+    if (desc) {
+      return desc.desc;
+    }
+    return '';
   }
 
   versionUploadedInvalid(): boolean {
