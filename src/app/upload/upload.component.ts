@@ -14,7 +14,8 @@ import { AudioVersionModel } from '../shared';
       <div class="uploads">
         <ng-container *ngFor="let ft of version.filesAndTemplates">
           <publish-templated-upload *ngIf="ft.tpl" [template]="ft.tpl"
-            [file]="ft.file" [version]="version" publishClick></publish-templated-upload>
+            [file]="ft.file" [version]="version" publishClick
+            [accept]="version?.template?.contentType"></publish-templated-upload>
           <publish-illegal-upload *ngIf="!ft.tpl" [file]="ft.file"
             [version]="version"></publish-illegal-upload>
         </ng-container>
@@ -37,8 +38,8 @@ import { AudioVersionModel } from '../shared';
 
       <footer [class.templated]="version.hasFileTemplates">
         <p *ngIf="invalidMessage" class="error">{{invalidMessage | capitalize}}</p>
-        <publish-audio-input *ngIf="!version.hasFileTemplates"
-          multiple=true [version]="version"></publish-audio-input>
+        <publish-audio-input *ngIf="!version.hasFileTemplates" multiple=true
+          [version]="version" [accept]="version?.template?.contentType"></publish-audio-input>
       </footer>
     </section>
   `
