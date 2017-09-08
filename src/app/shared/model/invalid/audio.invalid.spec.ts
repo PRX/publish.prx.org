@@ -64,14 +64,20 @@ describe('AudioInvalid', () => {
   describe('FILE_TEMPLATED', () => {
 
     it('only accepts mp3 files', () => {
-      let invalid = FILE_TEMPLATED();
+      let invalid = FILE_TEMPLATED(<any> {contentType: 'audio/mpeg'});
       expect(invalid('', {format: 'mp2'})).toMatch('not an mp3');
       expect(invalid('', {format: 'm4a'})).toMatch('not an mp3');
       expect(invalid('', {format: 'mp3', duration: 1})).toBeNull();
     });
 
+    it('does not validate video files', () => {
+      let invalid = FILE_TEMPLATED(<any> {contentType: 'video/mpeg'});
+      expect(invalid('', {format: 'whatev'})).toBeNull();
+      expect(invalid('', {contenttype: 'whatev'})).toBeNull();
+    });
+
     it('requires a duration', () => {
-      let invalid = FILE_TEMPLATED();
+      let invalid = FILE_TEMPLATED(<any> {contentType: 'audio/mpeg'});
       expect(invalid('', {})).toMatch('not an audio file');
       expect(invalid('', {duration: null})).toMatch('not an audio file');
       expect(invalid('', {duration: 0})).toBeNull();
@@ -79,13 +85,13 @@ describe('AudioInvalid', () => {
     });
 
     it('checks min duration', () => {
-      let invalid = FILE_TEMPLATED(<any> {lengthMinimum: 7});
+      let invalid = FILE_TEMPLATED(null, <any> {lengthMinimum: 7});
       expect(invalid('', {duration: 2})).toMatch('must be greater than 0:00:07');
       expect(invalid('', {duration: 8})).toBeNull();
     });
 
     it('checks max duration', () => {
-      let invalid = FILE_TEMPLATED(<any> {lengthMaximum: 7});
+      let invalid = FILE_TEMPLATED(null, <any> {lengthMaximum: 7});
       expect(invalid('', {duration: 8})).toMatch('must be less than 0:00:07');
       expect(invalid('', {duration: 6})).toBeNull();
     });
