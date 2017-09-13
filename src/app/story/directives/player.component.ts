@@ -194,9 +194,8 @@ export class PlayerComponent implements OnDestroy, DoCheck {
   private previewEnclosure(url: string) {
     if (this.enclosurePrefix) {
       let pre = this.enclosurePrefix.replace(/^http(s*):\/\//, '');
-      pre = url.replace(pre, '');
-      return `${pre}?_t=${this.encode(this.authToken)}`;
+      url = url.replace(pre, '');
     }
-    return url;
+    return `${url}?_t=${this.encode(this.authToken)}`;
   }
 }
