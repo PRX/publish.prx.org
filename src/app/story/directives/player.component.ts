@@ -71,7 +71,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
         this.buildPlayer(true, true);
       } else {
         this.previewingUnpublished = true;
-        this.buildPlayer(true, true); // preview via cms params
+        this.buildPlayer(false, true); // preview via cms params
       }
     }
   }
@@ -138,23 +138,25 @@ export class PlayerComponent implements OnDestroy, DoCheck {
     let cms: string[] = [];
     cms.push(`tt=${this.encode(this.title)}`);
     cms.push(`ts=${this.encode(this.subtitle)}`);
-    cms.push(`ua=${this.encode(this.audioUrl)}`);
     cms.push(`ui=${this.encode(this.imageUrl)}`);
     if (this.feedUrl) {
       cms.push(`us=${this.encode(this.feedUrl)}`);
     } else {
       cms.push(`us=${this.encode(this.subscriptionUrl)}`);
     }
+
+    if (this.previewingUnpublished && this.enclosureUrl) {
+      let encUrl = this.previewEnclosure(this.enclosureUrl);
+      cms.push(`ua=${this.encode(encUrl)}`);
+    } else {
+      cms.push(`ua=${this.encode(this.audioUrl)}`);
+    }
+
     let cmsUrl = `${Env.PLAY_HOST}/e?${cms.join('&')}`;
 
     let feeder: string[] = [];
     feeder.push(`uf=${this.encode(this.feedUrl)}`);
     feeder.push(`ge=${this.encode(this.episodeGuid)}`);
-
-    if (this.previewingUnpublished) {
-      let encUrl = this.previewEnclosure(this.enclosureUrl);
-      feeder.push(`ua=${this.encode(encUrl)}`);
-    }
 
     let feederUrl = `${Env.PLAY_HOST}/e?${feeder.join('&')}`;
 
