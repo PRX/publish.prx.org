@@ -3,6 +3,7 @@ import { Subject } from 'rxjs/Subject';
 import { PlayerComponent } from './player.component';
 import { StoryModel, DistributionModel } from '../../shared';
 import { TabService } from 'ngx-prx-styleguide';
+import { AuthService } from 'ngx-prx-styleguide';
 
 describe('PlayerComponent', () => {
 
@@ -10,6 +11,7 @@ describe('PlayerComponent', () => {
 
   let tabModel = new Subject<StoryModel>();
   provide(TabService, {model: tabModel});
+  provide(AuthService);
 
   let series, story;
   beforeEach(() => {
