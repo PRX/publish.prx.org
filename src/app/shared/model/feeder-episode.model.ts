@@ -53,9 +53,7 @@ export class FeederEpisodeModel extends BaseModel {
     this.authorName = author['name'] || '';
     this.authorEmail = author['email'] || '';
     this.summary = this.doc['summary'] || '';
-    if (this.doc['_links'] && this.doc['_links']['enclosure'] && this.doc['_links']['enclosure']['href']) {
-      this.enclosureUrl = this.doc['_links']['enclosure']['href'] || '';
-    }
+    this.enclosureUrl = this.doc.expand('enclosure') || '';
   }
 
   encode(): {} {
