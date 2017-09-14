@@ -105,7 +105,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     });
     this.series.loadRelated('versionTemplates').subscribe(() => {
       if (this.audioVersionOptions.length === 1) {
-        podcastDist.set('versionTemplateUrl', this.audioVersionOptions[0][1], true);
+        podcastDist.set('versionTemplateUrls', [this.audioVersionOptions[0][1]], true);
       }
     });
   }
@@ -168,12 +168,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   get versionTemplateConfirm(): string {
     if (this.distribution && this.audioVersionOptions && this.series.hasStories) {
-      let url = this.distribution.versionTemplateUrl;
-      let match = this.audioVersionOptions.find(opt => opt[1] === url);
-      let name = match ? match[0] : ''; // options are [[display, value]]
       return `
-        Are you sure you want to use <b>${name}</b> as the audio for your podcast?
-        This will change the audio files used in all published episodes of your podcast.
+        Are you sure you want change the template(s) used for your podcast?
+        This could change the audio files used in all published episodes of your podcast.
       `;
     }
   }

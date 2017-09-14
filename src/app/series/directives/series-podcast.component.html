@@ -47,8 +47,12 @@
     </prx-fancy-field>
 
     <prx-fancy-field required label="Podcast Audio" name="versionTemplateUrl"
-      [select]="audioVersionOptions" [model]="distribution" [advancedConfirm]="versionTemplateConfirm">
-      <div class="fancy-hint">Select which audio template should be used with your podcast.</div>
+      [multiselect]="audioVersionOptions" [model]="distribution" [advancedConfirm]="versionTemplateConfirm">
+      <div class="fancy-hint">
+        Select which template(s) should be used with your podcast. If an episodes
+        of your podcast provides more than one of these, the first one in this
+        list will be used.
+      </div>
     </prx-fancy-field>
 
     <prx-fancy-field label="Homepage Link" required textinput [model]="podcast" name="link">

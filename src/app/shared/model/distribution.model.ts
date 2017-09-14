@@ -12,17 +12,17 @@ export class DistributionModel extends BaseModel {
   id: number;
   kind = '';
   url = '';
-  versionTemplateUrl = '';
+  versionTemplateUrls = [];
 
   // external related models
   podcast: FeederPodcastModel;
-  versionTemplate: AudioVersionTemplateModel;
+  versionTemplates: AudioVersionTemplateModel[];
 
-  SETABLE = ['kind', 'versionTemplateUrl'];
+  SETABLE = ['kind', 'versionTemplateUrls'];
 
   VALIDATORS = {
     kind: [REQUIRED()],
-    versionTemplateUrl: [REQUIRED()]
+    versionTemplateUrls: [REQUIRED()]
   };
 
   constructor(series: HalDoc, distribution?: HalDoc, loadRelated = false) {
@@ -41,7 +41,7 @@ export class DistributionModel extends BaseModel {
   }
 
   related() {
-    let versionTemplate = Observable.of(null);
+    let versionTemplates = Observable.of([]);
     let podcast = Observable.of(null);
 
     // set defaults from series for new podcasts
@@ -66,13 +66,17 @@ export class DistributionModel extends BaseModel {
     }
 
     // load existing version templates
-    if (this.doc && this.doc.has('prx:audio-version-template')) {
-      versionTemplate = this.doc.follow('prx:audio-version-template').map(tdoc => {
-        return new AudioVersionTemplateModel(this.parent, tdoc);
+    if (this.doc && this.doc.count('prx:audio-version-templates')) {
+      versionTemplates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
+        return tdocs.map(t => new AudioVersionTemplateModel(this.parent, t));
+      });
+    } else if (this.doc && this.doc.has('prx:audio-version-template')) {
+      versionTemplates = this.doc.follow('prx:audio-version-template').map(tdoc => {
+        return [new AudioVersionTemplateModel(this.parent, tdoc)];
       });
     }
 
-    return {podcast, versionTemplate};
+    return {podcast, versionTemplates};
   }
 
   decode() {
@@ -86,20 +90,22 @@ export class DistributionModel extends BaseModel {
     }
 
     // TODO: since a PUT returns no data, underscored key is set on callback
-    if (this.doc['set_audio_version_template_uri']) {
-      this.versionTemplateUrl = this.doc['set_audio_version_template_uri'];
+    if (this.doc['set_audio_version_template_uris']) {
+      this.versionTemplateUrls = this.doc['set_audio_version_template_uris'];
+    } else if (this.doc.count('prx:audio-version-templates')) {
+      this.versionTemplateUrls = []; // TODO: how to get this syncronously???
     } else if (this.doc.has('prx:audio-version-template')) {
-      this.versionTemplateUrl = this.doc.expand('prx:audio-version-template');
+      this.versionTemplateUrls = [this.doc.expand('prx:audio-version-template')];
     } else {
-      this.versionTemplateUrl = '';
+      this.versionTemplateUrls = [];
     }
   }
 
   encode(): {} {
     let data = <any> {};
     data.kind = this.kind;
-    if (this.versionTemplateUrl && (this.isNew || this.changed('versionTemplateUrl'))) {
-      data.set_audio_version_template_uri = this.versionTemplateUrl;
+    if (this.isNew || this.changed('versionTemplateUrls')) {
+      data.set_audio_version_template_uris = this.versionTemplateUrls;
     }
     return data;
   }
