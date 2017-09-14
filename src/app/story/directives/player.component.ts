@@ -186,7 +186,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
     return `<iframe frameborder="0" height="${height}" width="${width}" src="${url}"></iframe>`;
   }
 
-  private encode (str: string) {
+  private encode(str: string) {
     return encodeURIComponent(str)
       .replace(/[!'()*]/g, (c) => (`%${c.charCodeAt(0).toString(16)}`));
   }
