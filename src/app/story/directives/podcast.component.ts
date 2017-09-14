@@ -18,7 +18,7 @@ import {
 
 export class PodcastComponent implements OnDestroy {
 
-  explicitOpts = ['', 'Explicit', 'Clean'];
+  explicitOpts = ['Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
 
