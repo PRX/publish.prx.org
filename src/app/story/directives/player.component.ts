@@ -4,6 +4,7 @@ import { StoryModel, DistributionModel } from '../../shared';
 import { TabService } from 'ngx-prx-styleguide';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Env } from '../../core/core.env';
+import { AuthService } from 'ngx-prx-styleguide';
 
 const DEFAULT_SUBSCRIPTION = 'https://www.prx.org';
 const DEFAULT_IMAGE = '//s3.amazonaws.com/production.mediajoint.prx.org/public/comatose_files/4625/prx-logo_large.png';
@@ -19,6 +20,9 @@ export class PlayerComponent implements OnDestroy, DoCheck {
   private tabSub: Subscription;
   private feedUrl: string;
   private episodeGuid: string;
+  private enclosureUrl: string;
+  private enclosurePrefix: string;
+  private authToken: string;
   private title: string;
   private subtitle: string;
   private audioUrl: string;
@@ -35,7 +39,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
   copyUrl: string;
   copyIframe: string;
 
-  constructor(tab: TabService, private sanitizer: DomSanitizer) {
+  constructor(tab: TabService, private sanitizer: DomSanitizer, auth: AuthService) {
     this.tabSub = tab.model.subscribe((story: StoryModel) => {
       this.story = story;
       story.getSeriesDistribution('podcast').subscribe(distDoc => {
@@ -46,6 +50,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
         }
       });
     });
+    auth.token.subscribe(token => this.authToken = token);
   }
 
   ngOnDestroy(): any {
@@ -107,6 +112,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
     dist.loadRelated('podcast').subscribe(() => {
       if (dist.podcast && (dist.podcast.publicFeedUrl || dist.podcast.publishedUrl)) {
         this.feedUrl = dist.podcast.publicFeedUrl || dist.podcast.publishedUrl;
+        this.enclosurePrefix = dist.podcast.enclosurePrefix;
       } else {
         this.loadError = 'Error - unable to find the public URL of your podcast!';
       }
@@ -117,6 +123,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
         storyDistribution.loadRelated('episode').subscribe(() => {
           if (storyDistribution.episode && storyDistribution.episode.guid) {
             this.episodeGuid = storyDistribution.episode.guid;
+            this.enclosureUrl = storyDistribution.episode.enclosureUrl;
           } else {
             this.loadError = 'Error - unable to find the guid of this podcast episode!';
           }
@@ -131,18 +138,26 @@ export class PlayerComponent implements OnDestroy, DoCheck {
     let cms: string[] = [];
     cms.push(`tt=${this.encode(this.title)}`);
     cms.push(`ts=${this.encode(this.subtitle)}`);
-    cms.push(`ua=${this.encode(this.audioUrl)}`);
     cms.push(`ui=${this.encode(this.imageUrl)}`);
     if (this.feedUrl) {
       cms.push(`us=${this.encode(this.feedUrl)}`);
     } else {
       cms.push(`us=${this.encode(this.subscriptionUrl)}`);
     }
+
+    if (this.previewingUnpublished && this.enclosureUrl) {
+      let encUrl = this.previewEnclosure(this.enclosureUrl);
+      cms.push(`ua=${this.encode(encUrl)}`);
+    } else {
+      cms.push(`ua=${this.encode(this.audioUrl)}`);
+    }
+
     let cmsUrl = `${Env.PLAY_HOST}/e?${cms.join('&')}`;
 
     let feeder: string[] = [];
     feeder.push(`uf=${this.encode(this.feedUrl)}`);
     feeder.push(`ge=${this.encode(this.episodeGuid)}`);
+
     let feederUrl = `${Env.PLAY_HOST}/e?${feeder.join('&')}`;
 
     // only change the safe resource when the url actually changes
@@ -171,9 +186,16 @@ export class PlayerComponent implements OnDestroy, DoCheck {
     return `<iframe frameborder="0" height="${height}" width="${width}" src="${url}"></iframe>`;
   }
 
-  private encode (str: string) {
+  private encode(str: string) {
     return encodeURIComponent(str)
       .replace(/[!'()*]/g, (c) => (`%${c.charCodeAt(0).toString(16)}`));
   }
 
+  private previewEnclosure(url: string) {
+    if (this.enclosurePrefix) {
+      let pre = this.enclosurePrefix.replace(/^http(s*):\/\//, '');
+      url = url.replace(pre, '');
+    }
+    return `${url}?_t=${this.authToken}`;
+  }
 }

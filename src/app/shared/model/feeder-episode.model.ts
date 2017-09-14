@@ -12,11 +12,12 @@ export class FeederEpisodeModel extends BaseModel {
 
   // writeable
   SETABLE = ['guid', 'authorName', 'authorEmail', 'episodeUrl', 'summary'];
-  URLS = ['episodeUrl'];
+  URLS = ['episodeUrl', 'enclosureUrl'];
   guid = '';
   authorName = '';
   authorEmail = '';
   episodeUrl = '';
+  enclosureUrl = '';
   summary = '';
 
   VALIDATORS = {
@@ -52,6 +53,7 @@ export class FeederEpisodeModel extends BaseModel {
     this.authorName = author['name'] || '';
     this.authorEmail = author['email'] || '';
     this.summary = this.doc['summary'] || '';
+    this.enclosureUrl = this.doc.expand('enclosure') || '';
   }
 
   encode(): {} {
