@@ -27,7 +27,7 @@
       </div>
       <div class="span-fields">
         <prx-fancy-field label="Category" [model]="podcast" name="category"
-          [select]="categories" (change)="setSubCategories()" small=1>
+          [select]="categories" (onChange)="setSubCategories()" small=1>
         </prx-fancy-field>
         <prx-fancy-field *ngIf="subCategories.length" label="Sub-Category"
           [model]="podcast" name="subCategory" [select]="subCategories" small=1>
@@ -122,7 +122,7 @@
         The public URL for your podcast feed. Feel free to share this URL with listeners. If you need to alter this URL once you have subscribers, set the <a target="_blank" rel="noopener" href="this.itunesNewFeedURLDoc">New Feed URL</a> as well.
       </div>
       <p>
-        <input type="checkbox" (change)="setNewFeedToPublicFeed($event)" [checked]="podcast.publicFeedUrl === podcast.newFeedUrl" id="matchFeeds">
+        <input type="checkbox" (onChange)="setNewFeedToPublicFeed($event)" [checked]="podcast.publicFeedUrl === podcast.newFeedUrl" id="matchFeeds">
         <label for="matchFeeds">Check to set your podcast's New Feed URL to this URL as well.</label>
       </p>
       <input type="text" [ngModel]="podcast?.publicFeedUrl" name="publicFeedUrl" #pubFeed
@@ -151,7 +151,7 @@
       </div>
     </prx-fancy-field>
 
-    <prx-fancy-field label="Language" [model]="podcast" name="language" [select]="languageOptions">
+    <prx-fancy-field label="Language" [model]="podcast" name="language" [select]="languageOptions" searchable>
       <div class="fancy-hint">Select which language your podcast is in.</div>
     </prx-fancy-field>
 

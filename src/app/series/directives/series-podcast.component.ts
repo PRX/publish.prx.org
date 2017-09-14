@@ -12,9 +12,9 @@ import * as languageMappingList from 'langmap';
 
 export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
-  categories = [''].concat(CATEGORIES);
+  categories = CATEGORIES;
   subCategories: string[] = [];
-  explicitOpts = ['', 'Explicit', 'Clean'];
+  explicitOpts = ['Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
   itunesCategoryDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12';
