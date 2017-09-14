@@ -5,13 +5,15 @@ import { StoryModel, DistributionModel } from '../../shared';
 import { TabService } from 'ngx-prx-styleguide';
 import { AuthService } from 'ngx-prx-styleguide';
 
+let authToken = new Subject<string>();
+
 describe('PlayerComponent', () => {
 
   create(PlayerComponent);
 
   let tabModel = new Subject<StoryModel>();
   provide(TabService, {model: tabModel});
-  provide(AuthService);
+  provide(AuthService, {token: authToken});
 
   let series, story;
   beforeEach(() => {
@@ -64,6 +66,18 @@ describe('PlayerComponent', () => {
     comp.fromFeeder(new StoryModel(series, story), new DistributionModel(series, dist));
     expect(comp.feedUrl).toEqual('http://published-url');
     expect(comp.episodeGuid).toEqual('episode1');
+  });
+
+  cit('uses available enclosure url for unpublished', (fix, el, comp) => {
+    let dist = series.mock('prx:distribution', {kind: 'podcast', url: 'http://some-where'});
+    dist.mock('http://some-where', {publishedUrl: 'http://published-url', enclosurePrefix: 'http://prefix/'});
+    let storyDists = story.mockItems('prx:distributions', [{kind: 'episode', url: 'http://some-where/episode'}]);
+    storyDists[0].mock('http://some-where/episode', {guid: 'episode1', _links: { enclosure: { href: 'http://prefix/some-where/enclosure.mp3'}}});
+    comp.fromFeeder(new StoryModel(series, story), new DistributionModel(series, dist));
+    expect(comp.enclosurePrefix).toEqual('http://prefix/');
+    expect(comp.enclosureUrl).toEqual('http://prefix/some-where/enclosure.mp3');
+    authToken.next('atoken');
+    expect(comp.previewEnclosure(comp.enclosureUrl)).toEqual('http://some-where/enclosure.mp3?_t=atoken');
   });
 
   cit('handles feeder load errors', (fix, el, comp) => {
