@@ -3,7 +3,7 @@
 This app is used to upload and publish audio for distribution.
 Initially, distribution will be to the PRX site and API, podcasts with dynamic ad serving, and embeddable web audio players.
 
-Over time additional distribution channels are planned such as twitter cards and facebook sharing, CMS plugins for producer/station sites, publishing platforms like medium, tumbler, and wordpress.com, APIs like the PMP (Public Media Platform), youtube, and soundcloud.
+Over time additional distribution channels are planned such as twitter cards and facebook sharing, CMS plugins for producer/station sites, publishing platforms like medium, tumbler, and wordpress.com, APIs like the PMP (Public Media Platform), YouTube, and SoundCloud.
 
 The current broadcast distribution will also be merged to allow for licensing, subscribing, and distribution to station automation systems. We are also looking into supporting instant articles and AMP for stories published on PRX.
 
