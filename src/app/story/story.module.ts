@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../shared';
 import { UploadModule } from '../upload';
-import { ChartsModule } from 'ngx-prx-styleguide';
+import { ChartsModule, SelectModule } from 'ngx-prx-styleguide';
 import { storyRouting, storyProviders, storyComponents } from './story.routing';
 
 @NgModule({
@@ -13,6 +13,7 @@ import { storyRouting, storyProviders, storyComponents } from './story.routing';
   imports: [
     CommonModule,
     ChartsModule,
+    SelectModule,
     SharedModule,
     UploadModule,
     storyRouting
