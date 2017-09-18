@@ -170,7 +170,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   get versionTemplateConfirm(): string {
     if (this.distribution && this.audioVersionOptions && this.series.hasStories) {
       return `
-        Are you sure you want change the template(s) used for your podcast?
+        Are you sure you want to change the template(s) used for your podcast?
         This could change the audio files used in all published episodes of your podcast.
       `;
     }
