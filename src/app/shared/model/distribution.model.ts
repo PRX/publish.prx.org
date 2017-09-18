@@ -12,7 +12,7 @@ export class DistributionModel extends BaseModel {
   id: number;
   kind = '';
   url = '';
-  versionTemplateUrls = [];
+  versionTemplateUrls: string[];
 
   // external related models
   podcast: FeederPodcastModel;
@@ -68,6 +68,8 @@ export class DistributionModel extends BaseModel {
     // load existing version templates
     if (this.doc && this.doc.count('prx:audio-version-templates')) {
       versionTemplates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
+        let currentTemplateUrls = tdocs.map(tdoc => tdoc.expand('self'));
+        this.set('versionTemplateUrls', currentTemplateUrls, true);
         return tdocs.map(t => new AudioVersionTemplateModel(this.parent, t));
       });
     } else if (this.doc && this.doc.has('prx:audio-version-template')) {
@@ -87,17 +89,6 @@ export class DistributionModel extends BaseModel {
     this.url = this.doc['url'] || '';
     if (this.url && !this.url.match('/authorization/')) {
       this.url = this.url.replace('/podcasts/', '/authorization/podcasts/');
-    }
-
-    // TODO: since a PUT returns no data, underscored key is set on callback
-    if (this.doc['set_audio_version_template_uris']) {
-      this.versionTemplateUrls = this.doc['set_audio_version_template_uris'];
-    } else if (this.doc.count('prx:audio-version-templates')) {
-      this.versionTemplateUrls = []; // TODO: how to get this syncronously???
-    } else if (this.doc.has('prx:audio-version-template')) {
-      this.versionTemplateUrls = [this.doc.expand('prx:audio-version-template')];
-    } else {
-      this.versionTemplateUrls = [];
     }
   }
 

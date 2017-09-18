@@ -87,6 +87,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
             this.podcast = this.distribution.podcast;
             this.setSubCategories();
           });
+          this.distribution.loadRelated('versionTemplates').subscribe();
         } else {
           this.podcast = null;
           this.setSubCategories();
