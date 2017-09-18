@@ -72,10 +72,6 @@ export class DistributionModel extends BaseModel {
         this.set('versionTemplateUrls', currentTemplateUrls, true);
         return tdocs.map(t => new AudioVersionTemplateModel(this.parent, t));
       });
-    } else if (this.doc && this.doc.has('prx:audio-version-template')) {
-      versionTemplates = this.doc.follow('prx:audio-version-template').map(tdoc => {
-        return [new AudioVersionTemplateModel(this.parent, tdoc)];
-      });
     }
 
     return {podcast, versionTemplates};
