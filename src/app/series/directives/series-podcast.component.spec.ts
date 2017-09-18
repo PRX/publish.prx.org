@@ -35,7 +35,7 @@ describe('SeriesPodcastComponent', () => {
     comp.series = {loadRelated: () => Observable.of(null), distributions: []};
     comp.audioVersionOptions = [['Something', 'some-href']];
     comp.createDistribution();
-    expect(comp.distribution.versionTemplateUrl).toEqual('some-href');
+    expect(comp.distribution.versionTemplateUrls).toEqual(['some-href']);
   });
 
   cit('finds podcast distributions for the series', (fix, el, comp) => {
