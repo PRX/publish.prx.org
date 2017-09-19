@@ -139,6 +139,8 @@ export class BasicComponent implements OnDestroy, DoCheck {
           v.isDestroy = false;
         } else if (v.isNew) {
           this.story.removeRelated(v);
+        } else {
+          v.isDestroy = true;
         }
       }
     });
@@ -159,7 +161,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
     }
   }
 
-  private loadVersionTemplates() {
+  loadVersionTemplates() {
     this.story.getSeriesTemplates().subscribe(tdocs => {
       this.versionTemplates = {};
       this.versionTemplateOptions = tdocs.map(tdoc => {
@@ -173,10 +175,9 @@ export class BasicComponent implements OnDestroy, DoCheck {
   private setSelected() {
     let templateIds: any = this.versionTemplateOptions.map(opt => opt[1]);
     let selected = this.story.versions.filter(v => {
-      return v.template && templateIds.indexOf(v.template.id) > -1;
+      return !v.isDestroy && v.template && templateIds.indexOf(v.template.id) > -1;
     }).map(v => v.template.id);
     if (selected.join(',') !== (this.versionTemplatesSelected || []).join(',')) {
-      console.log('change selected:', (this.versionTemplatesSelected || []).join(','), selected.join(','));
       this.versionTemplatesSelected = selected;
     }
   }
