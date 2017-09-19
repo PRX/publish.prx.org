@@ -2,10 +2,16 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { HalDoc } from '../../core';
-import { BaseModel } from 'ngx-prx-styleguide';
-import { REQUIRED } from './invalid';
+import { BaseModel, BaseInvalid, REQUIRED } from 'ngx-prx-styleguide';
 import { FeederPodcastModel } from './feeder-podcast.model';
 import { AudioVersionTemplateModel } from './audio-version-template.model';
+
+const REQUIRE_IF_LOADED: BaseInvalid = (key: string, value: any): string => {
+  if (value !== undefined && value.length === 0) {
+    return 'You must pick at least one template';
+  }
+  return null;
+};
 
 export class DistributionModel extends BaseModel {
 
@@ -22,7 +28,7 @@ export class DistributionModel extends BaseModel {
 
   VALIDATORS = {
     kind: [REQUIRED()],
-    versionTemplateUrls: [REQUIRED()]
+    versionTemplateUrls: [REQUIRE_IF_LOADED]
   };
 
   constructor(series: HalDoc, distribution?: HalDoc, loadRelated = false) {

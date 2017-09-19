@@ -10,7 +10,7 @@ describe('DistributionModel', () => {
   let fooDist = series.mock('prx:distributions', {id: 'dist1', kind: 'foo'});
   let podDist = series.mock('prx:distributions', {id: 'dist2', kind: 'podcast', url: podcastUrl});
   let podcast = podDist.mock(podcastUrl, {id: 'pod1'});
-  let tpls = podDist.mockItems('prx:audio-version-templates', [{id: 'template1'}]);
+  let tpls = podDist.mockItems('prx:audio-version-templates', [{id: 'template1', label: 'template1'}]);
   tpls[0].mockItems('prx:audio-file-templates', []);
 
   beforeEach(() => window.localStorage.clear());
@@ -71,6 +71,15 @@ describe('DistributionModel', () => {
     dist.loadRelated('versionTemplates');
     expect(dist.versionTemplates.length).toEqual(1);
     expect(dist.versionTemplates[0].id).toEqual('template1');
+  });
+
+  it('does not try to validate version templates until they load', () => {
+    let dist = new DistributionModel(series, podDist);
+    expect(dist.invalid()).toBeNull();
+    dist.loadRelated('versionTemplates');
+    expect(dist.invalid()).toBeNull();
+    dist.set('versionTemplateUrls', []);
+    expect(dist.invalid()).toMatch(/must pick at least one/i);
   });
 
 });
