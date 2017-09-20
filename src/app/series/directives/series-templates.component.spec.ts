@@ -39,14 +39,13 @@ describe('SeriesTemplatesComponent', () => {
   });
 
   cit('adds a file template', (fix, el, comp) => {
-    let files = [];
-    comp.series = {versionTemplates: [{isAudio: true, fileTemplates: files}]};
+    let added = false;
+    comp.series = {versionTemplates: [{isAudio: true, fileTemplates: [], addFile: () => added = true}]};
     fix.detectChanges();
     expect(el).not.toQuery('publish-file-template');
     el.query(By.css('[label="Segments"] .icon-plus')).nativeElement.click();
     fix.detectChanges();
-    expect(el).toQuery('publish-file-template');
-    expect(files[0].label).toEqual('Segment A');
+    expect(added).toEqual(true);
   });
 
   cit('adds a destroyed file template', (fix, el, comp) => {

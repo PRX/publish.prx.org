@@ -14,7 +14,7 @@ describe('FileTemplateComponent', () => {
 
   cit('renders undestroyed file templates', (fix, el, comp) => {
     expect(el).not.toQuery('prx-fancy-field');
-    comp.file = new AudioFileTemplateModel(null);
+    comp.file = new AudioFileTemplateModel(null, 0, 1);
     comp.file.isDestroy = true;
     fix.detectChanges();
     expect(el).not.toQuery('prx-fancy-field');
@@ -24,7 +24,7 @@ describe('FileTemplateComponent', () => {
   });
 
   cit('only allows removing the last template in a version', (fix, el, comp) => {
-    comp.file = new AudioFileTemplateModel(null);
+    comp.file = new AudioFileTemplateModel(null, 0, 1);
     comp.version = {fileTemplates: [{}, comp.file, {}]};
     fix.detectChanges();
     expect(el).not.toQuery('.icon-cancel');
@@ -34,7 +34,7 @@ describe('FileTemplateComponent', () => {
   });
 
   cit('shows label and length validation errors', (fix, el, comp) => {
-    comp.file = new AudioFileTemplateModel(null);
+    comp.file = new AudioFileTemplateModel(null, 0, 1);
     fix.detectChanges();
     expect(el).toContainText('label is a required field');
     comp.file.set('label', 'foobar');
