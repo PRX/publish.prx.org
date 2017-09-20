@@ -42,7 +42,7 @@ export class SeriesTemplatesComponent implements OnDestroy {
 
   addAudioVersion(): AudioVersionTemplateModel {
     let draft = new AudioVersionTemplateModel(this.series.doc, this.series.versionTemplates.length);
-    draft.set('contentType', 'audio/mpeg');
+    draft.set('contentType', AudioVersionTemplateModel.CONTENT_TYPES.MP3);
     if (this.hasDefaultVersion()) {
       this.series.versionTemplates[0].set('label', '', true);
       this.series.versionTemplates[0].set('label', 'Podcast Audio'); // force change
@@ -63,7 +63,7 @@ export class SeriesTemplatesComponent implements OnDestroy {
 
   addVideoVersion() {
     let draft = this.addAudioVersion();
-    draft.set('contentType', 'video/mpeg');
+    draft.set('contentType', AudioVersionTemplateModel.CONTENT_TYPES.VIDEO);
     draft.set('label', 'Podcast Video');
     draft.fileTemplates[0].set('label', 'Video Segment');
   }

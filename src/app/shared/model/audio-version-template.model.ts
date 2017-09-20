@@ -8,9 +8,16 @@ import { AudioFileTemplateModel } from './audio-file-template.model';
 
 export class AudioVersionTemplateModel extends BaseModel {
 
+  static CONTENT_TYPES = {
+    MP3: 'audio/mpeg',
+    MP2: 'audio/mp2',
+    VIDEO: 'video/mpeg',
+    VIDEO_ALT: 'video/x-mpeg'
+  };
+
   public id: number;
   public label: string = null;
-  public contentType = 'audio/mpeg';
+  public contentType = AudioVersionTemplateModel.CONTENT_TYPES.MP3;
   public lengthMinimum: number = null;
   public lengthMaximum: number = null;
   public fileTemplates: AudioFileTemplateModel[];
@@ -20,10 +27,14 @@ export class AudioVersionTemplateModel extends BaseModel {
 
   VALIDATORS = {
     label: [REQUIRED(), LENGTH(1, 255)],
-    contentType: [REQUIRED(), IN(['audio/mpeg', 'audio/mp2', 'video/mpeg', 'video/x-mpeg'])],
+    contentType: [REQUIRED(), IN(AudioVersionTemplateModel.ALL_CONTENT_TYPES)],
     lengthMinimum: [VERSION_LENGTH(this)],
     lengthMaximum: [VERSION_LENGTH(this)]
   };
+
+  static get ALL_CONTENT_TYPES(): string[] {
+    return Object.keys(this.CONTENT_TYPES).map(k => this.CONTENT_TYPES[k]);
+  }
 
   constructor(series?: HalDoc, docOrIndex?: HalDoc | number, loadRelated = true) {
     super();
@@ -64,7 +75,7 @@ export class AudioVersionTemplateModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.label = this.doc['label'] || '';
-    this.contentType = this.doc['contentType'] || 'audio/mpeg';
+    this.contentType = this.doc['contentType'] || AudioVersionTemplateModel.CONTENT_TYPES.MP3;
     this.lengthMinimum = this.doc['lengthMinimum'] || null;
     this.lengthMaximum = this.doc['lengthMaximum'] || null;
   }
