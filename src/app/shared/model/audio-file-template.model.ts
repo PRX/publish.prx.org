@@ -12,6 +12,7 @@ export class AudioFileTemplateModel extends BaseModel {
   public lengthMaximum: number = null;
 
   private series: HalDoc;
+  private versionTemplateNewIndex: number = null;
 
   SETABLE = ['position', 'label', 'lengthMinimum', 'lengthMaximum'];
 
@@ -21,14 +22,20 @@ export class AudioFileTemplateModel extends BaseModel {
     lengthMaximum: [FILE_LENGTH(this)]
   };
 
-  constructor(series: HalDoc, versionTemplate?: HalDoc, fileOrPosition?: HalDoc | number) {
+  constructor(series: HalDoc, versionTemplate?: HalDoc | number, fileOrPosition?: HalDoc | number) {
     super();
     this.series = series;
-    if (typeof(fileOrPosition) === 'number') {
+    if (versionTemplate instanceof HalDoc && fileOrPosition instanceof HalDoc) {
+      this.init(versionTemplate, fileOrPosition);
+    } else if (versionTemplate instanceof HalDoc && typeof(fileOrPosition) === 'number') {
       this.position = fileOrPosition;
       this.init(versionTemplate);
+    } else if (typeof(versionTemplate) === 'number' && typeof(fileOrPosition) === 'number') {
+      this.versionTemplateNewIndex = versionTemplate;
+      this.position = fileOrPosition;
+      this.init();
     } else {
-      this.init(versionTemplate, fileOrPosition);
+      throw new Error('Bad arguments for AudioFileTemplateModel!');
     }
   }
 
@@ -37,10 +44,10 @@ export class AudioFileTemplateModel extends BaseModel {
       return `prx.audio-file-template.${this.doc.id}`;
     } else if (this.parent && this.position) {
       return `prx.audio-file-template.${this.parent.id}.${this.position}`;
-    } else if (this.series && this.position) {
-      return `prx.audio-file-template.series.${this.series.id}.${this.position}`;
-    } else if (this.position) {
-      return `prx.audio-file-template.series.new.${this.position}`;
+    } else if (this.series) {
+      return `prx.audio-file-template.series.${this.series.id}.${this.versionTemplateNewIndex}.${this.position}`;
+    } else {
+      return `prx.audio-file-template.series.new.${this.versionTemplateNewIndex}.${this.position}`;
     }
   }
 

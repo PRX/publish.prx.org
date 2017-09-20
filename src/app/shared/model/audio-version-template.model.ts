@@ -101,8 +101,20 @@ export class AudioVersionTemplateModel extends BaseModel {
     }
   }
 
+  addFile(label?: string, forceOriginal = false): AudioFileTemplateModel {
+    let count = this.fileTemplates.length;
+    if (!label) {
+      let segLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[count % 26];
+      label = `Segment ${segLetter}`;
+    }
+    let file = new AudioFileTemplateModel(this.parent, this.doc || this.newIndex, count + 1);
+    file.set('label', label, forceOriginal);
+    this.fileTemplates.push(file);
+    return file;
+  }
+
   findUnsavedFiles(position, found: AudioFileTemplateModel[] = []) {
-    let file = new AudioFileTemplateModel(this.parent, this.doc, position);
+    let file = new AudioFileTemplateModel(this.parent, this.doc || this.newIndex, position);
     if (file.isStored() && !file.isDestroy) {
       found.push(file);
       return this.findUnsavedFiles(position + 1, found);

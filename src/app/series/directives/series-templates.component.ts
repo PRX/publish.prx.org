@@ -41,7 +41,8 @@ export class SeriesTemplatesComponent implements OnDestroy {
   }
 
   addAudioVersion(): AudioVersionTemplateModel {
-    let draft = new AudioVersionTemplateModel(this.series.doc, this.series.versionTemplates.length);
+    let index = this.series.versionTemplates.length;
+    let draft = new AudioVersionTemplateModel(this.series.doc, index);
     draft.set('contentType', AudioVersionTemplateModel.CONTENT_TYPES.MP3);
     if (this.hasDefaultVersion()) {
       this.series.versionTemplates[0].set('label', '', true);
@@ -52,11 +53,7 @@ export class SeriesTemplatesComponent implements OnDestroy {
     } else {
       draft.set('label', 'Podcast Audio');
     }
-
-    let file = new AudioFileTemplateModel(this.series.doc, null, 1);
-    file.set('label', 'Main Segment');
-    draft.fileTemplates.push(file);
-
+    draft.addFile('Main Segment');
     this.series.versionTemplates.push(draft);
     return draft;
   }
@@ -116,11 +113,7 @@ export class SeriesTemplatesComponent implements OnDestroy {
     if (existing) {
       existing.isDestroy = false;
     } else {
-      let count = version.fileTemplates.length;
-      let segLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[count % 26];
-      let draft = new AudioFileTemplateModel(version.parent, version.doc, count + 1);
-      draft.set('label', `Segment ${segLetter}`);
-      version.fileTemplates.push(draft);
+      version.addFile();
     }
   }
 
