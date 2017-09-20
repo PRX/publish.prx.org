@@ -74,9 +74,9 @@ export class DistributionModel extends BaseModel {
     // load existing version templates
     if (this.doc && this.doc.count('prx:audio-version-templates')) {
       versionTemplates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
-        let currentTemplateUrls = tdocs.map(tdoc => tdoc.expand('self'));
-        this.set('versionTemplateUrls', currentTemplateUrls, true);
-        return tdocs.map(t => new AudioVersionTemplateModel(this.parent, t));
+        let models = tdocs.map(t => new AudioVersionTemplateModel(this.parent, t));
+        this.resetVersionTemplateUrls(models);
+        return models;
       });
     }
 
@@ -92,6 +92,9 @@ export class DistributionModel extends BaseModel {
     if (this.url && !this.url.match('/authorization/')) {
       this.url = this.url.replace('/podcasts/', '/authorization/podcasts/');
     }
+
+    // discard templateurl changes
+    this.resetVersionTemplateUrls(this.versionTemplates);
   }
 
   encode(): {} {
@@ -105,6 +108,14 @@ export class DistributionModel extends BaseModel {
 
   saveNew(data: {}): Observable<HalDoc> {
     return this.parent.create('prx:distributions', {}, data);
+  }
+
+  private resetVersionTemplateUrls(tpls: AudioVersionTemplateModel[]) {
+    if (tpls) {
+      let urls = tpls.filter(t => t.doc).map(t => t.doc.expand('self'));
+      let isFirstSet = !this.versionTemplateUrls;
+      this.set('versionTemplateUrls', urls, isFirstSet);
+    }
   }
 
 }
