@@ -12,7 +12,8 @@
     <div *ngIf="!v.isDestroy" class="version">
       <header>
         <strong>{{v?.label}}</strong>
-        <button type="button" class="btn-icon icon-cancel grey-dove" (click)="confirmRemoveVersion(v)"></button>
+        <button type="button" class="btn-icon icon-cancel grey-dove"
+          aria-label="Remove" (click)="confirmRemoveVersion(v)"></button>
       </header>
       <section>
         <prx-fancy-field required textinput [model]="v" name="label" label="Template Label">
