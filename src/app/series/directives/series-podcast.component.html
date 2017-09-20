@@ -126,7 +126,7 @@
         The public URL for your podcast feed. Feel free to share this URL with listeners. If you need to alter this URL once you have subscribers, set the <a target="_blank" rel="noopener" href="this.itunesNewFeedURLDoc">New Feed URL</a> as well.
       </div>
       <p>
-        <input type="checkbox" (onChange)="setNewFeedToPublicFeed($event)" [checked]="podcast.publicFeedUrl === podcast.newFeedUrl" id="matchFeeds">
+        <input type="checkbox" (change)="setNewFeedToPublicFeed($event)" [checked]="podcast.publicFeedUrl === podcast.newFeedUrl" id="matchFeeds">
         <label for="matchFeeds">Check to set your podcast's New Feed URL to this URL as well.</label>
       </p>
       <input type="text" [ngModel]="podcast?.publicFeedUrl" name="publicFeedUrl" #pubFeed
