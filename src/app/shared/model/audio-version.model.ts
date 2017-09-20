@@ -14,7 +14,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
 
   public id: number;
   public label: string;
-  public explicit: string;
+  public explicit = '';
   public status: string;
   public statusMessage: string;
 
@@ -109,7 +109,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
         this.explicit = 'Clean';
         break;
       default:
-        this.explicit = undefined;
+        this.explicit = '';
         break;
     }
     this.status = this.doc['status'];
