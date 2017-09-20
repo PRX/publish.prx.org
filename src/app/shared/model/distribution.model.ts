@@ -92,9 +92,11 @@ export class DistributionModel extends BaseModel {
     if (this.url && !this.url.match('/authorization/')) {
       this.url = this.url.replace('/podcasts/', '/authorization/podcasts/');
     }
+  }
 
-    // discard templateurl changes
+  discard() {
     this.resetVersionTemplateUrls(this.versionTemplates);
+    super.discard();
   }
 
   encode(): {} {
