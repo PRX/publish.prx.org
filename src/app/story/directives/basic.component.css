@@ -13,13 +13,6 @@ prx-select {
   top: -4px;
   right: 0;
 }
-/* TODO: move to styleguide */
-/*prx-select.changed >>> .dropdown-toggle {
-  outline: 5px auto #f09b4c;
-}
-prx-select.invalid >>> .dropdown-toggle {
-  outline: 5px auto #e32;
-}*/
 
 publish-upload {
   margin-bottom: 30px;
