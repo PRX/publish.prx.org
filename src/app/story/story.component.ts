@@ -4,11 +4,12 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { CmsService } from '../core';
-import { ModalService, ToastrService } from 'ngx-prx-styleguide';
+import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../shared';
 import { Env } from '../core/core.env';
 
 @Component({
+  providers: [TabService],
   selector: 'publish-story',
   styleUrls: ['story.component.css'],
   template: `

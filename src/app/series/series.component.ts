@@ -4,10 +4,11 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { CmsService } from '../core';
-import { ModalService, ToastrService } from 'ngx-prx-styleguide';
+import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
 import { SeriesModel } from '../shared';
 
 @Component({
+  providers: [TabService],
   selector: 'publish-series',
   styleUrls: ['series.component.css'],
   templateUrl: 'series.component.html'

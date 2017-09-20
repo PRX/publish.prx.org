@@ -11,7 +11,7 @@ import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowW
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   DatepickerModule, FancyFormModule, HeroModule, ImageModule,
-  ModalModule, SpinnerModule, TabModule, TabService } from 'ngx-prx-styleguide';
+  ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [
@@ -43,7 +43,6 @@ import { AuthGuard, DeactivateGuard, UnauthGuard,
     HeroModule,
     ImageModule,
     ImageUploadComponent,
-    TabModule,
     TimeAgoPipe,
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
@@ -60,14 +59,12 @@ import { AuthGuard, DeactivateGuard, UnauthGuard,
     HeroModule,
     ImageModule,
     ModalModule,
-    SpinnerModule,
-    TabModule
+    SpinnerModule
   ],
   providers: [
     AuthGuard,
     DeactivateGuard,
-    UnauthGuard,
-    TabService
+    UnauthGuard
   ]
 })
 
