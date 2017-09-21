@@ -1,6 +1,6 @@
 <prx-spinner *ngIf="!episode"></prx-spinner>
 <form *ngIf="episode">
-  <prx-fancy-field *ngIf="version" label="Explicit">
+  <prx-fancy-field *ngIf="versions?.length" label="Explicit">
     <div class="fancy-hint">
       In accordance with
       <a [href]="itunesRequirementsDoc"
@@ -12,12 +12,12 @@
         Setting this field will override your <strong>{{podcastExplicit}}</strong> podcast global value.
       </ng-container>
     </div>
-    <div class="version">
+    <div *ngFor="let v of versions" class="version">
       <header>
-        <strong>{{version?.label}}</strong>
+        <strong>{{v?.label}}</strong>
       </header>
       <section>
-        <prx-fancy-field [model]="version" [select]="explicitOpts" name="explicit">
+        <prx-fancy-field [model]="v" [select]="explicitOpts" name="explicit">
         </prx-fancy-field>
       </section>
     </div>

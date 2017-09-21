@@ -3,37 +3,56 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { HalDoc } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
-import { REQUIRED, LENGTH, VERSION_LENGTH } from './invalid';
+import { REQUIRED, LENGTH, IN, VERSION_LENGTH } from './invalid';
 import { AudioFileTemplateModel } from './audio-file-template.model';
 
 export class AudioVersionTemplateModel extends BaseModel {
 
+  static CONTENT_TYPES = {
+    MP3: 'audio/mpeg',
+    MP2: 'audio/mp2',
+    VIDEO: 'video/mpeg',
+    VIDEO_ALT: 'video/x-mpeg'
+  };
+
   public id: number;
   public label: string = null;
+  public contentType = AudioVersionTemplateModel.CONTENT_TYPES.MP3;
   public lengthMinimum: number = null;
   public lengthMaximum: number = null;
   public fileTemplates: AudioFileTemplateModel[];
+  private newIndex: number = null;
 
-  SETABLE = ['label', 'lengthMinimum', 'lengthMaximum'];
+  SETABLE = ['label', 'contentType', 'lengthMinimum', 'lengthMaximum'];
 
   VALIDATORS = {
     label: [REQUIRED(), LENGTH(1, 255)],
+    contentType: [REQUIRED(), IN(AudioVersionTemplateModel.ALL_CONTENT_TYPES)],
     lengthMinimum: [VERSION_LENGTH(this)],
     lengthMaximum: [VERSION_LENGTH(this)]
   };
 
-  constructor(series?: HalDoc, versionTemplate?: HalDoc, loadRelated = true) {
+  static get ALL_CONTENT_TYPES(): string[] {
+    return Object.keys(this.CONTENT_TYPES).map(k => this.CONTENT_TYPES[k]);
+  }
+
+  constructor(series?: HalDoc, docOrIndex?: HalDoc | number, loadRelated = true) {
     super();
-    this.init(series, versionTemplate, loadRelated);
+    if (docOrIndex instanceof HalDoc) {
+      this.init(series, docOrIndex, loadRelated);
+    } else {
+      this.newIndex = docOrIndex || 0;
+      this.init(series, null, loadRelated);
+    }
   }
 
   key() {
     if (this.doc) {
       return `prx.audio-version-template.${this.doc.id}`;
     } else if (this.parent) {
-      return `prx.audio-version-template.new.${this.parent.id}`;
+      return `prx.audio-version-template.new.${this.parent.id}.${this.newIndex}`;
     } else {
-      return 'prx.audio-version-template.new.new';
+      return `prx.audio-version-template.new.new.${this.newIndex}`;
     }
   }
 
@@ -56,6 +75,7 @@ export class AudioVersionTemplateModel extends BaseModel {
   decode() {
     this.id = this.doc['id'];
     this.label = this.doc['label'] || '';
+    this.contentType = this.doc['contentType'] || AudioVersionTemplateModel.CONTENT_TYPES.MP3;
     this.lengthMinimum = this.doc['lengthMinimum'] || null;
     this.lengthMaximum = this.doc['lengthMaximum'] || null;
   }
@@ -63,6 +83,7 @@ export class AudioVersionTemplateModel extends BaseModel {
   encode(): {} {
     let data = <any> {};
     data.label = this.label;
+    data.contentType = this.contentType;
     data.lengthMinimum = this.lengthMinimum || 0;
     data.lengthMaximum = this.lengthMaximum || 0;
     return data;
@@ -80,14 +101,30 @@ export class AudioVersionTemplateModel extends BaseModel {
     }
   }
 
+  addFile(label?: string, forceOriginal = false): AudioFileTemplateModel {
+    let count = this.fileTemplates.length;
+    if (!label) {
+      let segLetter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[count % 26];
+      label = `Segment ${segLetter}`;
+    }
+    let file = new AudioFileTemplateModel(this.parent, this.doc || this.newIndex, count + 1);
+    file.set('label', label, forceOriginal);
+    this.fileTemplates.push(file);
+    return file;
+  }
+
   findUnsavedFiles(position, found: AudioFileTemplateModel[] = []) {
-    let file = new AudioFileTemplateModel(this.parent, this.doc, position);
+    let file = new AudioFileTemplateModel(this.parent, this.doc || this.newIndex, position);
     if (file.isStored() && !file.isDestroy) {
       found.push(file);
       return this.findUnsavedFiles(position + 1, found);
     } else {
       return found;
     }
+  }
+
+  get isAudio(): boolean {
+    return !!this.contentType.match(/^audio\//);
   }
 
 }

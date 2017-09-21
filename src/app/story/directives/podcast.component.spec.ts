@@ -28,7 +28,7 @@ describe('PodcastComponent', () => {
       original: {guid: 'bar'},
       changed: () => false
     };
-    comp.version = 'foo';
+    comp.versions = ['foo'];
     fix.detectChanges();
 
     expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(8);

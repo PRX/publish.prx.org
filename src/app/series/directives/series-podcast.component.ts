@@ -12,9 +12,9 @@ import * as languageMappingList from 'langmap';
 
 export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
-  categories = [''].concat(CATEGORIES);
+  categories = CATEGORIES;
   subCategories: string[] = [];
-  explicitOpts = ['', 'Explicit', 'Clean'];
+  explicitOpts = ['Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
   itunesCategoryDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12';
@@ -87,6 +87,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
             this.podcast = this.distribution.podcast;
             this.setSubCategories();
           });
+          this.distribution.loadRelated('versionTemplates').subscribe();
         } else {
           this.podcast = null;
           this.setSubCategories();
@@ -104,9 +105,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
       this.podcast = podcastDist.podcast;
     });
     this.series.loadRelated('versionTemplates').subscribe(() => {
-      if (this.audioVersionOptions.length === 1) {
-        podcastDist.set('versionTemplateUrl', this.audioVersionOptions[0][1], true);
-      }
+      podcastDist.set('versionTemplateUrls', [this.audioVersionOptions[0][1]], true);
     });
   }
 
@@ -168,12 +167,9 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   get versionTemplateConfirm(): string {
     if (this.distribution && this.audioVersionOptions && this.series.hasStories) {
-      let url = this.distribution.versionTemplateUrl;
-      let match = this.audioVersionOptions.find(opt => opt[1] === url);
-      let name = match ? match[0] : ''; // options are [[display, value]]
       return `
-        Are you sure you want to use <b>${name}</b> as the audio for your podcast?
-        This will change the audio files used in all published episodes of your podcast.
+        Are you sure you want to change the template(s) used for your podcast?
+        This could change the audio files used in all published episodes of your podcast.
       `;
     }
   }

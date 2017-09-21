@@ -1,4 +1,6 @@
-import { cit, create, provide, By } from '../../../testing';
+import { cit, create, cms, provide, By } from '../../../testing';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { BasicComponent } from './basic.component';
 import { TabService } from 'ngx-prx-styleguide';
 
@@ -35,7 +37,37 @@ describe('BasicComponent', () => {
     comp.story = {versions: [], changed: () => false};
     fix.detectChanges();
 
-    expect(el).toContainText('You have no audio templates for this episode');
+    expect(el).toContainText('Pick at least one version of your audio files to upload for this episode');
+  });
+
+
+  describe('version select', () => {
+
+    let story, versions, templates;
+    beforeEach(() => {
+      versions = [];
+      templates = [];
+      story = {
+        loadRelated: () => (story.versions = versions) && Observable.of(true),
+        removeRelated: r => story.versions = story.versions.filter(v => v !== r),
+        getSeriesTemplates: () => Observable.of(templates.map(t => cms.mock('prx:tpl', t)))
+      };
+    });
+
+    cit('updates version templates to match the selection', (fix, el, comp) => {
+      comp.story = story;
+      versions = [{label: 'whatev', template: {id: 456}}, {label: 'whatev2', isNew: true, template: {id: 456}}];
+      templates = [{id: 123, label: 'tpl 123'}, {id: 456, label: 'tpl 456'}];
+      comp.loadVersionTemplates();
+      comp.updateVersions([123]);
+      expect(story.versions.length).toEqual(2);
+      expect(story.versions[0].label).toEqual('whatev');
+      expect(story.versions[0].template.id).toEqual(456);
+      expect(story.versions[0].isDestroy).toEqual(true);
+      expect(story.versions[1].label).toEqual('tpl 123');
+      expect(story.versions[1].template.id).toEqual(123);
+    });
+
   });
 
 });

@@ -29,7 +29,8 @@ export class SeriesModel extends BaseModel implements HasUpload {
   VALIDATORS = {
     title:            [REQUIRED(), LENGTH(1, 255)],
     shortDescription: [REQUIRED()],
-    description: [LENGTH(0, 4000)]
+    description:      [LENGTH(0, 4000)],
+    accountId:        [REQUIRED()]
   };
 
   // HasUpload mixin
@@ -74,10 +75,10 @@ export class SeriesModel extends BaseModel implements HasUpload {
     if (this.doc && this.doc.count('prx:audio-version-templates')) {
       templates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
         return tdocs.map(t => new AudioVersionTemplateModel(this.doc, t))
-                    .concat(this.unsavedVersionTemplate).filter(t => t);
+                    .concat(this.unsavedVersionTemplates).filter(t => t);
       });
-    } else if (this.unsavedVersionTemplate) {
-      templates = Observable.of([this.unsavedVersionTemplate]);
+    } else if (this.unsavedVersionTemplates) {
+      templates = Observable.of(this.unsavedVersionTemplates);
     }
 
     if (this.doc && this.doc.count('prx:distributions')) {
@@ -104,7 +105,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
   }
 
   changed(field?: string | string[], includeRelations = true): boolean {
-    if (this.isNew && this.versionTemplates.length !== 1) {
+    if (!field && this.isNew && this.versionTemplates.length !== 1) {
       return true; // default version template was deleted!
     } else {
       return super.changed(field, includeRelations);
@@ -155,17 +156,21 @@ export class SeriesModel extends BaseModel implements HasUpload {
   }
 
   defaultVersionTemplate() {
-    let tpl = new AudioVersionTemplateModel();
+    let tpl = new AudioVersionTemplateModel(null, 0);
     tpl.set('label', 'Podcast Audio', true);
-    let file = new AudioFileTemplateModel(null, null, 1);
-    file.set('label', 'Main Segment', true);
-    tpl.fileTemplates.push(file);
+    tpl.addFile('Main Segment', true);
     this.versionTemplates = [tpl];
   }
 
-  get unsavedVersionTemplate(): AudioVersionTemplateModel {
-    let tpl = new AudioVersionTemplateModel(this.doc);
-    return tpl.isStored() && !tpl.isDestroy ? tpl : null;
+  get unsavedVersionTemplates(): AudioVersionTemplateModel[] {
+    let tpls = [];
+    for (let i = 0; i < 20; i++) {
+      let tpl = new AudioVersionTemplateModel(this.doc, i);
+      if (tpl.isStored() && !tpl.isDestroy) {
+        tpls.push(tpl);
+      }
+    }
+    return tpls.length ? tpls : null;
   }
 
   get unsavedDistribution(): DistributionModel {

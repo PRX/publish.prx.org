@@ -2,27 +2,33 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { HalDoc } from '../../core';
-import { BaseModel } from 'ngx-prx-styleguide';
-import { REQUIRED } from './invalid';
+import { BaseModel, BaseInvalid, REQUIRED } from 'ngx-prx-styleguide';
 import { FeederPodcastModel } from './feeder-podcast.model';
 import { AudioVersionTemplateModel } from './audio-version-template.model';
+
+const REQUIRE_IF_LOADED: BaseInvalid = (key: string, value: any): string => {
+  if (value !== undefined && value.length === 0) {
+    return 'You must pick at least one template';
+  }
+  return null;
+};
 
 export class DistributionModel extends BaseModel {
 
   id: number;
   kind = '';
   url = '';
-  versionTemplateUrl = '';
+  versionTemplateUrls: string[];
 
   // external related models
   podcast: FeederPodcastModel;
-  versionTemplate: AudioVersionTemplateModel;
+  versionTemplates: AudioVersionTemplateModel[];
 
-  SETABLE = ['kind', 'versionTemplateUrl'];
+  SETABLE = ['kind', 'versionTemplateUrls'];
 
   VALIDATORS = {
     kind: [REQUIRED()],
-    versionTemplateUrl: [REQUIRED()]
+    versionTemplateUrls: [REQUIRE_IF_LOADED]
   };
 
   constructor(series: HalDoc, distribution?: HalDoc, loadRelated = false) {
@@ -41,7 +47,7 @@ export class DistributionModel extends BaseModel {
   }
 
   related() {
-    let versionTemplate = Observable.of(null);
+    let versionTemplates = Observable.of([]);
     let podcast = Observable.of(null);
 
     // set defaults from series for new podcasts
@@ -66,13 +72,15 @@ export class DistributionModel extends BaseModel {
     }
 
     // load existing version templates
-    if (this.doc && this.doc.has('prx:audio-version-template')) {
-      versionTemplate = this.doc.follow('prx:audio-version-template').map(tdoc => {
-        return new AudioVersionTemplateModel(this.parent, tdoc);
+    if (this.doc && this.doc.count('prx:audio-version-templates')) {
+      versionTemplates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
+        let models = tdocs.map(t => new AudioVersionTemplateModel(this.parent, t));
+        this.resetVersionTemplateUrls(models);
+        return models;
       });
     }
 
-    return {podcast, versionTemplate};
+    return {podcast, versionTemplates};
   }
 
   decode() {
@@ -84,28 +92,32 @@ export class DistributionModel extends BaseModel {
     if (this.url && !this.url.match('/authorization/')) {
       this.url = this.url.replace('/podcasts/', '/authorization/podcasts/');
     }
+  }
 
-    // TODO: since a PUT returns no data, underscored key is set on callback
-    if (this.doc['set_audio_version_template_uri']) {
-      this.versionTemplateUrl = this.doc['set_audio_version_template_uri'];
-    } else if (this.doc.has('prx:audio-version-template')) {
-      this.versionTemplateUrl = this.doc.expand('prx:audio-version-template');
-    } else {
-      this.versionTemplateUrl = '';
-    }
+  discard() {
+    this.resetVersionTemplateUrls(this.versionTemplates);
+    super.discard();
   }
 
   encode(): {} {
     let data = <any> {};
     data.kind = this.kind;
-    if (this.versionTemplateUrl && (this.isNew || this.changed('versionTemplateUrl'))) {
-      data.set_audio_version_template_uri = this.versionTemplateUrl;
+    if (this.isNew || this.changed('versionTemplateUrls')) {
+      data.set_audio_version_template_uris = this.versionTemplateUrls;
     }
     return data;
   }
 
   saveNew(data: {}): Observable<HalDoc> {
     return this.parent.create('prx:distributions', {}, data);
+  }
+
+  private resetVersionTemplateUrls(tpls: AudioVersionTemplateModel[]) {
+    if (tpls) {
+      let urls = tpls.filter(t => t.doc).map(t => t.doc.expand('self'));
+      let isFirstSet = !this.versionTemplateUrls;
+      this.set('versionTemplateUrls', urls, isFirstSet);
+    }
   }
 
 }

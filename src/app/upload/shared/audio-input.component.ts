@@ -6,7 +6,7 @@ import { AudioVersionModel } from '../../shared';
   selector: 'publish-audio-input',
   styleUrls: ['audio-input.component.css'],
   template: `
-    <input type="file" accept="audio/mpeg" publishFileSelect [id]="uuid"
+    <input type="file" [accept]="acceptWildcard" publishFileSelect [id]="uuid"
       [attr.multiple]="multiple" (file)="addFile($event)"/>
     <label *ngIf="multiple" class="button" [htmlFor]="uuid">Upload Files</label>
     <label *ngIf="!multiple" class="button" [htmlFor]="uuid">Upload File</label>
@@ -18,6 +18,7 @@ export class AudioInputComponent {
   @Input() multiple = null;
   @Input() version: AudioVersionModel;
   @Input() position: number;
+  @Input() accept: string;
 
   uuid: string;
 
@@ -27,6 +28,16 @@ export class AudioInputComponent {
     private uploadService: UploadService
   ) {
     this.uuid = UUID.UUID();
+  }
+
+  get acceptWildcard(): string {
+    if (this.accept && this.accept.match(/audio/i)) {
+      return 'audio/*';
+    } else if (this.accept && this.accept.match(/video/i)) {
+      return 'video/*';
+    } else {
+      return '*';
+    }
   }
 
   click() {

@@ -81,4 +81,17 @@ describe('AudioInputComponent', () => {
     expect(el).toQueryAttr('input', 'multiple', 'true');
   });
 
+  cit('accepts different content types', (fix, el, comp) => {
+    comp.accept = undefined;
+    expect(comp.acceptWildcard).toEqual('*');
+    comp.accept = 'audio/mpeg';
+    expect(comp.acceptWildcard).toEqual('audio/*');
+    comp.accept = 'audio/foobar';
+    expect(comp.acceptWildcard).toEqual('audio/*');
+    comp.accept = 'video/mpeg';
+    expect(comp.acceptWildcard).toEqual('video/*');
+    comp.accept = 'foo/bar';
+    expect(comp.acceptWildcard).toEqual('*');
+  });
+
 });

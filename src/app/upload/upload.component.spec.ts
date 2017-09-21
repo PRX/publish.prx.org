@@ -25,7 +25,14 @@ describe('UploadComponent', () => {
     comp.version = mockVersion({label: 'My Label'});
     fix.detectChanges();
     expect(el).toQueryText('header strong', 'My Label');
-    expect(el).toQueryText('header span', comp.DESCRIPTIONS.DEFAULT);
+    expect(el).toQueryText('header span', comp.DESCRIPTIONS[comp.DESCRIPTIONS.length - 1].desc);
+  });
+
+  cit('bases descriptions on the version label', (fix, el, comp) => {
+    comp.version = mockVersion({label: 'Some Promos or Something'});
+    expect(comp.versionDescription()).toMatch(/promotional version/i);
+    comp.version = mockVersion({label: 'Video episode for my podcast'});
+    expect(comp.versionDescription()).toMatch(/the video file/i);
   });
 
   cit('lists templated uploads', (fix, el, comp) => {

@@ -1,6 +1,9 @@
 /**
  * Series version/file templates
  */
+.version {
+  width: 100%;
+}
 .version header {
   background-color: #B8B8B8;
   padding: 16px 14px;
@@ -49,7 +52,7 @@
     width: auto;
   }
 }
-.add-version, .add-segment {
+.add-segment {
   margin-top: 20px;
 }
 .add-version i, .add-segment i {

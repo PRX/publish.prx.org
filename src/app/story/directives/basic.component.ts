@@ -1,7 +1,7 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { StoryModel } from '../../shared';
-import { TabService } from 'ngx-prx-styleguide';
+import { StoryModel, AudioVersionModel } from '../../shared';
+import { HalDoc, TabService } from 'ngx-prx-styleguide';
 
 @Component({
   styleUrls: ['basic.component.css'],
@@ -29,11 +29,16 @@ import { TabService } from 'ngx-prx-styleguide';
       <hr/>
 
       <prx-fancy-field required label="Audio Files">
-        <prx-spinner *ngIf="!story?.versions"></prx-spinner>
-        <publish-upload *ngFor="let v of story?.versions" [version]="v" [strict]="strict"></publish-upload>
-        <h1 *ngIf="story?.versions?.length === 0">
-          You have no audio templates for this episode. How did that happen?
-        </h1>
+        <prx-select *ngIf="versionTemplateOptions" placeholder="Select Templates..."
+          [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
+          (onSelect)="updateVersions($event)"
+          [class.invalid]="versionsInvalid"
+          [class.changed]="versionsChanged"></prx-select>
+        <prx-spinner *ngIf="!undeletedVersions"></prx-spinner>
+        <publish-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></publish-upload>
+        <div *ngIf="undeletedVersions?.length === 0" class="fancy-hint">
+          Pick at least one version of your audio files to upload for this episode.
+        </div>
       </prx-fancy-field>
 
       <prx-fancy-field label="Cover Image">
@@ -77,14 +82,23 @@ export class BasicComponent implements OnDestroy, DoCheck {
   story: StoryModel;
   tabSub: Subscription;
   showReleasedAt = false;
+  versionTemplates: { [id: number]: HalDoc; };
+  versionTemplatesSelected: number[];
+  versionTemplateOptions: string[][];
 
   constructor(tab: TabService) {
-    this.tabSub = tab.model.subscribe((s: StoryModel) => this.story = s);
+    this.tabSub = tab.model.subscribe((s: StoryModel) => {
+      this.story = s;
+      this.loadVersionTemplates();
+    });
   }
 
   ngDoCheck() {
     if (this.story && this.story.releasedAt) {
       this.showReleasedAt = true;
+    }
+    if (this.story && this.story.versions && this.versionTemplatesSelected) {
+      this.setSelected();
     }
   }
 
@@ -104,10 +118,71 @@ export class BasicComponent implements OnDestroy, DoCheck {
     return (this.story && this.story.publishedAt) ? true : false;
   }
 
+  get undeletedVersions(): AudioVersionModel[] {
+    if (this.story && this.story.versions) {
+      return this.story.versions.filter(v => !v.isDestroy);
+    } else {
+      return null;
+    }
+  }
+
+  get versionsChanged(): boolean {
+    return this.story && this.story.changed('versions', true);
+  }
+
+  get versionsInvalid(): boolean {
+    return this.story && !!this.story.invalid('versions', this.strict);
+  }
+
+  updateVersions(templateIds: number[]) {
+    let used = {};
+    this.story.versions.forEach(v => {
+      if (v.template) {
+        used[v.template.id] = true;
+        if (templateIds.indexOf(v.template.id) > -1) {
+          v.isDestroy = false;
+        } else if (v.isNew) {
+          this.story.removeRelated(v);
+        } else {
+          v.isDestroy = true;
+        }
+      }
+    });
+    templateIds.forEach(id => {
+      if (!used[id]) {
+        this.story.versions.push(new AudioVersionModel({
+          series: this.story.parent,
+          template: this.versionTemplates[id]
+        }));
+      }
+    });
+  }
+
   toggleShowReleaseAt() {
     this.showReleasedAt = !this.showReleasedAt;
     if (this.story.releasedAt) {
       this.story.releasedAt = null;
+    }
+  }
+
+  loadVersionTemplates() {
+    this.story.getSeriesTemplates().subscribe(tdocs => {
+      this.versionTemplates = {};
+      this.versionTemplateOptions = tdocs.map(tdoc => {
+        this.versionTemplates[tdoc.id] = tdoc;
+        return [tdoc['label'], tdoc['id']];
+      });
+      this.story.loadRelated('versions').subscribe(() => this.setSelected());
+    });
+  }
+
+  private setSelected() {
+    let templateIds: any = this.versionTemplateOptions.map(opt => opt[1]);
+    let selected = this.story.versions.filter(v => {
+      return !v.isDestroy && v.template && templateIds.indexOf(v.template.id) > -1;
+    }).map(v => v.template.id);
+    if (selected.join(',') !== (this.versionTemplatesSelected || []).join(',')) {
+      this.versionTemplatesSelected = selected;
     }
   }
 

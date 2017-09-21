@@ -48,7 +48,8 @@ import {
       </div>
 
       <div class="cancel">
-        <publish-audio-input [version]="version" [position]="template.position"></publish-audio-input>
+        <publish-audio-input [version]="version" [position]="template.position"
+          [accept]="accept"></publish-audio-input>
       </div>
 
     </div>
@@ -60,5 +61,6 @@ export class TemplatedUploadComponent {
   @Input() version: AudioVersionModel;
   @Input() template: AudioVersionTemplateModel;
   @Input() file: AudioFileModel;
+  @Input() accept: string;
 
 }

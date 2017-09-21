@@ -10,7 +10,7 @@ import { BaseModel } from 'ngx-prx-styleguide';
 import { AudioVersionModel } from './audio-version.model';
 import { ImageModel } from './image.model';
 import { StoryDistributionModel } from './story-distribution.model';
-import { REQUIRED, LENGTH } from './invalid';
+import { REQUIRED, LENGTH, RELATIONS } from './invalid';
 import { HasUpload, applyMixins } from './upload';
 
 export class StoryModel extends BaseModel implements HasUpload {
@@ -35,7 +35,8 @@ export class StoryModel extends BaseModel implements HasUpload {
   VALIDATORS = {
     title:            [REQUIRED(true), LENGTH(1, 255)],
     shortDescription: [REQUIRED()],
-    description:      [LENGTH(0, 4000)]
+    description:      [LENGTH(0, 4000)],
+    versions:         [RELATIONS('You must include at least 1 version of your audio')]
   };
 
   // HasUpload mixin
@@ -81,12 +82,12 @@ export class StoryModel extends BaseModel implements HasUpload {
           }
         })).concatAll().toArray();
       });
-    } else if (!this.doc && this.parent && this.parent.count('prx:audio-version-templates')) {
-      versions = this.parent.followItems('prx:audio-version-templates').map(tdocs => {
-        return tdocs.map(tdoc => new AudioVersionModel({series: this.parent, template: tdoc}));
-      });
     } else {
-      versions = Observable.of([new AudioVersionModel({series: this.parent})]);
+      versions = this.getSeriesTemplates().map(tdocs => {
+        let defaultVersion = new AudioVersionModel({series: this.parent, template: tdocs[0]});
+        defaultVersion.set('label', defaultVersion.label, true); // mark unchanged
+        return [defaultVersion];
+      });
     }
 
     // image uploads
@@ -137,6 +138,11 @@ export class StoryModel extends BaseModel implements HasUpload {
     data.tags = this.splitTags();
     data.releasedAt = this.releasedAt;
     return data;
+  }
+
+  discard(): any {
+    this.loadRelated('versions', true);
+    return super.discard();
   }
 
   saveNew(data: {}): Observable<HalDoc> {
@@ -211,6 +217,14 @@ export class StoryModel extends BaseModel implements HasUpload {
       });
     } else {
       return Observable.of(null);
+    }
+  }
+
+  getSeriesTemplates(): Observable<HalDoc[]> {
+    if (this.parent && this.parent.count('prx:audio-version-templates')) {
+      return this.parent.followItems('prx:audio-version-templates');
+    } else {
+      return Observable.of([]);
     }
   }
 

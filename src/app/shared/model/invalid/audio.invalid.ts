@@ -70,14 +70,18 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
 /**
  * Audio file template validations
  */
-export const FILE_TEMPLATED = (template?: HalDoc): BaseInvalid => {
+export const FILE_TEMPLATED = (versionTemplate?: HalDoc, template?: HalDoc): BaseInvalid => {
   return <BaseInvalid> (key: string, file: AudioFileModel) => {
 
-    if (file.format && file.format !== 'mp3') {
-      return 'not an mp3 file';
-    }
-    if (file.duration === null || file.duration === undefined) {
-      return 'not an audio file';
+    // loosely match content type
+    if (versionTemplate && versionTemplate['contentType']) {
+      if (versionTemplate['contentType'] === 'audio/mpeg' && file.format && file.format !== 'mp3') {
+        return 'not an mp3 file';
+      } else if (versionTemplate['contentType'].match(/audio/) && (file.duration === null || file.duration === undefined)) {
+        return 'not an audio file';
+      } else if (versionTemplate['contentType'].match(/video/)) {
+        // just bypass for now
+      }
     }
 
     // min duration

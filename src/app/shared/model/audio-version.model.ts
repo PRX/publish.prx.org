@@ -51,18 +51,21 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
   }
 
   private setLabel() {
-    if (this.doc && this.doc['label']) {
-      this.set('label', this.doc['label'], true); // probably already set to this
-    } else if (this.template) {
-      this.set('label', this.template['label'] || AudioVersionModel.DEFAULT_LABEL, true);
+    let docLabel = this.doc ? this.doc['label'] : null;
+    let tplLabel = this.template ? this.template['label'] : null;
+    let label = docLabel || tplLabel || AudioVersionModel.DEFAULT_LABEL;
+    if (this.doc) {
+      this.set('label', label, true); // probably already set to this
     } else {
-      this.set('label', AudioVersionModel.DEFAULT_LABEL, true);
+      this.set('label', label, false);
     }
   }
 
   key() {
     if (this.doc) {
       return `prx.audio-version.${this.doc.id}`;
+    } else if (this.template && this.parent) {
+      return `prx.audio-version.new.${this.parent.id}.${this.template.id}`;
     } else if (this.template) {
       return `prx.audio-version.new.template.${this.template.id}`; // new for template
     } else if (this.parent) {
@@ -78,7 +81,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
     const fileSort = (f1, f2) => f1.position - f2.position;
 
     let files = this.getUploads('prx:audio').map(audios => {
-      let docs = audios.map(docOrUuid => new AudioFileModel(this.doc, docOrUuid));
+      let docs = audios.map(docOrUuid => new AudioFileModel(this.template, this.doc, docOrUuid));
       this.setUploads('prx:audio', docs.map(d => d.uuid));
       return docs.sort(fileSort);
     });
@@ -137,6 +140,14 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
     return this.parent.create('prx:audio-versions', {}, data);
   }
 
+  changed(field?: string | string[], includeRelations = true): boolean {
+    if (this.parent && this.parent.id && this.isNew) {
+      return true;
+    } else {
+      return super.changed(field, includeRelations);
+    }
+  }
+
   // clear status messages, as it's easier than refreshing
   saveRelated(): Observable<boolean[]> {
     if (this.changed('files')) {
@@ -155,7 +166,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
   }
 
   addUpload(upload: Upload, position?: number): AudioFileModel {
-    let audio = new AudioFileModel(this.doc, upload);
+    let audio = new AudioFileModel(this.template, this.doc, upload);
     if (position) {
       audio.set('position', position);
       this.files = [...this.files]; // trigger change detection

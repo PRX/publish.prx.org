@@ -59,7 +59,7 @@ describe('AudioVersionModel', () => {
     });
 
     it('uses the audio template id', () => {
-      expect(makeVersion(null).key()).toContain('template.the-template-id');
+      expect(makeVersion(null).key()).toContain('.the-template-id');
     });
 
     it('falls back to the story id', () => {

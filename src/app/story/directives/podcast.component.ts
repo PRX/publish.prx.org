@@ -1,5 +1,7 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/observable/forkJoin';
 import { TabService } from 'ngx-prx-styleguide';
 import { CmsService } from '../../core';
 import {
@@ -18,7 +20,7 @@ import {
 
 export class PodcastComponent implements OnDestroy {
 
-  explicitOpts = ['', 'Explicit', 'Clean'];
+  explicitOpts = ['Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
 
@@ -26,7 +28,7 @@ export class PodcastComponent implements OnDestroy {
   storyDistribution: StoryDistributionModel;
   story: StoryModel;
   episode: FeederEpisodeModel;
-  version: AudioVersionModel;
+  versions: AudioVersionModel[];
   podcastExplicit: string;
   podcastAuthorName: string;
   podcastAuthorEmail: string;
@@ -65,19 +67,17 @@ export class PodcastComponent implements OnDestroy {
         this.podcastAuthorName = dist.podcast ? dist.podcast.authorName : null;
         this.podcastAuthorEmail = dist.podcast ? dist.podcast.authorEmail : null;
       });
-      this.findPodcastAudioVersion(story, dist);
+      this.findPodcastAudioVersions(story, dist);
     });
   }
 
-  findPodcastAudioVersion(story: StoryModel, dist: DistributionModel) {
-    dist.loadRelated('versionTemplate').subscribe(() => {
-      if (dist.versionTemplate) {
-        story.loadRelated('versions').subscribe(() => {
-          this.version = story.versions.find(v => v.template && v.template.id === dist.versionTemplate.id);
-        });
-      } else {
-        this.version = null;
-      }
+  findPodcastAudioVersions(story: StoryModel, dist: DistributionModel) {
+    let loadTpls = dist.loadRelated('versionTemplates');
+    let loadVersions = story.loadRelated('versions');
+    Observable.forkJoin(loadTpls, loadVersions).subscribe(() => {
+      this.versions = dist.versionTemplates.map(vt => {
+        return story.versions.find(v => v.template && v.template.id === vt.id);
+      }).filter(v => v);
     });
   }
 

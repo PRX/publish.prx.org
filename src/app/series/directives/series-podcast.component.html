@@ -27,7 +27,7 @@
       </div>
       <div class="span-fields">
         <prx-fancy-field label="Category" [model]="podcast" name="category"
-          [select]="categories" (change)="setSubCategories()" small=1>
+          [select]="categories" (onChange)="setSubCategories()" small=1>
         </prx-fancy-field>
         <prx-fancy-field *ngIf="subCategories.length" label="Sub-Category"
           [model]="podcast" name="subCategory" [select]="subCategories" small=1>
@@ -46,9 +46,13 @@
       </div>
     </prx-fancy-field>
 
-    <prx-fancy-field required label="Podcast Audio" name="versionTemplateUrl"
-      [select]="audioVersionOptions" [model]="distribution" [advancedConfirm]="versionTemplateConfirm">
-      <div class="fancy-hint">Select which audio template should be used with your podcast.</div>
+    <prx-fancy-field required label="Podcast Audio" name="versionTemplateUrls"
+      [multiselect]="audioVersionOptions" [model]="distribution" [advancedConfirm]="versionTemplateConfirm">
+      <div class="fancy-hint">
+        Select which template(s) should be used with your podcast. If an episode
+        of your podcast provides more than one of these, the first one in this
+        list will be used.
+      </div>
     </prx-fancy-field>
 
     <prx-fancy-field label="Homepage Link" required textinput [model]="podcast" name="link">
@@ -151,7 +155,7 @@
       </div>
     </prx-fancy-field>
 
-    <prx-fancy-field label="Language" [model]="podcast" name="language" [select]="languageOptions">
+    <prx-fancy-field label="Language" [model]="podcast" name="language" [select]="languageOptions" searchable>
       <div class="fancy-hint">Select which language your podcast is in.</div>
     </prx-fancy-field>
 
