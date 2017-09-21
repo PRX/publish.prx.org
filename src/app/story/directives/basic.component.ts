@@ -36,9 +36,9 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
           [class.changed]="versionsChanged"></prx-select>
         <prx-spinner *ngIf="!undeletedVersions"></prx-spinner>
         <publish-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></publish-upload>
-        <h1 *ngIf="undeletedVersions?.length === 0">
-          You have no audio templates for this episode. How did that happen?
-        </h1>
+        <div *ngIf="undeletedVersions?.length === 0" class="fancy-hint">
+          Pick at least one version of your audio files to upload for this episode.
+        </div>
       </prx-fancy-field>
 
       <prx-fancy-field label="Cover Image">
