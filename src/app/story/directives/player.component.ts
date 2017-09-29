@@ -167,7 +167,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
       this.previewSafe = this.sanitizer.bypassSecurityTrustResourceUrl(newPreview);
     }
     this.copyUrl = copyFeeder ? feederUrl : cmsUrl;
-    this.copyIframe = this.getIframeHtml(this.copyUrl, 200, 650);
+    this.copyIframe = this.getIframeHtml(this.copyUrl, 650, 200);
   }
 
   private setCmsLoadError() {
