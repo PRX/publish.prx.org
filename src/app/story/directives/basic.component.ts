@@ -107,10 +107,10 @@ export class BasicComponent implements OnDestroy, DoCheck {
   story: StoryModel;
   tabSub: Subscription;
   showReleasedAt = false;
+  numberOptions: number[] = Array.from(Array(300).keys());
   versionTemplates: { [id: number]: HalDoc; };
   versionTemplatesSelected: number[];
   versionTemplateOptions: string[][];
-  numberOptions: number[] = [0,1,2,3,4,5,6,7,8,9,10];
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => {
