@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import { HalDoc } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
-import { REQUIRED, UNLESS_NEW, URL, LENGTH } from './invalid';
+import { REQUIRED, UNLESS_NEW, URL, LENGTH, IN } from './invalid';
 
 export class FeederEpisodeModel extends BaseModel {
 
@@ -11,19 +11,21 @@ export class FeederEpisodeModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['guid', 'authorName', 'authorEmail', 'episodeUrl', 'summary'];
+  SETABLE = ['guid', 'authorName', 'authorEmail', 'episodeUrl', 'itunesType', 'summary'];
   URLS = ['episodeUrl', 'enclosureUrl'];
   guid = '';
   authorName = '';
   authorEmail = '';
   episodeUrl = '';
   enclosureUrl = '';
+  itunesType = '';
   summary = '';
 
   VALIDATORS = {
     guid: [UNLESS_NEW(REQUIRED())],
     episodeUrl: [REQUIRED(), URL('Not a valid URL')],
-    summary: [LENGTH(0, 4000)]
+    summary: [LENGTH(0, 4000)],
+    itunesType: [IN(['full', 'trailer', 'bonus', ''])]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
@@ -54,6 +56,7 @@ export class FeederEpisodeModel extends BaseModel {
     this.authorEmail = author['email'] || '';
     this.summary = this.doc['summary'] || '';
     this.enclosureUrl = this.doc.expand('enclosure') || '';
+    this.itunesType = this.doc['itunesType'] || '';
   }
 
   encode(): {} {
@@ -68,6 +71,7 @@ export class FeederEpisodeModel extends BaseModel {
     }
     data.url = this.episodeUrl || null;
     data.summary = this.summary || null;
+    data.itunesType = this.itunesType || null;
     return data;
   }
 
