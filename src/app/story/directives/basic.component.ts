@@ -36,7 +36,7 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
         <prx-select *ngIf="versionTemplateOptions" class="file-select"  placeholder="Select Templates..."
           [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
           (onSelect)="updateVersions($event)"
-          [class.invalid]="versionsInvalid">
+          [class.invalid]="versionsInvalid"
           [class.changed]="versionsChanged"></prx-select>
         <prx-spinner *ngIf="!undeletedVersions"></prx-spinner>
         <publish-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></publish-upload>
