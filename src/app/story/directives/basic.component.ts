@@ -36,8 +36,8 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
         <prx-select *ngIf="versionTemplateOptions" class="file-select"  placeholder="Select Templates..."
           [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
           (onSelect)="updateVersions($event)"
-          [class.invalid]="versionsInvalid"
-          [class.changed]="versionsChanged"></prx-select>
+          [class.invalid]="fieldInvalid('versions')"
+          [class.changed]="fieldChanged('versions')"></prx-select>
         <prx-spinner *ngIf="!undeletedVersions"></prx-spinner>
         <publish-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></publish-upload>
         <div *ngIf="undeletedVersions?.length === 0" class="fancy-hint">
@@ -66,14 +66,19 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
         <div class="number-fields">
           <prx-fancy-field label="Season Number" [model]="story" name="seasonNumber" small=1>
             <prx-select *ngIf="numberOptions"
-              [options]="numberOptions" (onSelect)="onSeasonSelect($event)"
+              [options]="numberOptions" [selected]="story.seasonNumber" (onSelect)="story.set('seasonNumber', $event)"
+              [class.invalid]="fieldInvalid('seasonNumber')"
+              [class.changed]="fieldChanged('seasonNumber')"
               single=true>
             </prx-select>
           </prx-fancy-field>
 
           <prx-fancy-field label="Episode Number" [model]="story" name="episodeNumber" small=1>
             <prx-select *ngIf="numberOptions"
-              [options]="numberOptions" (onSelect)="onEpSelect($event)"
+              [options]="numberOptions" [selected]="story.episodeNumber"
+              (onSelect)="story.set('episodeNumber', $event)"
+              [class.invalid]="fieldInvalid('episodeNumber')"
+              [class.changed]="fieldChanged('episodeNumber')"
               single=true>
             </prx-select>
           </prx-fancy-field>
@@ -154,12 +159,12 @@ export class BasicComponent implements OnDestroy, DoCheck {
     }
   }
 
-  get versionsChanged(): boolean {
-    return this.story && this.story.changed('versions', true);
+  fieldInvalid(field: string): boolean {
+    return this.story && !!this.story.invalid(field, this.strict);
   }
 
-  get versionsInvalid(): boolean {
-    return this.story && !!this.story.invalid('versions', this.strict);
+  fieldChanged(field: string): boolean {
+    return this.story && this.story.changed(field, true);
   }
 
   updateVersions(templateIds: number[]) {

@@ -14,7 +14,7 @@ describe('BasicComponent', () => {
     edit.story = null;
     fix.detectChanges();
     expect(el).not.toQuery('form');
-    edit.story = {changed: () => false};
+    edit.story = {changed: () => false, invalid: () => false};
     fix.detectChanges();
     expect(el).toQuery('form');
   });
@@ -22,7 +22,7 @@ describe('BasicComponent', () => {
   cit('shows the basic story edit fields', (fix, el, comp) => {
     expect(el).not.toQuery('prx-fancy-field');
     expect(el).not.toQuery('publish-wysiwyg');
-    comp.story = {images: [], changed: () => false};
+    comp.story = {images: [], changed: () => false, invalid: () => false};
     fix.detectChanges();
 
     expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(11);
@@ -37,7 +37,7 @@ describe('BasicComponent', () => {
   });
 
   cit('shows warning if no audio versions', (fix, el, comp) => {
-    comp.story = {versions: [], changed: () => false};
+    comp.story = {versions: [], changed: () => false, invalid: () => false};
     fix.detectChanges();
 
     expect(el).toContainText('Pick at least one version of your audio files to upload for this episode');
