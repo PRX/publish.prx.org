@@ -31,8 +31,9 @@ describe('PodcastComponent', () => {
     comp.versions = ['foo'];
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(8);
+    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(9);
     expect(el).toContainText('explicit material');
+    expect(el).toContainText('type of episode');
     expect(el).toContainText('author info');
     expect(el).toContainText('GUID');
     expect(el).toContainText('public URL');
