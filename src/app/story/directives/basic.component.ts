@@ -64,19 +64,10 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
         <div class="fancy-hint">If your episode is part of a season or has a specific episode number, select those numbers here.</div>
 
         <div class="number-fields">
-          <prx-fancy-field label="Season Number" [model]="story" name="seasonNumber" small=1>
-            <prx-select *ngIf="numberOptions"
-              [options]="numberOptions" [selected]="story.seasonNumber" (onSelect)="story.set('seasonNumber', $event)"
-              single=true>
-            </prx-select>
+          <prx-fancy-field number label="Season Number" [model]="story" name="seasonNumber" small=1>
           </prx-fancy-field>
 
-          <prx-fancy-field label="Episode Number" [model]="story" name="episodeNumber" small=1>
-            <prx-select *ngIf="numberOptions"
-              [options]="numberOptions" [selected]="story.episodeNumber"
-              (onSelect)="story.set('episodeNumber', $event)"
-              single=true>
-            </prx-select>
+          <prx-fancy-field number label="Episode Number" [model]="story" name="episodeNumber" small=1>
           </prx-fancy-field>
         </div>
       </prx-fancy-field>
@@ -107,7 +98,6 @@ export class BasicComponent implements OnDestroy, DoCheck {
   story: StoryModel;
   tabSub: Subscription;
   showReleasedAt = false;
-  numberOptions: number[] = Array.from(Array(300).keys());
   versionTemplates: { [id: number]: HalDoc; };
   versionTemplatesSelected: number[];
   versionTemplateOptions: string[][];
