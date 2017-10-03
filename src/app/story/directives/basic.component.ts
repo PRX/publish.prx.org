@@ -33,7 +33,7 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
       <hr/>
 
       <prx-fancy-field required label="Audio Files">
-        <prx-select *ngIf="versionTemplateOptions" placeholder="Select Templates..."
+        <prx-select *ngIf="versionTemplateOptions" class="file-select"  placeholder="Select Templates..."
           [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
           (onSelect)="updateVersions($event)"
           [class.invalid]="versionsInvalid"
@@ -60,20 +60,24 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
         <div class="fancy-hint">A comma-separated list of tags relevant to the content of your episode.</div>
       </prx-fancy-field>
 
-      <prx-fancy-field [model]="story" name="seasonNumber" label="Season Number">
-        <prx-select *ngIf="numberOptions"
-          [options]="numberOptions" (onSelect)="onSeasonSelect($event)"
-          single=true>
-        </prx-select>
-        <div class="fancy-hint">If your episode is part of a particular season, select the season number here.</div>
-      </prx-fancy-field>
+      <prx-fancy-field label="Season and Episode Numbers">
+        <div class="fancy-hint">If your episode is part of a season or has a specific episode number, select those numbers here.</div>
 
-      <prx-fancy-field [model]="story" name="episodeNumber" label="Episode Number">
-        <prx-select *ngIf="numberOptions"
-          [options]="numberOptions" (onSelect)="onEpNumSelect($event)"
-          single=true>
-        </prx-select>
-        <div class="fancy-hint">If your episode has an episode number, select it here.</div>
+        <div class="number-fields">
+          <prx-fancy-field label="Season Number" [model]="story" name="seasonNumber" small=1>
+            <prx-select *ngIf="numberOptions"
+              [options]="numberOptions" (onSelect)="onSeasonSelect($event)"
+              single=true>
+            </prx-select>
+          </prx-fancy-field>
+
+          <prx-fancy-field label="Episode Number" [model]="story" name="episodeNumber" small=1>
+            <prx-select *ngIf="numberOptions"
+              [options]="numberOptions" (onSelect)="onEpSelect($event)"
+              single=true>
+            </prx-select>
+          </prx-fancy-field>
+        </div>
       </prx-fancy-field>
 
       <prx-fancy-field label="Release Date">
