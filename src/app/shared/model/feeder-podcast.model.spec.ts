@@ -81,6 +81,9 @@ describe('FeederPodcastModel', () => {
 
     podcast.set('complete', true);
     expect(podcast.complete).toEqual(true);
+
+    podcast.set('serialOrder', true);
+    expect(podcast.serialOrder).toEqual(true);
   });
 
   it('makes language lower case', () => {
