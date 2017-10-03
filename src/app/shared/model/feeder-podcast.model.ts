@@ -12,7 +12,7 @@ export class FeederPodcastModel extends BaseModel {
 
   // writeable
   SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'copyright', 'complete',
-    'language', 'summary', 'authorName', 'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName', 'managingEditorEmail'];
+    'language', 'summary', 'authorName', 'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName', 'managingEditorEmail', 'serialOrder'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -28,6 +28,7 @@ export class FeederPodcastModel extends BaseModel {
   language = '';
   summary = '';
   hasPublicFeed = false;
+  serialOrder = false;
 
   VALIDATORS = {
     category: [REQUIRED()],
