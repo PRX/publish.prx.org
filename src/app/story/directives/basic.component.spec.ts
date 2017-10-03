@@ -25,12 +25,15 @@ describe('BasicComponent', () => {
     comp.story = {images: [], changed: () => false};
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(7);
+    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(11);
     expect(el.queryAll(By.css('publish-wysiwyg')).length).toEqual(1);
     expect(el).toContainText('Tweetable title');
+    expect(el).toContainText('clean version of the title');
     expect(el).toContainText('short description');
     expect(el).toContainText('full description');
     expect(el).toContainText('list of tags');
+    expect(el).toContainText('season number');
+    expect(el).toContainText('episode number');
   });
 
   cit('shows warning if no audio versions', (fix, el, comp) => {

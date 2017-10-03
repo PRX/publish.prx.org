@@ -8,8 +8,12 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
   template: `
     <form *ngIf="story">
 
-      <prx-fancy-field textinput required [model]="story" name="title" label="Episode Title">
+      <prx-fancy-field textinput required [model]="story" name="title" label="Title">
         <div class="fancy-hint">Write a short, Tweetable title. Think newspaper headline.</div>
+      </prx-fancy-field>
+
+      <prx-fancy-field textinput [model]="story" name="cleanTitle" label="Clean Title">
+        <div class="fancy-hint">If the title above contains any extraneous identifying information about your episode (like season number), provide a clean version of the title alone here.</div>
       </prx-fancy-field>
 
       <prx-fancy-field textinput required [model]="story" name="shortDescription" label="Teaser" [strict]="strict">
@@ -56,6 +60,22 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
         <div class="fancy-hint">A comma-separated list of tags relevant to the content of your episode.</div>
       </prx-fancy-field>
 
+      <prx-fancy-field [model]="story" name="seasonNumber" label="Season Number">
+        <prx-select *ngIf="numberOptions"
+          [options]="numberOptions" (onSelect)="onSeasonSelect($event)"
+          single=true>
+        </prx-select>
+        <div class="fancy-hint">If your episode is part of a particular season, select the season number here.</div>
+      </prx-fancy-field>
+
+      <prx-fancy-field [model]="story" name="episodeNumber" label="Episode Number">
+        <prx-select *ngIf="numberOptions"
+          [options]="numberOptions" (onSelect)="onEpNumSelect($event)"
+          single=true>
+        </prx-select>
+        <div class="fancy-hint">If your episode has an episode number, select it here.</div>
+      </prx-fancy-field>
+
       <prx-fancy-field label="Release Date">
         <div class="fancy-hint">
           <input type="checkbox" [ngModel]="showReleasedAt" (click)="toggleShowReleaseAt()" name="showReleasedAt" id="showReleasedAt">
@@ -85,11 +105,15 @@ export class BasicComponent implements OnDestroy, DoCheck {
   versionTemplates: { [id: number]: HalDoc; };
   versionTemplatesSelected: number[];
   versionTemplateOptions: string[][];
+  numberOptions: number[] = [];
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => {
       this.story = s;
       this.loadVersionTemplates();
+      for (let i = 0; i <= 500; i++) {
+        this.numberOptions.push(i);
+      }
     });
   }
 
