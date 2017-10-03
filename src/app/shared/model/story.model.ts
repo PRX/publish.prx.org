@@ -17,6 +17,7 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   public id: number;
   public title: string; // show changes
+  public cleanTitle: string;
   public shortDescription = '';
   public description = '';
   public tags = '';
@@ -24,13 +25,15 @@ export class StoryModel extends BaseModel implements HasUpload {
   public statusMessage: string;
   public updatedAt: Date;
   public publishedAt: Date;
+  public seasonNumber: number;
+  public episodeNumber: number;
   public releasedAt: Date;
   public versions: AudioVersionModel[] = [];
   public images: ImageModel[] = [];
   public account: HalDoc;
   public distributions: StoryDistributionModel[] = [];
 
-  SETABLE = ['title', 'shortDescription', 'description', 'tags', 'hasUploadMap', 'releasedAt'];
+  SETABLE = ['title', 'cleanTitle', 'shortDescription', 'description', 'tags', 'hasUploadMap', 'releasedAt', 'seasonNumber', 'episodeNumber'];
 
   VALIDATORS = {
     title:            [REQUIRED(true), LENGTH(1, 255)],

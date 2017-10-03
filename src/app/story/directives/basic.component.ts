@@ -36,8 +36,8 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
         <prx-select *ngIf="versionTemplateOptions" class="file-select"  placeholder="Select Templates..."
           [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
           (onSelect)="updateVersions($event)"
-          [class.invalid]="fieldInvalid('versions')"
-          [class.changed]="fieldChanged('versions')"></prx-select>
+          [class.invalid]="versionsInvalid">
+          [class.changed]="versionsChanged"></prx-select>
         <prx-spinner *ngIf="!undeletedVersions"></prx-spinner>
         <publish-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></publish-upload>
         <div *ngIf="undeletedVersions?.length === 0" class="fancy-hint">
@@ -67,8 +67,6 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
           <prx-fancy-field label="Season Number" [model]="story" name="seasonNumber" small=1>
             <prx-select *ngIf="numberOptions"
               [options]="numberOptions" [selected]="story.seasonNumber" (onSelect)="story.set('seasonNumber', $event)"
-              [class.invalid]="fieldInvalid('seasonNumber')"
-              [class.changed]="fieldChanged('seasonNumber')"
               single=true>
             </prx-select>
           </prx-fancy-field>
@@ -77,8 +75,6 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
             <prx-select *ngIf="numberOptions"
               [options]="numberOptions" [selected]="story.episodeNumber"
               (onSelect)="story.set('episodeNumber', $event)"
-              [class.invalid]="fieldInvalid('episodeNumber')"
-              [class.changed]="fieldChanged('episodeNumber')"
               single=true>
             </prx-select>
           </prx-fancy-field>
@@ -114,15 +110,12 @@ export class BasicComponent implements OnDestroy, DoCheck {
   versionTemplates: { [id: number]: HalDoc; };
   versionTemplatesSelected: number[];
   versionTemplateOptions: string[][];
-  numberOptions: number[] = [];
+  numberOptions: number[] = [0,1,2,3,4,5,6,7,8,9,10];
 
   constructor(tab: TabService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => {
       this.story = s;
       this.loadVersionTemplates();
-      for (let i = 0; i <= 500; i++) {
-        this.numberOptions.push(i);
-      }
     });
   }
 
@@ -159,12 +152,12 @@ export class BasicComponent implements OnDestroy, DoCheck {
     }
   }
 
-  fieldInvalid(field: string): boolean {
-    return this.story && !!this.story.invalid(field, this.strict);
+  get versionsChanged(): boolean {
+    return this.story && this.story.changed('versions', true);
   }
 
-  fieldChanged(field: string): boolean {
-    return this.story && this.story.changed(field, true);
+  get versionsInvalid(): boolean {
+    return this.story && !!this.story.invalid('versions', this.strict);
   }
 
   updateVersions(templateIds: number[]) {
