@@ -123,11 +123,14 @@ export class StoryModel extends BaseModel implements HasUpload {
   decode() {
     this.id = this.doc['id'];
     this.title = this.doc['title'] || '';
+    this.cleanTitle = this.doc['cleanTitle'] || '';
     this.shortDescription = this.doc['shortDescription'] || '';
     this.description = this.doc['descriptionMd'] || '';
     this.tags = (this.doc['tags'] || []).join(', ');
     this.status = this.doc['status'];
     this.statusMessage = this.doc['statusMessage'];
+    this.seasonNumber = parseInt(this.doc['seasonIdentifier']) || null;
+    this.episodeNumber = parseInt(this.doc['episodeIdentifier']) || null;
     this.updatedAt = new Date(this.doc['updatedAt']);
     this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
     this.releasedAt = this.doc['releasedAt'] ? new Date(this.doc['releasedAt']) : null;
@@ -136,9 +139,12 @@ export class StoryModel extends BaseModel implements HasUpload {
   encode(): {} {
     let data = <any> {};
     data.title = this.title;
+    data.cleanTitle = this.cleanTitle;
     data.shortDescription = this.shortDescription;
     data.descriptionMd = this.description;
     data.tags = this.splitTags();
+    data.episodeIdentifier = this.episodeNumber;
+    data.seasonIdentifier = this.seasonNumber;
     data.releasedAt = this.releasedAt;
     return data;
   }
