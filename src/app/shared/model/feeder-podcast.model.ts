@@ -108,6 +108,7 @@ export class FeederPodcastModel extends BaseModel {
       this.hasPublicFeed = true;
     }
     this.summary = this.doc['summary'];
+    this.serialOrder = this.doc['serialOrder'] || false;
   }
 
   encode(): {} {
@@ -146,6 +147,7 @@ export class FeederPodcastModel extends BaseModel {
     }
 
     data.summary = this.summary || null;
+    data.serialOrder = this.serialOrder || null;
 
     return data;
   }
