@@ -28,7 +28,7 @@
     <prx-select
       [options]="episodeTypeOptions"
       [selected]="episode.itunesType"
-      (onSelect)="episode.set('itunesType', $event)"
+      (onSelect)="setiTunesType($event)"
       single=true></prx-select>
   </prx-fancy-field>
 

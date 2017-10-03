@@ -25,7 +25,7 @@ export class FeederEpisodeModel extends BaseModel {
     guid: [UNLESS_NEW(REQUIRED())],
     episodeUrl: [REQUIRED(), URL('Not a valid URL')],
     summary: [LENGTH(0, 4000)],
-    itunesType: [IN(['full', 'trailer', 'bonus', ''])]
+    itunesType: [IN(['full', 'trailer', 'bonus', '', null])]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
