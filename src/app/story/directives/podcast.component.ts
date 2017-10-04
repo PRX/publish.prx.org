@@ -97,12 +97,6 @@ export class PodcastComponent implements OnDestroy {
     }
   }
 
-  setiTunesType(event: Event) {
-    if (this.episode && event) {
-      this.episode.set('itunesType', event);
-    }
-  }
-
   toggleAlternateSummary() {
     let content = this.wysiwyg.getContent();
     // if description is empty, assigning empty string to summary is falsey

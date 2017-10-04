@@ -131,12 +131,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
     }
   }
 
-  setSerialOrder(e: Event) {
-    if (this.podcast) {
-      this.podcast.set('serialOrder', e);
-    }
-  }
-
   get publicFeedChangeConfirm(): string {
     if (this.podcast && this.podcast.original['publicFeedUrl']) {
       let confirmMsg = `Are you sure you want to change your public feed URL
