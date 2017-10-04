@@ -33,7 +33,8 @@ export class StoryModel extends BaseModel implements HasUpload {
   public account: HalDoc;
   public distributions: StoryDistributionModel[] = [];
 
-  SETABLE = ['title', 'cleanTitle', 'shortDescription', 'description', 'tags', 'hasUploadMap', 'releasedAt', 'seasonNumber', 'episodeNumber'];
+  SETABLE = ['title', 'cleanTitle', 'shortDescription', 'description', 'tags',
+             'hasUploadMap', 'releasedAt', 'seasonNumber', 'episodeNumber'];
 
   VALIDATORS = {
     title:            [REQUIRED(true), LENGTH(1, 255)],
@@ -129,8 +130,8 @@ export class StoryModel extends BaseModel implements HasUpload {
     this.tags = (this.doc['tags'] || []).join(', ');
     this.status = this.doc['status'];
     this.statusMessage = this.doc['statusMessage'];
-    this.seasonNumber = parseInt(this.doc['seasonIdentifier']) || null;
-    this.episodeNumber = parseInt(this.doc['episodeIdentifier']) || null;
+    this.seasonNumber = parseInt(this.doc['seasonIdentifier'], 10) || null;
+    this.episodeNumber = parseInt(this.doc['episodeIdentifier'], 10) || null;
     this.updatedAt = new Date(this.doc['updatedAt']);
     this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
     this.releasedAt = this.doc['releasedAt'] ? new Date(this.doc['releasedAt']) : null;

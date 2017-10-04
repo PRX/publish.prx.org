@@ -102,7 +102,9 @@ describe('StoryModel', () => {
       let story = makeStory({id: 1, title: '2', shortDescription: '3', tags: ['4'],
         publishedAt: '2002-02-02T02:02:02', updatedAt: '2004-04-04T04:04:04'});
       let json = story.encode();
-      let allowed = [ 'cleanTitle', 'descriptionMd', 'episodeIdentifier', 'releasedAt', 'seasonIdentifier', 'shortDescription', 'tags', 'title' ];
+      let allowed = [ 'cleanTitle', 'descriptionMd', 'episodeIdentifier',
+                      'releasedAt', 'seasonIdentifier',
+                      'shortDescription', 'tags', 'title' ];
       expect(Object.keys(json).sort()).toEqual(allowed);
     });
 

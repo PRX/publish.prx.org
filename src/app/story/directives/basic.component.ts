@@ -13,7 +13,10 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
       </prx-fancy-field>
 
       <prx-fancy-field textinput [model]="story" name="cleanTitle" label="Clean Title">
-        <div class="fancy-hint">If the title above contains any extraneous identifying information about your episode (like season number), provide a clean version of the title alone here.</div>
+        <div class="fancy-hint">
+          If the title above contains any extraneous identifying information about
+          your episode (like season number), provide a clean version of the title alone here.
+        </div>
       </prx-fancy-field>
 
       <prx-fancy-field textinput required [model]="story" name="shortDescription" label="Teaser" [strict]="strict">
