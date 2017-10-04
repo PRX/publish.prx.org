@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../shared';
-import { TabModule, SelectModule } from 'ngx-prx-styleguide';
+import { TabModule } from 'ngx-prx-styleguide';
 import { seriesRouting, seriesProviders, seriesComponents } from './series.routing';
 
 @NgModule({
@@ -11,7 +11,6 @@ import { seriesRouting, seriesProviders, seriesComponents } from './series.routi
   ],
   imports: [
     CommonModule,
-    SelectModule,
     SharedModule,
     TabModule,
     seriesRouting
