@@ -8,8 +8,15 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
   template: `
     <form *ngIf="story">
 
-      <prx-fancy-field textinput required [model]="story" name="title" label="Episode Title">
+      <prx-fancy-field textinput required [model]="story" name="title" label="Title">
         <div class="fancy-hint">Write a short, Tweetable title. Think newspaper headline.</div>
+      </prx-fancy-field>
+
+      <prx-fancy-field textinput [model]="story" name="cleanTitle" label="Clean Title">
+        <div class="fancy-hint">
+          If the title above contains any extraneous identifying information about
+          your episode (like season number), provide a clean version of the title alone here.
+        </div>
       </prx-fancy-field>
 
       <prx-fancy-field textinput required [model]="story" name="shortDescription" label="Teaser" [strict]="strict">
@@ -29,7 +36,7 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
       <hr/>
 
       <prx-fancy-field required label="Audio Files">
-        <prx-select *ngIf="versionTemplateOptions" placeholder="Select Templates..."
+        <prx-select *ngIf="versionTemplateOptions" class="file-select"  placeholder="Select Templates..."
           [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
           (onSelect)="updateVersions($event)"
           [class.invalid]="versionsInvalid"
@@ -54,6 +61,18 @@ import { HalDoc, TabService } from 'ngx-prx-styleguide';
 
       <prx-fancy-field textinput [model]="story" name="tags" label="Categories" [strict]="strict">
         <div class="fancy-hint">A comma-separated list of tags relevant to the content of your episode.</div>
+      </prx-fancy-field>
+
+      <prx-fancy-field label="Season and Episode Numbers">
+        <div class="fancy-hint">If your episode is part of a season or has a specific episode number, select those numbers here.</div>
+
+        <div class="number-fields">
+          <prx-fancy-field number label="Season Number" [model]="story" name="seasonNumber" small=1>
+          </prx-fancy-field>
+
+          <prx-fancy-field number label="Episode Number" [model]="story" name="episodeNumber" small=1>
+          </prx-fancy-field>
+        </div>
       </prx-fancy-field>
 
       <prx-fancy-field label="Release Date">

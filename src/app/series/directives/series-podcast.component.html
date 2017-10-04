@@ -46,6 +46,10 @@
       </div>
     </prx-fancy-field>
 
+    <prx-fancy-field label="Podcast Type" [model]="podcast" name="serialOrder" [select]="podcastTypeOptions">
+      <div class="fancy-hint">Select how your episodes should be ordered: <strong>episodic</strong> (when you want your episodes to be presented and recommended last-to-first; this is the default and most common order for podcasts), or <strong>serial</strong> (when you want your episodes presented and recommended first-to-last).</div>
+    </prx-fancy-field>
+
     <prx-fancy-field required label="Podcast Audio" name="versionTemplateUrls"
       [multiselect]="audioVersionOptions" [model]="distribution" [advancedConfirm]="versionTemplateConfirm">
       <div class="fancy-hint">

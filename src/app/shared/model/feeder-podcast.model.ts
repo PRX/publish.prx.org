@@ -11,8 +11,10 @@ export class FeederPodcastModel extends BaseModel {
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'copyright', 'complete',
-    'language', 'summary', 'authorName', 'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName', 'managingEditorEmail'];
+  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl',
+             'enclosurePrefix', 'copyright', 'complete', 'language', 'summary', 'authorName',
+             'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName',
+             'managingEditorEmail', 'serialOrder'];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -28,6 +30,7 @@ export class FeederPodcastModel extends BaseModel {
   language = '';
   summary = '';
   hasPublicFeed = false;
+  serialOrder = false;
 
   VALIDATORS = {
     category: [REQUIRED()],
@@ -107,6 +110,7 @@ export class FeederPodcastModel extends BaseModel {
       this.hasPublicFeed = true;
     }
     this.summary = this.doc['summary'];
+    this.serialOrder = this.doc['serialOrder'] || false;
   }
 
   encode(): {} {
@@ -145,6 +149,7 @@ export class FeederPodcastModel extends BaseModel {
     }
 
     data.summary = this.summary || null;
+    data.serialOrder = this.serialOrder || null;
 
     return data;
   }

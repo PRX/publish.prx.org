@@ -23,6 +23,10 @@
     </div>
   </prx-fancy-field>
 
+  <prx-fancy-field label="Episode Type" [model]="episode" [select]="episodeTypeOptions" name="itunesType">
+    <div class="fancy-hint">Select the type of episode: <strong>full</strong> (default and most common); <strong>trailer</strong> (a short, promotional piece of content that represents a preview of a show); or <strong>bonus</strong> (extra content like behind-the-scenes information or interviews).</div>
+  </prx-fancy-field>
+
   <prx-fancy-field label="Author Information">
     <div class="fancy-hint">
       If the author info of this episode should be different from that of the podcast (for example,

@@ -14,7 +14,7 @@ describe('BasicComponent', () => {
     edit.story = null;
     fix.detectChanges();
     expect(el).not.toQuery('form');
-    edit.story = {changed: () => false};
+    edit.story = {changed: () => false, invalid: () => false};
     fix.detectChanges();
     expect(el).toQuery('form');
   });
@@ -22,19 +22,22 @@ describe('BasicComponent', () => {
   cit('shows the basic story edit fields', (fix, el, comp) => {
     expect(el).not.toQuery('prx-fancy-field');
     expect(el).not.toQuery('publish-wysiwyg');
-    comp.story = {images: [], changed: () => false};
+    comp.story = {images: [], changed: () => false, invalid: () => false};
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(7);
+    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(11);
     expect(el.queryAll(By.css('publish-wysiwyg')).length).toEqual(1);
     expect(el).toContainText('Tweetable title');
+    expect(el).toContainText('clean version of the title');
     expect(el).toContainText('short description');
     expect(el).toContainText('full description');
     expect(el).toContainText('list of tags');
+    expect(el).toContainText('season number');
+    expect(el).toContainText('episode number');
   });
 
   cit('shows warning if no audio versions', (fix, el, comp) => {
-    comp.story = {versions: [], changed: () => false};
+    comp.story = {versions: [], changed: () => false, invalid: () => false};
     fix.detectChanges();
 
     expect(el).toContainText('Pick at least one version of your audio files to upload for this episode');
