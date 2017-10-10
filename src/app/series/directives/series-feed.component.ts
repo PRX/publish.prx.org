@@ -16,7 +16,11 @@ import { SeriesModel, StoryModel } from '../../shared';
         <h4 *ngIf="privateStories.length">Draft</h4>
         <ul *ngIf="privateStories.length">
           <li *ngFor="let s of privateStories">
-            <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
+            <h5>
+              <a [routerLink]="['/story', s.id]" [class.invalid]="s.status == 'invalid'">
+                {{s.title}}
+              </a>
+            </h5>
             <p>{{s.doc?.duration || 0 | duration}}</p>
             <p></p>
           </li>
@@ -24,8 +28,12 @@ import { SeriesModel, StoryModel } from '../../shared';
 
         <h4 *ngIf="futurePublicStories.length">Scheduled</h4>
         <ul *ngIf="futurePublicStories.length">
-          <li *ngFor="let s of futurePublicStories">
-            <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
+          <li *ngFor="let s of futurePublicStories" >
+            <h5>
+              <a [routerLink]="['/story', s.id]" [class.invalid]="s.status == 'invalid'">
+                {{s.title}}
+              </a>
+            </h5>
             <p>{{s.doc?.duration || 0 | duration}}</p>
             <p class="futurePublic">{{s.publishedAt | date:'shortDate'}}</p>
           </li>
@@ -33,8 +41,12 @@ import { SeriesModel, StoryModel } from '../../shared';
 
         <h4 *ngIf="publicStories.length">Published</h4>
         <ul *ngIf="publicStories.length">
-          <li *ngFor="let s of publicStories">
-            <h5><a [routerLink]="['/story', s.id]">{{s.title}}</a></h5>
+          <li *ngFor="let s of publicStories" >
+            <h5>
+              <a [routerLink]="['/story', s.id]" [class.invalid]="s.status == 'invalid'">
+                {{s.title}}
+              </a>
+            </h5>
             <p>{{s.doc?.duration || 0 | duration}}</p>
             <p>{{s.publishedAt | date:'shortDate'}}</p>
           </li>

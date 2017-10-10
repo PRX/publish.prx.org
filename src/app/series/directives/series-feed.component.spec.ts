@@ -54,4 +54,20 @@ describe('SeriesFeedComponent', () => {
     expect(el).toContainText('Create a new');
   });
 
+  cit('highlights invalid stories', (fix, el, comp) => {
+    comp.series = {};
+    comp.isLoaded = true;
+    comp.publicStories = [
+      {title: 'Second Public Story', status: 'complete'},
+    ];
+    fix.detectChanges();
+    expect(el).not.toQuery('.invalid');
+
+    comp.publicStories = [
+      {title: 'First Public Story', status: 'invalid'},
+      {title: 'Second Public Story', status: 'complete'},
+    ];
+    fix.detectChanges();
+    expect(el).toQuery('.invalid');
+  })
 });
