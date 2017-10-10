@@ -35,10 +35,11 @@ li p {
 .futurePublic {
   color: #ffa500;
 }
-
-
 .extra {
   text-align: center;
   margin: 20px;
   font-weight: 400;
+}
+.invalid {
+  color: #e32;
 }
