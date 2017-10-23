@@ -48,6 +48,7 @@
     "evaporate": "^1.6.3",
     "express": "^4.15.2",
     "express-http-proxy": "^1.0.1",
+    "intl": "^1.2.5",
     "langmap": "0.0.14",
     "moment": "^2.18.1",
     "morgan": "^1.8.1",
