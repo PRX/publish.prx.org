@@ -88,7 +88,8 @@ export class StoryModel extends BaseModel implements HasUpload {
       });
     } else {
       versions = this.getSeriesTemplates().map(tdocs => {
-        let defaultVersion = new AudioVersionModel({series: this.parent, template: tdocs[0]});
+        const defaultTemplate = tdocs.find((t) => t['label'].toLowerCase().match(/default/)) || tdocs[tdocs.length - 1];
+        const defaultVersion = new AudioVersionModel({series: this.parent, template: defaultTemplate});
         defaultVersion.set('label', defaultVersion.label, true); // mark unchanged
         return [defaultVersion];
       });
