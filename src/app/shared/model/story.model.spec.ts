@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Observable';
 import { cms } from '../../../testing';
 import { StoryModel } from './story.model';
 import { AudioVersionModel } from './audio-version.model';
@@ -78,6 +79,31 @@ describe('StoryModel', () => {
     it('sets a default version for new stories', () => {
       let story = makeStory(null);
       expect(story.versions.length).toEqual(1);
+    });
+
+    it('chooses the template with \'default\' label for new story in series', () => {
+      let versionsWithDefault = [
+        {label: 'Old version', count: () => {}},
+        {label: 'Default version', count: () => {}},
+        {label: 'New version', count: () => {}}
+      ];
+      spyOn(StoryModel.prototype, 'getSeriesTemplates').and.callFake(() => {
+        return Observable.of(versionsWithDefault);
+      });
+      let story = makeStory(null);
+      expect(story.versions[0].label).toEqual('Default version');
+    });
+
+    it('defaults to most recent template in series if no \'default\' label template', () => {
+      let versionsWithoutDefault = [
+        {label: 'Old version', count: () => {}},
+        {label: 'New version', count: () => {}}
+      ];
+      spyOn(StoryModel.prototype, 'getSeriesTemplates').and.callFake(() => {
+        return Observable.of(versionsWithoutDefault);
+      });
+      let story = makeStory(null);
+      expect(story.versions[0].label).toEqual('New version');
     });
 
     it('loads images', () => {
