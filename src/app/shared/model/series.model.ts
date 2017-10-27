@@ -45,11 +45,13 @@ export class SeriesModel extends BaseModel implements HasUpload {
       this.set('accountId', account.id, true);
     }
     this.hasStories = series ? series.count('prx:stories') > 0 : false;
-    this.loadRelated('versionTemplates').subscribe(() => {
-      if (this.isNew && this.versionTemplates.length === 0) {
-        this.defaultVersionTemplate();
-      }
-    });
+    if (this.isNew) {
+      this.loadRelated('versionTemplates').subscribe(() => {
+        if (this.versionTemplates.length === 0) {
+          this.defaultVersionTemplate();
+        }
+      });
+    }
   }
 
   key() {
