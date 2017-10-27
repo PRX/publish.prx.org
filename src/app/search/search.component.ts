@@ -49,7 +49,7 @@ export class SearchComponent implements OnInit {
 
       this.allSeriesIds = [-1];
       this.allSeries = {};
-      this.auth.followItems('prx:series', {filters: 'v4'}).subscribe((series) => {
+      this.auth.followItems('prx:series', {filters: 'v4', zoom: false}).subscribe((series) => {
         for (let s of series) {
           this.allSeriesIds.push(s.id);
           this.allSeries[s.id] = new SeriesModel(this.auth, s, false);
@@ -102,6 +102,7 @@ export class SearchComponent implements OnInit {
     }
 
     let filters = ['v4'];
+    let zoom = ['prx:image', 'prx:series'];
     if (this.searchStoryParams.seriesId === -1) {
       filters.push('noseries');
     }
@@ -117,7 +118,7 @@ export class SearchComponent implements OnInit {
         sorts += this.searchStoryParams.orderDesc ? 'desc' : 'asc';
       }
     }
-    let params = {page: this.currentPage, per: this.searchStoryParams.perPage, filters: filters.join(','), sorts};
+    let params = {page: this.currentPage, per: this.searchStoryParams.perPage, filters: filters.join(','), sorts, zoom};
 
     if (parent.count('prx:stories')) {
       parent.followItems('prx:stories', params).subscribe((stories) => {
@@ -154,6 +155,7 @@ export class SearchComponent implements OnInit {
     this.noResults = false;
 
     let filters = ['v4'];
+    let zoom = ['prx:image'];
     if (this.searchSeriesParams.text)  {
       filters.push('text=' + this.searchSeriesParams.text);
     }
@@ -162,7 +164,7 @@ export class SearchComponent implements OnInit {
       sorts = this.searchSeriesParams.orderBy + ':';
       sorts += this.searchSeriesParams.orderDesc ? 'desc' : 'asc';
     }
-    let params = {page: this.currentPage, per: this.searchSeriesParams.perPage, filters: filters.join(','), sorts};
+    let params = {page: this.currentPage, per: this.searchSeriesParams.perPage, filters: filters.join(','), sorts, zoom};
     if (this.auth.count('prx:series')) {
       this.auth.followItems('prx:series', params).subscribe((seriesResults) => {
         this.seriesResults = [];

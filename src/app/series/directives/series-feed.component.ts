@@ -97,7 +97,7 @@ export class SeriesFeedComponent implements OnDestroy {
     } else {
       this.series
           .doc
-          .followItems('prx:stories', { per: total, sorts: 'released_at: desc, published_at: desc' })
+          .followItems('prx:stories', { per: total, zoom: '', sorts: 'released_at: desc, published_at: desc' })
           .subscribe((docs) => {
             this.isLoaded = true;
             docs.forEach((doc) => {
