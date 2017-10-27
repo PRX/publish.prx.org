@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
       this.auth = auth;
 
       // only load v4 series
-      auth.followItems('prx:series', {filters: 'v4'}).subscribe(series => {
+      auth.followItems('prx:series', {filters: 'v4', zoom: 'prx:image'}).subscribe(series => {
         this.isLoaded = true;
         this.totalCount = series.length ? series[0].total() : 0;
         this.noSeries = (series.length < 1) ? true : null;
