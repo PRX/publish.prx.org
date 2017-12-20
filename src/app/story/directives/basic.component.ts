@@ -164,6 +164,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
           this.story.removeRelated(v);
         } else {
           v.isDestroy = true;
+          (v.files || []).forEach(f => f.isDestroy = false);
         }
       }
     });
