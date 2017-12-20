@@ -71,6 +71,15 @@ describe('BasicComponent', () => {
       expect(story.versions[1].template.id).toEqual(123);
     });
 
+    cit('refuses to select an unknown template id', (fix, el, comp) => {
+      comp.story = story;
+      versions = [{label: 'whatev', template: {id: 456}}, {label: 'whatev2', isNew: true, template: {id: 456}}];
+      templates = [{id: 123, label: 'tpl 123'}, {id: 456, label: 'tpl 456'}];
+      comp.loadVersionTemplates();
+      comp.updateVersions([456, 99999]);
+      expect(story.versions.length).toEqual(1);
+    });
+
   });
 
 });

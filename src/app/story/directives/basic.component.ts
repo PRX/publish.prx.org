@@ -168,7 +168,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
       }
     });
     templateIds.forEach(id => {
-      if (!used[id]) {
+      if (!used[id] && this.versionTemplates[id]) {
         this.story.versions.push(new AudioVersionModel({
           series: this.story.parent,
           template: this.versionTemplates[id]
