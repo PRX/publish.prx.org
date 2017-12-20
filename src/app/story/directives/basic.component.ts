@@ -164,11 +164,12 @@ export class BasicComponent implements OnDestroy, DoCheck {
           this.story.removeRelated(v);
         } else {
           v.isDestroy = true;
+          (v.files || []).forEach(f => f.isDestroy = false);
         }
       }
     });
     templateIds.forEach(id => {
-      if (!used[id]) {
+      if (!used[id] && this.versionTemplates[id]) {
         this.story.versions.push(new AudioVersionModel({
           series: this.story.parent,
           template: this.versionTemplates[id]

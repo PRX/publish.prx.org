@@ -48,8 +48,8 @@ describe('BasicComponent', () => {
 
     let story, versions, templates;
     beforeEach(() => {
-      versions = [];
-      templates = [];
+      versions = [{label: 'whatev', template: {id: 456}}];
+      templates = [{id: 123, label: 'tpl 123'}, {id: 456, label: 'tpl 456'}];
       story = {
         loadRelated: () => (story.versions = versions) && Observable.of(true),
         removeRelated: r => story.versions = story.versions.filter(v => v !== r),
@@ -59,8 +59,6 @@ describe('BasicComponent', () => {
 
     cit('updates version templates to match the selection', (fix, el, comp) => {
       comp.story = story;
-      versions = [{label: 'whatev', template: {id: 456}}, {label: 'whatev2', isNew: true, template: {id: 456}}];
-      templates = [{id: 123, label: 'tpl 123'}, {id: 456, label: 'tpl 456'}];
       comp.loadVersionTemplates();
       comp.updateVersions([123]);
       expect(story.versions.length).toEqual(2);
@@ -69,6 +67,24 @@ describe('BasicComponent', () => {
       expect(story.versions[0].isDestroy).toEqual(true);
       expect(story.versions[1].label).toEqual('tpl 123');
       expect(story.versions[1].template.id).toEqual(123);
+    });
+
+    cit('refuses to select an unknown template id', (fix, el, comp) => {
+      comp.story = story;
+      comp.loadVersionTemplates();
+      comp.updateVersions([456, 99999]);
+      expect(story.versions.length).toEqual(1);
+    });
+
+    cit('undestroys audio files when their version is destroyed', (fix, el, comp) => {
+      versions[0].files = [{isDestroy: true}, {isDestroy: false}];
+      comp.story = story;
+      comp.loadVersionTemplates();
+      comp.updateVersions([123]);
+      expect(story.versions.length).toEqual(2);
+      expect(story.versions[0].isDestroy).toEqual(true);
+      expect(story.versions[0].files[0].isDestroy).toEqual(false);
+      expect(story.versions[0].files[1].isDestroy).toEqual(false);
     });
 
   });
