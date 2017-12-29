@@ -4,7 +4,6 @@ publish:
     - ./bin:/app/bin
     - ./e2e:/app/e2e
     - ./src:/app/src
-    - ./.git:/app/.git
   env_file:
     - .env
   ports:
