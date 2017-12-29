@@ -11,10 +11,10 @@ CMS_USE_LOCALSTORAGE=
 
 # prx auth
 AUTH_HOST=id-staging.prx.tech
-# for publish.prx.docker
+# for http://publish.prx.docker
 #AUTH_CLIENT_ID=rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D
-# for publish.prx.dev
-AUTH_CLIENT_ID=35zRqonwphKY05Uu2RA1YquwqyonSh3V6vAtnpBt
+# for https://publish.prx.dev
+AUTH_CLIENT_ID=35zRqonwphKY05Uu2RA1YquwqyonSh3V6vAtnpB9
 
 # aws uploading
 BUCKET_NAME=prx-up
@@ -31,6 +31,10 @@ PLAY_HOST=play-staging.prx.tech
 NEW_RELIC_APP_NAME=
 NEW_RELIC_LICENSE_KEY=
 GA_KEY=
+
+# dev server
+PORT=4200
+HOST=https://publish.prx.dev
 
 # metrics
 CASTLE_HOST=

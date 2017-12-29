@@ -65,12 +65,12 @@ Make sure you're running the node version in `.nvmrc`, and you're off!
 # install dependencies (https://yarnpkg.com/en/docs/install)
 yarn install
 
-# setup pow proxy (see http://pow.cx/)
-echo 4200 > ~/.pow/publish.prx
+# setup puma-dev proxy (see https://github.com/puma/puma-dev)
+echo 4200 > ~/.puma-dev/publish.prx
 
 # dev server
 npm start
-open http://publish.prx.dev
+open https://publish.prx.dev
 
 # run tests in Chrome
 npm test
