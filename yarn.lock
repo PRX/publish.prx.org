@@ -982,9 +982,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codecov@^2.1.0:
+codecov@PRX/codecov-node:
   version "2.2.0"
-  resolved "https://registry.yarnpkg.com/codecov/-/codecov-2.2.0.tgz#2d06817ceb8891eca6368836d4fb6bf6cc04ffd1"
+  resolved "https://codeload.github.com/PRX/codecov-node/tar.gz/97f8dc6255576feb540bdd6b61a5a04b919cf23a"
   dependencies:
     argv "0.0.2"
     request "2.79.0"
