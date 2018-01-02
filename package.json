@@ -27,7 +27,7 @@
     "test": "ng test",
     "e2e": "ng e2e",
     "testonce": "ng test --watch=false --browsers=PhantomJS",
-    "ci": "CODECOV=true ng test --watch=false --browsers=PhantomJS && codecov",
+    "ci": "ng test --watch=false --browsers=PhantomJS --code-coverage && codecov",
     "build": "ng build --prod",
     "serve": "prx-ng-serve dist"
   },
