@@ -59,7 +59,7 @@
     "prosemirror-schema-list": "0.18.0",
     "prosemirror-state": "0.18.0",
     "prosemirror-view": "0.18.0",
-    "prx-ng-serve": "^0.0.1",
+    "prx-ng-serve": "^0.0.4",
     "rxjs": "^5.1.0",
     "url-template": "^2.0.8",
     "zone.js": "^0.8.4"
