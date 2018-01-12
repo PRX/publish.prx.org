@@ -16,7 +16,6 @@ describe('BasicComponent', () => {
     alert: (title, msg) => { modalAlertMsg = msg; }
   });
 
-
   cit('does not render until the story is loaded', (fix, el, edit) => {
     edit.story = null;
     fix.detectChanges();
