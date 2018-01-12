@@ -4,13 +4,13 @@
 LOCAL_ENV=true
 
 # prx api
-CMS_HOST=cms-staging.prx.tech
+CMS_HOST=cms.staging.prx.tech
 CMS_TTL=
 CMS_ROOT_TTL=3600
 CMS_USE_LOCALSTORAGE=
 
 # prx auth
-AUTH_HOST=id-staging.prx.tech
+AUTH_HOST=id.staging.prx.tech
 # for http://publish.prx.docker
 #AUTH_CLIENT_ID=rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D
 # for https://publish.prx.dev
@@ -25,7 +25,7 @@ AWS_URL=your-cloudfront-url
 USE_CLOUDFRONT=true
 
 # embeddable player
-PLAY_HOST=play-staging.prx.tech
+PLAY_HOST=play.staging.prx.tech
 
 # monitoring
 NEW_RELIC_APP_NAME=

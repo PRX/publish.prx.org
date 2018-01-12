@@ -208,7 +208,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
         '',
         'Removing the scheduled release date for a published episode will unpublish the episode.',
         () => {}
-      )
+      );
     }
   }
 
