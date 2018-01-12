@@ -2,13 +2,19 @@ import { cit, create, cms, provide, By } from '../../../testing';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import { BasicComponent } from './basic.component';
-import { TabService } from 'ngx-prx-styleguide';
+import { ModalService, TabService } from 'ngx-prx-styleguide';
+import * as moment from 'moment';
 
 describe('BasicComponent', () => {
 
   create(BasicComponent);
 
   provide(TabService);
+
+  let modalAlertMsg: any;
+  provide(ModalService, {
+    alert: (title, msg) => { modalAlertMsg = msg; }
+  });
 
   cit('does not render until the story is loaded', (fix, el, edit) => {
     edit.story = null;
@@ -85,6 +91,23 @@ describe('BasicComponent', () => {
       expect(story.versions[0].isDestroy).toEqual(true);
       expect(story.versions[0].files[0].isDestroy).toEqual(false);
       expect(story.versions[0].files[1].isDestroy).toEqual(false);
+    });
+
+    cit('alerts when unscheduling a future published episode', (fix, el, comp) => {
+      const tomorrow = new Date(moment().add(1, 'days').valueOf());
+      comp.story = {
+        publishedAt: tomorrow,
+        releasedAt: tomorrow,
+        changed: () => true
+      };
+      comp.showReleasedAt = true;
+      fix.detectChanges();
+
+      expect(modalAlertMsg).toBeUndefined();
+      let cancelReleaseDate = el.query(By.css('#showReleasedAt')).nativeElement;
+      cancelReleaseDate.click();
+      expect(modalAlertMsg).toMatch(/will unpublish/i);
+      expect(comp.story.releasedAt).toBeNull();
     });
 
   });
