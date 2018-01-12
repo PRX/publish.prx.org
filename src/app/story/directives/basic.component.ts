@@ -1,7 +1,7 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { StoryModel, AudioVersionModel } from '../../shared';
-import { HalDoc, TabService } from 'ngx-prx-styleguide';
+import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
 
 @Component({
   styleUrls: ['basic.component.css'],
@@ -105,7 +105,10 @@ export class BasicComponent implements OnDestroy, DoCheck {
   versionTemplatesSelected: number[];
   versionTemplateOptions: string[][];
 
-  constructor(tab: TabService) {
+  constructor(
+    tab: TabService,
+    private modal: ModalService,
+) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => {
       this.story = s;
       this.loadVersionTemplates();
@@ -182,6 +185,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
     this.showReleasedAt = !this.showReleasedAt;
     if (this.story.releasedAt) {
       this.story.releasedAt = null;
+      this.notifyOfCanceledPublication();
     }
   }
 
@@ -194,6 +198,18 @@ export class BasicComponent implements OnDestroy, DoCheck {
       });
       this.story.loadRelated('versions').subscribe(() => this.setSelected());
     });
+  }
+
+  notifyOfCanceledPublication() {
+    const futurePublished = this.story.publishedAt && new Date() < this.story.publishedAt;
+    const removingReleaseDate = this.story.changed('releasedAt') && !this.story.releasedAt;
+    if (removingReleaseDate && futurePublished) {
+      this.modal.alert(
+        '',
+        'Removing the scheduled release date for a published episode will unpublish the episode.',
+        () => {}
+      )
+    }
   }
 
   private setSelected() {
