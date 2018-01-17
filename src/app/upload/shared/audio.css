@@ -73,9 +73,14 @@
   border: 1px solid #DDDDDD;
   border-left: 0 none;
   padding: 6px 10px;
+  max-width: calc(100% - 160px);
 }
 .main .info span, .main .info publish-audio-duration {
   margin-right: 6px;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .main .info publish-audio-player {
   flex-grow: 1;
