@@ -78,7 +78,6 @@
 .main .info span, .main .info publish-audio-duration {
   margin-right: 6px;
   max-width: 60%;
-  vertical-align: middle;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
