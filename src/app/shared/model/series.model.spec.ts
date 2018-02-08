@@ -9,7 +9,7 @@ describe('SeriesModel', () => {
     accountMock.mock('self', {href: '/api/v1/accounts/account-id'});
 
     seriesMock = cms.mock('prx:series', {id: 'series-id'});
-    seriesMock.mock('prx:account', {href: '/api/v1/accounts/account-id'});
+    seriesMock.mock('prx:account', {href: '/api/v1/accounts/series-account-id'});
   });
 
   const makeSeries = (isNew: boolean) => {
@@ -33,7 +33,7 @@ describe('SeriesModel', () => {
     series.accountId = 200;
     const data = series.encode();
     expect(data['set_account_uri']).toMatch(/200/);
-    expect(data['set_account_uri']).not.toMatch(/account-id/);
+    expect(data['set_account_uri']).not.toMatch(/series-account-id/);
   });
 
 });
