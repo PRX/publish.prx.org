@@ -20,7 +20,6 @@ describe('SeriesModel', () => {
     }
   };
 
-
   it('allows account switching on new series', () => {
     let series = makeSeries(true);
     series.accountId = 100;
