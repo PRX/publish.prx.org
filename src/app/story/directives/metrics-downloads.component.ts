@@ -1,11 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/forkJoin';
 
 import { Env } from '../../core/core.env';
-import { FeederEpisodeModel, StoryModel } from '../../shared';
-import { TabService, HalDoc } from 'ngx-prx-styleguide';
+import { StoryModel } from '../../shared';
+import { TabService } from 'ngx-prx-styleguide';
 
 @Component({
   template: `
