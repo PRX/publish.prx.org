@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { FooterModule, HalModule, HeaderModule, ModalModule, ModalService, ToastrModule, ToastrService } from 'ngx-prx-styleguide';
 
 import { PlayerService } from './audio';
-import { CastleService, CmsService, FeederService } from './hal';
+import { CmsService, FeederService } from './hal';
 import { MimeTypeService, UploadService } from './upload';
 
 @NgModule({
@@ -23,7 +23,6 @@ import { MimeTypeService, UploadService } from './upload';
     ToastrModule
   ],
   providers: [
-    CastleService,
     CmsService,
     FeederService,
     MimeTypeService,

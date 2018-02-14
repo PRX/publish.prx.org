@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { HalService, MockHalService } from 'ngx-prx-styleguide';
 
-import { CastleService, CmsService, FeederService } from '../app/core/hal/';
+import { CmsService, FeederService } from '../app/core/hal/';
 import { StubRouterLinkDirective } from './stub.routerlink.directive';
 
 type ComponentTestCallback = (
@@ -49,7 +49,6 @@ export function create(componentType: Type<any>, runInitialDetect = true) {
     this._publishDeclarations = [componentType, StubRouterLinkDirective];
     this._publishProviders    = [
       {provide: HalService, useValue: mockHal},
-      CastleService,
       CmsService,
       FeederService
     ];
