@@ -44,6 +44,5 @@ export class Env {
   public static get AWS_URL():               string { return getVar('AWS_URL'); }
   public static get USE_CLOUDFRONT():       boolean { return getVar('USE_CLOUDFRONT'); }
   public static get PLAY_HOST():            boolean { return getVar('PLAY_HOST'); }
-  public static get CASTLE_HOST():           string { return getVar('CASTLE_HOST'); }
-  public static get CASTLE_TEST_EPISODE():   string { return getVar('CASTLE_TEST_EPISODE'); }
+  public static get METRICS_HOST():          string { return getVar('METRICS_HOST'); }
 }
