@@ -10,8 +10,7 @@ const DEFAULTS = {
   AUTH_HOST: 'id.prx.org',
   AUTH_CLIENT_ID: 'rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D',
   BUCKET_FOLDER: 'dev',
-  PLAY_HOST: 'play.prx.org',
-  METRICS_HOST: 'metrics.prx.org'
+  PLAY_HOST: 'play.prx.org'
 };
 
 const addScheme = (name: string, value: any): any => {
@@ -45,5 +44,6 @@ export class Env {
   public static get AWS_URL():               string { return getVar('AWS_URL'); }
   public static get USE_CLOUDFRONT():       boolean { return getVar('USE_CLOUDFRONT'); }
   public static get PLAY_HOST():            boolean { return getVar('PLAY_HOST'); }
-  public static get METRICS_HOST():          string { return getVar('METRICS_HOST'); }
+  public static get CASTLE_HOST():           string { return getVar('CASTLE_HOST'); }
+  public static get CASTLE_TEST_EPISODE():   string { return getVar('CASTLE_TEST_EPISODE'); }
 }
