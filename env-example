@@ -37,5 +37,4 @@ PORT=4200
 HOST=https://publish.prx.dev
 
 # metrics
-CASTLE_HOST=
-CASTLE_TEST_EPISODE=
+METRICS_HOST=
