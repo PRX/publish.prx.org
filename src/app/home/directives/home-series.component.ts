@@ -74,7 +74,7 @@ export class HomeSeriesComponent implements OnInit {
     this.series.followItems('prx:stories', {
       per: limit,
       filters: 'v4',
-      sorts: 'released_at: desc, published_at: desc',
+      sorts: 'published_released_at: desc',
       zoom: 'prx:image'
     }).subscribe((stories) => {
       this.storyLoaders = null;
@@ -93,7 +93,7 @@ export class HomeSeriesComponent implements OnInit {
     let stories = this.auth.followItems('prx:stories', {
       filters: 'noseries,v4',
       per: limit,
-      sorts: 'released_at: desc, published_at: desc',
+      sorts: 'published_released_at: desc',
       zoom: 'prx:image'
     });
 

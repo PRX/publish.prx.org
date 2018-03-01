@@ -26,6 +26,9 @@ import { StoryModel } from '../../shared';
       <dt *ngIf="isPublished && !isScheduled">Published</dt>
       <dd *ngIf="isPublished"><p>{{story.publishedAt | date:"short"}}</p></dd>
 
+      <dt *ngIf="isReleased && !isPublished">Release</dt>
+      <dd *ngIf="isReleased && !isPublished"><p>{{story.releasedAt | date:"short"}}</p></dd>
+
       <dt>Saved</dt>
       <dd *ngIf="!id"><p>Not Saved</p></dd>
       <dd *ngIf="id"><p *ngIf="story?.updatedAt">{{story.updatedAt | date:"short"}}</p></dd>
@@ -67,6 +70,7 @@ export class StoryStatusComponent implements DoCheck {
   statusClass: string;
   statusText: string;
   isPublished: boolean;
+  isReleased: boolean;
   isScheduled: boolean;
   notPublished: boolean;
 
@@ -87,6 +91,7 @@ export class StoryStatusComponent implements DoCheck {
     if (this.story) {
       this.setStatus();
       this.isPublished = this.story.publishedAt ? true : false;
+      this.isReleased = this.story.releasedAt ? true : false;
       this.isScheduled = this.isPublished && !this.story.isPublished();
       this.notPublished = !this.isPublished;
       this.normalInvalid = this.storyInvalid(false);
