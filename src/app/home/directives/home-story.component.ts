@@ -75,7 +75,7 @@ export class HomeStoryComponent implements OnInit {
 
   loadData() {
     this.storyTitle = this.story.title;
-    this.storyDate = this.story.publishedAt || this.story.updatedAt || this.story.lastStored;
+    this.storyDate = this.story.publishedAt || this.story.releasedAt || this.story.updatedAt || this.story.lastStored;
     if (this.story.doc) {
       this.storyDuration = this.story.doc['duration'] || 0;
       this.storyImage = this.story.doc;
