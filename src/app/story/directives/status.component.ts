@@ -26,8 +26,8 @@ import { StoryModel } from '../../shared';
       <dt *ngIf="isPublished && !isScheduled">Published</dt>
       <dd *ngIf="isPublished"><p>{{story.publishedAt | date:"short"}}</p></dd>
 
-      <dt *ngIf="isReleased">Released</dt>
-      <dd *ngIf="isReleased"><p>{{story.releasedAt | date:"short"}}</p></dd>
+      <dt *ngIf="isReleased && !isPublished">Release</dt>
+      <dd *ngIf="isReleased && !isPublished"><p>{{story.releasedAt | date:"short"}}</p></dd>
 
       <dt>Saved</dt>
       <dd *ngIf="!id"><p>Not Saved</p></dd>
