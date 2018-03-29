@@ -15,6 +15,7 @@ export class AppComponent {
   authClient = Env.AUTH_CLIENT_ID;
 
   loggedIn = true; // until proven otherwise
+  authorized = true; // until proven otherwise
   userName: string;
   userImageDoc: HalDoc;
 
@@ -28,13 +29,20 @@ export class AppComponent {
 
   loadAccount(token: string) {
     if (token) {
-      this.loggedIn = true;
-      this.cms.individualAccount.subscribe(doc => {
-        this.userImageDoc = doc;
-        this.userName = doc['name'];
-      });
+      if (token === 'AUTHORIZATION_FAIL') {
+        this.loggedIn = true;
+        this.authorized = false;
+      } else {
+        this.loggedIn = true;
+        this.authorized = true;
+        this.cms.individualAccount.subscribe(doc => {
+          this.userImageDoc = doc;
+          this.userName = doc['name'];
+        });
+      }
     } else {
       this.loggedIn = false;
+      this.authorized = false;
       this.userImageDoc = null;
       this.userName = null;
     }
