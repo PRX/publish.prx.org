@@ -3,11 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard, UnauthGuard } from 'ngx-prx-styleguide';
 import { ErrorComponent } from './error';
+import { AuthorizationComponent } from './authorization/authorization.component';
 import { HomeComponent, HomeSeriesComponent, HomeStoryComponent } from './home';
 import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
   { path: '_error_',   component: ErrorComponent },
+  { path: 'permission-denied', component: AuthorizationComponent },
   { path: '',          component: HomeComponent,  canActivate: [AuthGuard] },
   { path: 'login',     component: LoginComponent, canActivate: [UnauthGuard] }
 ];
@@ -17,7 +19,8 @@ export const routingComponents: any[] = [
   HomeComponent,
   HomeSeriesComponent,
   HomeStoryComponent,
-  LoginComponent
+  LoginComponent,
+  AuthorizationComponent
 ];
 
 export const routingProviders: any[] = [];
