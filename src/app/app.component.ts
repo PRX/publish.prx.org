@@ -29,7 +29,7 @@ export class AppComponent {
 
   loadAccount(token: string) {
     if (token) {
-      if (token === 'AUTHORIZATION_FAIL') {
+      if (!this.auth.parseToken(token)) {
         this.loggedIn = true;
         this.authorized = false;
       } else {
