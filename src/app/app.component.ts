@@ -15,7 +15,7 @@ export class AppComponent {
   authClient = Env.AUTH_CLIENT_ID;
 
   loggedIn = true; // until proven otherwise
-  authorized = true; // until proven otherwise
+  authorized = false; // until proven otherwise, to avoid nav "jump"
   userName: string;
   userImageDoc: HalDoc;
 
