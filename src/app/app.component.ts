@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Angulartics2GoogleAnalytics } from 'angulartics2';
-import { AuthService } from 'ngx-prx-styleguide';
+import { AuthService, Userinfo, UserinfoService } from 'ngx-prx-styleguide';
 import { CmsService, HalDoc } from './core';
 import { Env } from './core/core.env';
 
@@ -22,13 +22,17 @@ export class AppComponent {
   constructor(
     private auth: AuthService,
     private cms: CmsService,
+    private userinfo: UserinfoService,
     private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
   ) {
     auth.token.subscribe(token => this.loadAccount(token));
+    this.userinfo.config(this.authHost);
   }
 
   loadAccount(token: string) {
     if (token) {
+      this.userinfo.getUserinfo().subscribe(userinfo => this.loadUserinfo(userinfo));
+
       if (!this.auth.parseToken(token)) {
         this.loggedIn = true;
         this.authorized = false;
@@ -46,6 +50,13 @@ export class AppComponent {
       this.userImageDoc = null;
       this.userName = null;
     }
+  }
+
+  loadUserinfo(userinfo: Userinfo) {
+    this.userName = userinfo.preferred_username;
+    this.userinfo.getUserDoc(userinfo).subscribe(userDoc => {
+      this.userImageDoc = userDoc;
+    });
   }
 
 }
