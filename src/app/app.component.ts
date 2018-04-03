@@ -33,16 +33,11 @@ export class AppComponent {
     if (token) {
       this.userinfo.getUserinfo().subscribe(userinfo => this.loadUserinfo(userinfo));
 
+      this.loggedIn = true;
       if (!this.auth.parseToken(token)) {
-        this.loggedIn = true;
         this.authorized = false;
       } else {
-        this.loggedIn = true;
         this.authorized = true;
-        this.cms.individualAccount.subscribe(doc => {
-          this.userImageDoc = doc;
-          this.userName = doc['name'];
-        });
       }
     } else {
       this.loggedIn = false;
