@@ -18,20 +18,21 @@ export class AppComponent {
   authorized = false; // until proven otherwise, to avoid nav "jump"
   userName: string;
   userImageDoc: HalDoc;
+  userinfo: Userinfo;
 
   constructor(
     private auth: AuthService,
     private cms: CmsService,
-    private userinfo: UserinfoService,
+    private user: UserinfoService,
     private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
   ) {
     auth.token.subscribe(token => this.loadAccount(token));
-    this.userinfo.config(this.authHost);
+    this.user.config(this.authHost);
   }
 
   loadAccount(token: string) {
     if (token) {
-      this.userinfo.getUserinfo().subscribe(userinfo => this.loadUserinfo(userinfo));
+      this.user.getUserinfo().subscribe(userinfo => this.loadUserinfo(userinfo));
 
       this.loggedIn = true;
       if (!this.auth.parseToken(token)) {
@@ -48,8 +49,8 @@ export class AppComponent {
   }
 
   loadUserinfo(userinfo: Userinfo) {
-    this.userName = userinfo.preferred_username;
-    this.userinfo.getUserDoc(userinfo).subscribe(userDoc => {
+    this.userinfo = userinfo;
+    this.user.getUserDoc(userinfo).subscribe(userDoc => {
       this.userImageDoc = userDoc;
     });
   }
