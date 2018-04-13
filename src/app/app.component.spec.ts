@@ -3,11 +3,13 @@ import { Angulartics2, Angulartics2GoogleAnalytics } from 'angulartics2';
 import { cit, create, provide, By } from '../testing';
 import { AppComponent } from './app.component';
 
-import { AuthService, ModalService } from 'ngx-prx-styleguide';
+import { AuthService, ModalService, Userinfo, UserinfoService } from 'ngx-prx-styleguide';
 import { CmsService } from './core/hal/cms.service';
 
 let authToken = new Subject<string>();
 let cmsToken: string = null;
+let userinfo = new Userinfo();
+userinfo.preferred_username = 'Someone';
 
 describe('AppComponent', () => {
 
@@ -20,6 +22,10 @@ describe('AppComponent', () => {
     individualAccount: new Subject<any>()
   });
   provide(ModalService, {state: new Subject<boolean>()});
+  provide(UserinfoService, {
+    config: () => {},
+    getUserinfo: userinfo
+  });
   provide(Angulartics2, {
     settings: {pageTracking: {}},
     trackLocation: () => {},
@@ -32,10 +38,10 @@ describe('AppComponent', () => {
   });
   provide(Angulartics2GoogleAnalytics);
 
-  cit('only shows header links when logged in', (fix, el, comp) => {
+  cit('only shows header link(s) when logged in', (fix, el, comp) => {
     comp.loggedIn = true;
     fix.detectChanges();
-    expect(el.queryAll(By.css('prx-navitem')).length).toEqual(3);
+    expect(el.queryAll(By.css('prx-navitem')).length).toEqual(1);
     comp.loggedIn = false;
     fix.detectChanges();
     expect(el).not.toQuery('prx-navitem');
