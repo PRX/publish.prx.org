@@ -19,7 +19,7 @@
   padding: 6px 10px;
 }
 .new-image input:focus + label, .new-image label:hover {
-  background-color: #2b7187;
+  background-color: #0070a1;
 }
 
 .invalid {

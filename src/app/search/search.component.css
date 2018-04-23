@@ -16,14 +16,14 @@ header .tab {
   float:left;
   padding: 5px 10px;
   background-color: #ddd;
-  color: #368aa2;
+  color: #0089bc;
 }
 header .tab.active {
-  background-color: #368aa2;
+  background-color: #0089bc;
   color: #ddd;
 }
 header .tab.active {
-  background-color: #368aa2;
+  background-color: #0089bc;
   color: #ddd;
 }
 
