@@ -17,10 +17,10 @@ button, .button {
   padding-bottom: 8px;
 }
 button {
-  background-color: #f59f51;
+  background-color: #ff9600;
 }
 button:hover, button:focus {
-  background-color: #e28b42;
+  background-color: #ec8200;
 }
 p.error {
   color: #e32;

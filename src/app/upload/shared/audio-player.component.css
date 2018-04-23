@@ -22,12 +22,12 @@ button {
 .pause {
   width: 14px;
   height: 16px;
-  border-right: 5px solid #368AA2;
-  border-left: 5px solid #368AA2;
+  border-right: 5px solid #0089bc;
+  border-left: 5px solid #0089bc;
 }
 .pause:hover, .pause:active {
-  border-left-color: #2b7187;
-  border-right-color: #2b7187;
+  border-left-color: #0070a1;
+  border-right-color: #0070a1;
 }
 .pause.loading {
   border-color: #CCC;
@@ -58,7 +58,7 @@ p.loading {
 .scrubber .meter {
   height: 100%;
   width: 0%;
-  background-color: #368AA2;
+  background-color: #0089bc;
   overflow: hidden;
 }
 .scrubber .position {
@@ -67,5 +67,5 @@ p.loading {
   top: -3px;
   height: 10px;
   width: 2px;
-  background-color: #368AA2;
+  background-color: #0089bc;
 }
