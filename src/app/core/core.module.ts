@@ -1,6 +1,5 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { FooterModule, HalModule, HeaderModule, ModalModule, ModalService, ToastrModule, ToastrService } from 'ngx-prx-styleguide';
 
@@ -12,7 +11,6 @@ import { MimeTypeService, UploadService } from './upload';
   declarations: [],
   imports: [
     CommonModule,
-    HttpModule,
     RouterModule,
     HalModule
   ],

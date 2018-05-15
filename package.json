@@ -33,15 +33,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "^4.0.3",
-    "@angular/compiler": "^4.0.3",
-    "@angular/core": "^4.0.3",
-    "@angular/forms": "^4.0.3",
-    "@angular/http": "^4.0.3",
-    "@angular/platform-browser": "^4.0.3",
-    "@angular/platform-browser-dynamic": "^4.0.3",
-    "@angular/router": "^4.0.3",
-    "angulartics2": "^2.2.1",
+    "@angular/common": "^5.1.2",
+    "@angular/compiler": "^5.1.2",
+    "@angular/core": "^5.1.2",
+    "@angular/forms": "^5.1.2",
+    "@angular/platform-browser": "^5.1.2",
+    "@angular/platform-browser-dynamic": "^5.1.2",
+    "@angular/router": "^5.1.2",
+    "angulartics2": "^5.1.2",
     "codecov": "PRX/codecov-node",
     "core-js": "^2.4.1",
     "evaporate": "^1.6.3",
@@ -60,16 +59,16 @@
     "prosemirror-state": "0.18.0",
     "prosemirror-view": "0.18.0",
     "prx-ng-serve": "^0.0.4",
-    "rxjs": "^5.1.0",
+    "rxjs": "^5.5.2",
     "url-template": "^2.0.8",
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
-    "@angular/cli": "^1.0.1",
-    "@angular/compiler-cli": "^4.0.3",
+    "@angular/cli": "^1.7.4",
+    "@angular/compiler-cli": "^5.1.2",
     "@types/evaporate": "0.0.18",
     "@types/jasmine": "2.5.38",
-    "@types/node": "^6.0.60",
+    "@types/node": "^10.0.8",
     "@types/pikaday": "0.0.32",
     "@types/url-template": "^2.0.27",
     "codelyzer": "~3.0.0",
@@ -85,7 +84,7 @@
     "protractor": "~5.1.0",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
-    "typescript": "~2.1.0"
+    "typescript": "2.6.2"
   },
   "optionalDependencies": {
     "karma-phantomjs-launcher": "^1.0.4"

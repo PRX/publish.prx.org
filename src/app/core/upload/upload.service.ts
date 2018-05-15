@@ -3,7 +3,8 @@ import { Observable } from 'rxjs/Observable';
 import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { Subscriber } from 'rxjs/Subscriber';
 import 'rxjs/add/operator/publish';
-import Evaporate from 'evaporate';
+declare var require: any;
+const Evaporate = require('evaporate');
 
 import { Env } from '../core.env';
 import { UUID } from './uuid';
@@ -39,8 +40,8 @@ export class UploadService {
   }
 
   add(file: File, contentType?: string): Upload {
-    let ct = contentType || this.mimeTypeService.lookupFileMimetype(file).full();
-    let upload = new Upload(file, ct, this.evaporate);
+    const ct = contentType || this.mimeTypeService.lookupFileMimetype(file).full();
+    const upload = new Upload(file, ct, this.evaporate);
     this.uploads.push(upload);
     return upload;
   }
@@ -55,7 +56,7 @@ export class UploadService {
   }
 
   validFileType(file: File, allowed: string[]) {
-    let ct = this.mimeTypeService.lookupFileMimetype(file).minor();
+    const ct = this.mimeTypeService.lookupFileMimetype(file).minor();
     return allowed.indexOf(ct) > -1;
   }
 }
@@ -88,7 +89,7 @@ export class Upload {
 
   cancel(): boolean {
     if (this.evaporate && !this.complete) {
-      let formerId = this.uploadId;
+      const formerId = this.uploadId;
       this.uploadId = null;
       if (formerId !== null) {
         return this.evaporate.cancel(formerId);
@@ -103,7 +104,7 @@ export class Upload {
     }
     this.cancel();
 
-    let uploadOptions = {
+    const uploadOptions = {
       file: this.file,
       name: this.path,
       contentType: this.contentType,
@@ -111,7 +112,7 @@ export class Upload {
         'x-amz-acl': 'public-read'
       },
       notSignedHeadersAtInitiate: {
-        'Content-Disposition': 'attachment; filename=' + name
+        'Content-Disposition': 'attachment; filename=' + this.name
       }
     };
 
