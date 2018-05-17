@@ -43,7 +43,7 @@
     "angulartics2": "^5.1.2",
     "codecov": "PRX/codecov-node",
     "core-js": "^2.4.1",
-    "evaporate": "^1.6.3",
+    "evaporate": "^2.1.4",
     "intl": "^1.2.5",
     "langmap": "0.0.14",
     "moment": "^2.18.1",
@@ -66,7 +66,7 @@
   "devDependencies": {
     "@angular/cli": "^1.7.4",
     "@angular/compiler-cli": "^5.1.2",
-    "@types/evaporate": "0.0.18",
+    "@types/evaporate": "^2.1.0",
     "@types/jasmine": "2.5.38",
     "@types/node": "^10.0.8",
     "@types/pikaday": "0.0.32",

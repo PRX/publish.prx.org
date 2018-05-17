@@ -64,7 +64,7 @@ export class ImageUploadComponent implements DoCheck {
       return;
     }
 
-    let hash = this.model.images.map(i => `${i.key}${i.purpose}${i.isDestroy}${i.isNew}`).join('');
+    const hash = this.model.images.map(i => `${i.key}${i.purpose}${i.isDestroy}${i.isNew}`).join('');
     if (this.lastImageHash !== hash) {
       this.lastImageHash = hash;
 
@@ -104,11 +104,12 @@ export class ImageUploadComponent implements DoCheck {
       this.browserImage = new Image();
       this.browserImage.onload = () => {
         if (this.fileDimensionsAcceptable(this.browserImage.width, this.browserImage.height)) {
-          let upload = this.uploadService.add(file);
-          let imageModel = this.model.addImage(upload);
-          if (this.purpose) {
-            imageModel.set('purpose', this.purpose);
-          }
+          this.uploadService.add(file).subscribe(upload => {
+            const imageModel = this.model.addImage(upload);
+            if (this.purpose) {
+              imageModel.set('purpose', this.purpose);
+            }
+          });
         }
       };
       this.browserImage.src = this.reader.result;
@@ -137,7 +138,7 @@ export class ImageUploadComponent implements DoCheck {
   }
   // for backwards compatibility, try to set something as the 'profile' image
   setSomethingAsProfile(images: ImageModel[]) {
-    let allBlank = images.every(i => i.purpose === '');
+    const allBlank = images.every(i => i.purpose === '');
     if (this.purpose === 'profile' && images.length && allBlank) {
       // timeout to comply with change detection
       setTimeout(() => {

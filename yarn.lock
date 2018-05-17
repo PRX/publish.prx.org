@@ -180,9 +180,9 @@
     semver "^5.3.0"
     semver-intersect "^1.1.2"
 
-"@types/evaporate@0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@types/evaporate/-/evaporate-0.0.18.tgz#bdf47edcca069a8153daf3d96c5946e48604c51b"
+"@types/evaporate@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/evaporate/-/evaporate-2.1.0.tgz#7c3cc12b54ea684f3fe10d6d7645fb0c3e4bd650"
 
 "@types/jasmine@2.5.38":
   version "2.5.38"
@@ -549,9 +549,9 @@ autoprefixer@^7.2.3:
     postcss "^6.0.17"
     postcss-value-parser "^3.2.3"
 
-aws-sdk@^2.238.1:
-  version "2.240.1"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.240.1.tgz#ed9f137573277f4543740c04ac628b46df244717"
+aws-sdk@^2.241.1:
+  version "2.241.1"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.241.1.tgz#ae4e1ba772cc17284df00c03b58dcf914d5c72f9"
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
@@ -2125,9 +2125,9 @@ etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
 
-evaporate@^1.6.3:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/evaporate/-/evaporate-1.6.3.tgz#73fdabb7e0d66d65f168c5becbfc09535131fa65"
+evaporate@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/evaporate/-/evaporate-2.1.4.tgz#44aa46a930347fdffe9027bae3bb2af71e7a3299"
 
 event-emitter@~0.3.5:
   version "0.3.5"

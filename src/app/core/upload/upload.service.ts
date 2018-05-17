@@ -15,7 +15,7 @@ export class UploadService {
 
   public uploads: Upload[] = [];
 
-  private evaporate: Evaporate;
+  private evaporate: Observable<Evaporate>;
   private bucketName: string = Env.BUCKET_NAME;
   private signUrl: string = Env.SIGN_URL;
   private awsKey: string = Env.AWS_KEY;
@@ -28,22 +28,27 @@ export class UploadService {
 
   init() {
     // until there is a good way to load from env and inject
-    this.evaporate = new Evaporate({
-      signerUrl: this.signUrl,
-      aws_key: this.awsKey,
-      aws_url: this.awsUrl,
-      bucket: this.bucketName,
-      cloudfront: this.useCloudfront,
-      onlyRetryForSameFileName: true,
-      logging: false
-    });
+    this.evaporate = Observable.from(
+      Evaporate.create({
+        signerUrl: this.signUrl,
+        aws_key: this.awsKey,
+        aws_url: this.awsUrl,
+        bucket: this.bucketName,
+        cloudfront: this.useCloudfront,
+        onlyRetryForSameFileName: true,
+        logging: false,
+        awsSignatureVersion: '2'
+      }).then(evaporate => evaporate)
+    );
   }
 
-  add(file: File, contentType?: string): Upload {
-    const ct = contentType || this.mimeTypeService.lookupFileMimetype(file).full();
-    const upload = new Upload(file, ct, this.evaporate);
-    this.uploads.push(upload);
-    return upload;
+  add(file: File, contentType?: string): Observable<Upload> {
+    return this.evaporate.map(evaporate => {
+      const ct = contentType || this.mimeTypeService.lookupFileMimetype(file).full();
+      const upload = new Upload(file, ct, evaporate);
+      this.uploads.push(upload);
+      return upload;
+    });
   }
 
   find(uuid: string): Upload {
@@ -70,7 +75,7 @@ export class Upload {
   public s3url: string;
 
   public progress: ConnectableObservable<number>;
-  public uploadId: string;
+  public uploadId: Observable<string>;
   public complete: boolean;
 
   constructor(
@@ -87,20 +92,23 @@ export class Upload {
     this.upload();
   }
 
-  cancel(): boolean {
-    if (this.evaporate && !this.complete) {
-      const formerId = this.uploadId;
-      this.uploadId = null;
-      if (formerId !== null) {
-        return this.evaporate.cancel(formerId);
+  cancel(): Observable<boolean> {
+    if (this.evaporate && !this.complete && this.uploadId) {
+      if (this.uploadId) {
+        return this.uploadId.map(id => {
+          this.uploadId = null;
+          // TODO: is cancel by id changed to cancel by bucket/file?
+          // https://github.com/TTLabs/EvaporateJS/wiki/Evaporate.prototype.cancel()
+          return this.evaporate.cancel(id);
+        });
       }
     }
-    return false;
+    return Observable.of(false);
   }
 
   upload(): Observable<number> {
     if (this.complete) {
-      return null;
+      return Observable.of(null);
     }
     this.cancel();
 
@@ -116,12 +124,12 @@ export class Upload {
       }
     };
 
-    let progressObservable: Observable<number> = Observable.create((sub: Subscriber<number>) => {
+    const progressObservable: Observable<number> = Observable.create((sub: Subscriber<number>) => {
       sub.next(0);
       uploadOptions['progress'] = (pct: number) => sub.next(pct);
       uploadOptions['complete'] = () => { sub.next(1.0); this.complete = true; sub.complete(); };
       uploadOptions['error']    = (msg: string) => sub.error(msg);
-      this.uploadId = this.evaporate.add(uploadOptions);
+      this.uploadId = Observable.from(this.evaporate.add(uploadOptions));
     });
 
     // share the underlying observable without creating dups
