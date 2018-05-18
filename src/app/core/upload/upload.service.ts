@@ -97,8 +97,6 @@ export class Upload {
       if (this.uploadId) {
         return this.uploadId.map(id => {
           this.uploadId = null;
-          // TODO: is cancel by id changed to cancel by bucket/file?
-          // https://github.com/TTLabs/EvaporateJS/wiki/Evaporate.prototype.cancel()
           return this.evaporate.cancel(id);
         });
       }
