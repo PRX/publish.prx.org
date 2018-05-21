@@ -1,4 +1,5 @@
 import { cit, create, provide } from '../../../testing';
+import { Observable } from 'rxjs/Observable';
 import { ImageUploadComponent } from './image-upload.component';
 import { UploadService } from '../../core/upload/upload.service';
 
@@ -7,7 +8,7 @@ describe('ImageUploadComponent', () => {
   create(ImageUploadComponent);
 
   provide(UploadService, {
-    add: () => null,
+    add: () => Observable.of(null),
     validFileType: () => true
   });
 

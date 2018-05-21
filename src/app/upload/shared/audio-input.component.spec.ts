@@ -11,7 +11,7 @@ describe('AudioInputComponent', () => {
 
   provide(PlayerService, {checkFile: () => Observable.of({})});
 
-  provide(UploadService, {add: () => null});
+  provide(UploadService, {add: () => Observable.of(null)});
 
   const makeVersion = () => {
     let version = {
@@ -44,7 +44,7 @@ describe('AudioInputComponent', () => {
 
   cit('uploads files', (fix, el, comp) => {
     comp.version = makeVersion();
-    spyOn(comp.uploadService, 'add').and.stub();
+    spyOn(comp.uploadService, 'add').and.callThrough();
     comp.addFile(<any> 'some-file');
     expect(comp.uploadService.add).toHaveBeenCalledWith('some-file');
   });

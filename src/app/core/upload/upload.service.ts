@@ -23,12 +23,12 @@ export class UploadService {
   private useCloudfront: boolean = Env.USE_CLOUDFRONT;
 
   constructor(private mimeTypeService: MimeTypeService) {
-    this.init();
+    this.evaporate = this.init();
   }
 
-  init() {
+  init(): Observable<Evaporate> {
     // until there is a good way to load from env and inject
-    this.evaporate = Observable.from(
+    return Observable.from(
       Evaporate.create({
         signerUrl: this.signUrl,
         aws_key: this.awsKey,
