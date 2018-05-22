@@ -28,7 +28,7 @@
     "e2e": "ng e2e",
     "testonce": "ng test --watch=false --browsers=PhantomJS",
     "ci": "ng test --watch=false --browsers=PhantomJS --code-coverage && codecov",
-    "build": "ng build --prod",
+    "build": "ng build --prod --aot --vc=true",
     "serve": "prx-ng-serve dist"
   },
   "private": true,
