@@ -67,10 +67,7 @@ describe('UploadService', () => {
       cancelId = null;
       addOptions = null;
       upload = new Upload(<any> {name: 'foo.bar'}, 'foo/bar', <any> {
-        cancel: (id: string) => new Promise(resolve => {
-            cancelId = id;
-            resolve();
-          }),
+        cancel: (id: string) => cancelId = id,
         add: (options: any) => new Promise(resolve => {
           addOptions = options;
           resolve('my-upload-id');
@@ -78,22 +75,17 @@ describe('UploadService', () => {
       });
     });
 
-    it('cancels in-progress uploads', (done: DoneFn) => {
+    it('cancels in-progress uploads', () => {
       expect(cancelId).toBeNull();
-      upload.cancel().subscribe(() => {
-        expect(cancelId).toEqual(Env.BUCKET_NAME + '/my-upload-id');
-        expect(upload.uploadId).toBeNull();
-        done();
-      });
+      upload.cancel();
+      expect(cancelId).toEqual(Env.BUCKET_NAME + '/' + upload.path);
     });
 
-    it('does not cancel complete uploads', (done: DoneFn) => {
+    it('does not cancel complete uploads', () => {
       expect(cancelId).toBeNull();
       upload.complete = true;
-      upload.cancel().subscribe(() => {
-        expect(cancelId).toBeNull();
-        done();
-      });
+      upload.cancel();
+      expect(cancelId).toBeNull();
     });
 
     it('passes aws upload options to evaporate', () => {

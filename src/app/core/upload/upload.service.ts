@@ -79,7 +79,6 @@ export class Upload {
   public s3url: string;
 
   public progress: ConnectableObservable<number>;
-  public uploadId: Observable<string>;
   public complete: boolean;
 
   constructor(
@@ -96,14 +95,10 @@ export class Upload {
     this.upload();
   }
 
-  cancel(): Observable<any> {
-    if (this.evaporate && !this.complete && this.uploadId) {
-      return this.uploadId.map(id => {
-        this.uploadId = null;
-        return this.evaporate.cancel(Env.BUCKET_NAME + '/' + id);
-      });
+  cancel() {
+    if (this.evaporate && !this.complete && this.progress) {
+      this.evaporate.cancel(Env.BUCKET_NAME + '/' + this.path);
     }
-    return Observable.of(false);
   }
 
   upload(): Observable<number> {
@@ -129,7 +124,11 @@ export class Upload {
       uploadOptions['progress'] = (pct: number) => sub.next(pct);
       uploadOptions['complete'] = () => { sub.next(1.0); this.complete = true; sub.complete(); };
       uploadOptions['error']    = (msg: string) => sub.error(msg);
-      this.uploadId = Observable.from(this.evaporate.add(uploadOptions));
+      this.evaporate.add(uploadOptions).catch(err => {
+        if (err.indexOf('User aborted') === -1) {
+          throw(err);
+        }
+      });
     });
 
     // share the underlying observable without creating dups
