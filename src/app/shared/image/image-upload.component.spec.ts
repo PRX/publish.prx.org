@@ -1,5 +1,6 @@
 import { cit, create, provide } from '../../../testing';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import { ImageUploadComponent } from './image-upload.component';
 import { UploadService } from '../../core/upload/upload.service';
 

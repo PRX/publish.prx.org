@@ -180,7 +180,7 @@ export abstract class UploadableModel extends BaseModel {
     this.set('isDestroy', true);
     this.unsubscribe();
     if (this.upload) {
-      this.upload.cancel();
+      this.upload.cancel().subscribe();
     }
     if (this.isNew) {
       this.set('isUploading', false);

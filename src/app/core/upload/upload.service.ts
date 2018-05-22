@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import { Subscriber } from 'rxjs/Subscriber';
+import 'rxjs/add/observable/from';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/publish';
 declare var require: any;
 const Evaporate = require('evaporate');
@@ -92,14 +96,12 @@ export class Upload {
     this.upload();
   }
 
-  cancel(): Observable<boolean> {
+  cancel(): Observable<any> {
     if (this.evaporate && !this.complete && this.uploadId) {
-      if (this.uploadId) {
-        return this.uploadId.map(id => {
-          this.uploadId = null;
-          return this.evaporate.cancel(id);
-        });
-      }
+      return this.uploadId.map(id => {
+        this.uploadId = null;
+        return this.evaporate.cancel(Env.BUCKET_NAME + '/' + id);
+      });
     }
     return Observable.of(false);
   }

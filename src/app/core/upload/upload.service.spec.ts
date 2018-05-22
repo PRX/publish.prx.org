@@ -1,6 +1,7 @@
 import { UploadService, Upload } from './upload.service';
 import { Observable } from 'rxjs/Observable';
 import { MimeDefinition } from './mime-type.service';
+import { Env } from '../core.env';
 
 describe('UploadService', () => {
 
@@ -80,7 +81,7 @@ describe('UploadService', () => {
     it('cancels in-progress uploads', (done: DoneFn) => {
       expect(cancelId).toBeNull();
       upload.cancel().subscribe(() => {
-        expect(cancelId).toEqual('my-upload-id');
+        expect(cancelId).toEqual(Env.BUCKET_NAME + '/my-upload-id');
         expect(upload.uploadId).toBeNull();
         done();
       });
