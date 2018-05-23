@@ -1,5 +1,7 @@
 import { UploadService, Upload } from './upload.service';
+import { Observable } from 'rxjs/Observable';
 import { MimeDefinition } from './mime-type.service';
+import { Env } from '../core.env';
 
 describe('UploadService', () => {
 
@@ -13,7 +15,7 @@ describe('UploadService', () => {
 
     let uploader: UploadService;
     beforeEach(() => {
-      spyOn(UploadService.prototype, 'init').and.stub();
+      spyOn(UploadService.prototype, 'init').and.callFake(() => Observable.of(null));
       spyOn(Upload.prototype, 'upload').and.stub();
       uploader = new UploadService(mockMime);
     });
@@ -23,21 +25,25 @@ describe('UploadService', () => {
       expect(uploader.uploads.length).toEqual(0);
     });
 
-    it('adds uploads', () => {
-      let upload = uploader.add(<any> {name: 'foo.bar', size: 99}, 'foo/bar');
-      expect(upload.uuid.length).toEqual(36);
-      expect(upload.name).toEqual('foo.bar');
-      expect(upload.size).toEqual(99);
-      expect(upload.path).toEqual(`dev/${upload.uuid}/foo.bar`);
-      expect(upload.url).toMatch(/^\/\/s3\.amazonaws\.com/);
-      expect(upload.s3url).toMatch(/^s3:\/\//);
-      expect(upload.contentType).toEqual('foo/bar');
-      expect(uploader.uploads.length).toEqual(1);
+    it('adds uploads', (done: DoneFn) => {
+      uploader.add(<any> {name: 'foo.bar', size: 99}, 'foo/bar').subscribe(upload => {
+        expect(upload.uuid.length).toEqual(36);
+        expect(upload.name).toEqual('foo.bar');
+        expect(upload.size).toEqual(99);
+        expect(upload.path).toEqual(`dev/${upload.uuid}/foo.bar`);
+        expect(upload.url).toMatch(/^\/\/s3\.amazonaws\.com/);
+        expect(upload.s3url).toMatch(/^s3:\/\//);
+        expect(upload.contentType).toEqual('foo/bar');
+        expect(uploader.uploads.length).toEqual(1);
+        done();
+      });
     });
 
-    it('looks up content-types for added uploads', () => {
-      let upload = uploader.add(<any> {name: 'foo.bar'});
-      expect(upload.contentType).toEqual('audio/mpeg');
+    it('looks up content-types for added uploads', (done: DoneFn) => {
+      uploader.add(<any> {name: 'foo.bar'}).subscribe(upload => {
+        expect(upload.contentType).toEqual('audio/mpeg');
+        done();
+      });
     });
 
     it('validates file types for added uploads', () => {
@@ -46,9 +52,10 @@ describe('UploadService', () => {
     });
 
     it('finds uploads by uuid', () => {
-      let upload = uploader.add(<any> {name: 'foo.bar'});
-      expect(uploader.find('foobar')).toBeNull();
-      expect(uploader.find(upload.uuid)).toEqual(upload);
+      uploader.add(<any> {name: 'foo.bar'}).subscribe(upload => {
+        expect(uploader.find('foobar')).toBeNull();
+        expect(uploader.find(upload.uuid)).toEqual(upload);
+      });
     });
 
   });
@@ -61,25 +68,24 @@ describe('UploadService', () => {
       addOptions = null;
       upload = new Upload(<any> {name: 'foo.bar'}, 'foo/bar', <any> {
         cancel: (id: string) => cancelId = id,
-        add: (options: any) => {
+        add: (options: any) => new Promise(resolve => {
           addOptions = options;
-          return 'my-upload-id';
-        }
+          resolve('my-upload-id');
+        })
       });
     });
 
     it('cancels in-progress uploads', () => {
-      expect(cancelId).toBeUndefined();
+      expect(cancelId).toBeNull();
       upload.cancel();
-      expect(cancelId).toEqual('my-upload-id');
-      expect(upload.uploadId).toBeNull();
+      expect(cancelId).toEqual(Env.BUCKET_NAME + '/' + upload.path);
     });
 
     it('does not cancel complete uploads', () => {
-      expect(cancelId).toBeUndefined();
+      expect(cancelId).toBeNull();
       upload.complete = true;
       upload.cancel();
-      expect(cancelId).toBeUndefined();
+      expect(cancelId).toBeNull();
     });
 
     it('passes aws upload options to evaporate', () => {

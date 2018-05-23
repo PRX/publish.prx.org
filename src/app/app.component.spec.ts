@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs/Subject';
-import { Angulartics2, Angulartics2GoogleAnalytics } from 'angulartics2';
+import { Angulartics2 } from 'angulartics2';
+import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { cit, create, provide, By } from '../testing';
 import { AppComponent } from './app.component';
 
@@ -27,6 +28,7 @@ describe('AppComponent', () => {
     getUserinfo: userinfo
   });
   provide(Angulartics2, {
+    filterDeveloperMode: () => () => new Subject<any>(),
     settings: {pageTracking: {}},
     trackLocation: () => {},
     pageTrack: new Subject<any>(),

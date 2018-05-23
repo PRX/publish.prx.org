@@ -27,9 +27,9 @@ declare var module: NodeModule;
 
 // TODO: npm @types/evaporate has no default export
 declare class Evaporate {
-  cancel(id: string): boolean;
-  constructor(config: any);
-  add(config: any): string;
+  cancel(file_key?: string): Promise<undefined[]>;
+  constructor();
+  add(config: any, options?: any): Promise<string>;
 }
 declare module 'evaporate' {
   export default Evaporate;

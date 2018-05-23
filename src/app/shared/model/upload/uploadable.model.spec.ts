@@ -236,7 +236,7 @@ describe('UploadableModel', () => {
 
   it('cancels uploads when destroyed', () => {
     spyOn(model, 'unsubscribe').and.stub();
-    spyOn(upload, 'cancel').and.stub();
+    spyOn(upload, 'cancel').and.callFake(() => Observable.of(false));
     model.initUpload(null, upload);
     model.destroy();
     expect(model.unsubscribe).toHaveBeenCalled();
