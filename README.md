@@ -69,11 +69,11 @@ yarn install
 echo 4200 > ~/.puma-dev/publish.prx
 
 # dev server
-npm start
+yarn start
 open https://publish.prx.dev
 
 # run tests in Chrome
-npm test
+yarn test
 ```
 
 ## Docker Install
