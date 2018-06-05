@@ -4236,9 +4236,9 @@ ng2-dragula@^1.3.1:
   dependencies:
     dragula "^3.7.2"
 
-ngx-prx-styleguide@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-1.0.0.tgz#6010a92abe8814affc7a877296f33d4f15a7912e"
+ngx-prx-styleguide@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-1.1.1.tgz#ac8e8a5ca8e84233991b01c574f1b4290876b190"
   dependencies:
     angular-2-dropdown-multiselect "^1.5.4"
     c3 "^0.4.11"
