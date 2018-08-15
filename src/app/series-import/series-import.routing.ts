@@ -9,8 +9,8 @@ export const seriesImportRoutes: Routes = [
   {
     path: 'series-import',
     component: SeriesImportComponent,
-    //canActivate: [AuthGuard],
-    //canDeactivate: [DeactivateGuard],
+    canActivate: [AuthGuard],
+    canDeactivate: [DeactivateGuard],
     children: []
   }
 ];

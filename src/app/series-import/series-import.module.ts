@@ -5,8 +5,6 @@ import { SharedModule } from '../shared';
 import { TabModule } from 'ngx-prx-styleguide';
 import { seriesImportRouting, seriesImportProviders, seriesImportComponents } from './series-import.routing';
 
-console.log(seriesImportRouting)
-
 @NgModule({
   declarations: [
     ...seriesImportComponents

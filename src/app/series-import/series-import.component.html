@@ -1,3 +1,14 @@
-<p>
-  series-import works!
-</p>
+<div class="main">
+  <header>
+    <h2>Create Series Import</h2>
+  </header>
+
+  <h2>Existing Imports:</h2>
+
+  <ul>
+    <li *ngFor="let import of podcastImports">
+      {{import.id}} {{import.url}}
+    </li>
+  </ul>
+
+</div>
