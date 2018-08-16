@@ -5,8 +5,9 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { CmsService } from '../core';
+import { HalDoc } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
-import { SeriesModel } from '../shared';
+import { SeriesImportModel } from '../shared';
 
 @Component({
   providers: [TabService],
@@ -34,16 +35,19 @@ export class SeriesImportComponent implements OnInit {
 
   loadSeriesImports() {
     this.cms.auth.subscribe(
-      s => {
-        this.profile = s.id;
-        s.follow('prx:podcast-imports').subscribe(a => {
-          this.podcastImports = a._embedded["prx:items"]
-        });
+      auth => {
+        auth.follow('prx:default-account').subscribe(acct => {
+          auth.followItems('prx:podcast-imports').subscribe(imports => {
+            let importModels = imports.map(si => {
+              return new SeriesImportModel(auth, si)
+            });
+            this.setImports(importModels);
+          });
+        })
       },
       err => {
         if (err.status === 404 && err.name === 'HalHttpError') {
           this.toastr.error('ERRORZ');
-          debugger
         } else {
           throw(err);
         }
@@ -51,5 +55,7 @@ export class SeriesImportComponent implements OnInit {
     );
   }
 
-
+  setImports(data: SeriesImportModel[]){
+    this.podcastImports = data;
+  }
 }
