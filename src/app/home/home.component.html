@@ -16,13 +16,20 @@
       </div>
       <publish-home-series noseries=true [auth]="auth" rows=4></publish-home-series>
     </div>
+
     <div *ngIf="oneSeries">
       <publish-home-series [series]="oneSeries" rows=4></publish-home-series>
       <publish-home-series noseries=true [auth]="auth" rows=4></publish-home-series>
     </div>
+
     <div *ngIf="manySeries">
       <publish-home-series *ngFor="let s of manySeries" [series]="s" rows=2></publish-home-series>
       <publish-home-series noseries=true [auth]="auth" rows=2></publish-home-series>
     </div>
+
+    <div *ngIf="auth">
+      <created-podcast-imports [auth]="auth"></created-podcast-imports>
+    </div>
+
   </section>
 </div>

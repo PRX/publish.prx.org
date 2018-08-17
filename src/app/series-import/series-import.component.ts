@@ -19,8 +19,6 @@ export class SeriesImportComponent implements OnInit {
 
   rssUrl: string;
   profile: number;
-  podcastImports: any[];
-  podcastImportCount: number;
 
   constructor(
     private cms: CmsService,
@@ -30,32 +28,6 @@ export class SeriesImportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadSeriesImports()
   }
 
-  loadSeriesImports() {
-    this.cms.auth.subscribe(
-      auth => {
-        auth.follow('prx:default-account').subscribe(acct => {
-          auth.followItems('prx:podcast-imports').subscribe(imports => {
-            let importModels = imports.map(si => {
-              return new SeriesImportModel(auth, si)
-            });
-            this.setImports(importModels);
-          });
-        })
-      },
-      err => {
-        if (err.status === 404 && err.name === 'HalHttpError') {
-          this.toastr.error('ERRORZ');
-        } else {
-          throw(err);
-        }
-      }
-    );
-  }
-
-  setImports(data: SeriesImportModel[]){
-    this.podcastImports = data;
-  }
 }
