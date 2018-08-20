@@ -26,6 +26,9 @@ export class SeriesImportModel extends BaseModel {
 
   constructor(account: HalDoc, seriesImportDoc?: HalDoc, loadRelated = true) {
     super();
+    if (account) {
+      this.set('accountId', account.id, true);
+    }
     this.init(account, seriesImportDoc, loadRelated);
   }
 
@@ -55,16 +58,22 @@ export class SeriesImportModel extends BaseModel {
   encode(): {} {
     let data = <any> {};
 
-    data["id"] = this.doc['id'];
-    data["url"] = this.doc['url'];
-    data["accountId"] = this.doc['account']
-    data["config"] = this.doc['config']
+    data["id"] = this.id;
+    data["url"] = this.url;
+    data["accountId"] = this.accountId
+    // TODO implement the config for the episode only import
+    data["config"] = {}
 
     return data;
   }
 
+
   saveNew(data: {}): Observable<HalDoc> {
     return this.parent.create('prx:podcast-imports', {}, data);
+  }
+
+  discard() {
+    // TODO
   }
 
 }

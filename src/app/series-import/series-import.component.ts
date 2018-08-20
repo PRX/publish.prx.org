@@ -17,8 +17,10 @@ import { SeriesImportModel } from '../shared';
 })
 export class SeriesImportComponent implements OnInit {
 
-  rssUrl: string;
-  profile: number;
+  id: number;
+  base: string;
+
+  seriesImport: SeriesImportModel;
 
   constructor(
     private cms: CmsService,
@@ -28,6 +30,38 @@ export class SeriesImportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.loadPodcastImport();
+    this.route.params.forEach(params => {
+     this.id = +params['id'];
+     this.base = '/series/' + (this.id || 'new');
+   });
   }
 
+  loadPodcastImport(){
+
+    this.cms.auth.subscribe(
+      auth => {
+        this.seriesImport = new SeriesImportModel(auth)
+      },
+      err => {
+        if (err.status === 404 && err.name === 'HalHttpError') {
+          this.toastr.error('ERRORZ');
+        } else {
+          throw(err);
+        }
+      }
+    );
+  }
+
+  save(){
+    let wasNew = this.seriesImport.isNew;
+    this.seriesImport.save().subscribe(() => {
+      this.toastr.success(`SeriesImport ${wasNew ? 'created' : 'saved'}`);
+      if (wasNew) {
+        this.router.navigate(['/']);
+        // TODO
+        //this.router.navigate(['/series-import', this.seriesImport.id]);
+      }
+    });
+  }
 }
