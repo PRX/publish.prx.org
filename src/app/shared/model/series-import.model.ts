@@ -21,7 +21,8 @@ export class SeriesImportModel extends BaseModel {
 
   VALIDATORS = {
     url:        [REQUIRED()],
-    accountId:  [REQUIRED()]
+    accountId:  [REQUIRED()],
+    status:  [REQUIRED()]
   };
 
   constructor(account: HalDoc, seriesImportDoc?: HalDoc, loadRelated = true) {
