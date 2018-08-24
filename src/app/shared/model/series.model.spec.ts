@@ -1,7 +1,7 @@
 import { cms } from '../../../testing';
 import { SeriesModel } from './series.model';
 
-describ ('SeriesModel', () => {
+describe('SeriesModel', () => {
 
   let accountMock: any, seriesMock: any;
   beforeEach(() => {

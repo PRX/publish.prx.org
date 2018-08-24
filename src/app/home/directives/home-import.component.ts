@@ -8,8 +8,6 @@ import { ToastrService } from 'ngx-prx-styleguide';
   styleUrls: ['home-import.component.css'],
   template: `
     <div *ngIf="hasSeriesImports">
-
-
     <header>
       <h2>Your Series Import</h2>
     </header>
@@ -29,7 +27,6 @@ export class HomeImportComponent implements OnInit {
   @Input() auth: HalDoc;
 
   hasSeriesImports: boolean;
-  hasPending: boolean;
 
   podcastImports: SeriesImportModel[];
 
@@ -42,13 +39,9 @@ export class HomeImportComponent implements OnInit {
   }
 
   loadData() {
-
     this.auth.followItems('prx:podcast-imports').subscribe(imports => {
       let importModels = imports.map(si => {
         return new SeriesImportModel(this.auth, si)
-        //var discoveredPending = !(si.status === "failed" || si.status === "complete")
-        //console.log(`SeriesImport status: ${si.status}, discovered pending? ${discoveredPending}`)
-        //return si;
       });
       this.setImports(importModels);
     },

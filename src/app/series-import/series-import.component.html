@@ -1,0 +1,28 @@
+<prx-hero blue=true>
+  <h1 class="hero-title">Create Series Import</h1>
+  <div class="hero-info">
+    <p *ngIf="seriesImport?.isNew">Not saved {{seriesImport.accountId}}</p>
+  </div>
+  <div class="hero-actions" *ngIf="seriesImport">
+
+    <ng-container *ngIf="seriesImport.isNew">
+      <prx-button [model]="seriesImport" visible=1 disabled=0 (click)="discard()">Discard</prx-button>
+      <prx-button [model]="seriesImport" green=1 visible=1 disabled=0 (click)="save()">Create</prx-button>
+    </ng-container>
+
+
+  </div>
+</prx-hero>
+
+<div class="main">
+  <section>
+
+<form *ngIf="seriesImport">
+  <prx-fancy-field textinput required [model]="seriesImport" name="url" label="Podcast RSS Url" required>
+    <div class="fancy-hint">The URL of the podcast.</div>
+  </prx-fancy-field>
+</form>
+
+
+</section>
+</div>

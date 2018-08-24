@@ -13,6 +13,7 @@ import { SharedModule } from './shared';
 import { SeriesModule } from './series';
 import { StoryModule } from './story';
 import { SearchModule } from './search';
+import { SeriesImportModule } from './series-import';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { SearchModule } from './search';
     CoreModule,
     AuthModule,
     SeriesModule,
+    SeriesImportModule,
     SharedModule,
     StoryModule,
     SearchModule,
