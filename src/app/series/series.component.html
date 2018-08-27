@@ -32,6 +32,12 @@
     <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
     <a routerLinkActive="active" [routerLink]="[base, 'templates']">Audio Templates</a>
     <a routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Info</a>
+    <a *ngIf="fromImport"
+      routerLinkActive="active"
+      [routerLink]="[base, 'import-status']"
+      >
+      Import Status
+    </a>
   </nav>
   <div class="links" *ngIf="series && !series?.isNew">
     <a routerLinkActive="active" [routerLink]="[base, 'list']">{{storyCount}} {{storyNoun}} in Series</a>

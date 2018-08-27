@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { CmsService } from '../core';
+import { CmsService, HalDoc } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
-import { SeriesModel } from '../shared';
+import { SeriesModel, SeriesImportModel } from '../shared';
 
 @Component({
   providers: [TabService],
@@ -19,6 +19,8 @@ export class SeriesComponent implements OnInit {
   id: number;
   base: string;
   series: SeriesModel;
+  seriesImports: SeriesImportModel[] = [];
+  fromImport: boolean = false;
   storyCount: number;
   storyNoun: string;
 
@@ -66,6 +68,7 @@ export class SeriesComponent implements OnInit {
     if (series) {
       this.storyCount = series.count('prx:stories');
       this.storyNoun = this.storyCount === 1 ? 'Episode' : 'Episodes';
+      this.fromImport = this.series.imports.length > 0;
     } else {
       this.storyCount = null;
     }

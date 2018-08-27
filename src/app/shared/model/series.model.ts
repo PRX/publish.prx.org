@@ -4,6 +4,7 @@ import 'rxjs/add/operator/map';
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
+import { SeriesImportModel } from './series-import.model';
 import { AudioVersionTemplateModel } from './audio-version-template.model';
 import { AudioFileTemplateModel } from './audio-file-template.model';
 import { DistributionModel } from './distribution.model';
@@ -21,6 +22,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
   public images: ImageModel[] = [];
   public versionTemplates: AudioVersionTemplateModel[] = [];
   public distributions: DistributionModel[] = [];
+  public imports: SeriesImportModel[] = [];
   public accountId: number;
   public hasStories: boolean;
 
@@ -66,6 +68,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
     let images = Observable.of([]);
     let templates = Observable.of([]);
     let distributions = Observable.of([]);
+    let seriesImports = Observable.of([]);
 
     // image uploads
     images = this.getUploads('prx:images').map(idocs => {
@@ -92,10 +95,18 @@ export class SeriesModel extends BaseModel implements HasUpload {
       distributions = Observable.of([this.unsavedDistribution]);
     }
 
+    if (this.doc && this.doc.count('prx:podcast-imports')){
+      seriesImports = this.doc.followItems('prx:podcast-imports').map(pidocs => {
+        let models = pidocs.map(docOrUuid => new SeriesImportModel(this.doc, docOrUuid));
+        return models;
+      });
+    }
+
     return {
       images: images,
       versionTemplates: templates,
-      distributions: distributions
+      distributions: distributions,
+      imports: seriesImports
     };
   }
 

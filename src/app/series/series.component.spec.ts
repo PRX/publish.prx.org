@@ -120,4 +120,23 @@ describe('SeriesComponent', () => {
     expect(modalAlertTitle).toBeNull();
   });
 
+  cit('presents a podcast import status tab if derived from an import', (fix, el, comp) => {
+    activatedRoute.testParams = {id: '99'};
+    let series = auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
+    series.mock('prx:account', {id: 78});
+    series.mockItems('prx:podcast-imports', [{id: 333}]);
+    fix.detectChanges();
+    expect(comp.fromImport).toEqual(true);
+    expect(el).toContainText('Import Status');
+  });
+
+  cit('will not present a tab if not an imported series', (fix, el, comp) => {
+    activatedRoute.testParams = {id: '99'};
+    let series = auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
+    series.mock('prx:account', {id: 78});
+    fix.detectChanges();
+    expect(comp.fromImport).toEqual(false);
+    expect(el).not.toContainText('Import Status');
+  });
+
 });
