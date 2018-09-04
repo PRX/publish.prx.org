@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard, UnauthGuard } from 'ngx-prx-styleguide';
 import { ErrorComponent } from './error';
 import { AuthorizationComponent } from './authorization/authorization.component';
-import { HomeComponent, HomeSeriesComponent, HomeStoryComponent, HomeImportComponent } from './home';
+import { HomeComponent, HomeSeriesComponent, HomeStoryComponent } from './home';
 import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
@@ -19,7 +19,6 @@ export const routingComponents: any[] = [
   HomeComponent,
   HomeSeriesComponent,
   HomeStoryComponent,
-  HomeImportComponent,
   LoginComponent,
   AuthorizationComponent
 ];
