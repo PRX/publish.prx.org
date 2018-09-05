@@ -1,7 +1,6 @@
 <prx-auth [host]="authHost" [client]="authClient"></prx-auth>
 <prx-header>
   <prx-navitem *ngIf="loggedIn" route="/" text="Home"></prx-navitem>
-  <prx-navitem *ngIf="authorized" route="/series-import" text="Import Series"></prx-navitem>
   <prx-navitem *ngIf="authorized" route="/series/new" text="New Series"></prx-navitem>
   <prx-navitem *ngIf="authorized" route="/search" text="Search"></prx-navitem>
   <prx-navuser *ngIf="loggedIn" [userinfo]="userinfo">
