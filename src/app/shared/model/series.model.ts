@@ -25,6 +25,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
   public imports: SeriesImportModel[] = [];
   public accountId: number;
   public hasStories: boolean;
+  public importUrl: string;
 
   SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap', 'accountId'];
 
@@ -136,13 +137,18 @@ export class SeriesModel extends BaseModel implements HasUpload {
 
   encode(): {} {
     let data = <any> {};
-    data.title = this.title;
-    data.descriptionMd = this.description;
-    data.shortDescription = this.shortDescription;
-    if (this.changed('accountId')) {
-      const accountDoc = this.isNew ? this.parent.expand('self') : this.doc.expand('prx:account');
-      let newAccountURI = accountDoc.replace(`${this.original['accountId']}`, `${this.accountId}`);
-      data.set_account_uri = newAccountURI;
+    if(this.importUrl){
+      data.import_url = this.importUrl;
+    }
+    else {
+      data.title = this.title;
+      data.descriptionMd = this.description;
+      data.shortDescription = this.shortDescription;
+      if (this.changed('accountId')) {
+        const accountDoc = this.isNew ? this.parent.expand('self') : this.doc.expand('prx:account');
+        let newAccountURI = accountDoc.replace(`${this.original['accountId']}`, `${this.accountId}`);
+        data.set_account_uri = newAccountURI;
+      }
     }
     return data;
   }

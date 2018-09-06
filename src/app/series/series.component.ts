@@ -23,6 +23,7 @@ export class SeriesComponent implements OnInit {
   fromImport: boolean = false;
   storyCount: number;
   storyNoun: string;
+  importUrl: string;
 
   constructor(
     private cms: CmsService,
