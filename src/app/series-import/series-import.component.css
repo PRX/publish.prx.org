@@ -1,0 +1,36 @@
+#validate-feed-button{
+  flex: none;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+#validation-status {
+  width: 100%;
+  border-bottom: 50px;
+}
+
+#validation-status > #invalid-feed {
+  color: tomato;
+  font-size: 16px;
+
+
+}
+.podcast-preview {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.podcast-preview > .podcast-title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.podcast-preview > .itunes-image {
+
+  margin-right: 10px;
+  height: 80px;
+  width: 80px;
+  display: block;
+  float: left;
+
+}

@@ -14,7 +14,7 @@ export class SeriesImportModel extends BaseModel {
   public createdAt: Date;
   public updatedAt: Date;
   public accountId: number;
-  // XXX fixme
+  // TODO
   public config: any;
 
   SETABLE = ['url', 'accountId'];

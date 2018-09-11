@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { CmsService, HalDoc } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
-import { SeriesModel, SeriesImportModel } from '../shared';
+import { SeriesModel, SeriesImportModel, ImportValidationState } from '../shared';
 
 @Component({
   providers: [TabService],
@@ -20,10 +20,12 @@ export class SeriesComponent implements OnInit {
   base: string;
   series: SeriesModel;
   seriesImports: SeriesImportModel[] = [];
-  fromImport: boolean = false;
   storyCount: number;
   storyNoun: string;
-  importUrl: string;
+
+  // podcast imports
+  importValidationState: ImportValidationState = new ImportValidationState();
+  fromImport: boolean = false;
 
   constructor(
     private cms: CmsService,
@@ -145,5 +147,17 @@ export class SeriesComponent implements OnInit {
       return true;
     }
   }
+
+  validateImportUrl(){
+    this.importValidationState.setStartValidating();
+
+    this.cms.auth.subscribe(a => {
+      a.follow('prx:verify-rss', {url: this.series.importUrl}).subscribe((verified: any) => {
+        this.importValidationState.setValid(verified);
+      },(err)=>{
+        this.importValidationState.setInvalid();
+      });
+    });
+  };
 
 }
