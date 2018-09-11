@@ -11,6 +11,17 @@ import { DistributionModel } from './distribution.model';
 import { REQUIRED, LENGTH } from './invalid';
 import { HasUpload, applyMixins } from './upload';
 
+export const IMPORT_SERIES_VALIDATIONS = {
+  importUrl: [REQUIRED()],
+};
+
+export const NEW_SERIES_VALIDATIONS = {
+    title:            [REQUIRED(), LENGTH(1, 255)],
+    shortDescription: [REQUIRED()],
+    description:      [LENGTH(0, 4000)],
+    accountId:        [REQUIRED()]
+};
+
 export class SeriesModel extends BaseModel implements HasUpload {
 
   public id: number;
@@ -29,12 +40,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
 
   SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap', 'accountId'];
 
-  VALIDATORS = {
-    title:            [REQUIRED(), LENGTH(1, 255)],
-    shortDescription: [REQUIRED()],
-    description:      [LENGTH(0, 4000)],
-    accountId:        [REQUIRED()]
-  };
+  VALIDATORS = NEW_SERIES_VALIDATIONS;
 
   // HasUpload mixin
   hasUploadMap: string;
@@ -55,6 +61,10 @@ export class SeriesModel extends BaseModel implements HasUpload {
         }
       });
     }
+  }
+
+  setComponentValidationStrategy(validations: any){
+    this.VALIDATORS = validations;
   }
 
   key() {

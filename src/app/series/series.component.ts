@@ -6,6 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { CmsService, HalDoc } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
 import { SeriesModel, SeriesImportModel, ImportValidationState } from '../shared';
+import { NEW_SERIES_VALIDATIONS, IMPORT_SERIES_VALIDATIONS } from '../shared/model/series.model';
 
 @Component({
   providers: [TabService],
@@ -72,6 +73,7 @@ export class SeriesComponent implements OnInit {
       this.storyCount = series.count('prx:stories');
       this.storyNoun = this.storyCount === 1 ? 'Episode' : 'Episodes';
       this.fromImport = this.series.imports.length > 0;
+      this.setSeriesValidationStrategy();
     } else {
       this.storyCount = null;
     }
@@ -90,8 +92,21 @@ export class SeriesComponent implements OnInit {
     }
   }
 
+  validationStrategy(){
+    if(this.importValidationState.valid()){
+      return IMPORT_SERIES_VALIDATIONS;
+    } else {
+      return NEW_SERIES_VALIDATIONS;
+    }
+  }
+
+  setSeriesValidationStrategy(){
+    this.series.setComponentValidationStrategy(this.validationStrategy());
+  }
+
   save() {
     let wasNew = this.series.isNew;
+
     this.series.save().subscribe(() => {
       this.toastr.success(`Series ${wasNew ? 'created' : 'saved'}`);
       if (wasNew) {
@@ -154,6 +169,7 @@ export class SeriesComponent implements OnInit {
     this.cms.auth.subscribe(a => {
       a.follow('prx:verify-rss', {url: this.series.importUrl}).subscribe((verified: any) => {
         this.importValidationState.setValid(verified);
+        this.setSeriesValidationStrategy();
       },(err)=>{
         this.importValidationState.setInvalid();
       });
