@@ -12,8 +12,6 @@ export class SeriesImportStatusComponent implements OnDestroy {
 
   series: SeriesModel;
   tabSub: Subscription;
-  accounts: HalDoc[];
-  accountOptions: string[][];
 
   constructor(tab: TabService,
               private cms: CmsService) {

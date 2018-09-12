@@ -1,8 +1,5 @@
 <div *ngIf="series" class="series-imports-container">
-  <ul>
-    <li *ngFor="let import of series.imports">
-      <h3>Import Status</h3>
-      {{import.url}} {{import.status}}
-    </li>
-  </ul>
+  <div *ngFor="let import of series.imports">
+    <series-import-status-card [seriesImport]="import" ></series-import-status-card>
+  </div>
 </div>

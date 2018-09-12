@@ -1,0 +1,9 @@
+<div class="import-status-card">
+  {{seriesImport.url}} {{seriesImport.status}}
+  <div *ngFor="let episodeImport of episodeImports">
+    <hr>
+    <p>Episode: {{episodeImport.guid}}</p>
+    <p>Status: {{episodeImport.status}}</p>
+  </div>
+</div>
+
