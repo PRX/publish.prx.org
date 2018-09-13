@@ -40,6 +40,10 @@
       </div>
     </header>
 
+    <div *ngIf="searchError" class="error">
+      <h1>Your search query contains a syntax error - please update it and try again</h1>
+    </div>
+
     <publish-story-list
       *ngIf="isOnStoriesTab()"
       [noStories]="noResults"

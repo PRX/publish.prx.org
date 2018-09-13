@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { SeriesModel } from '../../shared';
+import { HalDoc } from '../../core';
 
 @Component({
   selector: 'publish-series-list',
@@ -20,6 +20,6 @@ import { SeriesModel } from '../../shared';
 
 export class SeriesListComponent {
   @Input() noSeries: boolean;
-  @Input() series: SeriesModel[];
+  @Input() series: HalDoc[];
   @Input() isLoaded: boolean;
 }

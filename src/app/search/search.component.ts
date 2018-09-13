@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CmsService, HalDoc } from '../core';
-import { StoryModel, SeriesModel } from '../shared';
 import { SearchStory } from './search-story.model';
 import { SearchSeries } from './search-series.model';
 
@@ -21,9 +20,10 @@ export class SearchComponent implements OnInit {
   totalCount: number;
   pages: number[];
   noResults: boolean;
+  searchError: boolean;
   auth: HalDoc;
-  storiesResults: StoryModel[] = [];
-  seriesResults: SeriesModel[] = [];
+  storiesResults: HalDoc[] = [];
+  seriesResults: HalDoc[] = [];
 
   currentPage: number;
   showNumPages = 10;
@@ -34,7 +34,7 @@ export class SearchComponent implements OnInit {
   searchSeriesParams: SearchSeries = new SearchSeries();
 
   allSeriesIds: number[];
-  allSeries: any;
+  allSeries: {[id: number]: HalDoc};
 
   orderByOptionsStories = SearchStory.ORDERBY_OPTIONS;
   orderByOptionsSeries = SearchSeries.ORDERBY_OPTIONS;
@@ -50,10 +50,8 @@ export class SearchComponent implements OnInit {
       this.allSeriesIds = [-1];
       this.allSeries = {};
       this.auth.followItems('prx:series', {filters: 'v4', zoom: false}).subscribe((series) => {
-        for (let s of series) {
-          this.allSeriesIds.push(s.id);
-          this.allSeries[s.id] = new SeriesModel(this.auth, s, false);
-        }
+        this.allSeriesIds = [-1].concat(series.map(doc => doc.id));
+        this.allSeries = series.reduce((map, doc) => { map[doc.id] = doc; return map; }, {});
         this.subscribeRouteParams();
       });
     });
@@ -95,54 +93,56 @@ export class SearchComponent implements OnInit {
   searchStories() {
     this.isLoaded = false;
     this.noResults = false;
+    this.searchError = false;
 
     let parent = this.auth;
     if (this.searchStoryParams.seriesId && this.searchStoryParams.seriesId !== -1) {
-      parent = this.allSeries[this.searchStoryParams.seriesId].doc;
+      parent = this.allSeries[this.searchStoryParams.seriesId];
     }
 
-    let filters = ['v4'];
-    let zoom = ['prx:image', 'prx:series'];
+    let params = {
+      page: this.currentPage,
+      per: this.searchStoryParams.perPage,
+      filters: ['v4'],
+      zoom: ['prx:image', 'prx:series'],
+      q: undefined,
+      sorts: undefined,
+    };
     if (this.searchStoryParams.seriesId === -1) {
-      filters.push('noseries');
+      params.filters.push('noseries');
     }
     if (this.searchStoryParams.text)  {
-      filters.push('text=' + this.searchStoryParams.text);
+      params.q = this.addWildcard(this.searchStoryParams.text);
     }
-    let sorts;
     if (this.searchStoryParams.orderBy) {
-      sorts = this.searchStoryParams.orderBy + ':';
-      sorts += this.searchStoryParams.orderDesc ? 'desc' : 'asc';
-      if (this.searchStoryParams.orderBy === 'published_at') {
-        sorts += ', updated_at:';
-        sorts += this.searchStoryParams.orderDesc ? 'desc' : 'asc';
+      const fld = this.searchStoryParams.orderBy;
+      const dir = this.searchStoryParams.orderDesc ? 'desc' : 'asc';
+      params.sorts = [`${fld}:${dir}`];
+      if (fld === 'published_at') {
+        params.sorts.push(`updated_at:${dir}`);
       }
     }
-    let params = {page: this.currentPage, per: this.searchStoryParams.perPage, filters: filters.join(','), sorts, zoom};
 
-    if (parent.count('prx:stories')) {
-      parent.followItems('prx:stories', params).subscribe((stories) => {
-        this.storiesResults = [];
-        let storiesById = {};
-        let storyIds = stories.map((doc) => {
-          storiesById[doc.id] = new StoryModel(parent, doc, false);
-          if (doc.has('prx:series')) {
-            doc.follow('prx:series').subscribe((series) => {
-              storiesById[doc.id].parent = series;
-            });
+    if (parent.count('prx:stories-search')) {
+      parent.followItems('prx:stories-search', params).subscribe(
+        stories => {
+          this.storiesResults = stories;
+          if (stories.length === 0) {
+            this.noResults = true;
+            this.totalCount = 0;
+          } else {
+            this.totalCount = stories[0].total();
           }
-          return doc.id;
-        });
-        if (stories.length === 0) {
-          this.noResults = true;
-          this.totalCount = 0;
-        } else {
-          this.totalCount = stories[0].total();
-          this.storiesResults = storyIds.map(storyId => storiesById[storyId]);
+          this.pagingInfo(this.searchStoryParams.perPage);
+          this.isLoaded = true;
+        },
+        err => {
+          this.searchError = true;
+          this.isLoaded = true;
+          this.noResults = false;
+          this.clearResults();
         }
-        this.pagingInfo(this.searchStoryParams.perPage);
-        this.isLoaded = true;
-      });
+      );
     } else {
       this.noResults = true;
       this.isLoaded = true;
@@ -154,33 +154,43 @@ export class SearchComponent implements OnInit {
     this.isLoaded = false;
     this.noResults = false;
 
-    let filters = ['v4'];
-    let zoom = ['prx:image'];
+    let params = {
+      page: this.currentPage,
+      per: this.searchSeriesParams.perPage,
+      filters: ['v4'],
+      zoom: ['prx:image'],
+      q: undefined,
+      sorts: undefined,
+    };
     if (this.searchSeriesParams.text)  {
-      filters.push('text=' + this.searchSeriesParams.text);
+      params.q = this.addWildcard(this.searchSeriesParams.text);
     }
-    let sorts;
     if (this.searchSeriesParams.orderBy) {
-      sorts = this.searchSeriesParams.orderBy + ':';
-      sorts += this.searchSeriesParams.orderDesc ? 'desc' : 'asc';
+      const fld = this.searchSeriesParams.orderBy;
+      const dir = this.searchSeriesParams.orderDesc ? 'desc' : 'asc';
+      params.sorts = [`${fld}:${dir}`];
     }
-    let params = {page: this.currentPage, per: this.searchSeriesParams.perPage, filters: filters.join(','), sorts, zoom};
-    if (this.auth.count('prx:series')) {
-      this.auth.followItems('prx:series', params).subscribe((seriesResults) => {
-        this.seriesResults = [];
-        let seriesDocs = seriesResults;
-        for (let doc of seriesDocs) {
-          this.seriesResults.push(new SeriesModel(this.auth, doc, false));
+
+    if (this.auth.count('prx:series-search')) {
+      this.auth.followItems('prx:series-search', params).subscribe(
+        series => {
+          this.seriesResults = series;
+          if (series.length === 0) {
+            this.noResults = true;
+            this.totalCount = 0;
+          } else {
+            this.totalCount = series[0].total();
+          }
+          this.pagingInfo(this.searchSeriesParams.perPage);
+          this.isLoaded = true;
+        },
+        err => {
+          this.searchError = true;
+          this.isLoaded = true;
+          this.noResults = false;
+          this.clearResults();
         }
-        if (seriesDocs.length === 0) {
-          this.noResults = true;
-          this.totalCount = 0;
-        } else {
-          this.totalCount = seriesDocs[0].total();
-        }
-        this.pagingInfo(this.searchSeriesParams.perPage);
-        this.isLoaded = true;
-      });
+      );
     } else {
       this.noResults = true;
       this.isLoaded = true;
@@ -217,5 +227,13 @@ export class SearchComponent implements OnInit {
 
   isOnStoriesTab() {
     return this.selectedTab === SearchComponent.TAB_STORIES;
+  }
+
+  addWildcard(query: string) {
+    if (query && query.length && query.match(/[0-9a-zA-Z]$/)) {
+      return query + '*';
+    } else {
+      return query;
+    }
   }
 }

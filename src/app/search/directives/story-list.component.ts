@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { StoryModel } from '../../shared';
+import { HalDoc } from '../../core';
 
 @Component({
   selector: 'publish-story-list',
@@ -20,7 +20,7 @@ import { StoryModel } from '../../shared';
 
 export class StoryListComponent {
   @Input() noStories: boolean;
-  @Input() stories: StoryModel[];
+  @Input() stories: HalDoc[];
   @Input() isLoaded: boolean;
 
   emptyCards: number[] = [1, 2]; // These are fillers for cheating the flexbox "grid"
