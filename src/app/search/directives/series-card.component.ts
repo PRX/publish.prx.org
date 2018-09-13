@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { SeriesModel } from '../../shared';
+import { HalDoc } from '../../core';
 
 @Component({
   selector: 'publish-series-card',
   styleUrls: ['series-card.component.css'],
   template: `
     <section class="series-image">
-      <a [routerLink]="seriesLink"><prx-image [imageDoc]="series.doc"></prx-image></a>
+      <a [routerLink]="seriesLink"><prx-image [imageDoc]="series"></prx-image></a>
       <div class="stack stk-one"></div>
       <div class="stack stk-two"></div>
       <div class="stack stk-three"></div>
@@ -28,7 +28,7 @@ import { SeriesModel } from '../../shared';
 
 export class SeriesCardComponent implements OnInit {
 
-  @Input() series: SeriesModel;
+  @Input() series: HalDoc;
 
   seriesLink: any[];
 
@@ -40,10 +40,10 @@ export class SeriesCardComponent implements OnInit {
 
   ngOnInit() {
     this.seriesId = this.series.id;
-    this.seriesTitle = this.series.title;
-    this.seriesEpisodeCount = this.series.doc.count('prx:stories') || 0;
-    this.seriesUpdatedAt = this.series.updatedAt;
-    this.seriesDescription = this.series.shortDescription;
+    this.seriesTitle = this.series['title'];
+    this.seriesEpisodeCount = this.series.count('prx:stories') || 0;
+    this.seriesUpdatedAt = this.series['updatedAt'];
+    this.seriesDescription = this.series['shortDescription'];
     this.seriesLink = ['/series', this.series.id];
   }
 }
