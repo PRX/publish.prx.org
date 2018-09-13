@@ -18,7 +18,8 @@ describe('SearchComponent', () => {
     auth = cms.mock('prx:authorization', {});
     auth.mock('prx:default-account', {});
     auth.mockItems('prx:series', []);
-    auth.mockItems('prx:stories', []);
+    auth.mockItems('prx:series-search', []);
+    auth.mockItems('prx:stories-search', []);
   });
 
   cit('detects no results', (fix, el, comp) => {
@@ -38,7 +39,7 @@ describe('SearchComponent', () => {
     let storiesResults = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
     beforeEach(() => {
       activatedRoute.testParams = {tab: 'stories'};
-      auth.mockItems('prx:stories', storiesResults);
+      auth.mockItems('prx:stories-search', storiesResults);
     });
 
     cit('loads a list of stories', (fix, el, comp) => {
@@ -59,7 +60,7 @@ describe('SearchComponent', () => {
     let seriesResults = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
     beforeEach(() => {
       activatedRoute.testParams = {tab: 'series'};
-      auth.mockItems('prx:series', seriesResults);
+      auth.mockItems('prx:series-search', seriesResults);
     });
 
     cit('loads a list of series', (fix, el, comp) => {
@@ -68,6 +69,32 @@ describe('SearchComponent', () => {
       expect(comp.seriesResults.length).toEqual(seriesResults.length);
     });
 
+  });
+
+  describe('with remote errors', () => {
+
+    beforeEach(() => {
+      auth.count = () => 999;
+      auth.mockError('prx:stories-search', new Error('Something went terribly awry'));
+      activatedRoute.testParams = {tab: 'stories'};
+    });
+
+    cit('catches and displays a search errors', (fix, el, comp) => {
+      expect(comp.noResults).toBe(false);
+      expect(comp.isLoaded).toBe(true);
+      expect(comp.searchError).toBe(true);
+      expect(el).toContainText('Your search query contains a syntax error');
+    });
+
+  });
+
+  cit('adds wildcards to the end of searches', (fix, el, comp) => {
+    expect(comp.addWildcard(null)).toEqual(null);
+    expect(comp.addWildcard('')).toEqual('');
+    expect(comp.addWildcard('a')).toEqual('a*');
+    expect(comp.addWildcard('hello worl')).toEqual('hello worl*');
+    expect(comp.addWildcard('hello worl*')).toEqual('hello worl*');
+    expect(comp.addWildcard('hello worl ')).toEqual('hello worl ');
   });
 
 });

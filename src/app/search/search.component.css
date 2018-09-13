@@ -34,3 +34,7 @@ header .pages > button {
   margin-left: 4px;
 }
 
+.error h1 {
+  color: #e32;
+  font-weight: 400;
+}
