@@ -1,4 +1,53 @@
 .import-status-card {
-  font-size: 16px;
+  display:relative;
+
+}
+
+.podcast-import {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.episode-import-indicator{
+  margin: 10px;
+}
+
+.import-complete-indicator {
+  border-bottom: 1px black solid;
+}
+
+/* copied from series-feed.component.css */
+.import-complete-indicator > h1 {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 400;
+  margin: 20px 0 20px 0;
+  color: #343434;
+}
+
+ul {
+  padding: 0 5px;
+}
+
+li {
+  display: flex;
+  margin: 5px 0;
+  border-bottom: 1px #ddd solid;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+li h5 {
+  flex-grow: 3;
+  flex-basis: 0;
+}
+
+li p {
+  flex-grow: 1;
+  flex-basis: 0;
+  text-align: right;
 }
 

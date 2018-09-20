@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 import { SharedModule } from '../shared';
 import { SeriesImportStatusCardComponent } from './series-import-status-card.component'
@@ -11,6 +12,7 @@ import { SeriesImportStatusCardComponent } from './series-import-status-card.com
   imports: [
     CommonModule,
     SharedModule,
+    RouterModule
   ],
   exports: [
     SeriesImportStatusCardComponent

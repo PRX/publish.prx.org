@@ -1,9 +1,53 @@
 <div class="import-status-card">
-  {{seriesImport.url}} {{seriesImport.status}}
-  <div *ngFor="let episodeImport of episodeImports">
-    <hr>
-    <p>Episode: {{episodeImport.guid}}</p>
-    <p>Status: {{episodeImport.status}}</p>
-  </div>
+  <section>
+
+    <div class="podcast-import">
+      <div class="import-complete-indicator complete error" *ngIf="seriesImportIs('failed')">
+        <h1>Podcast Import Completed with Errors.</h1>
+        <p>See episode import status below.</p>
+      </div>
+
+      <div class="import-complete-indicator incomplete" *ngIf="seriesImportIsImporting()">
+        <h1>Importing Podcast Episodes</h1>
+        <p>Your podcast import is being processed.</p>
+      </div>
+
+      <div class="import-complete-indicator complete" *ngIf="seriesImportIs('complete')">
+        <h1>Podcast Import Complete</h1>
+        <div *ngIf="episodeImports.length">
+          <p>Imported {{episodeImports.length}} episodes.</p>
+        </div>
+      </div>
+
+
+      <!-- <button (click)="seriesImportReload()" *ngIf="seriesImportIs('series created')">Refresh</button> -->
+
+      <ul>
+        <li class="episode-import-indicator" *ngFor="let episodeImport of episodeImports">
+          <h1 *ngIf="episodeImportInProgress(episodeImport)">
+            IN PROGRESS:
+          </h1>
+
+          <a *ngIf="storyId(episodeImport)" [routerLink]="['/story', storyId(episodeImport)]">
+            {{storyTitle(episodeImport)}}
+          </a>
+
+          <p *ngIf="!storyId(episodeImport)">
+            {{storyTitle(episodeImport)}}
+          </p>
+
+          <p *ngIf="!storyTitle(episodeImport)">
+            New Episode Import
+          </p>
+
+          <p class="episode-import-error" *ngIf="episodeImportIs(episodeImport, 'failed')">
+            FAILED
+          </p>
+
+        </li>
+      </ul>
+    </div>
+
+  </section>
 </div>
 
