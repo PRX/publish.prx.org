@@ -1,3 +1,7 @@
+.main{
+  padding: 30px 0;
+}
+
 #validation-status {
   width: 100%;
   border-bottom: 50px;
