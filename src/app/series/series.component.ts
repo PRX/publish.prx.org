@@ -163,17 +163,26 @@ export class SeriesComponent implements OnInit {
     }
   }
 
-  validateImportUrl(){
+  validateImportUrl(success){
     this.importValidationState.setStartValidating();
 
     this.cms.auth.subscribe(a => {
       a.follow('prx:verify-rss', {url: this.series.importUrl}).subscribe((verified: any) => {
         this.importValidationState.setValid(verified);
         this.setSeriesValidationStrategy();
+        success();
       },(err)=>{
-        this.importValidationState.setInvalid();
+        if(err.status == 400){
+          this.toastr.error('The rss url is not valid.');
+          return this.importValidationState.setInvalid();
+        }
+        throw err;
       });
     });
+  };
+
+  validateImportUrlAndSave(){
+    this.validateImportUrl(()=>this.save());
   };
 
 }

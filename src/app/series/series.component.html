@@ -40,10 +40,6 @@
     </a>
   </nav>
 
-  <a id="import-button" class="button" *ngIf="series?.isNew" routerLink="/series-import">
-    Import Series from RSS
-  </a>
-
   <div class="links" *ngIf="series && !series?.isNew">
     <a routerLinkActive="active" [routerLink]="[base, 'list']">{{storyCount}} {{storyNoun}} in Series</a>
   </div>
