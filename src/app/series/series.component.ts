@@ -163,6 +163,11 @@ export class SeriesComponent implements OnInit {
     }
   }
 
+
+  isValidatingAndSaving(){
+    return this.importValidationState.validating() || this.series.isSaving;
+  }
+
   validateImportUrl(success){
     this.importValidationState.setStartValidating();
 

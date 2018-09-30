@@ -5,7 +5,7 @@
   </div>
   <div class="hero-actions" *ngIf="series">
 
-  <prx-button [model]="series" disabled="0" green=1 visible=1 (click)="validateImportUrlAndSave()">Import Podcast</prx-button>
+  <prx-button [model]="series" disabled="0" green=1 visible=1 [working]="isValidatingAndSaving()" (click)="validateImportUrlAndSave()">Import Podcast</prx-button>
 
   </div>
 </prx-hero>
