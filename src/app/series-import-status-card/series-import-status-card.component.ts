@@ -33,6 +33,10 @@ export class SeriesImportStatusCardComponent {
 
   // collections
 
+  episodeImportsSomeSkipped(){
+    return this.episodeImportPlaceholders.length > 0
+  }
+
   episodeImportsSomeFailed(){
     return this.episodeImportsFilter("failed").length > 0;
   }

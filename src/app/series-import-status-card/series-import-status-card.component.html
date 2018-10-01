@@ -3,25 +3,66 @@
 
     <div class="podcast-import">
 
-      <div class="import-complete-indicator incomplete">
-        <h1>Importing Podcast Episodes</h1>
-        <h1>{{ episodeImportsPercentComplete() | percent }} Complete</h1>
-        <p>{{seriesImport.episodeImportingCount}} podcast episodes scheduled for import.</p>
-        <p>{{episodeImportsFilter('complete').length}} podcast episodes successfully imported.</p>
-        <p *ngIf="episodeImportsFilter('failed').length > 0">{{episodeImportsFilter('failed').length}} podcast episodes failed to import.</p>
-        <p >{{episodeImportsRemaining()}} podcast episodes remaining to import.</p>
-        <p *ngIf="episodeImportPlaceholders.length > 0">{{episodeImportPlaceholders.length}} podcast episodes skipped due to duplicate guid..</p>
+      <div class="import-scoreboard">
+        <h1 *ngIf="seriesImportIsImporting()">Importing Podcast Episodes</h1>
+        <h1 *ngIf="seriesImportIsFinished()">Podcast Import Finished</h1>
+        <h2 class="percent-complete">{{ episodeImportsPercentComplete() | percent }} Complete</h2>
+        <table>
+          <tr>
+            <th>Status</th>
+            <th>Episode Count</th>
+          </tr>
+
+          <tr>
+            <td>Scheduled for import</td>
+            <td>{{seriesImport.episodeImportingCount}}</td>
+          </tr>
+          <tr>
+            <td>Successfully imported</td>
+            <td>{{episodeImportsFilter('complete').length}}</td>
+          </tr>
+          <tr *ngIf="episodeImportsFilter('failed').length > 0">
+            <td>Failed to import.</td>
+            <td>{{episodeImportsFilter('failed').length}}</td>
+          </tr>
+          <tr>
+            <td>Remaining to import</td>
+            <td>{{episodeImportsRemaining()}}</td>
+          </tr>
+          <tr *ngIf="episodeImportPlaceholders.length > 0">
+            <td>Skipped duplicate guid</td>
+            <td>{{episodeImportPlaceholders.length}}</td>
+          </tr>
+
+        </table>
       </div>
 
       <!-- <button (click)="seriesImportReload()" *ngIf="seriesImportIs('series created')">Refresh</button> -->
 
-      <ul>
-        <li class="episode-import-indicator" *ngFor="let episodeImport of episodeImportsFilter('failed')">
-          <p class="episode-import-error">
-            FAILED
-          </p>
-        </li>
-      </ul>
+      <table *ngIf="episodeImportsSomeSkipped() || episodeImportsSomeFailed()" class="episode-imports-status">
+        <tr>
+          <th></th>
+          <th>Import Status</th>
+        </tr>
+
+        <tr class="episode-import-indicator" *ngFor="let episodeImport of episodeImportsFilter('failed')">
+          <td>
+            {{episodeImport.entry.title}}
+          </td>
+          <td class="episode-import-error">
+            Failed
+          </td>
+        </tr>
+
+        <tr class="episode-import-indicator" *ngFor="let episodeImport of episodeImportPlaceholders">
+          <td>
+            {{episodeImport.entry.title}}
+          </td>
+          <td class="episode-import-error">
+            Duplicate GUID
+          </td>
+        </tr>
+      </table>
     </div>
 
   </section>

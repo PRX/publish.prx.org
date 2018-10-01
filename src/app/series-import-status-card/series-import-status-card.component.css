@@ -6,7 +6,6 @@
 .podcast-import {
   display: flex;
   flex-direction: column;
-
 }
 
 .episode-import-indicator{
@@ -17,13 +16,34 @@
   border-bottom: 1px black solid;
 }
 
-/* copied from series-feed.component.css */
-.import-complete-indicator > h1 {
+.import-scoreboard {
+  margin-bottom: 20px;
+  text-align:center
+}
+
+.import-scoreboard > h1 {
   font-size: 18px;
   line-height: 22px;
   font-weight: 400;
-  margin: 20px 0 20px 0;
+  margin: 20px 0 0 0;
   color: #343434;
+}
+.import-scoreboard > .percent-complete {
+  margin: 10px 0 20px 0;
+}
+
+.import-scoreboard > table {
+  margin: auto;
+}
+
+.import-scoreboard > th, td {
+  text-align: left;
+  border-top :solid 1px #ddd;
+  padding: 3px;
+
+}
+
+.episode-imports-status > td, th {
 }
 
 ul {
