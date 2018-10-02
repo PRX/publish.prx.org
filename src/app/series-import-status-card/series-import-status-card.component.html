@@ -14,23 +14,27 @@
           </tr>
 
           <tr>
-            <td>Scheduled for import</td>
+            <td>Scheduled for Import</td>
             <td>{{seriesImport.episodeImportingCount}}</td>
           </tr>
           <tr>
-            <td>Successfully imported</td>
+            <td>Successfully Imported</td>
             <td>{{episodeImportsFilter('complete').length}}</td>
           </tr>
+          <tr *ngIf="episodeImportsInProgress().length > 0">
+            <td>In Progress</td>
+            <td>{{episodeImportsInProgress().length}}</td>
+          </tr>
           <tr *ngIf="episodeImportsFilter('failed').length > 0">
-            <td>Failed to import.</td>
+            <td>Failed to Import</td>
             <td>{{episodeImportsFilter('failed').length}}</td>
           </tr>
           <tr>
-            <td>Remaining to import</td>
+            <td>Remaining to Import</td>
             <td>{{episodeImportsRemaining()}}</td>
           </tr>
           <tr *ngIf="episodeImportPlaceholders.length > 0">
-            <td>Skipped duplicate guid</td>
+            <td>Skipped Duplicate Guid</td>
             <td>{{episodeImportPlaceholders.length}}</td>
           </tr>
 

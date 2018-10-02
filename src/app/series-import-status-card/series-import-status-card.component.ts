@@ -56,6 +56,11 @@ export class SeriesImportStatusCardComponent {
       .filter((ei)=> this.episodeImportIs(ei, status))
   }
 
+  episodeImportsInProgress(){
+    return this.episodeImports
+      .filter((ei)=> this.episodeImportInProgress(ei));
+  }
+
   episodeImportsRemaining(){
     let complete = this.episodeImportsFilter('complete').length;
     let failed = this.episodeImportsFilter('failed').length;
