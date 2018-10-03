@@ -1,3 +1,6 @@
+<div *ngIf="!seriesImports" class="series-imports-container">
+    <prx-spinner class="validation-activity-indicator"  ></prx-spinner>
+</div>
 <div *ngIf="seriesImports" class="series-imports-container">
   <div *ngFor="let import of seriesImports">
     <series-import-status-card [seriesImport]="import" ></series-import-status-card>
