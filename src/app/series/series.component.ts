@@ -72,7 +72,7 @@ export class SeriesComponent implements OnInit {
     if (series) {
       this.storyCount = series.count('prx:stories');
       this.storyNoun = this.storyCount === 1 ? 'Episode' : 'Episodes';
-      this.fromImport = this.series.imports.length > 0;
+      this.fromImport = this.series.doc.count('prx:podcast-imports') > 0;
       this.setSeriesValidationStrategy();
     } else {
       this.storyCount = null;

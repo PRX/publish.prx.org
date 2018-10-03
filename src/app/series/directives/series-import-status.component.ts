@@ -11,12 +11,25 @@ import { TabService } from 'ngx-prx-styleguide';
 export class SeriesImportStatusComponent implements OnDestroy {
 
   series: SeriesModel;
+  seriesImports: SeriesImportModel[];
   tabSub: Subscription;
 
   constructor(tab: TabService,
-              private cms: CmsService) {
+    private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
+      this.loadImports();
+    });
+  }
+
+  loadImports(): any {
+    this.series.doc.follow('prx:podcast-imports').subscribe((doc) => {
+      doc.followList('prx:items').subscribe((pidocs)=>{
+        let models = pidocs.map((importDoc)=>{
+          return new SeriesImportModel(this.series.doc, importDoc);
+        });
+        this.seriesImports = models;
+      });
     });
   }
 

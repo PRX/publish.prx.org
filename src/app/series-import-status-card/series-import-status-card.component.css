@@ -39,7 +39,7 @@
 .import-scoreboard > th, td {
   text-align: left;
   border-top :solid 1px #ddd;
-  padding: 3px;
+  padding: 3px 70px 0 0;
 
 }
 
