@@ -51,7 +51,7 @@
 
         <tr class="episode-import-indicator" *ngFor="let episodeImport of episodeImportsFilter('failed')">
           <td>
-            {{episodeImport.entry.title}}
+            <span *ngIf="episodeImport.entry">{{episodeImport.entry.title}}</span>
           </td>
           <td class="episode-import-error">
             Failed
@@ -60,7 +60,7 @@
 
         <tr class="episode-import-indicator" *ngFor="let episodeImport of episodeImportPlaceholders">
           <td>
-            {{episodeImport.entry.title}}
+            <span *ngIf="episodeImport.entry">{{episodeImport.entry.title}}</span>
           </td>
           <td class="episode-import-error">
             Duplicate GUID

@@ -110,13 +110,17 @@ export class SeriesComponent implements OnInit {
     this.series.save().subscribe(() => {
       this.toastr.success(`Series ${wasNew ? 'created' : 'saved'}`);
       if (wasNew) {
-        this.router.navigate(['/series', this.series.id]);
+        this.router.navigate(this.afterSaveNavigateParams());
       }
     });
   }
 
   discard() {
     this.series.discard();
+  }
+
+  afterSaveNavigateParams(){
+    return ['/series', this.series.id];
   }
 
   confirmDelete(event: MouseEvent): void {

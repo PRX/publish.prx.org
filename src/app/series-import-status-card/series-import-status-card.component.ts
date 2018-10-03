@@ -1,6 +1,13 @@
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription.js'
 import { Component, Input } from '@angular/core';
 import { SeriesImportModel } from '../shared';
 import { HalDoc } from '../core';
+
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/takeWhile';
 
 @Component({
   templateUrl: 'series-import-status-card.component.html',
@@ -13,11 +20,19 @@ export class SeriesImportStatusCardComponent {
   @Input() seriesImport: SeriesImportModel;
   episodeImports: HalDoc[] = [];
   episodeImportPlaceholders: HalDoc[] = [];
+  refresher: Subscription;
 
   constructor() {}
 
   ngOnInit(): any {
     this.loadEpisodeStatus();
+    this.refreshSeriesImport();
+  }
+
+  ngOnDestroy(): any {
+    if(this.refresher){
+      this.refresher.unsubscribe();
+    }
   }
 
   loadEpisodeStatus(){
@@ -28,7 +43,20 @@ export class SeriesImportStatusCardComponent {
     this.seriesImport.doc.followList('prx:episode-import-placeholders').subscribe((episodes)=>{
       this.episodeImportPlaceholders = episodes;
     })
+  }
 
+  refreshSeriesImport(){
+    this.refresher = Observable
+      .interval(1000)
+      .flatMap(() => this.seriesImport.doc.reload())
+      .map(doc => {
+        let parentDoc = this.seriesImport.parent;
+        // this.isProcessTimeout = elapsed > this.UPLOAD_PROCESS_TIMEOUT;
+        this.seriesImport = new SeriesImportModel(parentDoc, doc);
+        this.loadEpisodeStatus();
+      })
+      .takeWhile(() => this.seriesImportIsImporting())
+      .subscribe(val =>{});
   }
 
   // collections
