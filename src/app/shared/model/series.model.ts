@@ -2,7 +2,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { HalDoc, Upload } from '../../core';
-import { BaseModel } from 'ngx-prx-styleguide';
+import { BaseModel, ValidatorMap } from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
 import { SeriesImportModel } from './series-import.model';
 import { AudioVersionTemplateModel } from './audio-version-template.model';
@@ -11,11 +11,11 @@ import { DistributionModel } from './distribution.model';
 import { REQUIRED, LENGTH } from './invalid';
 import { HasUpload, applyMixins } from './upload';
 
-export const IMPORT_SERIES_VALIDATIONS = {
+export const IMPORT_SERIES_VALIDATIONS :ValidatorMap = {
   importUrl: [REQUIRED()],
 };
 
-export const NEW_SERIES_VALIDATIONS = {
+export const NEW_SERIES_VALIDATIONS :ValidatorMap  = {
     title:            [REQUIRED(), LENGTH(1, 255)],
     shortDescription: [REQUIRED()],
     description:      [LENGTH(0, 4000)],
@@ -39,7 +39,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
 
   SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap', 'accountId'];
 
-  VALIDATORS = NEW_SERIES_VALIDATIONS;
+  VALIDATORS: ValidatorMap = NEW_SERIES_VALIDATIONS;
 
   // HasUpload mixin
   hasUploadMap: string;

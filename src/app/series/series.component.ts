@@ -5,8 +5,8 @@ import { Subject } from 'rxjs/Subject';
 
 import { CmsService, HalDoc } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
-import { SeriesModel, SeriesImportModel, ImportValidationState } from '../shared';
-import { NEW_SERIES_VALIDATIONS, IMPORT_SERIES_VALIDATIONS } from '../shared/model/series.model';
+import { SeriesModel, SeriesImportModel } from '../shared';
+import { NEW_SERIES_VALIDATIONS } from '../shared/model/series.model';
 
 @Component({
   providers: [TabService],
@@ -25,13 +25,13 @@ export class SeriesComponent implements OnInit {
   storyNoun: string;
 
   // podcast imports
-  importValidationState: ImportValidationState = new ImportValidationState();
   fromImport: boolean = false;
 
   constructor(
-    private cms: CmsService,
+    // shared with subclasses
+    public cms: CmsService,
     private modal: ModalService,
-    private toastr: ToastrService,
+    public toastr: ToastrService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -93,11 +93,7 @@ export class SeriesComponent implements OnInit {
   }
 
   validationStrategy(){
-    if(this.importValidationState.valid()){
-      return IMPORT_SERIES_VALIDATIONS;
-    } else {
-      return NEW_SERIES_VALIDATIONS;
-    }
+    return NEW_SERIES_VALIDATIONS;
   }
 
   setSeriesValidationStrategy(){
@@ -166,32 +162,5 @@ export class SeriesComponent implements OnInit {
       return true;
     }
   }
-
-
-  isValidatingAndSaving(){
-    return this.importValidationState.validating() || this.series.isSaving;
-  }
-
-  validateImportUrl(success){
-    this.importValidationState.setStartValidating();
-
-    this.cms.auth.subscribe(a => {
-      a.follow('prx:verify-rss', {url: this.series.importUrl}).subscribe((verified: any) => {
-        this.importValidationState.setValid(verified);
-        this.setSeriesValidationStrategy();
-        success();
-      },(err)=>{
-        if(err.status == 400){
-          this.toastr.error('The rss url is not valid.');
-          return this.importValidationState.setInvalid();
-        }
-        throw err;
-      });
-    });
-  };
-
-  validateImportUrlAndSave(){
-    this.validateImportUrl(()=>this.save());
-  };
 
 }
