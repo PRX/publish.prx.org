@@ -90,4 +90,16 @@ describe('SeriesImportStatusCardComponent', () => {
     expect(comp.episodeImportsRemaining()).toEqual(1);
   });
 
+  cit('should display an initializing screen if episodeImportingCount is not set', (fix, el, comp) => {
+    setupComp(comp, seriesImport);
+    comp.seriesImport.episodeImportingCount = undefined;
+    fix.detectChanges();
+
+    let initScoreBoard = el.queryAll(By.css('.import-scoreboard')).find(e => {
+      return e.nativeElement.textContent.trim() === 'Podcast Import is Initializing';
+    });
+
+    expect(initScoreBoard).not.toBeNull();
+  });
+
 });

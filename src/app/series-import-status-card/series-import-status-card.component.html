@@ -3,7 +3,13 @@
 
     <div class="podcast-import">
 
-      <div class="import-scoreboard">
+      <div *ngIf="seriesImportIsInitializing()" class="import-scoreboard initializing">
+        <h1 *ngIf="seriesImportIsImporting()">Podcast Import is Initializing</h1>
+        <prx-spinner ></prx-spinner>
+      </div>
+
+
+      <div *ngIf="!seriesImportIsInitializing()" class="import-scoreboard">
         <h1 *ngIf="seriesImportIsImporting()">Importing Podcast Episodes</h1>
         <h1 *ngIf="seriesImportIsFinished()">Podcast Import Finished</h1>
         <h2 class="percent-complete">{{ episodeImportsPercentComplete() | percent }} Complete</h2>

@@ -125,6 +125,10 @@ export class SeriesImportStatusCardComponent {
       !this.seriesImportIs('failed');
   }
 
+  seriesImportIsInitializing(){
+    return !this.seriesImport.episodeImportingCount;
+  }
+
   episodeImportInProgress(episodeImport){
     return !this.episodeImportIs(episodeImport, 'complete') && !this.episodeImportIs(episodeImport, 'failed');
   }
