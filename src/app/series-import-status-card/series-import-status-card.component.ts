@@ -130,6 +130,8 @@ export class SeriesImportStatusCardComponent {
   }
 
   episodeImportInProgress(episodeImport){
-    return !this.episodeImportIs(episodeImport, 'complete') && !this.episodeImportIs(episodeImport, 'failed');
+    return !this.episodeImportIs(episodeImport, 'complete') &&
+      !this.episodeImportIs(episodeImport, 'failed') &&
+      !this.episodeImportIs(episodeImport, 'created');
   }
 }
