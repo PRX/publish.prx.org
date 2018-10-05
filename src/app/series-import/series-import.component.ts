@@ -20,6 +20,10 @@ export class SeriesImportComponent extends SeriesComponent implements OnInit {
     return IMPORT_SERIES_VALIDATIONS;
   }
 
+  afterSaveNavigateParams(){
+    return ['/series', this.series.id, 'import-status'];
+  }
+
   isValidatingAndSaving(){
     return this.importValidationState.validating() || this.series.isSaving;
   }

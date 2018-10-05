@@ -34,15 +34,15 @@ describe('SeriesImportComponent', () => {
 
   let auth;
   beforeEach(() => {
-    auth = cms.mock('prx:authorization', {id: 88});
+    auth = cms.mock('prx:authorization', {id: 100});
     modalAlertTitle = null;
-    auth.mock('prx:default-account', {id: 88});
+    auth.mock('prx:default-account', {id: 100});
   });
 
   cit('defaults new podcast import to the default account', (fix, el, comp) => {
     activatedRoute.testParams = {};
     fix.detectChanges();
-    expect(comp.series.parent.id).toEqual(88);
+    expect(comp.series.parent.id).toEqual(100);
   });
 
   cit('validates an invalid podcast rss', (fix, el, comp) => {
@@ -52,7 +52,7 @@ describe('SeriesImportComponent', () => {
     fix.detectChanges();
 
     comp.series.importUrl = "http://example.com/invalid.rss"
-    expect(comp.series.parent.id).toEqual(88);
+    expect(comp.series.parent.id).toEqual(100);
 
     comp.validateImportUrl();
     expect(toastErrorMsg).toEqual('The rss url is not valid.');
@@ -61,7 +61,7 @@ describe('SeriesImportComponent', () => {
 
   cit('validates an valid podcast rss', (fix, el, comp) => {
     activatedRoute.testParams = {};
-    auth.mock('prx:default-account', {id: 88});
+    auth.mock('prx:default-account', {id: 100});
     auth.mock('prx:verify-rss', {feed: {}});
 
     fix.detectChanges();
@@ -70,6 +70,22 @@ describe('SeriesImportComponent', () => {
 
     comp.validateImportUrl(()=>{});
     expect(comp.importValidationState.valid()).toEqual(true);
+  });
+
+  cit('navigates to new series after save', (fix, el, comp) => {
+    activatedRoute.testParams = {};
+    auth.mock('prx:default-account', {id: 100});
+    auth.mock('prx:verify-rss', {});
+    fix.detectChanges();
+
+    let btn = el.queryAll(By.css('prx-button')).find(e => {
+      return e.nativeElement.textContent === 'Import Podcast';
+    });
+    expect(btn).not.toBeNull();
+
+    spyOn(router, 'navigate').and.stub();
+    btn.triggerEventHandler('click', null);
+    expect(router.navigate).toHaveBeenCalledWith(['/series', comp.series.id, 'import-status']);
   });
 
 })
