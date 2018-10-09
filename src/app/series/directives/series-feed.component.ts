@@ -1,15 +1,18 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { TabService } from 'ngx-prx-styleguide';
-import { SeriesModel, StoryModel } from '../../shared';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/observable/of';
+import { HalDoc, HalObservable, TabService } from 'ngx-prx-styleguide';
+
+const PER_PAGE = 50;
 
 @Component({
   template: `
   <div>
-    <prx-spinner *ngIf="!isLoaded"></prx-spinner>
     <section *ngIf="series">
       <div class="hint" *ngIf="noStories">
-        You have no published episodes in this series.
+        You have no episodes in this series.
       </div>
 
       <section *ngIf="!noStories">
@@ -21,7 +24,7 @@ import { SeriesModel, StoryModel } from '../../shared';
                 {{s.title}}
               </a>
             </h5>
-            <p>{{s.doc?.duration || 0 | duration}}</p>
+            <p>{{s.duration || 0 | duration}}</p>
             <p></p>
           </li>
         </ul>
@@ -34,7 +37,7 @@ import { SeriesModel, StoryModel } from '../../shared';
                 {{s.title}}
               </a>
             </h5>
-            <p>{{s.doc?.duration || 0 | duration}}</p>
+            <p>{{s.duration || 0 | duration}}</p>
             <p class="futurePublic">{{s.publishedAt | date:'shortDate'}}</p>
           </li>
         </ul>
@@ -47,7 +50,7 @@ import { SeriesModel, StoryModel } from '../../shared';
                 {{s.title}}
               </a>
             </h5>
-            <p>{{s.doc?.duration || 0 | duration}}</p>
+            <p>{{s.duration || 0 | duration}}</p>
             <p>{{s.publishedAt | date:'shortDate'}}</p>
           </li>
         </ul>
@@ -66,57 +69,84 @@ import { SeriesModel, StoryModel } from '../../shared';
       </div>
 
     </section>
-    </div>
+    <prx-spinner *ngIf="!isLoaded" [class.paging]="isPaging"></prx-spinner>
+  </div>
   `,
   styleUrls: ['./series-feed.component.css']
 })
 
-export class SeriesFeedComponent implements OnDestroy {
+export class SeriesFeedComponent implements OnInit, OnDestroy {
 
   isLoaded = false;
-  noStories: boolean;
-  series: SeriesModel;
-  publicStories: StoryModel[] = [];
-  futurePublicStories: StoryModel[] = [];
-  privateStories: StoryModel[] = [];
+  isPaging = false;
+  noStories = false;
+  series: HalDoc;
+  publicStories: HalDoc[] = [];
+  futurePublicStories: HalDoc[] = [];
+  privateStories: HalDoc[] = [];
   tabSub: Subscription;
 
-  constructor(tab: TabService) {
+  constructor(private tab: TabService) {
     this.noStories = false;
-    this.tabSub = tab.model.subscribe((s: SeriesModel) => {
-      this.series = s;
-      this.sortStories();
-    });
   }
 
-  sortStories() {
-    let total = this.series.doc.count('prx:stories');
-    if (total === 0) {
+  ngOnInit() {
+    this.tabSub = this.tab.model.subscribe(s => this.load(s.doc));
+  }
+
+  ngOnDestroy() {
+    this.tabSub.unsubscribe();
+  }
+
+  load(series: HalDoc) {
+    this.reset(series);
+    if (series.count('prx:stories')) {
+      const per = PER_PAGE;
+      const zoom = 0;
+      const sorts = 'released_at:desc,published_at:desc';
+      const page1 = series.follow('prx:stories', {per, zoom, sorts});
+      this.loadPages(page1).subscribe(() => this.isLoaded = true);
+    } else {
       this.noStories = true;
       this.isLoaded = true;
-    } else {
-      this.series
-          .doc
-          .followItems('prx:stories', { per: total, zoom: '', sorts: 'released_at: desc, published_at: desc' })
-          .subscribe((docs) => {
-            this.isLoaded = true;
-            docs.forEach((doc) => {
-                let story = new StoryModel(this.series.doc, doc, false);
-                if (!story.publishedAt) {
-                  this.privateStories.push(story);
-                  return;
-                }
-                if (new Date(story.publishedAt) <= new Date()) {
-                  this.publicStories.push(story);
-                } else {
-                  this.futurePublicStories.push(story);
-                }
-              });
-            });
     }
   }
 
-  ngOnDestroy(): any {
-    this.tabSub.unsubscribe();
+  loadPages(page$: HalObservable<HalDoc>) {
+    return page$.mergeMap(doc => {
+      return doc.followList('prx:items').mergeMap(docs => {
+        this.addStories(docs);
+        if (doc.has('next')) {
+          this.isPaging = true;
+          const nextPage = doc.follow('next');
+          return this.loadPages(nextPage);
+        } else {
+          return Observable.of(null);
+        }
+      });
+    });
   }
+
+  addStories(stories: HalDoc[]) {
+    stories.forEach(doc => {
+      if (!doc['publishedAt']) {
+        this.privateStories.push(doc);
+      } else if (new Date(doc['publishedAt']) <= new Date()) {
+        this.publicStories.push(doc);
+      } else {
+        this.futurePublicStories.push(doc);
+      }
+    });
+  }
+
+  reset(series: HalDoc) {
+    this.series = series;
+    this.isLoaded = false;
+    this.isPaging = false;
+    this.noStories = false;
+    this.publicStories = [];
+    this.futurePublicStories = [];
+    this.privateStories = [];
+  }
+
 }

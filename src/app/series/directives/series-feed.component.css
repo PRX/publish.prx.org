@@ -43,3 +43,10 @@ li p {
 .invalid {
   color: #e32;
 }
+
+prx-spinner.paging {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 50px;
+}
