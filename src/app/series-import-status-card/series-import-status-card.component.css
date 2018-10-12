@@ -1,3 +1,7 @@
+.error{
+ color: #e32;
+}
+
 .import-status-card {
   display:relative;
 
