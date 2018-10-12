@@ -25,6 +25,14 @@
   text-align:center
 }
 
+.import-scoreboard table tr td:first-child {
+  text-align: left;
+}
+
+.import-scoreboard table tr td:nth-child(2) {
+  text-align: right;
+}
+
 .import-scoreboard > h1 {
   font-size: 18px;
   line-height: 22px;
@@ -41,13 +49,16 @@
 }
 
 .import-scoreboard > th, td {
-  text-align: left;
   border-top :solid 1px #ddd;
-  padding: 3px 70px 0 0;
-
+  padding: 3px 20px 3px 20px;
 }
 
-.episode-imports-status > td, th {
+.episode-import-indicator > .title {
+  text-align: left;
+}
+
+.episode-import-indicator > .error {
+  text-align: left;
 }
 
 ul {
