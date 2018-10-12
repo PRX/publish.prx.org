@@ -59,6 +59,11 @@ export class SeriesImportStatusCardComponent {
       .subscribe(val =>{});
   }
 
+  entriesInRssFeed(){
+    return this.seriesImport.episodeImportingCount
+      + this.episodeImportPlaceholders.length;
+  }
+
   // collections
 
   episodeImportsSomeSkipped(){

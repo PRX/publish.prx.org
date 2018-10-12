@@ -74,10 +74,12 @@ describe('SeriesImportStatusCardComponent', () => {
   });
 
   cit('should supply a count of episodes to be imported', (fix, el, comp) => {
+    podcastImportHal.MOCKS['prx:episode-import-placeholders'] = [{id: 6}]
     comp.seriesImport = seriesImport;
     spyOn(comp, 'refreshSeriesImport')
     fix.detectChanges();
     expect(comp.seriesImport.episodeImportingCount).toEqual(10);
+    expect(comp.entriesInRssFeed).toEqual(11);
   });
 
   cit('#episodeImportsRemaining', (fix, el, comp) => {
