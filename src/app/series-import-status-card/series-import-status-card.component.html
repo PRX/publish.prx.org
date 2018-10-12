@@ -12,6 +12,8 @@
       <div *ngIf="!seriesImportIsInitializing()" class="import-scoreboard">
         <h1 *ngIf="seriesImportIsImporting()">Importing Podcast Episodes</h1>
         <h1 *ngIf="seriesImportIsFinished()">Podcast Import Finished</h1>
+
+        <div class="meter"><span [style.width.%]="episodeImportsPercentComplete() * 100"></span></div>
         <h2 class="percent-complete">{{ episodeImportsPercentComplete() | percent }} Complete</h2>
         <table>
           <tr>

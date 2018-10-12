@@ -1,3 +1,22 @@
+.meter {
+  flex-grow: 1;
+  background-color: #DDDDDD;
+  height: 10px;
+  position: relative;
+  margin: 20px auto;
+  width: 300px;
+}
+
+.meter > span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  transition: 0.4s linear;
+  transition-property: width;
+  background-color: #0089bc;
+  overflow: hidden;
+}
+
 .error{
  color: #e32;
 }
