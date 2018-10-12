@@ -51,8 +51,8 @@
 
       <table *ngIf="episodeImportsSomeSkipped() || episodeImportsSomeFailed()" class="episode-imports-status">
         <tr>
-          <th></th>
-          <th>Import Status</th>
+          <th>Failed Import</th>
+          <th>Failure Status</th>
         </tr>
 
         <tr class="episode-import-indicator" *ngFor="let episodeImport of episodeImportsFilter('failed')">
