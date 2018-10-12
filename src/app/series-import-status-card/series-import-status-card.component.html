@@ -27,7 +27,7 @@
             <td>Successfully Imported</td>
             <td>{{episodeImportsFilter('complete').length}}</td>
           </tr>
-          <tr *ngIf="episodeImportsInProgress().length > 0">
+          <tr *ngIf="seriesImportIsImporting()">
             <td>In Progress</td>
             <td>{{episodeImportsInProgress().length}}</td>
           </tr>
@@ -35,7 +35,7 @@
             <td>Failed to Import</td>
             <td>{{episodeImportsFilter('failed').length}}</td>
           </tr>
-          <tr>
+          <tr *ngIf="seriesImportIsImporting()">
             <td>Remaining to Import</td>
             <td>{{episodeImportsRemaining()}}</td>
           </tr>
