@@ -60,7 +60,7 @@ export class SeriesImportStatusCardComponent {
   }
 
   entriesInRssFeed(){
-    return this.seriesImport.episodeImportingCount
+    return this.seriesImport.feedEpisodeCount
       + this.episodeImportPlaceholders.length;
   }
 
@@ -98,13 +98,13 @@ export class SeriesImportStatusCardComponent {
     let complete = this.episodeImportsFilter('complete').length;
     let failed = this.episodeImportsFilter('failed').length;
 
-    return this.seriesImport.episodeImportingCount -
+    return this.seriesImport.feedEpisodeCount -
       complete -
       failed;
   }
 
   episodeImportsPercentComplete(){
-    return this.episodeImportsFilter('complete').length / this.seriesImport.episodeImportingCount;
+    return this.episodeImportsFilter('complete').length / this.seriesImport.feedEpisodeCount;
   }
 
   // status
@@ -131,7 +131,7 @@ export class SeriesImportStatusCardComponent {
   }
 
   seriesImportIsInitializing(){
-    return !this.seriesImport.episodeImportingCount;
+    return !this.seriesImport.feedEpisodeCount;
   }
 
   episodeImportInProgress(episodeImport){

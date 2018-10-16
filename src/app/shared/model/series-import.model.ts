@@ -14,7 +14,7 @@ export class SeriesImportModel extends BaseModel {
   public createdAt: Date;
   public updatedAt: Date;
   public accountId: number;
-  public episodeImportingCount: number;
+  public feedEpisodeCount: number;
 
   // TODO
   public config: any;
@@ -55,7 +55,7 @@ export class SeriesImportModel extends BaseModel {
     this.createdAt = new Date(this.doc['createdAt']);
     this.updatedAt = new Date(this.doc['updatedAt']);
     this.accountId = this.doc['account']
-    this.episodeImportingCount = this.doc['episodeImportingCount']
+    this.feedEpisodeCount = this.doc['feedEpisodeCount']
     this.config = this.doc['config']
   }
 

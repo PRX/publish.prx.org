@@ -25,7 +25,7 @@ describe('SeriesImportStatusCardComponent', () => {
   let seriesImport;
   let podcastImportHal;
   beforeEach(() => {
-    podcastImportHal = new MockHalDoc({id: 99, episodeImportingCount: 10});
+    podcastImportHal = new MockHalDoc({id: 99, feedEpisodeCount: 10});
     podcastImportHal.MOCKS['prx:episode-imports'] =  []
     podcastImportHal.MOCKS['prx:episode-import-placeholders'] =  []
 
@@ -78,8 +78,8 @@ describe('SeriesImportStatusCardComponent', () => {
     comp.seriesImport = seriesImport;
     spyOn(comp, 'refreshSeriesImport')
     fix.detectChanges();
-    expect(comp.seriesImport.episodeImportingCount).toEqual(10);
-    expect(comp.entriesInRssFeed).toEqual(11);
+    expect(comp.seriesImport.feedEpisodeCount).toEqual(10);
+    expect(comp.entriesInRssFeed()).toEqual(11);
   });
 
   cit('#episodeImportsRemaining', (fix, el, comp) => {
@@ -87,14 +87,14 @@ describe('SeriesImportStatusCardComponent', () => {
 
     setupComp(comp, seriesImport);
 
-    comp.seriesImport.episodeImportingCount = 3;
+    comp.seriesImport.feedEpisodeCount = 3;
     fix.detectChanges();
     expect(comp.episodeImportsRemaining()).toEqual(1);
   });
 
-  cit('should display an initializing screen if episodeImportingCount is not set', (fix, el, comp) => {
+  cit('should display an initializing screen if feedEpisodeCount is not set', (fix, el, comp) => {
     setupComp(comp, seriesImport);
-    comp.seriesImport.episodeImportingCount = undefined;
+    comp.seriesImport.feedEpisodeCount = undefined;
     fix.detectChanges();
 
     let initScoreBoard = el.queryAll(By.css('.import-scoreboard')).find(e => {
