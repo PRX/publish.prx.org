@@ -26,7 +26,7 @@ export class SeriesImportStatusCardComponent {
 
   ngOnInit(): any {
     this.loadEpisodeStatus();
-    this.refreshSeriesImport();
+    // this.refreshSeriesImport();
   }
 
   ngOnDestroy(): any {

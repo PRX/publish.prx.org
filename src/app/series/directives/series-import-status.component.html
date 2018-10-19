@@ -2,7 +2,7 @@
     <prx-spinner class="validation-activity-indicator"  ></prx-spinner>
 </div>
 <div *ngIf="seriesImports" class="series-imports-container">
-  <div *ngFor="let import of seriesImports">
+  <div *ngFor="let import of (seriesImports | async)">
     <series-import-status-card [seriesImport]="import" ></series-import-status-card>
   </div>
 </div>
