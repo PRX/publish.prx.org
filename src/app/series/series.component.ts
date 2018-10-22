@@ -25,7 +25,7 @@ export class SeriesComponent implements OnInit {
   storyNoun: string;
 
   // podcast imports
-  fromImport: boolean = false;
+  fromImport = false;
 
   constructor(
     // shared with subclasses

@@ -69,5 +69,5 @@ describe('SeriesFeedComponent', () => {
     ];
     fix.detectChanges();
     expect(el).toQuery('.invalid');
-  })
+  });
 });

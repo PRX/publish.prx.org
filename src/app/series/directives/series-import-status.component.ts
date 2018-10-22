@@ -28,8 +28,8 @@ export class SeriesImportStatusComponent implements OnDestroy {
 
   loadImports(): any {
     this.series.doc.follow('prx:podcast-imports').subscribe((doc) => {
-      doc.followList('prx:items').subscribe((pidocs)=>{
-        let models = pidocs.map((importDoc)=>{
+      doc.followList('prx:items').subscribe((pidocs) => {
+        let models = pidocs.map((importDoc) => {
           return new SeriesImportModel(this.series.doc, importDoc);
         });
         this.seriesImports = models;

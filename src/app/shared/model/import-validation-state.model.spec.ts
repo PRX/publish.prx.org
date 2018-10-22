@@ -28,7 +28,7 @@ describe('ImportValidationState', () => {
     expect(importUrlValidation.invalid()).toEqual(false);
     expect(importUrlValidation.validating()).toEqual(false);
     expect(importUrlValidation.complete()).toEqual(false);
-    expect(importUrlValidation.needsValidation()).toEqual(true)
+    expect(importUrlValidation.needsValidation()).toEqual(true);
 
     expect(importUrlValidation.feed).toEqual(null);
   });
@@ -40,22 +40,22 @@ describe('ImportValidationState', () => {
     expect(importUrlValidation.valid()).toEqual(false);
     expect(importUrlValidation.invalid()).toEqual(false);
     expect(importUrlValidation.complete()).toEqual(false);
-    expect(importUrlValidation.needsValidation()).toEqual(false)
+    expect(importUrlValidation.needsValidation()).toEqual(false);
 
     expect(importUrlValidation.feed).toEqual(null);
-  })
+  });
 
   it('can set a valid state', () => {
-    importUrlValidation.setValid(new MockHalDoc({some: "doc"}));
+    importUrlValidation.setValid(new MockHalDoc({some: 'doc'}));
 
     expect(importUrlValidation.validating()).toEqual(false);
     expect(importUrlValidation.valid()).toEqual(true);
     expect(importUrlValidation.invalid()).toEqual(false);
     expect(importUrlValidation.complete()).toEqual(true);
-    expect(importUrlValidation.needsValidation()).toEqual(false)
+    expect(importUrlValidation.needsValidation()).toEqual(false);
 
-    expect(importUrlValidation.feed).toEqual({some: "doc"});
-  })
+    expect(importUrlValidation.feed).toEqual({some: 'doc'});
+  });
 
   it('can set an inalid state', () => {
     importUrlValidation.setInvalid();
@@ -64,13 +64,13 @@ describe('ImportValidationState', () => {
     expect(importUrlValidation.valid()).toEqual(false);
     expect(importUrlValidation.invalid()).toEqual(true);
     expect(importUrlValidation.complete()).toEqual(true);
-    expect(importUrlValidation.needsValidation()).toEqual(false)
+    expect(importUrlValidation.needsValidation()).toEqual(false);
 
     expect(importUrlValidation.feed).toEqual(null);
-  })
+  });
 
   it('can alternate between invalid and valid', () => {
-    importUrlValidation.setValid(new MockHalDoc({some: "doc"}));
+    importUrlValidation.setValid(new MockHalDoc({some: 'doc'}));
 
     importUrlValidation.setInvalid();
 
@@ -79,27 +79,27 @@ describe('ImportValidationState', () => {
     expect(importUrlValidation.valid()).toEqual(false);
     expect(importUrlValidation.invalid()).toEqual(true);
     expect(importUrlValidation.complete()).toEqual(true);
-    expect(importUrlValidation.needsValidation()).toEqual(false)
+    expect(importUrlValidation.needsValidation()).toEqual(false);
 
     expect(importUrlValidation.feed).toEqual(null);
-  })
+  });
 
   it('can describe if we need validating', () => {
-    expect(importUrlValidation.needsValidation()).toEqual(true)
+    expect(importUrlValidation.needsValidation()).toEqual(true);
 
-    importUrlValidation.setValid(new MockHalDoc({some: "doc"}));
+    importUrlValidation.setValid(new MockHalDoc({some: 'doc'}));
 
-    expect(importUrlValidation.needsValidation()).toEqual(false)
+    expect(importUrlValidation.needsValidation()).toEqual(false);
 
     // wipe the state of the validation state machine
     reInit();
 
-    expect(importUrlValidation.needsValidation()).toEqual(true)
+    expect(importUrlValidation.needsValidation()).toEqual(true);
 
     importUrlValidation.setInvalid();
 
-    expect(importUrlValidation.needsValidation()).toEqual(false)
-  })
+    expect(importUrlValidation.needsValidation()).toEqual(false);
+  });
 
 
 

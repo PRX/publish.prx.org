@@ -11,11 +11,11 @@ import { DistributionModel } from './distribution.model';
 import { REQUIRED, LENGTH } from './invalid';
 import { HasUpload, applyMixins } from './upload';
 
-export const IMPORT_SERIES_VALIDATIONS :ValidatorMap = {
+export const IMPORT_SERIES_VALIDATIONS : ValidatorMap = {
   importUrl: [REQUIRED()],
 };
 
-export const NEW_SERIES_VALIDATIONS :ValidatorMap  = {
+export const NEW_SERIES_VALIDATIONS : ValidatorMap  = {
     title:            [REQUIRED(), LENGTH(1, 255)],
     shortDescription: [REQUIRED()],
     description:      [LENGTH(0, 4000)],
@@ -137,7 +137,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
 
   encode(): {} {
     let data = <any> {};
-    if(this.importUrl){
+    if (this.importUrl){
       data.import_url = this.importUrl;
     }
     else {

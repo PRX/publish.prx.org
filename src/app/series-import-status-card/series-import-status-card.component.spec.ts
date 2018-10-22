@@ -26,16 +26,16 @@ describe('SeriesImportStatusCardComponent', () => {
   let podcastImportHal;
   beforeEach(() => {
     podcastImportHal = new MockHalDoc({id: 99, feedEpisodeCount: 10});
-    podcastImportHal.MOCKS['prx:episode-imports'] =  []
-    podcastImportHal.MOCKS['prx:episode-import-placeholders'] =  []
+    podcastImportHal.MOCKS['prx:episode-imports'] =  [];
+    podcastImportHal.MOCKS['prx:episode-import-placeholders'] =  [];
 
-    seriesImport = new SeriesImportModel(new MockHalDoc(), podcastImportHal)
+    seriesImport = new SeriesImportModel(new MockHalDoc(), podcastImportHal);
   });
 
   cit('populates a list of episodeImports', (fix, el, comp) => {
 
-    podcastImportHal.MOCKS['prx:episode-imports'] = [{id: 1}, {id: 2}, {id: 3}]
-    podcastImportHal.MOCKS['prx:episode-import-placeholders'] = [{id: 4}, {id: 5}, {id: 6}]
+    podcastImportHal.MOCKS['prx:episode-imports'] = [{id: 1}, {id: 2}, {id: 3}];
+    podcastImportHal.MOCKS['prx:episode-import-placeholders'] = [{id: 4}, {id: 5}, {id: 6}];
 
     setupComp(comp, seriesImport);
 
@@ -43,13 +43,13 @@ describe('SeriesImportStatusCardComponent', () => {
     expect(comp.episodeImports).not.toBeUndefined();
     expect(comp.episodeImportPlaceholders).not.toBeUndefined();
 
-    expect(comp.episodeImports).toEqual([{id: 1}, {id: 2}, {id: 3}])
-    expect(comp.episodeImportPlaceholders).toEqual([{id: 4}, {id: 5}, {id: 6}])
+    expect(comp.episodeImports).toEqual([{id: 1}, {id: 2}, {id: 3}]);
+    expect(comp.episodeImportPlaceholders).toEqual([{id: 4}, {id: 5}, {id: 6}]);
   });
 
 
   cit('#episodeImportsSomeFailed should be true if one episode imports failed', (fix, el, comp) => {
-    podcastImportHal['MOCKS']['prx:episode-imports'] = [{status: "failed"}, {status: "complete"}]
+    podcastImportHal['MOCKS']['prx:episode-imports'] = [{status: 'failed'}, {status: 'complete'}];
 
     setupComp(comp, seriesImport);
     fix.detectChanges();
@@ -58,7 +58,7 @@ describe('SeriesImportStatusCardComponent', () => {
   });
 
   cit('#episodeImportsSomeFailed should be false if no episode imports failed', (fix, el, comp) => {
-    podcastImportHal['MOCKS']['prx:episode-imports'] = [{status: "complete"}, {status: "complete"}, {status: "story saved"}]
+    podcastImportHal['MOCKS']['prx:episode-imports'] = [{status: 'complete'}, {status: 'complete'}, {status: 'story saved'}];
 
     setupComp(comp, seriesImport);
     fix.detectChanges();
@@ -74,16 +74,16 @@ describe('SeriesImportStatusCardComponent', () => {
   });
 
   cit('should supply a count of episodes to be imported', (fix, el, comp) => {
-    podcastImportHal.MOCKS['prx:episode-import-placeholders'] = [{id: 6}]
+    podcastImportHal.MOCKS['prx:episode-import-placeholders'] = [{id: 6}];
     comp.seriesImport = seriesImport;
-    spyOn(comp, 'refreshSeriesImport')
+    spyOn(comp, 'refreshSeriesImport');
     fix.detectChanges();
     expect(comp.seriesImport.feedEpisodeCount).toEqual(10);
     expect(comp.entriesInRssFeed()).toEqual(11);
   });
 
   cit('#episodeImportsRemaining', (fix, el, comp) => {
-    podcastImportHal['MOCKS']['prx:episode-imports'] = [{status: "complete"}, {status: "complete"}, {status: "story saved"}]
+    podcastImportHal['MOCKS']['prx:episode-imports'] = [{status: 'complete'}, {status: 'complete'}, {status: 'story saved'}];
 
     setupComp(comp, seriesImport);
 

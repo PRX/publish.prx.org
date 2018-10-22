@@ -54,19 +54,19 @@ export class SeriesImportModel extends BaseModel {
     this.status = this.doc['status'];
     this.createdAt = new Date(this.doc['createdAt']);
     this.updatedAt = new Date(this.doc['updatedAt']);
-    this.accountId = this.doc['account']
-    this.feedEpisodeCount = this.doc['feedEpisodeCount']
-    this.config = this.doc['config']
+    this.accountId = this.doc['account'];
+    this.feedEpisodeCount = this.doc['feedEpisodeCount'];
+    this.config = this.doc['config'];
   }
 
   encode(): {} {
     let data = <any> {};
 
-    data["id"] = this.id;
-    data["url"] = this.url;
-    data["accountId"] = this.accountId
+    data['id'] = this.id;
+    data['url'] = this.url;
+    data['accountId'] = this.accountId;
     // TODO implement the config for the episode only import
-    data["config"] = {}
+    data['config'] = {};
 
     return data;
   }

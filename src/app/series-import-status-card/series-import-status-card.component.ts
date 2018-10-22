@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription.js'
+import { Subscription } from 'rxjs/Subscription.js';
 import { Component, Input } from '@angular/core';
 import { SeriesImportModel } from '../shared';
 import { HalDoc } from '../core';
@@ -32,19 +32,19 @@ export class SeriesImportStatusCardComponent {
   }
 
   ngOnDestroy(): any {
-    if(this.refresher){
+    if (this.refresher){
       this.refresher.unsubscribe();
     }
   }
 
   loadEpisodeStatus(){
-    this._seriesImport.doc.followList('prx:episode-imports').subscribe((episodes)=>{
+    this._seriesImport.doc.followList('prx:episode-imports').subscribe((episodes) => {
       this.episodeImports = episodes;
-    })
+    });
 
-    this._seriesImport.doc.followList('prx:episode-import-placeholders').subscribe((episodes)=>{
+    this._seriesImport.doc.followList('prx:episode-import-placeholders').subscribe((episodes) => {
       this.episodeImportPlaceholders = episodes;
-    })
+    });
   }
 
   refreshSeriesImport(){
@@ -58,7 +58,7 @@ export class SeriesImportStatusCardComponent {
         this.loadEpisodeStatus();
       })
       .takeWhile(() => this.seriesImportIsImporting())
-      .subscribe(val =>{});
+      .subscribe(val => {});
   }
 
   entriesInRssFeed(){
@@ -69,31 +69,31 @@ export class SeriesImportStatusCardComponent {
   // collections
 
   episodeImportsSomeSkipped(){
-    return this.episodeImportPlaceholders.length > 0
+    return this.episodeImportPlaceholders.length > 0;
   }
 
   episodeImportsSomeFailed(){
-    return this.episodeImportsFilter("failed").length > 0;
+    return this.episodeImportsFilter('failed').length > 0;
   }
 
   episodeImportsAllFinished(){
     return this.episodeImports
-      .map((ei)=>{
+      .map((ei) => {
         return this.episodeImportIsFinished(ei);
       })
       .reduce(function(accum, val){
         return accum && val;
-      }, true)
+      }, true);
   }
 
   episodeImportsFilter(status){
     return this.episodeImports
-      .filter((ei)=> this.episodeImportIs(ei, status))
+      .filter((ei) => this.episodeImportIs(ei, status));
   }
 
   episodeImportsInProgress(){
     return this.episodeImports
-      .filter((ei)=> this.episodeImportInProgress(ei));
+      .filter((ei) => this.episodeImportInProgress(ei));
   }
 
   episodeImportsRemaining(){
