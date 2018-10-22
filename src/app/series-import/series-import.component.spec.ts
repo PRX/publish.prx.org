@@ -72,7 +72,7 @@ describe('SeriesImportComponent', () => {
     expect(comp.importValidationState.valid()).toEqual(true);
   });
 
-  cit('navigates to new series after save', (fix, el, comp) => {
+  cit('navigates to import status after save', (fix, el, comp) => {
     activatedRoute.testParams = {};
     auth.mock('prx:default-account', {id: 100});
     auth.mock('prx:verify-rss', {});
