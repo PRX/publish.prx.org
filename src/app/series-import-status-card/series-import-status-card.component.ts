@@ -18,6 +18,7 @@ import 'rxjs/add/operator/takeWhile';
 export class SeriesImportStatusCardComponent {
 
   @Input() seriesImport: SeriesImportModel;
+  _seriesImport: SeriesImportModel;
   episodeImports: HalDoc[] = [];
   episodeImportPlaceholders: HalDoc[] = [];
   refresher: Subscription;
@@ -25,6 +26,9 @@ export class SeriesImportStatusCardComponent {
   constructor() {}
 
   ngOnInit(): any {
+    // consume the input and track state privately:
+    this._seriesImport = this.seriesImport;
+
     this.loadEpisodeStatus();
     this.refreshSeriesImport();
   }
@@ -36,11 +40,11 @@ export class SeriesImportStatusCardComponent {
   }
 
   loadEpisodeStatus(){
-    this.seriesImport.doc.followList('prx:episode-imports').subscribe((episodes)=>{
+    this._seriesImport.doc.followList('prx:episode-imports').subscribe((episodes)=>{
       this.episodeImports = episodes;
     })
 
-    this.seriesImport.doc.followList('prx:episode-import-placeholders').subscribe((episodes)=>{
+    this._seriesImport.doc.followList('prx:episode-import-placeholders').subscribe((episodes)=>{
       this.episodeImportPlaceholders = episodes;
     })
   }
@@ -48,11 +52,11 @@ export class SeriesImportStatusCardComponent {
   refreshSeriesImport(){
     this.refresher = Observable
       .interval(1000)
-      .flatMap(() => this.seriesImport.doc.reload())
+      .flatMap(() => this._seriesImport.doc.reload())
       .map(doc => {
-        let parentDoc = this.seriesImport.parent;
+        let parentDoc = this._seriesImport.parent;
         // this.isProcessTimeout = elapsed > this.UPLOAD_PROCESS_TIMEOUT;
-        this.seriesImport = new SeriesImportModel(parentDoc, doc);
+        this._seriesImport = new SeriesImportModel(parentDoc, doc);
         this.loadEpisodeStatus();
       })
       .takeWhile(() => this.seriesImportIsImporting())
@@ -60,7 +64,7 @@ export class SeriesImportStatusCardComponent {
   }
 
   entriesInRssFeed(){
-    return this.seriesImport.feedEpisodeCount
+    return this._seriesImport.feedEpisodeCount
       + this.episodeImportPlaceholders.length;
   }
 
@@ -98,13 +102,13 @@ export class SeriesImportStatusCardComponent {
     let complete = this.episodeImportsFilter('complete').length;
     let failed = this.episodeImportsFilter('failed').length;
 
-    return this.seriesImport.feedEpisodeCount -
+    return this._seriesImport.feedEpisodeCount -
       complete -
       failed;
   }
 
   episodeImportsPercentComplete(){
-    return this.episodeImportsFilter('complete').length / this.seriesImport.feedEpisodeCount;
+    return this.episodeImportsFilter('complete').length / this._seriesImport.feedEpisodeCount;
   }
 
   // status
@@ -118,7 +122,7 @@ export class SeriesImportStatusCardComponent {
   }
 
   seriesImportIs(status){
-    return this.seriesImport.status == status;
+    return this._seriesImport.status == status;
   }
 
   seriesImportIsFinished(){
@@ -131,7 +135,7 @@ export class SeriesImportStatusCardComponent {
   }
 
   seriesImportIsInitializing(){
-    return !this.seriesImport.feedEpisodeCount;
+    return !this._seriesImport.feedEpisodeCount;
   }
 
   episodeImportInProgress(episodeImport){
