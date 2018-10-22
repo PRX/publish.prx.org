@@ -1,35 +1,37 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators/map';
-import { mergeMap } from 'rxjs/operators/mergeMap';
-import { takeWhile } from 'rxjs/operators/takeWhile';
+import { filter, map, mergeMap, takeWhile } from 'rxjs/operators';
 import { SeriesModel, SeriesImportModel } from '../shared';
 
 @Injectable()
 export class SeriesImportService {
-  seriesImports: Observable<SeriesImportModel[]>;
 
   constructor() {}
 
-  loadImports(series: SeriesModel): any {
-    this.seriesImports = series.doc.followItems('prx:podcast-imports').pipe(
+  fetchImportsForSeries(series: SeriesModel): Observable<SeriesImportModel[]> {
+    return series.doc.followItems('prx:podcast-imports').pipe(
         map(importDocs => importDocs.map(doc => new SeriesImportModel(series.doc, doc)))
     );
   }
 
-  refreshSeriesImports(series: SeriesModel) {
-    this.loadImports(series); // I feel like we should be able to combine this Observable with the reload
-    Observable.interval(1000).pipe(
-      map(() => this.seriesImports.pipe(
-        takeWhile(seriesImports => seriesImports.some(si => this.seriesImportIsImporting(si))),
-        mergeMap(seriesImports => seriesImports.map(si => si.doc.reload()))
-      ))
-    );
-  }
+  pollForChanges(seriesImport: SeriesImportModel): Observable<SeriesImportModel> {
 
-  seriesImportIsImporting(seriesImport: SeriesImportModel){
-    return seriesImport.status !== 'complete' &&
-      seriesImport.status !== 'failed';
+    let seriesImportPoller = Observable
+      .interval(1000)
+      .flatMap(() => {
+        return seriesImport.doc.reload();
+      })
+      .map(doc => {
+        let parentAccountDoc = seriesImport.parent;
+        seriesImport.init(parentAccountDoc, doc, false);
+        return new SeriesImportModel(parentAccountDoc, doc);
+      })
+      .takeWhile((si) => si.isImporting());
+
+      return Observable.concat(
+        Observable.of(seriesImport),
+        seriesImportPoller
+      );
   }
 
 }

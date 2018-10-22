@@ -51,7 +51,7 @@ describe('SeriesImportComponent', () => {
 
     fix.detectChanges();
 
-    comp.series.importUrl = "http://example.com/invalid.rss"
+    comp.series.importUrl = 'http://example.com/invalid.rss';
     expect(comp.series.parent.id).toEqual(100);
 
     comp.validateImportUrl();
@@ -66,9 +66,9 @@ describe('SeriesImportComponent', () => {
 
     fix.detectChanges();
 
-    comp.series.importUrl = "http://example.com/valid.rss"
+    comp.series.importUrl = 'http://example.com/valid.rss';
 
-    comp.validateImportUrl(()=>{});
+    comp.validateImportUrl(() => {});
     expect(comp.importValidationState.valid()).toEqual(true);
   });
 
@@ -88,4 +88,4 @@ describe('SeriesImportComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/series', comp.series.id, 'import-status']);
   });
 
-})
+});

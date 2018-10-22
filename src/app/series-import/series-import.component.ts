@@ -4,7 +4,7 @@ import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
 import { IMPORT_SERIES_VALIDATIONS } from '../shared/model/series.model';
 import { SeriesImportModel, ImportValidationState } from '../shared';
 
-import { SeriesComponent } from '../series/series.component'
+import { SeriesComponent } from '../series/series.component';
 
 @Component({
   providers: [],
@@ -36,8 +36,8 @@ export class SeriesImportComponent extends SeriesComponent implements OnInit {
         this.importValidationState.setValid(verified);
         this.setSeriesValidationStrategy();
         success();
-      },(err)=>{
-        if(err.status == 400){
+      }, (err) => {
+        if (err.status == 400){
           this.toastr.error('The rss url is not valid.');
           return this.importValidationState.setInvalid();
         }
@@ -47,7 +47,7 @@ export class SeriesImportComponent extends SeriesComponent implements OnInit {
   };
 
   validateImportUrlAndSave(){
-    this.validateImportUrl(()=>this.save());
+    this.validateImportUrl(() => this.save());
   };
 
 

@@ -10,7 +10,7 @@ describe('SeriesImportModel', () => {
     accountMock = cms.mock('prx:default-account', {id: 'account-id'});
     accountMock.mock('self', {href: '/api/v1/accounts/account-id'});
 
-    seriesImportMock = cms.mock('prx:series-import', {id: 'series-import-id', url: "http://www.some.com/rss", status: "complete"});
+    seriesImportMock = cms.mock('prx:series-import', {id: 'series-import-id', url: 'http://www.some.com/rss', status: 'complete'});
     seriesImportMock.mock('prx:account', {href: '/api/v1/accounts/series-account-id'});
   });
 
@@ -20,7 +20,7 @@ describe('SeriesImportModel', () => {
 
     const data = seriesImport.encode();
     expect(data['accountId']).toBe(100);
-    expect(data['url']).toBe("http://www.some.com/rss");
+    expect(data['url']).toBe('http://www.some.com/rss');
   });
 
 

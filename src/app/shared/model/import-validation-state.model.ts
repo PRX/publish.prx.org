@@ -1,18 +1,18 @@
 import { HalDoc } from '../../core';
 
 export interface PodcastImportValidatorHalDoc extends Request {
-    feed: object
+    feed: object;
 }
 
 export class ImportValidationState {
 
-  validatingImportUrlComplete: boolean = false;
-  validatingImportUrl: boolean = false;
-  invalidImportUrl: boolean = false;
+  validatingImportUrlComplete = false;
+  validatingImportUrl = false;
+  invalidImportUrl = false;
   feed: object = null;
 
   complete(){
-    return this.validatingImportUrlComplete; 
+    return this.validatingImportUrlComplete;
   }
 
   validating(){
@@ -39,7 +39,7 @@ export class ImportValidationState {
     this.validatingImportUrl = false;
     this.validatingImportUrlComplete = true;
     this.invalidImportUrl = false;
-    this.feed = verified.feed
+    this.feed = verified.feed;
   }
 
   setInvalid(){

@@ -3,6 +3,6 @@
 </div>
 <div *ngIf="seriesImports" class="series-imports-container">
   <div *ngFor="let import of (seriesImports | async)">
-    <series-import-status-card [seriesImport]="import" ></series-import-status-card>
+    <series-import-status-card [seriesImport]="import | async" ></series-import-status-card>
   </div>
 </div>

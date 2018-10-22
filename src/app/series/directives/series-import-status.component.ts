@@ -5,6 +5,7 @@ import { CmsService, HalDoc } from '../../core';
 import { SeriesModel, SeriesImportModel } from '../../shared';
 import { TabService } from 'ngx-prx-styleguide';
 import { SeriesImportService } from '../series-import.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'series-import-status.component.html'
@@ -13,20 +14,31 @@ import { SeriesImportService } from '../series-import.service';
 export class SeriesImportStatusComponent implements OnDestroy {
 
   series: SeriesModel;
-  seriesImports: Observable<SeriesImportModel[]>;
+  // An observable on an array of observables on series import instances
+  // Load the series imports, then create a observable stream for each one
+  // polling until we navigate away or the import finishes
+  seriesImports: Observable<Observable<SeriesImportModel>[]>;
   tabSub: Subscription;
 
   ngOnInit(){}
 
-  ngOnDestroy(){}
-
   constructor(tab: TabService,
     private cms: CmsService,
-    private importer: SeriesImportService) {
+    private importLoader: SeriesImportService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
-      this.importer.refreshSeriesImports(s);
-      this.seriesImports = this.importer.seriesImports;
+      this.seriesImports = this.importLoader.fetchImportsForSeries(s)
+        .pipe(
+          map((seriesImports) => {
+            return this.pollForChanges(seriesImports);
+          })
+        );
+    });
+  }
+
+  pollForChanges(seriesImports: SeriesImportModel[]) {
+    return seriesImports.map((si) => {
+      return this.importLoader.pollForChanges(si);
     });
   }
 
