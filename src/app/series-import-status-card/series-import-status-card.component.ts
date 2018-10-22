@@ -23,8 +23,6 @@ export class SeriesImportStatusCardComponent {
   episodeImportPlaceholders: HalDoc[] = [];
   refresher: Subscription;
 
-  constructor() {}
-
   ngOnInit(): any {
     // consume the input and track state privately:
     this._seriesImport = this.seriesImport;
