@@ -62,8 +62,7 @@ export class SeriesImportStatusCardComponent {
   }
 
   entriesInRssFeed(){
-    return this._seriesImport.feedEpisodeCount
-      + this.episodeImportPlaceholders.length;
+    return this._seriesImport.feedEpisodeCount;
   }
 
   // collections
