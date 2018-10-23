@@ -39,7 +39,7 @@ export class SeriesImportModel extends BaseModel {
     if (this.doc) {
       return `prx.series-import.${this.doc.id}`;
     } else {
-      return `prx.series-import.new`; // new import
+      return 'prx.series-import.new'; // new import
     }
   }
 
