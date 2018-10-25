@@ -9,7 +9,8 @@ import { SeriesImportService } from './series-import.service';
 import { SeriesModel, SeriesImportModel } from '../shared';
 import { NEW_SERIES_VALIDATIONS } from '../shared/model/series.model';
 
-import { map } from 'rxjs/operators';
+import { map, debounceTime } from 'rxjs/operators';
+import 'rxjs/add/operator/throttleTime';
 
 @Component({
   providers: [TabService],
@@ -76,8 +77,16 @@ export class SeriesComponent implements OnInit {
     }
   }
 
+  buildSeries(parent: any, series: any) {
+    let newSeries = new SeriesModel(parent, series) 
+    if(this.series){
+      newSeries.seriesImports = this.series.seriesImports;
+    }
+    return newSeries;
+  }
+
   setSeries(parent: any, series: any) {
-    this.series = new SeriesModel(parent, series);
+    this.series = this.buildSeries(parent, series);
     if (series) {
       this.storyCount = series.count('prx:stories');
       this.storyNoun = this.storyCount === 1 ? 'Episode' : 'Episodes';
@@ -109,6 +118,10 @@ export class SeriesComponent implements OnInit {
   }
 
   pollForImportState() {
+    if(this.series.seriesImports !== null){
+      return this.series.seriesImports;
+    }
+
     this.series.seriesImports = this.importLoader.fetchImportsForSeries(this.series)
       .pipe(
         map((seriesImports) => {
@@ -125,19 +138,24 @@ export class SeriesComponent implements OnInit {
         seriesImports.map((siObservable) => {
           siObservable
             .takeUntil(this._onDestroy)
+            .throttleTime(5000)
             .subscribe((si) => {
               this.seriesImportStateChanged(si);
             });
         });
       });
 
+    return this.series.seriesImports;
   }
 
   seriesImportStateChanged(si){
     if (si.isFinished()){
-      return;
+      return si;
     }
     // the state of `this.series` has changed!
+    this.loadSeries();
+
+    return si
 
   }
 
