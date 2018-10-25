@@ -5,8 +5,11 @@ import { Subject } from 'rxjs/Subject';
 
 import { CmsService, HalDoc } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
+import { SeriesImportService } from './series-import.service';
 import { SeriesModel, SeriesImportModel } from '../shared';
 import { NEW_SERIES_VALIDATIONS } from '../shared/model/series.model';
+
+import { map } from 'rxjs/operators';
 
 @Component({
   providers: [TabService],
@@ -20,7 +23,6 @@ export class SeriesComponent implements OnInit {
   id: number;
   base: string;
   series: SeriesModel;
-  seriesImports: SeriesImportModel[] = [];
   storyCount: number;
   storyNoun: string;
 
@@ -33,6 +35,7 @@ export class SeriesComponent implements OnInit {
     private modal: ModalService,
     public toastr: ToastrService,
     private route: ActivatedRoute,
+    private importLoader: SeriesImportService,
     private router: Router
   ) {}
 
@@ -72,7 +75,7 @@ export class SeriesComponent implements OnInit {
     if (series) {
       this.storyCount = series.count('prx:stories');
       this.storyNoun = this.storyCount === 1 ? 'Episode' : 'Episodes';
-      this.fromImport = this.series.doc.count('prx:podcast-imports') > 0;
+      this.setImportState();
       this.setSeriesValidationStrategy();
     } else {
       this.storyCount = null;
@@ -90,6 +93,43 @@ export class SeriesComponent implements OnInit {
         () => { window.history.back(); }
       );
     }
+  }
+
+  setImportState() {
+    this.fromImport = this.series.doc.count('prx:podcast-imports') > 0;
+    if (this.fromImport){
+      this.pollForImportState();
+    }
+  }
+
+  pollForImportState() {
+    this.series.seriesImports = this.importLoader.fetchImportsForSeries(this.series)
+      .pipe(
+        map((seriesImports) => {
+          return seriesImports.map((si) => {
+            return this.importLoader.pollForChanges(si);
+          });
+        })
+      );
+
+    // start up your pollers!
+    this.series.seriesImports.subscribe((seriesImports) => {
+      seriesImports.map((siObservable) => {
+        siObservable
+          .subscribe((si) => {
+          this.seriesImportStateChanged(si);
+        });
+      });
+    });
+
+  }
+
+  seriesImportStateChanged(si){
+    if (si.isFinished()){
+      return;
+    }
+    // the state of `this.series` has changed!
+
   }
 
   validationStrategy(){

@@ -37,6 +37,11 @@ export class SeriesModel extends BaseModel implements HasUpload {
   public hasStories: boolean;
   public importUrl: string;
 
+  // An array of observables on series import instances
+  // Load the series imports, then create a observable stream for each one
+  // polling until we navigate away or the import finishes
+  seriesImports: Observable<Observable<SeriesImportModel>[]>;
+
   SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap', 'accountId'];
 
   VALIDATORS: ValidatorMap = NEW_SERIES_VALIDATIONS;

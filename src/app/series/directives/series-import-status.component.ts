@@ -27,18 +27,6 @@ export class SeriesImportStatusComponent implements OnDestroy {
     private importLoader: SeriesImportService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
-      this.seriesImports = this.importLoader.fetchImportsForSeries(s)
-        .pipe(
-          map((seriesImports) => {
-            return this.pollForChanges(seriesImports);
-          })
-        );
-    });
-  }
-
-  pollForChanges(seriesImports: SeriesImportModel[]) {
-    return seriesImports.map((si) => {
-      return this.importLoader.pollForChanges(si);
     });
   }
 
