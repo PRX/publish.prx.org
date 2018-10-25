@@ -20,6 +20,8 @@ import { map } from 'rxjs/operators';
 
 export class SeriesComponent implements OnInit {
 
+  private _onDestroy = new Subject();
+
   id: number;
   base: string;
   series: SeriesModel;
@@ -45,6 +47,10 @@ export class SeriesComponent implements OnInit {
      this.base = '/series/' + (this.id || 'new');
      this.loadSeries();
    });
+  }
+
+  ngOnDestroy() {
+    this._onDestroy.next();
   }
 
   loadSeries() {
@@ -113,14 +119,17 @@ export class SeriesComponent implements OnInit {
       );
 
     // start up your pollers!
-    this.series.seriesImports.subscribe((seriesImports) => {
-      seriesImports.map((siObservable) => {
-        siObservable
-          .subscribe((si) => {
-          this.seriesImportStateChanged(si);
+    this.series.seriesImports
+      .takeUntil(this._onDestroy)
+      .subscribe((seriesImports) => {
+        seriesImports.map((siObservable) => {
+          siObservable
+            .takeUntil(this._onDestroy)
+            .subscribe((si) => {
+              this.seriesImportStateChanged(si);
+            });
         });
       });
-    });
 
   }
 
