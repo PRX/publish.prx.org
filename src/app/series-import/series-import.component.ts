@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Router } from '@angular/router';
-import { CmsService, HalDoc } from '../core';
+import { CmsService } from '../core';
 import { ToastrService } from 'ngx-prx-styleguide';
 import { IMPORT_SERIES_VALIDATIONS } from '../shared/model/series.model';
-import { SeriesImportModel, SeriesModel, ImportValidationState } from '../shared';
-
-import { SeriesComponent } from '../series/series.component';
+import { SeriesModel, ImportValidationState } from '../shared';
 
 @Component({
   providers: [],

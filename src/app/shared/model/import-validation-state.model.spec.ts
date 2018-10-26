@@ -1,4 +1,4 @@
-import { ImportValidationState, PodcastImportValidatorHalDoc } from './import-validation-state.model';
+import { ImportValidationState } from './import-validation-state.model';
 
 class MockHalDoc {
 
