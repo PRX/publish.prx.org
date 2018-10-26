@@ -98,8 +98,7 @@ export class SeriesImportModel extends BaseModel {
   }
 
   entriesInRssFeed(){
-    return this.feedEpisodeCount
-      + this.episodeImportPlaceholders.length;
+    return this.feedEpisodeCount;
   }
 
   // collections
