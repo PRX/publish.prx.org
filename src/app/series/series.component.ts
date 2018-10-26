@@ -9,7 +9,7 @@ import { SeriesImportService } from './series-import.service';
 import { SeriesModel, SeriesImportModel } from '../shared';
 import { NEW_SERIES_VALIDATIONS } from '../shared/model/series.model';
 
-import { map, auditTime, takeUntil } from 'rxjs/operators';
+import { map, debounceTime, takeUntil } from 'rxjs/operators';
 import { timer } from 'rxjs/observable/timer';
 
 @Component({

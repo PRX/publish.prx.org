@@ -40,7 +40,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
   // An array of observables on series import instances
   // Load the series imports, then create a observable stream for each one
   // polling until we navigate away or the import finishes
-  seriesImports: Observable<Observable<SeriesImportModel>[]> | null = null;
+  seriesImports: Observable<Observable<SeriesImportModel>[]> = null;
 
   SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap', 'accountId'];
 
