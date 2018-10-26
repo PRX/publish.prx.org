@@ -14,7 +14,7 @@ import { SeriesComponent } from '../series/series.component';
   templateUrl: './series-import.component.html',
   styleUrls: ['./series-import.component.css']
 })
-export class SeriesImportComponent {
+export class SeriesImportComponent implements OnInit {
 
   series: SeriesModel;
 
@@ -30,8 +30,6 @@ export class SeriesImportComponent {
       this.series.setComponentValidationStrategy(this.validationStrategy());
     });
   }
-
-  ngOnDestroy(){}
 
   save() {
     this.series.save().subscribe(() => {
