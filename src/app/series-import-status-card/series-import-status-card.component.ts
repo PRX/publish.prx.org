@@ -14,10 +14,4 @@ export class SeriesImportStatusCardComponent {
 
   @Input() seriesImport: SeriesImportModel;
 
-  ngOnInit(): any {
-  }
-
-  ngOnDestroy(): any {
-  }
-
 }
