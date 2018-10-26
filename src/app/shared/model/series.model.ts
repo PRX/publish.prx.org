@@ -204,7 +204,6 @@ export class SeriesModel extends BaseModel implements HasUpload {
   isV4(): boolean {
     return !this.doc || this.doc['appVersion'] === 'v4';
   }
-
 }
 
 applyMixins(SeriesModel, [HasUpload]);
