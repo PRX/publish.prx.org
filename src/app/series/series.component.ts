@@ -33,7 +33,6 @@ export class SeriesComponent implements OnInit {
   fromImport = false;
 
   constructor(
-    // shared with subclasses
     public cms: CmsService,
     private modal: ModalService,
     public toastr: ToastrService,

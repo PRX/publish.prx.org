@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
+import { Router } from '@angular/router';
+import { CmsService, HalDoc } from '../core';
+import { ToastrService } from 'ngx-prx-styleguide';
 import { IMPORT_SERIES_VALIDATIONS } from '../shared/model/series.model';
-import { SeriesImportModel, ImportValidationState } from '../shared';
+import { SeriesImportModel, SeriesModel, ImportValidationState } from '../shared';
 
 import { SeriesComponent } from '../series/series.component';
 
@@ -12,7 +14,31 @@ import { SeriesComponent } from '../series/series.component';
   templateUrl: './series-import.component.html',
   styleUrls: ['./series-import.component.css']
 })
-export class SeriesImportComponent extends SeriesComponent implements OnInit {
+export class SeriesImportComponent {
+
+  series: SeriesModel;
+
+  constructor(
+    public cms: CmsService,
+    public toastr: ToastrService,
+    private router: Router
+  ){}
+
+  ngOnInit(){
+    this.cms.defaultAccount.subscribe(a => {
+      this.series = new SeriesModel(a, null);
+      this.series.setComponentValidationStrategy(this.validationStrategy());
+    });
+  }
+
+  ngOnDestroy(){}
+
+  save() {
+    this.series.save().subscribe(() => {
+      this.toastr.success(`Series created`);
+      this.router.navigate(this.afterSaveNavigateParams());
+    });
+  }
 
   importValidationState: ImportValidationState = new ImportValidationState();
 
@@ -34,7 +60,6 @@ export class SeriesImportComponent extends SeriesComponent implements OnInit {
     this.cms.auth.subscribe(a => {
       a.follow('prx:verify-rss', {url: this.series.importUrl}).subscribe((verified: any) => {
         this.importValidationState.setValid(verified);
-        this.setSeriesValidationStrategy();
         success();
       }, (err) => {
         if (err.status == 400){
@@ -49,6 +74,4 @@ export class SeriesImportComponent extends SeriesComponent implements OnInit {
   validateImportUrlAndSave(){
     this.validateImportUrl(() => this.save());
   };
-
-
 }

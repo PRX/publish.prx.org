@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { SeriesComponent } from './series.component';
+import { SeriesImportService } from './series-import.service';
+import { SeriesModel, SeriesImportModel } from '../shared';
 
 let activatedRoute = new ActivatedRouteStub();
 let router = new RouterStub();
@@ -20,6 +22,14 @@ describe('SeriesComponent', () => {
   create(SeriesComponent, false);
   provide(Router, router);
   provide(ActivatedRoute, activatedRoute);
+  provide(SeriesImportService, {
+    fetchImportsForSeries: (series: SeriesModel) => {
+      return Observable.of([]);
+    },
+    pollForChanges: (seriesImport: SeriesImportModel) =>{
+      return Observable.of(SeriesImportModel);
+    }
+  });
   stubPipe('timeago');
 
   let modalAlertTitle: any;

@@ -88,7 +88,6 @@ export class SeriesImportModel extends BaseModel {
     return data;
   }
 
-
   saveNew(data: {}): Observable<HalDoc> {
     return this.parent.create('prx:podcast-imports', {}, data);
   }

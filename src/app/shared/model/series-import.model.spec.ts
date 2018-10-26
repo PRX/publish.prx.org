@@ -86,7 +86,6 @@ describe('SeriesImportModel', () => {
   it('should display an initializing screen if feedEpisodeCount is not set', () => {
     let seriesImport = new SeriesImportModel(accountMock, podcastImportHal);
     seriesImport.feedEpisodeCount = undefined;
-    let seriesImport = new SeriesImportModel(accountMock, podcastImportHal);
 
     expect(seriesImport.isInitializing()).not.toBe(true);
   });
