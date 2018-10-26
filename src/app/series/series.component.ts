@@ -79,6 +79,10 @@ export class SeriesComponent implements OnInit {
 
   buildSeries(parent: any, series: any) {
     let newSeries = new SeriesModel(parent, series) 
+    // Because the series state is split between component and model, make the
+    // loadSeries method idempotent and preserve the podcast import polling 
+    // state with each call. Then refresh the series model based on import 
+    // status polling intervals.
     if(this.series){
       newSeries.seriesImports = this.series.seriesImports;
     }
