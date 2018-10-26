@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -19,7 +19,7 @@ import { timer } from 'rxjs/observable/timer';
   templateUrl: 'series.component.html'
 })
 
-export class SeriesComponent implements OnInit {
+export class SeriesComponent implements OnInit, OnDestroy {
 
   private _onDestroy = new Subject();
 
@@ -82,7 +82,7 @@ export class SeriesComponent implements OnInit {
     // loadSeries method idempotent and preserve the podcast import polling
     // state with each call. Then refresh the series model based on import
     // status polling intervals.
-    if (this.series){
+    if (this.series) {
       newSeries.seriesImports = this.series.seriesImports;
     }
     return newSeries;
@@ -115,13 +115,13 @@ export class SeriesComponent implements OnInit {
 
   setImportState() {
     this.fromImport = this.series.doc.count('prx:podcast-imports') > 0;
-    if (this.fromImport){
+    if (this.fromImport) {
       this.pollForImportState();
     }
   }
 
   pollForImportState() {
-    if (this.series.seriesImports !== null){
+    if (this.series.seriesImports !== null) {
       return this.series.seriesImports;
     }
 
@@ -154,8 +154,8 @@ export class SeriesComponent implements OnInit {
     return this.series.seriesImports;
   }
 
-  seriesImportStateChanged(si){
-    if (si.isFinished()){
+  seriesImportStateChanged(si) {
+    if (si.isFinished()) {
       return si;
     }
     // the state of `this.series` has changed!
@@ -165,11 +165,11 @@ export class SeriesComponent implements OnInit {
 
   }
 
-  validationStrategy(){
+  validationStrategy() {
     return NEW_SERIES_VALIDATIONS;
   }
 
-  setSeriesValidationStrategy(){
+  setSeriesValidationStrategy() {
     this.series.setComponentValidationStrategy(this.validationStrategy());
   }
 
@@ -188,7 +188,7 @@ export class SeriesComponent implements OnInit {
     this.series.discard();
   }
 
-  afterSaveNavigateParams(){
+  afterSaveNavigateParams() {
     return ['/series', this.series.id];
   }
 

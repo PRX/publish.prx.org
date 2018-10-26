@@ -11,38 +11,38 @@ export class ImportValidationState {
   invalidImportUrl = false;
   feed: object = null;
 
-  complete(){
+  complete() {
     return this.validatingImportUrlComplete;
   }
 
-  validating(){
+  validating() {
     return this.validatingImportUrl;
   }
 
-  valid(){
+  valid() {
     return !this.invalidImportUrl && this.validatingImportUrlComplete;
   }
 
-  invalid(){
+  invalid() {
     return this.invalidImportUrl && this.validatingImportUrlComplete;
   }
 
-  needsValidation(){
+  needsValidation() {
     return !this.complete() && !this.validating();
   }
 
-  setStartValidating(){
+  setStartValidating() {
     this.validatingImportUrl = true;
   }
 
-  setValid(verified: PodcastImportValidatorHalDoc){
+  setValid(verified: PodcastImportValidatorHalDoc) {
     this.validatingImportUrl = false;
     this.validatingImportUrlComplete = true;
     this.invalidImportUrl = false;
     this.feed = verified.feed;
   }
 
-  setInvalid(){
+  setInvalid() {
     this.validatingImportUrl = false;
     this.validatingImportUrlComplete = true;
     this.invalidImportUrl = true;

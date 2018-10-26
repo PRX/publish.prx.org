@@ -96,40 +96,40 @@ export class SeriesImportModel extends BaseModel {
     // TODO
   }
 
-  entriesInRssFeed(){
+  entriesInRssFeed() {
     return this.feedEpisodeCount;
   }
 
   // collections
-  episodeImportsSomeSkipped(){
+  episodeImportsSomeSkipped() {
     return this.episodeImportPlaceholders.length > 0;
   }
 
-  episodeImportsSomeFailed(){
+  episodeImportsSomeFailed() {
     return this.episodeImportsFilter('failed').length > 0;
   }
 
-  episodeImportsAllFinished(){
+  episodeImportsAllFinished() {
     return this.episodeImports
       .map((ei) => {
         return this.episodeImportIsFinished(ei);
       })
-      .reduce(function(accum, val){
+      .reduce(function(accum, val) {
         return accum && val;
       }, true);
   }
 
-  episodeImportsFilter(status){
+  episodeImportsFilter(status) {
     return this.episodeImports
       .filter((ei) => this.episodeImportIs(ei, status));
   }
 
-  episodeImportsInProgress(){
+  episodeImportsInProgress() {
     return this.episodeImports
       .filter((ei) => this.episodeImportInProgress(ei));
   }
 
-  episodeImportsRemaining(){
+  episodeImportsRemaining() {
     let complete = this.episodeImportsFilter('complete').length;
     let failed = this.episodeImportsFilter('failed').length;
 
@@ -138,38 +138,38 @@ export class SeriesImportModel extends BaseModel {
       failed;
   }
 
-  episodeImportsPercentComplete(){
+  episodeImportsPercentComplete() {
     return this.episodeImportsFilter('complete').length / this.feedEpisodeCount;
   }
 
   // status
 
-  episodeImportIsFinished(episodeImport){
+  episodeImportIsFinished(episodeImport) {
     return !this.episodeImportInProgress(episodeImport);
   }
 
-  episodeImportIs(episodeImport, status){
-    return episodeImport.status == status;
+  episodeImportIs(episodeImport, status) {
+    return episodeImport.status === status;
   }
 
-  is(status){
-    return this.status == status;
+  is(status) {
+    return this.status === status;
   }
 
-  isFinished(){
+  isFinished() {
     return !this.isImporting();
   }
 
-  isImporting(){
+  isImporting() {
     return !this.is('complete') &&
       !this.is('failed');
   }
 
-  isInitializing(){
+  isInitializing() {
     return !this.feedEpisodeCount;
   }
 
-  episodeImportInProgress(episodeImport){
+  episodeImportInProgress(episodeImport) {
     return !this.episodeImportIs(episodeImport, 'complete') &&
       !this.episodeImportIs(episodeImport, 'failed') &&
       !this.episodeImportIs(episodeImport, 'created');

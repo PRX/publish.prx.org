@@ -72,7 +72,11 @@ describe('PlayerComponent', () => {
     let dist = series.mock('prx:distribution', {kind: 'podcast', url: 'http://some-where'});
     dist.mock('http://some-where', {publishedUrl: 'http://published-url', enclosurePrefix: 'http://prefix/'});
     let storyDists = story.mockItems('prx:distributions', [{kind: 'episode', url: 'http://some-where/episode'}]);
-    storyDists[0].mock('http://some-where/episode', {guid: 'episode1', _links: { enclosure: { href: 'http://prefix/some-where/enclosure.mp3'}}});
+    storyDists[0].mock(
+      'http://some-where/episode',
+      {guid: 'episode1',
+        _links: { enclosure: { href: 'http://prefix/some-where/enclosure.mp3'}}
+      });
     comp.fromFeeder(new StoryModel(series, story), new DistributionModel(series, dist));
     expect(comp.enclosurePrefix).toEqual('http://prefix/');
     expect(comp.enclosureUrl).toEqual('http://prefix/some-where/enclosure.mp3');

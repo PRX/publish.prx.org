@@ -12,17 +12,19 @@ import { SeriesModel, ImportValidationState } from '../shared';
   templateUrl: './series-import.component.html',
   styleUrls: ['./series-import.component.css']
 })
+
 export class SeriesImportComponent implements OnInit {
 
   series: SeriesModel;
+  importValidationState: ImportValidationState = new ImportValidationState();
 
   constructor(
     public cms: CmsService,
     public toastr: ToastrService,
     private router: Router
-  ){}
+  ) {}
 
-  ngOnInit(){
+  ngOnInit() {
     this.cms.defaultAccount.subscribe(a => {
       this.series = new SeriesModel(a, null);
       this.series.setComponentValidationStrategy(this.validationStrategy());
@@ -36,21 +38,19 @@ export class SeriesImportComponent implements OnInit {
     });
   }
 
-  importValidationState: ImportValidationState = new ImportValidationState();
-
-  validationStrategy(){
+  validationStrategy() {
     return IMPORT_SERIES_VALIDATIONS;
   }
 
-  afterSaveNavigateParams(){
+  afterSaveNavigateParams() {
     return ['/series', this.series.id, 'import-status'];
   }
 
-  isValidatingAndSaving(){
+  isValidatingAndSaving() {
     return this.importValidationState.validating() || this.series.isSaving;
   }
 
-  validateImportUrl(success){
+  validateImportUrl(success) {
     this.importValidationState.setStartValidating();
 
     this.cms.auth.subscribe(a => {
@@ -58,7 +58,7 @@ export class SeriesImportComponent implements OnInit {
         this.importValidationState.setValid(verified);
         success();
       }, (err) => {
-        if (err.status == 400){
+        if (err.status === 400) {
           this.toastr.error('The rss url is not valid.');
           return this.importValidationState.setInvalid();
         }
@@ -67,7 +67,7 @@ export class SeriesImportComponent implements OnInit {
     });
   };
 
-  validateImportUrlAndSave(){
+  validateImportUrlAndSave() {
     this.validateImportUrl(() => this.save());
   };
 }

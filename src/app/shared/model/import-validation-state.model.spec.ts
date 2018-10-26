@@ -4,7 +4,7 @@ class MockHalDoc {
 
   feed: any;
 
-  constructor(mockFeed){
+  constructor(mockFeed) {
     this.feed = mockFeed;
   }
 }
@@ -17,19 +17,17 @@ describe('ImportValidationState', () => {
     importUrlValidation = new ImportValidationState();
   };
 
-  beforeEach(() => {
+  beforeEach( () => {
     reInit();
   });
 
   it('instantiates a new import validation state', () => {
     expect(importUrlValidation && true).toEqual(true);
-
     expect(importUrlValidation.valid()).toEqual(false);
     expect(importUrlValidation.invalid()).toEqual(false);
     expect(importUrlValidation.validating()).toEqual(false);
     expect(importUrlValidation.complete()).toEqual(false);
     expect(importUrlValidation.needsValidation()).toEqual(true);
-
     expect(importUrlValidation.feed).toEqual(null);
   });
 
@@ -43,6 +41,7 @@ describe('ImportValidationState', () => {
     expect(importUrlValidation.needsValidation()).toEqual(false);
 
     expect(importUrlValidation.feed).toEqual(null);
+
   });
 
   it('can set a valid state', () => {

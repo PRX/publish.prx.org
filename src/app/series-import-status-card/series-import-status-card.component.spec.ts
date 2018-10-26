@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs/Subscription';
 let activatedRoute = new ActivatedRouteStub();
 let router = new RouterStub();
 
-function setupComp(comp, seriesImport){
+function setupComp(comp, seriesImport) {
   comp.seriesImport = seriesImport;
   spyOn(comp, 'refreshSeriesImport');
   comp.refresher = Subscription.EMPTY;
