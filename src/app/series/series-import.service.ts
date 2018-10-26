@@ -16,6 +16,8 @@ export class SeriesImportService {
 
   pollForChanges(seriesImport: SeriesImportModel): Observable<SeriesImportModel> {
 
+    let lastReceived = null;
+
     let seriesImportPoller = Observable
       .interval(1000)
       .flatMap(() => {
@@ -26,12 +28,23 @@ export class SeriesImportService {
         seriesImport.init(parentAccountDoc, doc, false);
         return new SeriesImportModel(parentAccountDoc, doc);
       })
-      .takeWhile((si) => si.isImporting());
+      .takeWhile((si) => {
+        // HACK
+        // https://github.com/ReactiveX/rxjs/issues/2420
+        // TODO fixed in rxjs 6
+        if(lastReceived !== null){
+          return false;
+        }
+        if(si.isFinished()){
+          this.last_received = si;
+        }
+        return true;
+      });
 
-      return Observable.concat(
-        Observable.of(seriesImport),
-        seriesImportPoller
-      );
+    return Observable.concat(
+      Observable.of(seriesImport),
+      seriesImportPoller
+    );
   }
 
 }
