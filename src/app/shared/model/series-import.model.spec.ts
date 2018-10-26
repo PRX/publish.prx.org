@@ -87,7 +87,7 @@ describe('SeriesImportModel', () => {
     let seriesImport = new SeriesImportModel(accountMock, podcastImportHal);
     seriesImport.feedEpisodeCount = undefined;
 
-    expect(seriesImport.isInitializing()).not.toBe(true);
+    expect(seriesImport.isInitializing()).toBe(true);
   });
 
 });
