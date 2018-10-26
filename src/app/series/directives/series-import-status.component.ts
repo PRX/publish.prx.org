@@ -18,8 +18,7 @@ export class SeriesImportStatusComponent implements OnDestroy {
   ngOnInit(){}
 
   constructor(tab: TabService,
-    private cms: CmsService,
-    private importLoader: SeriesImportService) {
+    private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
     });
