@@ -36,7 +36,7 @@ export class SeriesImportService {
           return false;
         }
         if(si.isFinished()){
-          this.lastReceived = si;
+          lastReceived = si;
         }
         return true;
       });
