@@ -142,7 +142,8 @@ export class SeriesComponent implements OnInit {
           siObservable
             .pipe(
               takeUntil(this._onDestroy),
-              auditTime(5000)
+              // TODO sample the series resource less frequently
+              // auditTime(5000)
             )
             .subscribe((si) => {
               this.seriesImportStateChanged(si);
