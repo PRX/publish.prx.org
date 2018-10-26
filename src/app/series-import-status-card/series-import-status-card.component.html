@@ -49,8 +49,6 @@
         </table>
       </div>
 
-      <!-- <button (click)="seriesImportReload()" *ngIf="seriesImportIs('series created')">Refresh</button> -->
-
       <table *ngIf="seriesImport.episodeImportsSomeSkipped() || seriesImport.episodeImportsSomeFailed()" class="episode-imports-status">
         <tr>
           <th>Failed Import</th>
