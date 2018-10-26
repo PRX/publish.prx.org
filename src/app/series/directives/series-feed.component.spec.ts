@@ -1,4 +1,4 @@
-import { cit, create, provide, stubPipe } from '../../../testing';
+import { cit, create, provide, stubPipe, cms } from '../../../testing';
 import { SeriesFeedComponent } from './series-feed.component';
 import { TabService } from 'ngx-prx-styleguide';
 
@@ -23,7 +23,7 @@ describe('SeriesFeedComponent', () => {
     comp.isLoaded = true;
     fix.detectChanges();
 
-    expect(el).toContainText('You have no published episodes');
+    expect(el).toContainText('You have no episodes');
   });
 
   cit('displays story titles and publication status', (fix, el, comp) => {
@@ -70,4 +70,18 @@ describe('SeriesFeedComponent', () => {
     fix.detectChanges();
     expect(el).toQuery('.invalid');
   });
+
+  cit('pages through stories', (fix, el, comp) => {
+    const series = cms.mock('prx:series', {});
+    const storiesDoc = series.mock('prx:stories', {total: 2});
+    const page1 = storiesDoc.mockList('prx:items', [{title: 'First Page Story'}]);
+    const page2 = storiesDoc.mockItems('next', [{title: 'Second Page Story'}]);
+
+    comp.load(series);
+    fix.detectChanges();
+
+    expect(el).toContainText('First Page Story');
+    expect(el).toContainText('Second Page Story');
+  });
+
 });

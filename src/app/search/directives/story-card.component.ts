@@ -1,18 +1,20 @@
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/of';
 import { Component, Input, OnInit } from '@angular/core';
-
-import { StoryModel } from '../../shared';
+import { HalDoc } from '../../core';
 
 @Component({
   selector: 'publish-story-card',
   styleUrls: ['story-card.component.css'],
   template: `
     <section class="story-image">
-      <prx-image [imageDoc]="story.doc"></prx-image>
+      <prx-image [imageDoc]="story"></prx-image>
       <p *ngIf="statusClass" [class]="statusClass">{{statusText}}</p>
     </section>
     <section class="story-detail">
       <h2 class="story-title"><a [routerLink]="editStoryLink">{{storyTitle}}</a></h2>
-      <h3 class="series-title">{{seriesTitle}}</h3>
+      <h3 class="series-title">{{seriesTitle | async}}</h3>
 
       <section class="story-info">
         <span>{{storyDuration | duration}}</span>
@@ -32,7 +34,7 @@ import { StoryModel } from '../../shared';
 
 export class StoryCardComponent implements OnInit {
 
-  @Input() story: StoryModel;
+  @Input() story: HalDoc;
 
   editStoryLink: any[];
 
@@ -42,32 +44,37 @@ export class StoryCardComponent implements OnInit {
   storyDate: Date;
   storyDescription: string;
   storyTags: string[];
-  seriesTitle: string;
+  seriesTitle: Observable<string>;
 
   statusClass: string;
   statusText: string;
 
   ngOnInit() {
     this.storyId = this.story.id;
-    this.storyTitle = this.story.title;
-    this.storyDate = this.story.publishedAt;
-    this.storyDescription = this.story.shortDescription;
-    this.storyTags = this.story.splitTags();
-    this.storyDuration = this.story.doc['duration'] || 0;
+    this.storyTitle = this.story['title'];
+    this.storyDate = this.story['publishedAt'];
+    this.storyDescription = this.story['shortDescription'];
+    this.storyTags = this.story['tags'];
+    this.storyDuration = this.story['duration'] || 0;
     this.editStoryLink = ['/story', this.story.id];
 
-    if (this.story.parent) {
-      this.seriesTitle = this.story.parent['title'];
+    if (this.story.has('prx:series')) {
+      this.seriesTitle = this.story.follow('prx:series').map(doc => doc['title'] || '(Untitled Series)');
+    } else if (this.story.has('prx:account')) {
+      this.seriesTitle = this.story.follow('prx:account').map(doc => doc['name'] || '(Unnamed Account)');
     } else {
-      this.seriesTitle = this.story.account['name'] || '(Unnamed Account)';
+      this.seriesTitle = Observable.of('(Unknown Series)');
     }
 
-    if (!this.story.publishedAt) {
+    if (!this.story['publishedAt']) {
       this.statusClass = 'status draft';
       this.statusText = 'Draft';
-    } else if (!this.story.isPublished()) {
+    } else if (new Date().valueOf() < new Date(this.story['publishedAt']).valueOf()) {
       this.statusClass = 'status scheduled';
       this.statusText = 'Scheduled';
+    } else {
+      this.statusClass = null;
+      this.statusText = null;
     }
   }
 
