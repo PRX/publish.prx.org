@@ -32,10 +32,10 @@ export class SeriesImportService {
         // HACK
         // https://github.com/ReactiveX/rxjs/issues/2420
         // TODO fixed in rxjs 6
-        if(lastReceived !== null){
+        if (lastReceived !== null){
           return false;
         }
-        if(si.isFinished()){
+        if (si.isFinished()){
           lastReceived = si;
         }
         return true;

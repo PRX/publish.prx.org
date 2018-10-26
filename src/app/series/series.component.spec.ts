@@ -26,7 +26,7 @@ describe('SeriesComponent', () => {
     fetchImportsForSeries: (series: SeriesModel) => {
       return Observable.of([]);
     },
-    pollForChanges: (seriesImport: SeriesImportModel) =>{
+    pollForChanges: (seriesImport: SeriesImportModel) => {
       return Observable.of(SeriesImportModel);
     }
   });
