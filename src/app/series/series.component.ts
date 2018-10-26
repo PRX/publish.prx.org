@@ -9,9 +9,8 @@ import { SeriesImportService } from './series-import.service';
 import { SeriesModel, SeriesImportModel } from '../shared';
 import { NEW_SERIES_VALIDATIONS } from '../shared/model/series.model';
 
-import { map } from 'rxjs/operators';
+import { map, throttle, takeUntil } from 'rxjs/operators';
 import { timer } from 'rxjs/observable/timer';
-import 'rxjs/add/operator/throttle';
 
 @Component({
   providers: [TabService],
@@ -141,8 +140,10 @@ export class SeriesComponent implements OnInit {
       .subscribe((seriesImports) => {
         seriesImports.map((siObservable) => {
           siObservable
-            .takeUntil(this._onDestroy)
-            .throttle(() => timer(5000))
+            .pipe(
+              takeUntil(this._onDestroy),
+              throttle(() => timer(5000), {leading: true, trailing: true})
+            )
             .subscribe((si) => {
               this.seriesImportStateChanged(si);
             });
