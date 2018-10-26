@@ -13,9 +13,6 @@ import { map } from 'rxjs/operators';
 export class SeriesImportStatusComponent implements OnDestroy {
 
   series: SeriesModel;
-  // An observable on an array of observables on series import instances
-  // Load the series imports, then create a observable stream for each one
-  // polling until we navigate away or the import finishes
   tabSub: Subscription;
 
   ngOnInit(){}
