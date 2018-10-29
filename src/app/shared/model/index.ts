@@ -8,5 +8,7 @@ export * from './feeder-podcast.model';
 export * from './image.model';
 export * from './itunes.categories';
 export * from './series.model';
+export * from './series-import.model';
 export * from './story.model';
 export * from './story-distribution.model';
+export * from './import-validation-state.model';

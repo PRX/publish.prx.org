@@ -1,0 +1,28 @@
+<prx-hero blue=true>
+  <h1 class="hero-title">Create Series Import</h1>
+  <div class="hero-info" *ngIf="series">
+    <prx-spinner class="validation-activity-indicator"  *ngIf="importValidationState.validating()" inverse=true></prx-spinner>
+  </div>
+  <div class="hero-actions" *ngIf="series">
+
+  <prx-button [model]="series" disabled="0" green=1 visible=1 [working]="isValidatingAndSaving()" (click)="validateImportUrlAndSave()">Import Podcast</prx-button>
+
+  </div>
+</prx-hero>
+
+<div class="main">
+  <section>
+
+    <form *ngIf="series">
+      <prx-fancy-field textinput required [model]="series" name="importUrl" label="Podcast RSS Feed Url" required>
+        <div class="fancy-hint">The URL of the podcast.</div>
+      </prx-fancy-field>
+
+      <div id="validation-status" style="">
+        <span id="invalid-feed" *ngIf="importValidationState.invalid()">Invalid RSS Feed!</span>
+      </div>
+
+    </form>
+
+</section>
+</div>

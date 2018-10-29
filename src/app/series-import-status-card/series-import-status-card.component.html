@@ -1,0 +1,80 @@
+<div class="import-status-card" *ngIf="seriesImport">
+  <section>
+
+    <div class="podcast-import">
+
+      <div *ngIf="seriesImport.isInitializing()" class="import-scoreboard initializing">
+        <h1 *ngIf="seriesImport.isImporting()">Podcast Import is Initializing</h1>
+        <prx-spinner ></prx-spinner>
+      </div>
+
+
+      <div *ngIf="!seriesImport.isInitializing()" class="import-scoreboard">
+        <h1 *ngIf="seriesImport.isImporting()">Importing Podcast Episodes</h1>
+        <h1 *ngIf="seriesImport.isFinished()">Podcast Import Finished</h1>
+
+        <div class="meter"><span [style.width.%]="seriesImport.episodeImportsPercentComplete() * 100"></span></div>
+        <h2 class="percent-complete">{{ seriesImport.episodeImportsPercentComplete() | percent }} Complete</h2>
+        <table>
+          <tr>
+            <th>Status</th>
+            <th>Episode Count</th>
+          </tr>
+
+          <tr>
+            <td>Entries in RSS Feed</td>
+            <td>{{seriesImport.entriesInRssFeed()}}</td>
+          </tr>
+          <tr>
+            <td>Successfully Imported</td>
+            <td>{{seriesImport.episodeImportsFilter('complete').length}}</td>
+          </tr>
+          <tr class="error" *ngIf="seriesImport.episodeImportPlaceholders.length > 0">
+            <td>Skipped Duplicate Guid</td>
+            <td>{{seriesImport.episodeImportPlaceholders.length}}</td>
+          </tr>
+          <tr *ngIf="seriesImport.isImporting()">
+            <td>In Progress</td>
+            <td>{{seriesImport.episodeImportsInProgress().length}}</td>
+          </tr>
+          <tr *ngIf="seriesImport.episodeImportsFilter('failed').length > 0">
+            <td>Failed to Import</td>
+            <td>{{seriesImport.episodeImportsFilter('failed').length}}</td>
+          </tr>
+          <tr *ngIf="seriesImport.isImporting()">
+            <td>Remaining to Import</td>
+            <td>{{seriesImport.episodeImportsRemaining()}}</td>
+          </tr>
+
+        </table>
+      </div>
+
+      <table *ngIf="seriesImport.episodeImportsSomeSkipped() || seriesImport.episodeImportsSomeFailed()" class="episode-imports-status">
+        <tr>
+          <th>Failed Import</th>
+          <th>Failure Status</th>
+        </tr>
+
+        <tr class="episode-import-indicator" *ngFor="let episodeImport of seriesImport.episodeImportsFilter('failed')">
+          <td class="title">
+            <span *ngIf="episodeImport.entry">{{episodeImport.entry.title}}</span>
+          </td>
+          <td class="error">
+            Failed
+          </td>
+        </tr>
+
+        <tr class="episode-import-indicator" *ngFor="let episodeImport of seriesImport.episodeImportPlaceholders">
+          <td class="title">
+            <span *ngIf="episodeImport.entry">{{episodeImport.entry.title}}</span>
+          </td>
+          <td class="error">
+            Duplicate GUID
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </section>
+</div>
+

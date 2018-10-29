@@ -2,13 +2,25 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { HalDoc, Upload } from '../../core';
-import { BaseModel } from 'ngx-prx-styleguide';
+import { BaseModel, ValidatorMap } from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
+import { SeriesImportModel } from './series-import.model';
 import { AudioVersionTemplateModel } from './audio-version-template.model';
 import { AudioFileTemplateModel } from './audio-file-template.model';
 import { DistributionModel } from './distribution.model';
 import { REQUIRED, LENGTH } from './invalid';
 import { HasUpload, applyMixins } from './upload';
+
+export const IMPORT_SERIES_VALIDATIONS: ValidatorMap = {
+  importUrl: [REQUIRED()],
+};
+
+export const NEW_SERIES_VALIDATIONS: ValidatorMap  = {
+    title:            [REQUIRED(), LENGTH(1, 255)],
+    shortDescription: [REQUIRED()],
+    description:      [LENGTH(0, 4000)],
+    accountId:        [REQUIRED()]
+};
 
 export class SeriesModel extends BaseModel implements HasUpload {
 
@@ -23,15 +35,16 @@ export class SeriesModel extends BaseModel implements HasUpload {
   public distributions: DistributionModel[] = [];
   public accountId: number;
   public hasStories: boolean;
+  public importUrl: string;
+
+  // An array of observables on series import instances
+  // Load the series imports, then create a observable stream for each one
+  // polling until we navigate away or the import finishes
+  seriesImports: Observable<Observable<SeriesImportModel>[]> = null;
 
   SETABLE = ['title', 'description', 'shortDescription', 'hasUploadMap', 'accountId'];
 
-  VALIDATORS = {
-    title:            [REQUIRED(), LENGTH(1, 255)],
-    shortDescription: [REQUIRED()],
-    description:      [LENGTH(0, 4000)],
-    accountId:        [REQUIRED()]
-  };
+  VALIDATORS: ValidatorMap = NEW_SERIES_VALIDATIONS;
 
   // HasUpload mixin
   hasUploadMap: string;
@@ -52,6 +65,10 @@ export class SeriesModel extends BaseModel implements HasUpload {
         }
       });
     }
+  }
+
+  setComponentValidationStrategy(validations: any) {
+    this.VALIDATORS = validations;
   }
 
   key() {
@@ -95,7 +112,7 @@ export class SeriesModel extends BaseModel implements HasUpload {
     return {
       images: images,
       versionTemplates: templates,
-      distributions: distributions
+      distributions: distributions,
     };
   }
 
@@ -125,13 +142,17 @@ export class SeriesModel extends BaseModel implements HasUpload {
 
   encode(): {} {
     let data = <any> {};
-    data.title = this.title;
-    data.descriptionMd = this.description;
-    data.shortDescription = this.shortDescription;
-    if (this.changed('accountId')) {
-      const accountDoc = this.isNew ? this.parent.expand('self') : this.doc.expand('prx:account');
-      let newAccountURI = accountDoc.replace(`${this.original['accountId']}`, `${this.accountId}`);
-      data.set_account_uri = newAccountURI;
+    if (this.importUrl) {
+      data.import_url = this.importUrl;
+    } else {
+      data.title = this.title;
+      data.descriptionMd = this.description;
+      data.shortDescription = this.shortDescription;
+      if (this.changed('accountId')) {
+        const accountDoc = this.isNew ? this.parent.expand('self') : this.doc.expand('prx:account');
+        let newAccountURI = accountDoc.replace(`${this.original['accountId']}`, `${this.accountId}`);
+        data.set_account_uri = newAccountURI;
+      }
     }
     return data;
   }
@@ -182,7 +203,6 @@ export class SeriesModel extends BaseModel implements HasUpload {
   isV4(): boolean {
     return !this.doc || this.doc['appVersion'] === 'v4';
   }
-
 }
 
 applyMixins(SeriesModel, [HasUpload]);

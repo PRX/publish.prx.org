@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { SeriesComponent } from './series.component';
+import { SeriesImportService } from './series-import.service';
+import { SeriesModel, SeriesImportModel } from '../shared';
 
 let activatedRoute = new ActivatedRouteStub();
 let router = new RouterStub();
@@ -20,6 +22,14 @@ describe('SeriesComponent', () => {
   create(SeriesComponent, false);
   provide(Router, router);
   provide(ActivatedRoute, activatedRoute);
+  provide(SeriesImportService, {
+    fetchImportsForSeries: (series: SeriesModel) => {
+      return Observable.of([]);
+    },
+    pollForChanges: (seriesImport: SeriesImportModel) => {
+      return Observable.of(SeriesImportModel);
+    }
+  });
   stubPipe('timeago');
 
   let modalAlertTitle: any;
@@ -118,6 +128,25 @@ describe('SeriesComponent', () => {
     comp.series.isDestroy = true;
     expect(comp.canDeactivate()).toEqual(true);
     expect(modalAlertTitle).toBeNull();
+  });
+
+  cit('presents a podcast import status tab if derived from an import', (fix, el, comp) => {
+    activatedRoute.testParams = {id: '99'};
+    let series = auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
+    series.mock('prx:account', {id: 78});
+    series.mockItems('prx:podcast-imports', [{id: 333}]);
+    fix.detectChanges();
+    expect(comp.fromImport).toEqual(true);
+    expect(el).toContainText('Import Status');
+  });
+
+  cit('will not present a tab if not an imported series', (fix, el, comp) => {
+    activatedRoute.testParams = {id: '99'};
+    let series = auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
+    series.mock('prx:account', {id: 78});
+    fix.detectChanges();
+    expect(comp.fromImport).toEqual(false);
+    expect(el).not.toContainText('Import Status');
   });
 
 });

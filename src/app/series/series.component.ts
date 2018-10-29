@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { CmsService } from '../core';
+import { CmsService, HalDoc } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
-import { SeriesModel } from '../shared';
+import { SeriesImportService } from './series-import.service';
+import { SeriesModel, SeriesImportModel } from '../shared';
+import { NEW_SERIES_VALIDATIONS } from '../shared/model/series.model';
+
+import { map, debounceTime, takeUntil } from 'rxjs/operators';
+import { timer } from 'rxjs/observable/timer';
 
 @Component({
   providers: [TabService],
@@ -14,7 +19,9 @@ import { SeriesModel } from '../shared';
   templateUrl: 'series.component.html'
 })
 
-export class SeriesComponent implements OnInit {
+export class SeriesComponent implements OnInit, OnDestroy {
+
+  private _onDestroy = new Subject();
 
   id: number;
   base: string;
@@ -22,11 +29,15 @@ export class SeriesComponent implements OnInit {
   storyCount: number;
   storyNoun: string;
 
+  // podcast imports
+  fromImport = false;
+
   constructor(
-    private cms: CmsService,
+    public cms: CmsService,
     private modal: ModalService,
-    private toastr: ToastrService,
+    public toastr: ToastrService,
     private route: ActivatedRoute,
+    private importLoader: SeriesImportService,
     private router: Router
   ) {}
 
@@ -36,6 +47,10 @@ export class SeriesComponent implements OnInit {
      this.base = '/series/' + (this.id || 'new');
      this.loadSeries();
    });
+  }
+
+  ngOnDestroy() {
+    this._onDestroy.next();
   }
 
   loadSeries() {
@@ -61,11 +76,25 @@ export class SeriesComponent implements OnInit {
     }
   }
 
+  buildSeries(parent: any, series: any) {
+    let newSeries = new SeriesModel(parent, series);
+    // Because the series state is split between component and model, make the
+    // loadSeries method idempotent and preserve the podcast import polling
+    // state with each call. Then refresh the series model based on import
+    // status polling intervals.
+    if (this.series) {
+      newSeries.seriesImports = this.series.seriesImports;
+    }
+    return newSeries;
+  }
+
   setSeries(parent: any, series: any) {
-    this.series = new SeriesModel(parent, series);
+    this.series = this.buildSeries(parent, series);
     if (series) {
       this.storyCount = series.count('prx:stories');
       this.storyNoun = this.storyCount === 1 ? 'Episode' : 'Episodes';
+      this.setImportState();
+      this.setSeriesValidationStrategy();
     } else {
       this.storyCount = null;
     }
@@ -84,18 +113,83 @@ export class SeriesComponent implements OnInit {
     }
   }
 
+  setImportState() {
+    this.fromImport = this.series.doc.count('prx:podcast-imports') > 0;
+    if (this.fromImport) {
+      this.pollForImportState();
+    }
+  }
+
+  pollForImportState() {
+    if (this.series.seriesImports !== null) {
+      return this.series.seriesImports;
+    }
+
+    this.series.seriesImports = this.importLoader.fetchImportsForSeries(this.series)
+      .pipe(
+        map((seriesImports) => {
+          return seriesImports.map((si) => {
+            return this.importLoader.pollForChanges(si);
+          });
+        })
+      );
+
+    // start up your pollers!
+    this.series.seriesImports
+      .takeUntil(this._onDestroy)
+      .subscribe((seriesImports) => {
+        seriesImports.map((siObservable) => {
+          siObservable
+            .pipe(
+              takeUntil(this._onDestroy),
+              // TODO sample the series resource less frequently
+              // auditTime(5000)
+            )
+            .subscribe((si) => {
+              this.seriesImportStateChanged(si);
+            });
+        });
+      });
+
+    return this.series.seriesImports;
+  }
+
+  seriesImportStateChanged(si) {
+    if (si.isFinished()) {
+      return si;
+    }
+    // the state of `this.series` has changed!
+    this.loadSeries();
+
+    return si;
+
+  }
+
+  validationStrategy() {
+    return NEW_SERIES_VALIDATIONS;
+  }
+
+  setSeriesValidationStrategy() {
+    this.series.setComponentValidationStrategy(this.validationStrategy());
+  }
+
   save() {
     let wasNew = this.series.isNew;
+
     this.series.save().subscribe(() => {
       this.toastr.success(`Series ${wasNew ? 'created' : 'saved'}`);
       if (wasNew) {
-        this.router.navigate(['/series', this.series.id]);
+        this.router.navigate(this.afterSaveNavigateParams());
       }
     });
   }
 
   discard() {
     this.series.discard();
+  }
+
+  afterSaveNavigateParams() {
+    return ['/series', this.series.id];
   }
 
   confirmDelete(event: MouseEvent): void {

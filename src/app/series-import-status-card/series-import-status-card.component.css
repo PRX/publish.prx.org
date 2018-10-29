@@ -1,0 +1,107 @@
+.meter {
+  flex-grow: 1;
+  background-color: #DDDDDD;
+  height: 10px;
+  position: relative;
+  margin: 20px auto;
+  width: 300px;
+}
+
+.meter > span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  transition: 0.4s linear;
+  transition-property: width;
+  background-color: #0089bc;
+  overflow: hidden;
+}
+
+.error{
+ color: #e32;
+}
+
+.import-status-card {
+  display:relative;
+
+}
+
+.podcast-import {
+  display: flex;
+  flex-direction: column;
+}
+
+.episode-import-indicator{
+  margin: 10px;
+}
+
+.import-complete-indicator {
+  border-bottom: 1px black solid;
+}
+
+.import-scoreboard {
+  margin-bottom: 20px;
+  text-align:center
+}
+
+.import-scoreboard table tr td:first-child {
+  text-align: left;
+}
+
+.import-scoreboard table tr td:nth-child(2) {
+  text-align: right;
+}
+
+.import-scoreboard > h1 {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 400;
+  margin: 20px 0 0 0;
+  color: #343434;
+}
+.import-scoreboard > .percent-complete {
+  margin: 10px 0 20px 0;
+}
+
+.import-scoreboard > table {
+  margin: auto;
+}
+
+.import-scoreboard > th, td {
+  border-top :solid 1px #ddd;
+  padding: 3px 20px 3px 20px;
+}
+
+.episode-import-indicator > .title {
+  text-align: left;
+}
+
+.episode-import-indicator > .error {
+  text-align: left;
+}
+
+ul {
+  padding: 0 5px;
+}
+
+li {
+  display: flex;
+  margin: 5px 0;
+  border-bottom: 1px #ddd solid;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+li h5 {
+  flex-grow: 3;
+  flex-basis: 0;
+}
+
+li p {
+  flex-grow: 1;
+  flex-basis: 0;
+  text-align: right;
+}
+

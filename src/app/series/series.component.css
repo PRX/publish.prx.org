@@ -17,3 +17,6 @@
 .extras a {
   font-weight: 400;
 }
+#import-button {
+  margin-top: 30px;
+}
