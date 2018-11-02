@@ -88,4 +88,20 @@ describe('SeriesImportComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/series', comp.series.id, 'import-status']);
   });
 
+  cit('flushes unsaved audio version templates before save', (fix, el, comp) => {
+    activatedRoute.testParams = {};
+    auth.mock('prx:default-account', {id: 100});
+    auth.mock('prx:verify-rss', {});
+    fix.detectChanges();
+
+    let btn = el.queryAll(By.css('prx-button')).find(e => {
+      return e.nativeElement.textContent === 'Import Podcast';
+    });
+    expect(btn).not.toBeNull();
+
+    spyOn(comp.series, 'flushVersionTemplates');
+    btn.triggerEventHandler('click', null);
+    expect(comp.series.flushVersionTemplates).toHaveBeenCalled();
+  });
+
 });

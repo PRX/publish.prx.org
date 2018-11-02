@@ -177,6 +177,10 @@ export class SeriesModel extends BaseModel implements HasUpload {
     this.setUploads('prx:images', this.images.map(i => i.uuid));
   }
 
+  flushVersionTemplates() {
+    this.versionTemplates = [];
+  }
+
   defaultVersionTemplate() {
     let tpl = new AudioVersionTemplateModel(null, 0);
     tpl.set('label', 'Podcast Audio', true);
