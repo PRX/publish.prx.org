@@ -36,4 +36,11 @@ describe('SeriesModel', () => {
     expect(data['set_account_uri']).not.toMatch(/series-account-id/);
   });
 
+  it('allows clearing version templates on new series', () => {
+    let series = makeSeries(true);
+    expect(series.versionTemplates.length).toEqual(1);
+    series.flushVersionTemplates();
+    expect(series.versionTemplates.length).toEqual(0);
+  });
+
 });

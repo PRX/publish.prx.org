@@ -32,6 +32,8 @@ export class SeriesImportComponent implements OnInit {
   }
 
   save() {
+    // assume the import process builds any needed audio templates
+    this.series.flushVersionTemplates();
     this.series.save().subscribe(() => {
       this.toastr.success(`Series created`);
       this.router.navigate(this.afterSaveNavigateParams());
