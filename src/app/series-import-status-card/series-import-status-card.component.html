@@ -12,6 +12,8 @@
       <div *ngIf="!seriesImport.isInitializing()" class="import-scoreboard">
         <h1 *ngIf="seriesImport.isImporting()">Importing Podcast Episodes</h1>
         <h1 *ngIf="seriesImport.isFinished()">Podcast Import Finished</h1>
+        <!-- A temporary warning until we can nail down oscillations in the cms/feeder/audio-lambda -->
+        <span id="processing-warning" *ngIf="seriesImport.isFinished()"> Note: it could take 20 minutes for the audio to process and for your episodes to show up in the RSS feed.</span>
 
         <div class="meter"><span [style.width.%]="seriesImport.episodeImportsPercentComplete() * 100"></span></div>
         <h2 class="percent-complete">{{ seriesImport.episodeImportsPercentComplete() | percent }} Complete</h2>
