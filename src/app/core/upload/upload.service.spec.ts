@@ -21,24 +21,6 @@ describe('UploadService', () => {
     });
 
     it('should have an empty list of uploads', () => {
-      uploader.add(<any> {name: 'asdf.mp3', size: 99}, 'foo/bar').subscribe(upload => {
-        expect(upload.sanitizedName()).toEqual('asdf.mp3');
-      })
-      uploader.add(<any> {name: 'Ñ.mp3', size: 99}, 'foo/bar').subscribe(upload => {
-        expect(upload.sanitizedName()).toEqual('N.mp3');
-      })
-      uploader.add(<any> {name: 'café.mp3', size: 99}, 'foo/bar').subscribe(upload => {
-        expect(upload.sanitizedName()).toEqual('cafe.mp3');
-      })
-      uploader.add(<any> {name: '漢語.mp3', size: 99}, 'foo/bar').subscribe(upload => {
-        expect(upload.sanitizedName()).toEqual('_.mp3');
-      })
-      uploader.add(<any> {name: '漢z語.mp3', size: 99}, 'foo/bar').subscribe(upload => {
-        expect(upload.sanitizedName()).toEqual('_z_.mp3');
-      })
-    });
-
-    it('should have an empty list of uploads', () => {
       expect(uploader.uploads instanceof Array).toBeTruthy();
       expect(uploader.uploads.length).toEqual(0);
     });
