@@ -89,7 +89,7 @@ export class Upload {
     this.uuid = UUID.UUID();
     this.name = file.name;
     this.size = file.size;
-    this.path = [Env.BUCKET_FOLDER, this.uuid, file.name.replace(/[^a-z0-9\.]+/gi, '_')].join('/');
+    this.path = [Env.BUCKET_FOLDER, this.uuid, this.sanitizedName()].join('/');
     this.url = '//s3.amazonaws.com/' + Env.BUCKET_NAME + '/' + this.path;
     this.s3url = 's3://' + Env.BUCKET_NAME + '/' + this.path;
     this.upload();
@@ -115,6 +115,7 @@ export class Upload {
         'x-amz-acl': 'public-read'
       },
       notSignedHeadersAtInitiate: {
+        'Content-Disposition': 'attachment; filename=' + this.sanitizedName()
       }
     };
 
@@ -136,4 +137,10 @@ export class Upload {
     return this.progress;
   }
 
+  sanitizedName(){
+    return this.name
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\.]+/gi, '_')
+  }
 }
