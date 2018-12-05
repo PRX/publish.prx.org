@@ -115,7 +115,6 @@ export class Upload {
         'x-amz-acl': 'public-read'
       },
       notSignedHeadersAtInitiate: {
-        'Content-Disposition': 'attachment; filename=' + this.name
       }
     };
 
