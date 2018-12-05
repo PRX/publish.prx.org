@@ -138,8 +138,10 @@ export class Upload {
   }
 
   sanitizedName(){
-    return this.name
-      .normalize('NFD')
+    let res = this.name
+    res = res.normalize ? res.normalize('NFD') : res
+
+    return res
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9\.]+/gi, '_')
   }
