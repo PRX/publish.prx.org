@@ -137,12 +137,12 @@ export class Upload {
     return this.progress;
   }
 
-  sanitizedName(){
-    let res = this.name
-    res = res.normalize ? res.normalize('NFD') : res
+  sanitizedName() {
+    let res = this.name;
+    res = res.normalize ? res.normalize('NFD') : res;
 
     return res
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9\.]+/gi, '_')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\.]+/gi, '_');
   }
 }
