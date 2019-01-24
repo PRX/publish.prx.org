@@ -166,7 +166,7 @@ export class SeriesImportModel extends BaseModel {
   }
 
   isInitializing() {
-    return !this.feedEpisodeCount;
+    return this.feedEpisodeCount == null;
   }
 
   episodeImportInProgress(episodeImport) {
