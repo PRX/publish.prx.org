@@ -10,7 +10,7 @@ const durationPipe = new DurationPipe();
  * Audio version template validations
  */
 export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
-  return <BaseInvalid> (key: string, version: AudioVersionModel, strict: boolean) => {
+  return (key: string, version: AudioVersionModel, strict: boolean) => {
     let undeleted = version.files.filter(f => !f.isDestroy);
     let count = undeleted.length;
 
@@ -71,7 +71,7 @@ export const VERSION_TEMPLATED = (template?: HalDoc): BaseInvalid => {
  * Audio file template validations
  */
 export const FILE_TEMPLATED = (versionTemplate?: HalDoc, template?: HalDoc): BaseInvalid => {
-  return <BaseInvalid> (key: string, file: AudioFileModel) => {
+  return (key: string, file: AudioFileModel) => {
 
     // loosely match content type
     if (versionTemplate && versionTemplate['contentType']) {

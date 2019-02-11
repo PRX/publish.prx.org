@@ -23,7 +23,7 @@
   "angular-cli": {},
   "scripts": {
     "start": "prx-ng-serve dev",
-    "lint": "tslint \"src/**/*.ts\"",
+    "lint": "tslint \"src/**/*.ts\" -e \"src/testing/components.ts\"",
     "test": "ng test",
     "e2e": "ng e2e",
     "testonce": "ng test --watch=false --browsers=PhantomJS",

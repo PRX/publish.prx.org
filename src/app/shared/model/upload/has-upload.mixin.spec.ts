@@ -8,6 +8,7 @@ describe('HasUpload', () => {
     hasUploadMap: string;
     getUploads: (rel: string) => Observable<any[]>;
     setUploads: (rel: string, uuids?: string[]) => void;
+    // tslint:disable-next-line:no-shadowed-variable
     constructor(public doc, public SETABLE = []) {}
     set(fld, val) { this[fld] = val; }
   }

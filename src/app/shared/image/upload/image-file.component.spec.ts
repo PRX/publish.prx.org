@@ -75,7 +75,7 @@ describe('ImageFileComponent', () => {
 
   cit('finds in-progress uploads', (fix, el, comp) => {
     comp.image = mockImage({uuid: 'testuuid', watchUpload: null});
-    spyOn(comp.image, 'watchUpload').and.stub;
+    spyOn(comp.image, 'watchUpload').and.stub();
     fix.detectChanges();
     expect(comp.image.watchUpload).toHaveBeenCalledWith('foobar', false);
   });
