@@ -1,7 +1,10 @@
+
+import {concat as observableConcat,  Observable } from 'rxjs';
+
+import {toArray} from 'rxjs/operators';
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/concat';
-import 'rxjs/add/operator/toArray';
+
+
 
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
@@ -97,7 +100,7 @@ export class HomeSeriesComponent implements OnInit {
       zoom: 'prx:image'
     });
 
-    Observable.concat(account, stories).toArray().subscribe((results) => {
+    observableConcat(account, stories).pipe(toArray()).subscribe((results) => {
       let accountDoc = <HalDoc> results[0];
       let storyDocs = <HalDoc[]> results[1];
 

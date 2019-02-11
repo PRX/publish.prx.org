@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { REQUIRED, LENGTH, FILE_LENGTH } from './invalid';

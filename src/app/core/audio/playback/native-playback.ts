@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs/Observable';
-import { Subscriber } from 'rxjs/Subscriber';
-import 'rxjs/add/observable/throw';
+
+import {throwError as observableThrowError,  Observable ,  Subscriber } from 'rxjs';
+
 import { PlaybackMetadata, AudioPlayback, UnsupportedFileError } from './playback';
 
 /*
@@ -20,7 +20,7 @@ export class NativePlayback implements AudioPlayback {
 
   play(): Observable<PlaybackMetadata> {
     if (!this.el) {
-      return Observable.throw(new UnsupportedFileError('Only remote playback supported'));
+      return observableThrowError(new UnsupportedFileError('Only remote playback supported'));
     }
     return Observable.create(sub => {
       this.sub = sub;

@@ -1,5 +1,6 @@
+
+import {of as observableOf,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { filter, map, mergeMap, takeWhile } from 'rxjs/operators';
 import { SeriesModel, SeriesImportModel } from '../shared';
 
@@ -42,7 +43,7 @@ export class SeriesImportService {
       });
 
     return Observable.concat(
-      Observable.of(seriesImport),
+      observableOf(seriesImport),
       seriesImportPoller
     );
   }

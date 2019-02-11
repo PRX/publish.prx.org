@@ -1,12 +1,13 @@
+
+import {of as observableOf, from as observableFrom,  Observable ,  ConnectableObservable ,  Subscriber } from 'rxjs';
+
+import {publish, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
-import { Subscriber } from 'rxjs/Subscriber';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/publish';
+
+
+
+
+
 declare var require: any;
 const Evaporate = require('evaporate');
 
@@ -32,7 +33,7 @@ export class UploadService {
 
   init(): Observable<Evaporate> {
     // until there is a good way to load from env and inject
-    return Observable.from(
+    return observableFrom(
       Evaporate.create({
         signerUrl: this.signUrl,
         aws_key: this.awsKey,
@@ -47,12 +48,12 @@ export class UploadService {
   }
 
   add(file: File, contentType?: string): Observable<Upload> {
-    return this.evaporate.map(evaporate => {
+    return this.evaporate.pipe(map(evaporate => {
       const ct = contentType || this.mimeTypeService.lookupFileMimetype(file).full();
       const upload = new Upload(file, ct, evaporate);
       this.uploads.push(upload);
       return upload;
-    });
+    }));
   }
 
   find(uuid: string): Upload {
@@ -103,7 +104,7 @@ export class Upload {
 
   upload(): Observable<number> {
     if (this.complete) {
-      return Observable.of(null);
+      return observableOf(null);
     }
     this.cancel();
 
@@ -132,7 +133,7 @@ export class Upload {
     });
 
     // share the underlying observable without creating dups
-    this.progress = progressObservable.publish();
+    this.progress = progressObservable.pipe(publish());
     this.progress.connect();
     return this.progress;
   }

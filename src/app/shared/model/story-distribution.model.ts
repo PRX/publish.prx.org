@@ -1,6 +1,9 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
+
+
 import { HalDoc } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { REQUIRED } from './invalid';
@@ -37,13 +40,13 @@ export class StoryDistributionModel extends BaseModel {
   }
 
   related() {
-    let episode = Observable.of(null);
+    let episode = observableOf(null);
     if (this.isNew) {
-      episode = Observable.of(new FeederEpisodeModel(this.series, this.doc));
+      episode = observableOf(new FeederEpisodeModel(this.series, this.doc));
     } else if (this.url) {
-      episode = this.doc.followLink({href: this.url}).map(edoc => {
+      episode = this.doc.followLink({href: this.url}).pipe(map(edoc => {
         return new FeederEpisodeModel(this.series, this.doc, edoc);
-      });
+      }));
     }
     return {episode: episode};
   }

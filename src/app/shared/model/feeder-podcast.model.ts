@@ -1,5 +1,6 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
+
 import { HalDoc } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { REQUIRED, URL, LENGTH } from './invalid';
@@ -155,7 +156,7 @@ export class FeederPodcastModel extends BaseModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    return Observable.throw(new Error('Cannot directly create a feeder podcast'));
+    return observableThrowError(new Error('Cannot directly create a feeder podcast'));
   }
 
   swapNew(newModel: FeederPodcastModel) {

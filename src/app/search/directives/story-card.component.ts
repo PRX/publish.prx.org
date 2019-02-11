@@ -1,6 +1,9 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/of';
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
+
+
 import { Component, Input, OnInit } from '@angular/core';
 import { HalDoc } from '../../core';
 
@@ -59,11 +62,11 @@ export class StoryCardComponent implements OnInit {
     this.editStoryLink = ['/story', this.story.id];
 
     if (this.story.has('prx:series')) {
-      this.seriesTitle = this.story.follow('prx:series').map(doc => doc['title'] || '(Untitled Series)');
+      this.seriesTitle = this.story.follow('prx:series').pipe(map(doc => doc['title'] || '(Untitled Series)'));
     } else if (this.story.has('prx:account')) {
-      this.seriesTitle = this.story.follow('prx:account').map(doc => doc['name'] || '(Unnamed Account)');
+      this.seriesTitle = this.story.follow('prx:account').pipe(map(doc => doc['name'] || '(Unnamed Account)'));
     } else {
-      this.seriesTitle = Observable.of('(Unknown Series)');
+      this.seriesTitle = observableOf('(Unknown Series)');
     }
 
     if (!this.story['publishedAt']) {

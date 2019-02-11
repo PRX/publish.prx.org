@@ -1,5 +1,5 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { StoryModel, AudioVersionModel } from '../../shared';
 import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
 

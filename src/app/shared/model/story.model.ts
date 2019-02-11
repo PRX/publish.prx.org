@@ -1,10 +1,13 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/concatAll';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/toArray';
+
+import {from as observableFrom, of as observableOf,  Observable } from 'rxjs';
+
+import {map, toArray, concatAll, mergeMap} from 'rxjs/operators';
+
+
+
+
+
+
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { AudioVersionModel } from './audio-version.model';
@@ -71,44 +74,44 @@ export class StoryModel extends BaseModel implements HasUpload {
   related() {
     let versions: Observable<AudioVersionModel[]>;
     let images: Observable<ImageModel[]>;
-    let distributions = Observable.of([]);
+    let distributions = observableOf([]);
 
     // audio versions (with optional templates)
     if (this.doc) {
-      versions = this.doc.followItems('prx:audio-versions').flatMap(vdocs => {
-        return Observable.from(vdocs.map(vdoc => {
+      versions = this.doc.followItems('prx:audio-versions').pipe(mergeMap(vdocs => {
+        return observableFrom(vdocs.map(vdoc => {
           if (vdoc.has('prx:audio-version-template')) {
-            return vdoc.follow('prx:audio-version-template').map(tdoc => {
+            return vdoc.follow('prx:audio-version-template').pipe(map(tdoc => {
               return new AudioVersionModel({story: this.doc, version: vdoc, template: tdoc});
-            });
+            }));
           } else {
-            return Observable.of(new AudioVersionModel({story: this.doc, version: vdoc}));
+            return observableOf(new AudioVersionModel({story: this.doc, version: vdoc}));
           }
-        })).concatAll().toArray();
-      });
+        })).pipe(concatAll(),toArray(),);
+      }));
     } else {
-      versions = this.getSeriesTemplates().map(tdocs => {
+      versions = this.getSeriesTemplates().pipe(map(tdocs => {
         const defaultTemplate = tdocs.find((t) => t['label'].toLowerCase().match(/default/)) || tdocs[tdocs.length - 1];
         const defaultVersion = new AudioVersionModel({series: this.parent, template: defaultTemplate});
         defaultVersion.set('label', defaultVersion.label, true); // mark unchanged
         return [defaultVersion];
-      });
+      }));
     }
 
     // image uploads
-    images = this.getUploads('prx:images').map(idocs => {
+    images = this.getUploads('prx:images').pipe(map(idocs => {
       let models = idocs.map(docOrUuid => new ImageModel(this.doc, docOrUuid));
       this.setUploads('prx:images', models.map(m => m.uuid));
       return models;
-    });
+    }));
 
     // story distributions
     if (this.doc && this.doc.count('prx:distributions')) {
-      distributions = this.doc.followItems('prx:distributions').map(ddocs => {
+      distributions = this.doc.followItems('prx:distributions').pipe(map(ddocs => {
         return ddocs.map(d => new StoryDistributionModel(this.parent, this.doc, d));
-      });
+      }));
     } else if (this.isNew && this.parent) {
-      distributions = this.getSeriesDistribution('podcast').map(dist => {
+      distributions = this.getSeriesDistribution('podcast').pipe(map(dist => {
         if (dist) {
           let newEpisode = new StoryDistributionModel(this.parent, this.doc);
           newEpisode.set('kind', 'episode', true);
@@ -116,7 +119,7 @@ export class StoryModel extends BaseModel implements HasUpload {
         } else {
           return [];
         }
-      });
+      }));
     }
 
     return {images: images, versions: versions, distributions: distributions};
@@ -175,17 +178,17 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   setPublished(published: boolean): Observable<boolean> {
     if (!published && this.doc.has('prx:unpublish')) {
-      return this.doc.follow('prx:unpublish', {method: 'post'}).map(doc => {
+      return this.doc.follow('prx:unpublish', {method: 'post'}).pipe(map(doc => {
         this.init(this.parent, doc, false);
         return false;
-      });
+      }));
     } else if (published && this.doc.has('prx:publish')) {
-      return this.doc.follow('prx:publish', {method: 'post'}).map(doc => {
+      return this.doc.follow('prx:publish', {method: 'post'}).pipe(map(doc => {
         this.init(this.parent, doc, false);
         return true;
-      });
+      }));
     } else {
-      return Observable.of(null);
+      return observableOf(null);
     }
   }
 
@@ -223,11 +226,11 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   getSeriesDistribution(kind: string): Observable<HalDoc> {
     if (this.parent && this.parent.count('prx:distributions')) {
-      return this.parent.followItems('prx:distributions').map(dists => {
+      return this.parent.followItems('prx:distributions').pipe(map(dists => {
         return dists.find(d => d['kind'] === kind);
-      });
+      }));
     } else {
-      return Observable.of(null);
+      return observableOf(null);
     }
   }
 
@@ -235,7 +238,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     if (this.parent && this.parent.count('prx:audio-version-templates')) {
       return this.parent.followItems('prx:audio-version-templates');
     } else {
-      return Observable.of([]);
+      return observableOf([]);
     }
   }
 

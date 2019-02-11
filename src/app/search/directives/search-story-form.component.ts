@@ -1,7 +1,9 @@
+
+import {distinctUntilChanged, debounceTime} from 'rxjs/operators';
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
+import { Subject } from 'rxjs';
+
+
 import { SearchStory } from '../search-story.model';
 
 @Component({
@@ -56,9 +58,9 @@ export class SearchStoryFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.searchTextStream
-      .debounceTime(500)
-      .distinctUntilChanged()
+    this.searchTextStream.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),)
       .subscribe((text: string) => {
         this.modelChange.emit(this.model);
       });

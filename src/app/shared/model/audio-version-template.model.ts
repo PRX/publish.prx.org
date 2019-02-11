@@ -1,6 +1,9 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
+
+
 import { HalDoc } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { REQUIRED, LENGTH, IN, VERSION_LENGTH } from './invalid';
@@ -59,13 +62,13 @@ export class AudioVersionTemplateModel extends BaseModel {
   related() {
     let files: Observable<AudioFileTemplateModel[]>;
     if (this.doc) {
-      files = this.doc.followItems('prx:audio-file-templates').map(ftdocs => {
+      files = this.doc.followItems('prx:audio-file-templates').pipe(map(ftdocs => {
         let saved = ftdocs.map(ft => new AudioFileTemplateModel(this.parent, this.doc, ft));
         let unsaved = this.findUnsavedFiles(saved.length + 1);
         return saved.concat(unsaved);
-      });
+      }));
     } else {
-      files = Observable.of(this.findUnsavedFiles(1));
+      files = observableOf(this.findUnsavedFiles(1));
     }
     return {
       fileTemplates: files

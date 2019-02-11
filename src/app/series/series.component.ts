@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable ,  Subject ,  timer } from 'rxjs';
 
 import { CmsService, HalDoc } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
@@ -10,7 +9,6 @@ import { SeriesModel, SeriesImportModel } from '../shared';
 import { NEW_SERIES_VALIDATIONS } from '../shared/model/series.model';
 
 import { map, debounceTime, takeUntil } from 'rxjs/operators';
-import { timer } from 'rxjs/observable/timer';
 
 @Component({
   providers: [TabService],
@@ -135,8 +133,8 @@ export class SeriesComponent implements OnInit, OnDestroy {
       );
 
     // start up your pollers!
-    this.series.seriesImports
-      .takeUntil(this._onDestroy)
+    this.series.seriesImports.pipe(
+      takeUntil(this._onDestroy))
       .subscribe((seriesImports) => {
         seriesImports.map((siObservable) => {
           siObservable

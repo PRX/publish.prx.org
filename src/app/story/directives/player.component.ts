@@ -1,5 +1,5 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { StoryModel, DistributionModel } from '../../shared';
 import { TabService } from 'ngx-prx-styleguide';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';

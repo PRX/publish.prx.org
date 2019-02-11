@@ -1,6 +1,9 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
+
+
 import { HalDoc } from '../../core';
 import { BaseModel, BaseInvalid, REQUIRED } from 'ngx-prx-styleguide';
 import { FeederPodcastModel } from './feeder-podcast.model';
@@ -47,12 +50,12 @@ export class DistributionModel extends BaseModel {
   }
 
   related() {
-    let versionTemplates = Observable.of([]);
-    let podcast = Observable.of(null);
+    let versionTemplates = observableOf([]);
+    let podcast = observableOf(null);
 
     // set defaults from series for new podcasts
     if (this.isNew && this.parent) {
-      podcast = this.parent.follow('prx:account').map(account => {
+      podcast = this.parent.follow('prx:account').pipe(map(account => {
         let podmodel = new FeederPodcastModel(this.parent, this.doc);
         if (account && account['name']) {
           podmodel.set('authorName', account['name'], true);
@@ -61,23 +64,23 @@ export class DistributionModel extends BaseModel {
           podmodel.set('link', this.parent.expand('alternate'), true);
         }
         return podmodel;
-      });
+      }));
     }
 
     // load existing podcasts
     if (this.kind === 'podcast' && this.url) {
-      podcast = this.doc.followLink({href: this.url}).map(pdoc => {
+      podcast = this.doc.followLink({href: this.url}).pipe(map(pdoc => {
         return new FeederPodcastModel(this.parent, this.doc, pdoc);
-      });
+      }));
     }
 
     // load existing version templates
     if (this.doc && this.doc.count('prx:audio-version-templates')) {
-      versionTemplates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
+      versionTemplates = this.doc.followItems('prx:audio-version-templates').pipe(map(tdocs => {
         let models = tdocs.map(t => new AudioVersionTemplateModel(this.parent, t));
         this.resetVersionTemplateUrls(models);
         return models;
-      });
+      }));
     }
 
     return {podcast, versionTemplates};

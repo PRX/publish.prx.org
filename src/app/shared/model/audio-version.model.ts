@@ -1,7 +1,10 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/operator/finally';
-import 'rxjs/add/operator/map';
+
+import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+
+import {finalize, map} from 'rxjs/operators';
+
+
+
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { AudioFileModel } from './audio-file.model';
@@ -80,19 +83,19 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
   related() {
     const fileSort = (f1, f2) => f1.position - f2.position;
 
-    let files = this.getUploads('prx:audio').map(audios => {
+    let files = this.getUploads('prx:audio').pipe(map(audios => {
       let docs = audios.map(docOrUuid => new AudioFileModel(this.template, this.doc, docOrUuid));
       this.setUploads('prx:audio', docs.map(d => d.uuid));
       return docs.sort(fileSort);
-    });
+    }));
 
     // optionally load-and-assign file templates
     if (this.hasFileTemplates) {
       let tpls = this.template.followItems('prx:audio-file-templates');
-      files = Observable.forkJoin(files, tpls).map(([models, tdocs]) => {
+      files = observableForkJoin(files, tpls).pipe(map(([models, tdocs]) => {
         this.fileTemplates = tdocs.sort(fileSort);
         return models;
-      }).finally(() => this.reassign());
+      }),finalize(() => this.reassign()),);
     }
 
     return {files: files};

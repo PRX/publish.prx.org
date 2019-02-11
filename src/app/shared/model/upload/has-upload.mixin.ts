@@ -1,6 +1,9 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
+
+
 import { HalDoc } from '../../../core';
 
 /**
@@ -36,12 +39,12 @@ export abstract class HasUpload {
     // concat to stored docs
     if (this.doc && this.doc.has(rel)) {
       if (this.doc.has(rel, true)) {
-        return this.doc.followList(rel).map(docs => docs.concat(uuids));
+        return this.doc.followList(rel).pipe(map(docs => docs.concat(uuids)));
       } else {
-        return this.doc.followItems(rel).map(docs => docs.concat(uuids));
+        return this.doc.followItems(rel).pipe(map(docs => docs.concat(uuids)));
       }
     } else {
-      return Observable.of(uuids);
+      return observableOf(uuids);
     }
   }
 

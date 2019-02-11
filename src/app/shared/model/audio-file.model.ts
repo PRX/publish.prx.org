@@ -1,5 +1,7 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+
+import {map} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+
 import { HalDoc, Upload } from '../../core';
 import { UploadableModel } from './upload';
 import { REQUIRED, LENGTH, FILE_TEMPLATED } from './invalid';
@@ -98,11 +100,11 @@ export class AudioFileModel extends UploadableModel {
   }
 
   saveNew(data: {}): Observable<HalDoc> {
-    return this.parent.create('prx:audio', {}, data).map(doc => {
+    return this.parent.create('prx:audio', {}, data).pipe(map(doc => {
       this.setState();
       this.watchProcess();
       return doc;
-    });
+    }));
   }
 
 }
