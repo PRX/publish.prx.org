@@ -1,5 +1,5 @@
 
-import {of as observableOf, from as observableFrom,  Observable ,  ConnectableObservable ,  Subscriber } from 'rxjs';
+import {of as observableOf, from as observableFrom,  Observable ,  ConnectableObservable ,  Subscriber, ObservableLike } from 'rxjs';
 
 import {publish, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
@@ -133,7 +133,7 @@ export class Upload {
     });
 
     // share the underlying observable without creating dups
-    this.progress = progressObservable.pipe(publish());
+    this.progress = progressObservable.pipe(publish()) as ConnectableObservable<number>;
     this.progress.connect();
     return this.progress;
   }

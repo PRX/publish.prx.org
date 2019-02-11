@@ -1,7 +1,7 @@
 
-import {of as observableOf,  Observable } from 'rxjs';
+import {of as observableOf,  Observable, interval, concat } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { filter, map, mergeMap, takeWhile } from 'rxjs/operators';
+import { map, takeWhile, flatMap } from 'rxjs/operators';
 import { SeriesModel, SeriesImportModel } from '../shared';
 
 @Injectable()
@@ -19,17 +19,16 @@ export class SeriesImportService {
 
     let lastReceived = null;
 
-    let seriesImportPoller = Observable
-      .interval(1000)
-      .flatMap(() => {
+    let seriesImportPoller = interval(1000)
+      .pipe(flatMap(() => {
         return seriesImport.doc.reload();
-      })
-      .map(doc => {
+      }))
+      .pipe(map(doc => {
         let parentAccountDoc = seriesImport.parent;
         seriesImport.init(parentAccountDoc, doc, false);
         return new SeriesImportModel(parentAccountDoc, doc);
-      })
-      .takeWhile((si) => {
+      }))
+      .pipe(takeWhile((si) => {
         // HACK
         // https://github.com/ReactiveX/rxjs/issues/2420
         // TODO fixed in rxjs 6
@@ -40,9 +39,9 @@ export class SeriesImportService {
           lastReceived = si;
         }
         return true;
-      });
+      }));
 
-    return Observable.concat(
+    return concat(
       observableOf(seriesImport),
       seriesImportPoller
     );
