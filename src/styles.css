@@ -1,8 +1,8 @@
 /*
  * Global style manifest
  */
-@import '/assets/styles/dragula.css';
-@import '/assets/styles/pikaday-custom.css';
-@import '/assets/prosemirror/prosemirror.css';
-@import '/assets/prosemirror/menu.css';
-@import '/assets/prosemirror/style.css';
+@import './assets/styles/dragula.css';
+@import './assets/styles/pikaday-custom.css';
+@import './assets/prosemirror/prosemirror.css';
+@import './assets/prosemirror/menu.css';
+@import './assets/prosemirror/style.css';
