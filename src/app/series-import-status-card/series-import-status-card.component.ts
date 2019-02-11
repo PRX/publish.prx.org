@@ -7,7 +7,7 @@ import { HalDoc } from '../core';
 @Component({
   templateUrl: 'series-import-status-card.component.html',
   styleUrls: ['./series-import-status-card.component.css'],
-  selector: 'series-import-status-card'
+  selector: 'publish-series-import-status-card'
 })
 
 export class SeriesImportStatusCardComponent {
