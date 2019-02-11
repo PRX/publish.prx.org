@@ -95,7 +95,7 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
       files = observableForkJoin(files, tpls).pipe(map(([models, tdocs]) => {
         this.fileTemplates = tdocs.sort(fileSort);
         return models;
-      }),finalize(() => this.reassign()),);
+      }), finalize(() => this.reassign()), );
     }
 
     return {files: files};

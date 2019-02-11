@@ -87,7 +87,7 @@ export class StoryModel extends BaseModel implements HasUpload {
           } else {
             return observableOf(new AudioVersionModel({story: this.doc, version: vdoc}));
           }
-        })).pipe(concatAll(),toArray(),);
+        })).pipe(concatAll(), toArray(), );
       }));
     } else {
       versions = this.getSeriesTemplates().pipe(map(tdocs => {

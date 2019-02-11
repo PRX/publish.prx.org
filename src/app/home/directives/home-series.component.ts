@@ -44,7 +44,7 @@ export class HomeSeriesComponent implements OnInit {
   @Input() noseries: boolean;
   @Input() rows = 1;
 
-  count: number = -1;
+  count = -1;
   id: number;
   title: string;
   updated: Date;

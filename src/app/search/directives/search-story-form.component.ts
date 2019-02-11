@@ -60,7 +60,7 @@ export class SearchStoryFormComponent implements OnInit {
   ngOnInit() {
     this.searchTextStream.pipe(
       debounceTime(500),
-      distinctUntilChanged(),)
+      distinctUntilChanged(), )
       .subscribe((text: string) => {
         this.modelChange.emit(this.model);
       });

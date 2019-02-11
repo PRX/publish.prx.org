@@ -117,7 +117,7 @@ export abstract class UploadableModel extends BaseModel {
         this.setState();
         return Math.min(elapsed / this.UPLOAD_PROCESS_ESTIMATE, 0.9);
       }),
-      takeWhile(() => this.isProcessing),)
+      takeWhile(() => this.isProcessing), )
       .subscribe(
         pct => this.progress = pct,
         err => console.error('err', err)
