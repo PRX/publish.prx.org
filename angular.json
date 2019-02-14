@@ -18,7 +18,12 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/assets",
-              "src/favicon.ico"
+              "src/favicon.ico",
+              {
+                "glob": "*",
+                "input": "node_modules/ngx-prx-styleguide/assets/images",
+                "output": "assets/images/"
+              }
             ],
             "styles": [
               "node_modules/pikaday/css/pikaday.css",
