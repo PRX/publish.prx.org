@@ -588,9 +588,12 @@ amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
 
-angular-2-dropdown-multiselect@^1.5.4:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/angular-2-dropdown-multiselect/-/angular-2-dropdown-multiselect-1.5.4.tgz#d596745ffdb877e4bc80170d64e8b5c52247926e"
+angular-2-dropdown-multiselect@~1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/angular-2-dropdown-multiselect/-/angular-2-dropdown-multiselect-1.8.1.tgz#171061d2d4f8b555521ded9c605962389ee19dda"
+  integrity sha512-GU9m4t8RWpbcyZU4JQcevFuATUsJ1YFa5kgDqu1/ZCNcgrvJoKiQI8xnsG2np6cK1H9OSVdOMn1dc9vm1bU1hw==
+  dependencies:
+    tslib "^1.9.0"
 
 angulartics2@^6.1.10:
   version "6.3.1"
@@ -4921,13 +4924,15 @@ ng2-dragula@^1.3.1:
   dependencies:
     dragula "^3.7.2"
 
-ngx-prx-styleguide@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-1.1.1.tgz#ac8e8a5ca8e84233991b01c574f1b4290876b190"
+ngx-prx-styleguide@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.0.0.tgz#2f0d46f6bafd833a62a240d6e09ef4aa222e8baa"
+  integrity sha512-Brn0jKGyOtCiAC1Uyh59GdXmCGRsCNMn0CX8hmcsOoSa54SI/Xpr5DSVsnyacO6EfU8FuR4rVwNNDEtLj8ci9w==
   dependencies:
-    angular-2-dropdown-multiselect "^1.5.4"
+    angular-2-dropdown-multiselect "~1.8.1"
     c3 "^0.4.11"
     pikaday "^1.5.1"
+    tslib "^1.9.0"
 
 nice-try@^1.0.4:
   version "1.0.5"
@@ -5895,9 +5900,10 @@ prr@~1.0.1:
   resolved "https://registry.yarnpkg.com/prr/-/prr-1.0.1.tgz#d3fc114ba06995a45ec6893f484ceb1d78f5f476"
   integrity sha1-0/wRS6BplaRexok/SEzrHXj19HY=
 
-prx-ng-serve@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-0.0.4.tgz#e3fde24f65586401854e56e901ade1c1295f9953"
+prx-ng-serve@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/prx-ng-serve/-/prx-ng-serve-1.0.0.tgz#93459312a4ffbd0e2e9736db8df6c78c168ef545"
+  integrity sha512-3ACWSYH1zCZevXPNzL1i6CSowYrRbwF8o3kglKmPsa08+j4ephrSbqaV3l7p/Nsl7issTU7ZtHwS0jJR8NddoA==
   dependencies:
     connect-gzip-static "^2.1.1"
     dotenv "^4.0.0"
