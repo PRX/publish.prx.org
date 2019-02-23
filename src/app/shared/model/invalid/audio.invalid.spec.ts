@@ -68,6 +68,7 @@ describe('AudioInvalid', () => {
       expect(invalid('', {format: 'mp2'})).toMatch('not an mp3');
       expect(invalid('', {format: 'm4a'})).toMatch('not an mp3');
       expect(invalid('', {format: 'mp3', duration: 1})).toBeNull();
+      expect(invalid('', {format: 'mpeg', duration: 1})).toBeNull();
     });
 
     it('does not validate video files', () => {
