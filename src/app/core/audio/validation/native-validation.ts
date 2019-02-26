@@ -16,6 +16,7 @@ export class NativeValidation implements AudioValidation {
       this.fileName = src.name;
       this.fileSrc = URL.createObjectURL(src);
       if (src.type) {
+        // getting "mpeg" on valid mp3s
         this.data.format = src.type.split('/').pop();
       }
     } else {

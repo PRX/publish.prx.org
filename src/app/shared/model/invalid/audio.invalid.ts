@@ -75,6 +75,7 @@ export const FILE_TEMPLATED = (versionTemplate?: HalDoc, template?: HalDoc): Bas
 
     // loosely match content type
     if (versionTemplate && versionTemplate['contentType']) {
+      // also allows 'mpeg': some files dont have metadata to be aurora validated and are tripped up from our native audio validation
       if (versionTemplate['contentType'] === 'audio/mpeg' && file.format && !(file.format === 'mp3' || file.format === 'mpeg')) {
         return 'not an mp3 file';
       } else if (versionTemplate['contentType'].match(/audio/) && (file.duration === null || file.duration === undefined)) {
