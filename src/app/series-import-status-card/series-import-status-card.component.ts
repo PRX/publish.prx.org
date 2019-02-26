@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-import { Subscription } from 'rxjs/Subscription.js';
 import { Component, Input } from '@angular/core';
 import { SeriesImportModel } from '../shared';
 import { HalDoc } from '../core';

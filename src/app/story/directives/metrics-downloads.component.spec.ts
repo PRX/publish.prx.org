@@ -1,5 +1,5 @@
 import { cit, cms, create, provide } from '../../../testing';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { StoryModel } from '../../shared';
 import { MetricsDownloadsComponent } from './metrics-downloads.component';
 import { TabService } from 'ngx-prx-styleguide';

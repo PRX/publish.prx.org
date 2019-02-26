@@ -1,6 +1,5 @@
 import { cit, create, provide } from '../../../testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf } from 'rxjs';
 import { AudioInputComponent } from './audio-input.component';
 import { PlayerService } from '../../core/audio/player.service';
 import { UploadService } from '../../core/upload/upload.service';
@@ -9,9 +8,9 @@ describe('AudioInputComponent', () => {
 
   create(AudioInputComponent);
 
-  provide(PlayerService, {checkFile: () => Observable.of({})});
+  provide(PlayerService, {checkFile: () => observableOf({})});
 
-  provide(UploadService, {add: () => Observable.of(null)});
+  provide(UploadService, {add: () => observableOf(null)});
 
   const makeVersion = () => {
     let version = {
@@ -31,7 +30,7 @@ describe('AudioInputComponent', () => {
       durationSpy = spyOn(comp.player, 'checkFile');
     }
     let data = {format: 'fm', duration: milliseconds, bitrate: 'br', frequency: 'fr'};
-    durationSpy.and.returnValue(Observable.of(data));
+    durationSpy.and.returnValue(observableOf(data));
     comp.addFile(<any> 'some-file');
     return comp.version.file.duration;
   };
@@ -52,7 +51,7 @@ describe('AudioInputComponent', () => {
   cit('sets audio file fields', (fix, el, comp) => {
     comp.version = makeVersion();
     let data = {format: 'fm', duration: 5501, bitrate: 'br', frequency: 'fr'};
-    spyOn(comp.player, 'checkFile').and.returnValue(Observable.of(data));
+    spyOn(comp.player, 'checkFile').and.returnValue(observableOf(data));
     comp.addFile(<any> 'some-file');
     expect(comp.version.file.format).toEqual('fm');
     expect(comp.version.file.duration).toEqual(6);

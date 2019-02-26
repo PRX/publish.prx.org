@@ -1,9 +1,6 @@
-import { Observable } from 'rxjs/Observable';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
-import { Subscriber } from 'rxjs/Subscriber';
-import 'rxjs/add/observable/empty';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/throw';
+import { of as observableOf, EMPTY as observableEmpty, throwError as observableThrowError, Observable } from 'rxjs';
+import { ConnectableObservable } from 'rxjs';
+import { Subscriber } from 'rxjs';
 import { cms } from '../../../../testing';
 import { Upload } from '../../../core/upload/upload.service';
 import { UploadableModel } from './uploadable.model';
@@ -15,7 +12,7 @@ class TestUploadableModel extends UploadableModel {
   stateError(status) { return status === 'errored' ? 'the error message' : null; }
   key() { return 'foo'; }
   related() { return {}; }
-  saveNew() { return Observable.of(null); }
+  saveNew() { return observableOf(null); }
 }
 
 describe('UploadableModel', () => {
@@ -27,7 +24,7 @@ describe('UploadableModel', () => {
     model = new TestUploadableModel();
     spyOn(Upload.prototype, 'upload').and.stub();
     upload = new Upload(<any> {name: 'name.mp3', size: 99}, null, null);
-    upload['progress'] = <ConnectableObservable<number>> Observable.of(0.12);
+    upload['progress'] = <ConnectableObservable<number>> observableOf(0.12);
   });
 
   describe('initUpload', () => {
@@ -97,7 +94,7 @@ describe('UploadableModel', () => {
 
   describe('watchUpload', () => {
     it('starts an upload from the beginning', () => {
-      model.watchUpload(<any> {progress: Observable.empty()});
+      model.watchUpload(<any> {progress: observableEmpty});
       expect(model.progress).toEqual(0);
       expect(model.isUploading).toEqual(true);
       expect(model.isUploadError).toBeNull();
@@ -113,7 +110,7 @@ describe('UploadableModel', () => {
 
     it('catches upload errors', () => {
       spyOn(console, 'error').and.stub();
-      model.watchUpload(<any> {progress: Observable.throw('woh now')});
+      model.watchUpload(<any> {progress: observableThrowError('woh now')});
       expect(model.progress).toEqual(0);
       expect(model.isUploading).toEqual(true);
       expect(model.isUploadError).toEqual('woh now');
@@ -156,7 +153,7 @@ describe('UploadableModel', () => {
     let doc: any, status: string;
     beforeEach(() => {
       status = 'whatev';
-      let reload = () => { doc['status'] = status; return Observable.of(doc); };
+      let reload = () => { doc['status'] = status; return observableOf(doc); };
       doc = cms.mock('doc', {reload: reload});
       model.UPLOAD_PROCESS_INTERVAL = 1;
     });
@@ -236,7 +233,7 @@ describe('UploadableModel', () => {
 
   it('cancels uploads when destroyed', () => {
     spyOn(model, 'unsubscribe').and.stub();
-    spyOn(upload, 'cancel').and.callFake(() => Observable.of(false));
+    spyOn(upload, 'cancel').and.callFake(() => observableOf(false));
     model.initUpload(null, upload);
     model.destroy();
     expect(model.unsubscribe).toHaveBeenCalled();
