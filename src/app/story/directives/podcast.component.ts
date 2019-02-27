@@ -1,7 +1,7 @@
+
+import {forkJoin as observableForkJoin,  Observable ,  Subscription } from 'rxjs';
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/forkJoin';
+
 import { TabService } from 'ngx-prx-styleguide';
 import { CmsService } from '../../core';
 import {
@@ -75,7 +75,7 @@ export class PodcastComponent implements OnDestroy {
   findPodcastAudioVersions(story: StoryModel, dist: DistributionModel) {
     let loadTpls = dist.loadRelated('versionTemplates');
     let loadVersions = story.loadRelated('versions');
-    Observable.forkJoin(loadTpls, loadVersions).subscribe(() => {
+    observableForkJoin(loadTpls, loadVersions).subscribe(() => {
       this.versions = dist.versionTemplates.map(vt => {
         return story.versions.find(v => v.template && v.template.id === vt.id);
       }).filter(v => v);

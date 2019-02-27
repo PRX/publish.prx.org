@@ -1,5 +1,5 @@
 import { Component, OnDestroy, DoCheck, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { TabService } from 'ngx-prx-styleguide';
 import { SeriesModel, DistributionModel, FeederPodcastModel,
          CATEGORIES, SUBCATEGORIES, WysiwygComponent } from '../../shared';

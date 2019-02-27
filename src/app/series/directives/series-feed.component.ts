@@ -1,8 +1,10 @@
+
+import {of as observableOf,  Observable ,  Subscription } from 'rxjs';
+
+import {mergeMap} from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/observable/of';
+
+
 import { HalDoc, HalObservable, TabService } from 'ngx-prx-styleguide';
 
 const PER_PAGE = 50;
@@ -113,18 +115,18 @@ export class SeriesFeedComponent implements OnInit, OnDestroy {
   }
 
   loadPages(page$: HalObservable<HalDoc>) {
-    return page$.mergeMap(doc => {
-      return doc.followList('prx:items').mergeMap(docs => {
+    return page$.pipe(mergeMap(doc => {
+      return doc.followList('prx:items').pipe(mergeMap(docs => {
         this.addStories(docs);
         if (doc.has('next')) {
           this.isPaging = true;
           const nextPage = doc.follow('next');
           return this.loadPages(nextPage);
         } else {
-          return Observable.of(null);
+          return observableOf(null);
         }
-      });
-    });
+      }));
+    }));
   }
 
   addStories(stories: HalDoc[]) {

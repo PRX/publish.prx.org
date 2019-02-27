@@ -1,6 +1,9 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
+
+
 import { HalDoc, Upload } from '../../core';
 import { BaseModel, ValidatorMap } from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
@@ -80,33 +83,33 @@ export class SeriesModel extends BaseModel implements HasUpload {
   }
 
   related() {
-    let images = Observable.of([]);
-    let templates = Observable.of([]);
-    let distributions = Observable.of([]);
+    let images = observableOf([]);
+    let templates = observableOf([]);
+    let distributions = observableOf([]);
 
     // image uploads
-    images = this.getUploads('prx:images').map(idocs => {
+    images = this.getUploads('prx:images').pipe(map(idocs => {
       let models = idocs.map(docOrUuid => new ImageModel(this.doc, docOrUuid));
       this.setUploads('prx:images', models.map(m => m.uuid));
       return models;
-    });
+    }));
 
     if (this.doc && this.doc.count('prx:audio-version-templates')) {
-      templates = this.doc.followItems('prx:audio-version-templates').map(tdocs => {
+      templates = this.doc.followItems('prx:audio-version-templates').pipe(map(tdocs => {
         return tdocs.map(t => new AudioVersionTemplateModel(this.doc, t))
                     .concat(this.unsavedVersionTemplates).filter(t => t);
-      });
+      }));
     } else if (this.unsavedVersionTemplates) {
-      templates = Observable.of(this.unsavedVersionTemplates);
+      templates = observableOf(this.unsavedVersionTemplates);
     }
 
     if (this.doc && this.doc.count('prx:distributions')) {
-      distributions = this.doc.followItems('prx:distributions').map(ddocs => {
+      distributions = this.doc.followItems('prx:distributions').pipe(map(ddocs => {
         return ddocs.map(d => new DistributionModel(this.doc, d))
                     .concat(this.unsavedDistribution).filter(d => d);
-      });
+      }));
     } else if (this.unsavedDistribution) {
-      distributions = Observable.of([this.unsavedDistribution]);
+      distributions = observableOf([this.unsavedDistribution]);
     }
 
     return {

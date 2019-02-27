@@ -1,6 +1,5 @@
 import { cit, create, cms, provide, By } from '../../../testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf } from 'rxjs';
 import { BasicComponent } from './basic.component';
 import { ModalService, TabService } from 'ngx-prx-styleguide';
 import * as moment from 'moment';
@@ -57,9 +56,9 @@ describe('BasicComponent', () => {
       versions = [{label: 'whatev', template: {id: 456}}];
       templates = [{id: 123, label: 'tpl 123'}, {id: 456, label: 'tpl 456'}];
       story = {
-        loadRelated: () => (story.versions = versions) && Observable.of(true),
+        loadRelated: () => (story.versions = versions) && observableOf(true),
         removeRelated: r => story.versions = story.versions.filter(v => v !== r),
-        getSeriesTemplates: () => Observable.of(templates.map(t => cms.mock('prx:tpl', t)))
+        getSeriesTemplates: () => observableOf(templates.map(t => cms.mock('prx:tpl', t)))
       };
     });
 

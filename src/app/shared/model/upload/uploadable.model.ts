@@ -1,9 +1,11 @@
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/takeWhile';
+
+import {interval as observableInterval,  Observable ,  Subscription } from 'rxjs';
+
+import {takeWhile, map, mergeMap} from 'rxjs/operators';
+
+
+
+
 import { HalDoc, Upload } from '../../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { FALSEY } from '../invalid';
@@ -106,17 +108,16 @@ export abstract class UploadableModel extends BaseModel {
   watchProcess() {
     let start = new Date().getTime();
     this.progress = 0;
-    this.processSub = Observable
-      .interval(this.UPLOAD_PROCESS_INTERVAL)
-      .flatMap(() => this.doc.reload())
-      .map(doc => {
+    this.processSub = observableInterval(this.UPLOAD_PROCESS_INTERVAL).pipe(
+      mergeMap(() => this.doc.reload()),
+      map(doc => {
         let elapsed = new Date().getTime() - start;
         this.isProcessTimeout = elapsed > this.UPLOAD_PROCESS_TIMEOUT;
         this.init(this.parent, doc, false);
         this.setState();
         return Math.min(elapsed / this.UPLOAD_PROCESS_ESTIMATE, 0.9);
-      })
-      .takeWhile(() => this.isProcessing)
+      }),
+      takeWhile(() => this.isProcessing), )
       .subscribe(
         pct => this.progress = pct,
         err => console.error('err', err)

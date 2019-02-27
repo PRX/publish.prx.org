@@ -1,6 +1,5 @@
 import { cms } from '../../../testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/empty';
+import { EMPTY as observableEmpty } from 'rxjs';
 import { AudioFileModel } from './audio-file.model';
 
 describe('AudioFileModel', () => {
@@ -85,7 +84,7 @@ describe('AudioFileModel', () => {
       let audio = makeFile();
       spyOn(versionMock, 'create').and.callFake((rel: string) => {
         expect(rel).toEqual('prx:audio');
-        return Observable.empty();
+        return observableEmpty;
       });
       audio.saveNew({hello: 'world'});
       expect(versionMock.create).toHaveBeenCalled();

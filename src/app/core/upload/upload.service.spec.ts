@@ -1,5 +1,5 @@
 import { UploadService, Upload } from './upload.service';
-import { Observable } from 'rxjs/Observable';
+import {of as observableOf, Observable } from 'rxjs';
 import { MimeDefinition } from './mime-type.service';
 import { Env } from '../core.env';
 
@@ -15,7 +15,7 @@ describe('UploadService', () => {
 
     let uploader: UploadService;
     beforeEach(() => {
-      spyOn(UploadService.prototype, 'init').and.callFake(() => Observable.of(null));
+      spyOn(UploadService.prototype, 'init').and.callFake(() => observableOf(null));
       spyOn(Upload.prototype, 'upload').and.stub();
       uploader = new UploadService(mockMime);
     });

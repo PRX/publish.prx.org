@@ -1,6 +1,9 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
+
+import {of as observableOf,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
+
+
 import { HalDoc, Upload } from '../../core';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { DistributionModel } from './distribution.model';
@@ -48,16 +51,16 @@ export class SeriesImportModel extends BaseModel {
 
   related() {
     // TODO these are pure haldocs, no front-end model wrapper
-    let episodeImports = Observable.of([]);
-    let episodeImportPlaceholders = Observable.of([]);
+    let episodeImports = observableOf([]);
+    let episodeImportPlaceholders = observableOf([]);
 
-    episodeImports = this.doc.followList('prx:episode-imports').map((episodes) => {
+    episodeImports = this.doc.followList('prx:episode-imports').pipe(map((episodes) => {
       return episodes;
-    });
+    }));
 
-    episodeImportPlaceholders = this.doc.followList('prx:episode-import-placeholders').map((episodes) => {
+    episodeImportPlaceholders = this.doc.followList('prx:episode-import-placeholders').pipe(map((episodes) => {
       return episodes;
-    });
+    }));
 
     return {
       episodeImports,

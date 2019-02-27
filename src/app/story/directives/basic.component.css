@@ -9,9 +9,7 @@ hr {
 }
 
 .file-select {
-  position: absolute;
-  top: -4px;
-  right: 0;
+  margin-bottom: 10px;
 }
 
 publish-upload {

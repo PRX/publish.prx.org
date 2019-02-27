@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HalBaseService, HalDoc, HalObservable } from 'ngx-prx-styleguide';
 import { Env } from '../core.env';
@@ -26,9 +28,9 @@ export class CmsService extends HalBaseService {
   }
 
   get individualAccount(): HalObservable<HalDoc> {
-    return <HalObservable<HalDoc>> this.auth.followItems('prx:accounts').map(accountDocs => {
+    return <HalObservable<HalDoc>> this.auth.followItems('prx:accounts').pipe(map(accountDocs => {
       return accountDocs.find(d => d['type'] === 'IndividualAccount');
-    });
+    }));
   }
 
   get accounts(): HalObservable<HalDoc[]> {

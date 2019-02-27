@@ -1,6 +1,7 @@
+
+import {of as observableOf,  Observable, interval, concat } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { filter, map, mergeMap, takeWhile } from 'rxjs/operators';
+import { map, takeWhile, flatMap } from 'rxjs/operators';
 import { SeriesModel, SeriesImportModel } from '../shared';
 
 @Injectable()
@@ -18,31 +19,32 @@ export class SeriesImportService {
 
     let lastReceived = null;
 
-    let seriesImportPoller = Observable
-      .interval(1000)
-      .flatMap(() => {
-        return seriesImport.doc.reload();
-      })
-      .map(doc => {
-        let parentAccountDoc = seriesImport.parent;
-        seriesImport.init(parentAccountDoc, doc, false);
-        return new SeriesImportModel(parentAccountDoc, doc);
-      })
-      .takeWhile((si) => {
-        // HACK
-        // https://github.com/ReactiveX/rxjs/issues/2420
-        // TODO fixed in rxjs 6
-        if (lastReceived !== null) {
-          return false;
-        }
-        if (si.isFinished()) {
-          lastReceived = si;
-        }
-        return true;
-      });
+    let seriesImportPoller = interval(1000)
+      .pipe(
+        flatMap(() => {
+          return seriesImport.doc.reload();
+        }),
+        map(doc => {
+          let parentAccountDoc = seriesImport.parent;
+          seriesImport.init(parentAccountDoc, doc, false);
+          return new SeriesImportModel(parentAccountDoc, doc);
+        }),
+        takeWhile((si) => {
+          // HACK
+          // https://github.com/ReactiveX/rxjs/issues/2420
+          // TODO fixed in rxjs 6
+          if (lastReceived !== null) {
+            return false;
+          }
+          if (si.isFinished()) {
+            lastReceived = si;
+          }
+          return true;
+        })
+      );
 
-    return Observable.concat(
-      Observable.of(seriesImport),
+    return concat(
+      observableOf(seriesImport),
       seriesImportPoller
     );
   }

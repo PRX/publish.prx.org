@@ -1,8 +1,11 @@
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
+
+import {timeoutWith, catchError} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/timeoutWith';
-import 'rxjs/add/observable/throw';
+
+
+
 import { AudioPlayback, AuroraPlayback, NativePlayback, PlaybackMetadata,
   UnsupportedFileError } from './playback';
 import { AudioValidation, AuroraValidation, NativeValidation, ValidationMetadata } from './validation';
@@ -16,13 +19,13 @@ export class PlayerService {
     this.stop();
 
     // play natively, or fallback to aurora
-    return this.nativePlayback(fileOrUrl).play().catch(err => {
+    return this.nativePlayback(fileOrUrl).play().pipe(catchError(err => {
       if (err instanceof UnsupportedFileError) {
         return this.auroraPlayback(fileOrUrl).play();
       } else {
-        return Observable.throw(err);
+        return observableThrowError(err);
       }
-    });
+    }));
   }
 
   seek(percent: number) {
@@ -39,8 +42,8 @@ export class PlayerService {
 
   checkFile(file: File): Observable<ValidationMetadata> {
     return this.auroraValidation(file)
-      .validate()
-      .timeoutWith(500, this.nativeValidation(file).validate());
+      .validate().pipe(
+      timeoutWith(500, this.nativeValidation(file).validate()));
   }
 
   private nativePlayback(fileOrUrl: File | string): AudioPlayback {

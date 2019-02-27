@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf } from 'rxjs';
 import { cms } from '../../../testing';
 import { StoryModel } from './story.model';
 import { AudioVersionModel } from './audio-version.model';
@@ -88,7 +88,7 @@ describe('StoryModel', () => {
         {label: 'New version', count: () => {}}
       ];
       spyOn(StoryModel.prototype, 'getSeriesTemplates').and.callFake(() => {
-        return Observable.of(versionsWithDefault);
+        return observableOf(versionsWithDefault);
       });
       let story = makeStory(null);
       expect(story.versions[0].label).toEqual('Default version');
@@ -100,7 +100,7 @@ describe('StoryModel', () => {
         {label: 'New version', count: () => {}}
       ];
       spyOn(StoryModel.prototype, 'getSeriesTemplates').and.callFake(() => {
-        return Observable.of(versionsWithoutDefault);
+        return observableOf(versionsWithoutDefault);
       });
       let story = makeStory(null);
       expect(story.versions[0].label).toEqual('New version');

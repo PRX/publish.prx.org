@@ -1,5 +1,5 @@
 import { Directive, Input, OnInit, OnDestroy, ElementRef } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { DragulaService, DragulaDirective } from 'ng2-dragula/ng2-dragula';
 import { UUID } from '../../core';
 import { AudioVersionModel } from '../../shared';

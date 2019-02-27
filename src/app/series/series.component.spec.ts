@@ -1,7 +1,7 @@
 import { cit, create, cms, provide, stubPipe, By } from '../../testing';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { of as observableOf, Observable } from 'rxjs';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { SeriesComponent } from './series.component';
 import { SeriesImportService } from './series-import.service';
@@ -24,10 +24,10 @@ describe('SeriesComponent', () => {
   provide(ActivatedRoute, activatedRoute);
   provide(SeriesImportService, {
     fetchImportsForSeries: (series: SeriesModel) => {
-      return Observable.of([]);
+      return observableOf([]);
     },
     pollForChanges: (seriesImport: SeriesImportModel) => {
-      return Observable.of(SeriesImportModel);
+      return observableOf(SeriesImportModel);
     }
   });
   stubPipe('timeago');

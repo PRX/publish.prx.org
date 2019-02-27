@@ -5,7 +5,7 @@ import { SeriesImportStatusCardComponent } from './series-import-status-card.com
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
 import { SeriesImportModel } from '../shared';
 import { MockHalDoc } from 'ngx-prx-styleguide';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 let activatedRoute = new ActivatedRouteStub();
 let router = new RouterStub();

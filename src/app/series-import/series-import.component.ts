@@ -8,7 +8,7 @@ import { SeriesModel, ImportValidationState } from '../shared';
 
 @Component({
   providers: [],
-  selector: 'app-series-import',
+  selector: 'publish-series-import',
   templateUrl: './series-import.component.html',
   styleUrls: ['./series-import.component.css']
 })

@@ -34,7 +34,7 @@ const checkMaximum = (min, max): string => {
 };
 
 export const VERSION_LENGTH = (version?: AudioVersionTemplateModel): BaseInvalid => {
-  return <BaseInvalid> (key: string, value: any) => {
+  return (key: string, value: any) => {
     let min = version.lengthMinimum;
     let max = version.lengthMaximum;
     if (key === 'lengthMinimum') {
@@ -46,7 +46,7 @@ export const VERSION_LENGTH = (version?: AudioVersionTemplateModel): BaseInvalid
 };
 
 export const FILE_LENGTH = (file?: AudioFileTemplateModel): BaseInvalid => {
-  return <BaseInvalid> (key: string, value: any) => {
+  return (key: string, value: any) => {
     let min = file.lengthMinimum;
     let max = file.lengthMaximum;
     if (key === 'lengthMinimum') {

@@ -1,6 +1,6 @@
 FROM mhart/alpine-node:9.3.0
 
-MAINTAINER PRX <sysadmin@prx.org>
+LABEL maintainer="PRX <sysadmin@prx.org>"
 LABEL org.prx.app="yes"
 
 # install git, aws-cli

@@ -1,5 +1,8 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
+
 import { HalDoc, Upload } from '../../core';
 import { UploadableModel } from './upload';
 
@@ -72,13 +75,13 @@ export class ImageModel extends UploadableModel {
     } else if (this.parent.has('prx:create-image')) {
       create = this.parent.create('prx:create-image', {}, data);
     } else {
-      create = Observable.throw(new Error('Cannot find image link on this resource!'));
+      create = observableThrowError(new Error('Cannot find image link on this resource!'));
     }
-    return create.map(doc => {
+    return create.pipe(map(doc => {
       this.setState();
       this.watchProcess();
       return doc;
-    });
+    }));
   }
 
 }

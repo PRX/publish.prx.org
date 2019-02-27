@@ -1,6 +1,4 @@
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/throw';
+import {of as observableOf, throwError as observableThrowError } from 'rxjs';
 import { PlayerService } from './player.service';
 import { UnsupportedFileError } from './playback';
 
@@ -10,7 +8,7 @@ class FakePlayback {
   progress = 0;
   play(): any {
     this.playing = true;
-    return this.playingErr ? Observable.throw(this.playingErr) : Observable.of(true);
+    return this.playingErr ? observableThrowError(this.playingErr) : observableOf(true);
   }
   seek(p: number) { this.progress = p; }
   stop() { this.playing = false; }
@@ -18,7 +16,7 @@ class FakePlayback {
 
 class FakeValidation {
   validate(): any {
-    return Observable.of('the-validation');
+    return observableOf('the-validation');
   }
 }
 

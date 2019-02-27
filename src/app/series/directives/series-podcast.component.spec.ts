@@ -1,6 +1,5 @@
 import { cit, create, provide } from '../../../testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf } from 'rxjs';
 import { SeriesPodcastComponent } from './series-podcast.component';
 import { TabService } from 'ngx-prx-styleguide';
 
@@ -11,7 +10,7 @@ describe('SeriesPodcastComponent', () => {
   provide(TabService);
 
   cit('forces you to create the series first', (fix, el, comp) => {
-    comp.series = {isNew: true, loadRelated: () => Observable.of(null), distributions: []};
+    comp.series = {isNew: true, loadRelated: () => observableOf(null), distributions: []};
     fix.detectChanges();
     expect(el).toContainText('The series itself must be created');
     comp.series.isNew = false;
@@ -21,7 +20,7 @@ describe('SeriesPodcastComponent', () => {
   });
 
   cit('warns if no audio version templates exist', (fix, el, comp) => {
-    comp.series = {loadRelated: () => Observable.of(null), distributions: []};
+    comp.series = {loadRelated: () => observableOf(null), distributions: []};
     comp.audioVersionOptions = [];
     fix.detectChanges();
     expect(el).toContainText('This series must have audio templates');
@@ -32,7 +31,7 @@ describe('SeriesPodcastComponent', () => {
   });
 
   cit('picks your only audio version template from the dropdown', (fix, el, comp) => {
-    comp.series = {loadRelated: () => Observable.of(null), distributions: []};
+    comp.series = {loadRelated: () => observableOf(null), distributions: []};
     comp.audioVersionOptions = [['Something', 'some-href']];
     comp.createDistribution();
     expect(comp.distribution.versionTemplateUrls).toEqual(['some-href']);
@@ -40,11 +39,11 @@ describe('SeriesPodcastComponent', () => {
 
   cit('finds podcast distributions for the series', (fix, el, comp) => {
     comp.series = {
-      loadRelated: () => Observable.of(null),
+      loadRelated: () => observableOf(null),
       distributions: [
-        {id: 1, kind: 'something', loadRelated: () => Observable.of(null)},
-        {id: 2, kind: 'podcast', loadRelated: () => Observable.of(null)},
-        {id: 3, kind: 'podcast', loadRelated: () => Observable.of(null)}
+        {id: 1, kind: 'something', loadRelated: () => observableOf(null)},
+        {id: 2, kind: 'podcast', loadRelated: () => observableOf(null)},
+        {id: 3, kind: 'podcast', loadRelated: () => observableOf(null)}
       ]
     };
     fix.detectChanges();
