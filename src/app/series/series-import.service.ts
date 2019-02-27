@@ -20,26 +20,28 @@ export class SeriesImportService {
     let lastReceived = null;
 
     let seriesImportPoller = interval(1000)
-      .pipe(flatMap(() => {
-        return seriesImport.doc.reload();
-      }))
-      .pipe(map(doc => {
-        let parentAccountDoc = seriesImport.parent;
-        seriesImport.init(parentAccountDoc, doc, false);
-        return new SeriesImportModel(parentAccountDoc, doc);
-      }))
-      .pipe(takeWhile((si) => {
-        // HACK
-        // https://github.com/ReactiveX/rxjs/issues/2420
-        // TODO fixed in rxjs 6
-        if (lastReceived !== null) {
-          return false;
-        }
-        if (si.isFinished()) {
-          lastReceived = si;
-        }
-        return true;
-      }));
+      .pipe(
+        flatMap(() => {
+          return seriesImport.doc.reload();
+        }),
+        map(doc => {
+          let parentAccountDoc = seriesImport.parent;
+          seriesImport.init(parentAccountDoc, doc, false);
+          return new SeriesImportModel(parentAccountDoc, doc);
+        }),
+        takeWhile((si) => {
+          // HACK
+          // https://github.com/ReactiveX/rxjs/issues/2420
+          // TODO fixed in rxjs 6
+          if (lastReceived !== null) {
+            return false;
+          }
+          if (si.isFinished()) {
+            lastReceived = si;
+          }
+          return true;
+        })
+      );
 
     return concat(
       observableOf(seriesImport),
