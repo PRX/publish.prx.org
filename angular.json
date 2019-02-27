@@ -11,6 +11,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "preserveSymlinks": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -30,6 +31,7 @@
               "node_modules/pikaday/css/triangle.css",
               "node_modules/c3/c3.css",
               "node_modules/ngx-prx-styleguide/assets/styles/bundle.scss",
+              "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "src/styles.css"
             ],
             "scripts": [
