@@ -44,12 +44,6 @@ describe('StoryModel', () => {
       expect(story.updatedAt.getMonth()).toEqual(3);
     });
 
-    it('parses tags', () => {
-      let story = makeStory({tags: ['Foo', 'Arts', 'Bar', 'Food']});
-      expect(story.tags).toEqual('Foo, Arts, Bar, Food');
-      expect(story.splitTags()).toEqual(['Foo', 'Arts', 'Bar', 'Food']);
-    });
-
   });
 
   describe('key', () => {
@@ -132,14 +126,6 @@ describe('StoryModel', () => {
                       'releasedAt', 'seasonIdentifier',
                       'shortDescription', 'tags', 'title' ];
       expect(Object.keys(json).sort()).toEqual(allowed);
-    });
-
-    it('combines tag fields', () => {
-      let story = makeStory();
-      story.tags = 'And,Some ,   More tags, Go here  ,Hello, World ,';
-      let json = <any> story.encode();
-      let tags = json.tags.sort();
-      expect(tags).toEqual(['And', 'Go here', 'Hello', 'More tags', 'Some', 'World']);
     });
 
   });
