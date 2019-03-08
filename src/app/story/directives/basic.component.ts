@@ -64,8 +64,9 @@ import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
 
       <hr/>
 
-      <prx-fancy-field textinput [model]="story" name="tags" label="Categories" [strict]="strict">
-        <div class="fancy-hint">A comma-separated list of tags relevant to the content of your episode.</div>
+      <prx-fancy-field label="Categories">
+        <div class="fancy-hint">Enter categories relevant to the content of your episode. Type the category and press Enter to set it.</div>
+        <prx-tags [selected]="story.tags" [options]="quickTags" (onChange)="onTagsChange($event)"></prx-tags>
       </prx-fancy-field>
 
       <prx-fancy-field label="Season and Episode Numbers">
@@ -109,6 +110,10 @@ export class BasicComponent implements OnDestroy, DoCheck {
   versionTemplates: { [id: number]: HalDoc; };
   versionTemplatesSelected: number[];
   versionTemplateOptions: string[][];
+
+  quickTags: object[] = [
+    { name: 'Ad-Free', value: 'adfree', tooltip: 'Informs some distributions to not include ads.'}
+  ];
 
   constructor(
     tab: TabService,
@@ -215,6 +220,10 @@ export class BasicComponent implements OnDestroy, DoCheck {
         () => {}
       );
     }
+  }
+
+  onTagsChange(tags: string[]) {
+    this.story.tags = tags;
   }
 
   private setSelected() {

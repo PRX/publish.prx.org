@@ -36,7 +36,7 @@ describe('BasicComponent', () => {
     expect(el).toContainText('clean version of the title');
     expect(el).toContainText('short description');
     expect(el).toContainText('full description');
-    expect(el).toContainText('list of tags');
+    expect(el).toContainText('categories relevant to the content');
     expect(el).toContainText('season number');
     expect(el).toContainText('episode number');
   });

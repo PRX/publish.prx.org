@@ -23,7 +23,7 @@ export class StoryModel extends BaseModel implements HasUpload {
   public cleanTitle: string;
   public shortDescription = '';
   public description = '';
-  public tags = '';
+  public tags = [];
   public status: string;
   public statusMessage: string;
   public updatedAt: Date;
@@ -131,7 +131,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     this.cleanTitle = this.doc['cleanTitle'] || '';
     this.shortDescription = this.doc['shortDescription'] || '';
     this.description = this.doc['descriptionMd'] || '';
-    this.tags = (this.doc['tags'] || []).join(', ');
+    this.tags = this.doc['tags'];
     this.status = this.doc['status'];
     this.statusMessage = this.doc['statusMessage'];
     this.seasonNumber = parseInt(this.doc['seasonIdentifier'], 10) || null;
@@ -147,7 +147,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     data.cleanTitle = this.cleanTitle;
     data.shortDescription = this.shortDescription;
     data.descriptionMd = this.description;
-    data.tags = this.splitTags();
+    data.tags = this.tags;
     data.episodeIdentifier = this.episodeNumber;
     data.seasonIdentifier = this.seasonNumber;
     data.releasedAt = this.releasedAt;
@@ -206,10 +206,6 @@ export class StoryModel extends BaseModel implements HasUpload {
       this.images = [...this.images]; // trigger change detection
     }
     this.setUploads('prx:images', this.images.map(i => i.uuid));
-  }
-
-  splitTags(): string[] {
-    return (this.tags || '').split(',').map(t => t.trim()).filter(t => t);
   }
 
   isV4(): boolean {
