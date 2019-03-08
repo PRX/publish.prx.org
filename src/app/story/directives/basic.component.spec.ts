@@ -45,7 +45,7 @@ describe('BasicComponent', () => {
     comp.story = {versions: [], changed: () => false, invalid: () => false};
     fix.detectChanges();
 
-    expect(el).toContainText('Pick at least one version of your audio files to upload for this episode');
+    expect(el).toContainText('Pick a version of your audio files to upload for this episode');
   });
 
   cit('shows tip if audio version is selected', (fix, el, comp) => {
