@@ -23,6 +23,7 @@ export class StoryModel extends BaseModel implements HasUpload {
   public cleanTitle: string;
   public shortDescription = '';
   public description = '';
+  public productionNotes: string;
   public tags = [];
   public status: string;
   public statusMessage: string;
@@ -37,12 +38,13 @@ export class StoryModel extends BaseModel implements HasUpload {
   public distributions: StoryDistributionModel[] = [];
 
   SETABLE = ['title', 'cleanTitle', 'shortDescription', 'description', 'tags',
-             'hasUploadMap', 'releasedAt', 'seasonNumber', 'episodeNumber'];
+             'hasUploadMap', 'releasedAt', 'seasonNumber', 'episodeNumber', 'productionNotes'];
 
   VALIDATORS = {
     title:            [REQUIRED(true), LENGTH(1, 255)],
     shortDescription: [REQUIRED()],
     description:      [LENGTH(0, 4000)],
+    productionNotes:  [LENGTH(0, 255)],
     versions:         [RELATIONS('You must include at least 1 version of your audio')]
   };
 
@@ -131,6 +133,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     this.cleanTitle = this.doc['cleanTitle'] || '';
     this.shortDescription = this.doc['shortDescription'] || '';
     this.description = this.doc['descriptionMd'] || '';
+    this.productionNotes = this.doc['productionNotes'] || '';
     this.tags = this.doc['tags'];
     this.status = this.doc['status'];
     this.statusMessage = this.doc['statusMessage'];
@@ -147,6 +150,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     data.cleanTitle = this.cleanTitle;
     data.shortDescription = this.shortDescription;
     data.descriptionMd = this.description;
+    data.productionNotes = this.productionNotes;
     data.tags = this.tags;
     data.episodeIdentifier = this.episodeNumber;
     data.seasonIdentifier = this.seasonNumber;
