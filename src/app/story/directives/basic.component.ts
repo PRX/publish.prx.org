@@ -36,15 +36,20 @@ import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
       <hr/>
 
       <prx-fancy-field required label="Audio Files">
-        <prx-select *ngIf="versionTemplateOptions" class="file-select"  placeholder="Select Templates..."
+        
+        <prx-select
+          *ngIf="versionTemplateOptions" class="file-select" placeholder="Select Template..."
           [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
-          (onSelect)="updateVersions($event)"
-          [class.invalid]="versionsInvalid"
-          [class.changed]="versionsChanged"></prx-select>
+          (onSelect)="updateVersions($event)" [maxSelectedItems]="1" [closeOnSelect]="true"
+          [class.invalid]="versionsInvalid" [class.changed]="versionsChanged">
+        </prx-select>
         <prx-spinner *ngIf="!undeletedVersions"></prx-spinner>
         <publish-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></publish-upload>
         <div *ngIf="undeletedVersions?.length === 0" class="fancy-hint">
-          Pick at least one version of your audio files to upload for this episode.
+          Pick a version of your audio files to upload for this episode.
+        </div>
+        <div *ngIf="undeletedVersions?.length > 0" class="fancy-hint">
+          Clear your selection to select another template.
         </div>
       </prx-fancy-field>
 
