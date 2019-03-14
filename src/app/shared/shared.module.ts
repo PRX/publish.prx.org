@@ -12,6 +12,7 @@ import { FocusDirective, WysiwygComponent } from './wysiwyg';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   DatepickerModule, FancyFormModule, HeroModule, ImageModule,
   ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
+import { StickyDirective } from './sticky/sticky.directive';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { AuthGuard, DeactivateGuard, UnauthGuard,
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
-    WysiwygComponent
+    WysiwygComponent,
+    StickyDirective
   ],
   exports: [
     AdvancedSectionComponent,
@@ -48,7 +50,8 @@ import { AuthGuard, DeactivateGuard, UnauthGuard,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
     SpinnerModule,
-    WysiwygComponent
+    WysiwygComponent,
+    StickyDirective
   ],
   imports: [
     CommonModule,
