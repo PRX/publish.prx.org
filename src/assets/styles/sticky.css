@@ -1,0 +1,12 @@
+
+.sticky-area {
+  flex-grow: 1;
+}
+
+.sticky-container {
+  position: sticky;
+  /* Safari support */
+  position: -webkit-sticky;
+  /* Roughtly header height + hero toolbar height + 20px */
+  top: 170px;
+}
