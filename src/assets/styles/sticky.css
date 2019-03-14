@@ -1,0 +1,9 @@
+
+
+.sticky-container {
+  position: sticky;
+  /* Safari support. */
+  position: -webkit-sticky;
+  /* Must set a default top threshold. */
+  top: 0;
+}

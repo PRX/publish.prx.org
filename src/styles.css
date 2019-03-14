@@ -3,6 +3,7 @@
  */
 @import './assets/styles/dragula.css';
 @import './assets/styles/pikaday-custom.css';
+@import './assets/styles/sticky.css';
 @import './assets/prosemirror/prosemirror.css';
 @import './assets/prosemirror/menu.css';
 @import './assets/prosemirror/style.css';

@@ -1,6 +1,20 @@
 /**
  * Story general styling
  */
+
 button.delete {
   margin: 30px 0 0 90px;
+}
+
+.sticky-area {
+  flex-grow: 1;
+}
+
+.sticky-container {
+  top: 170px;
+}
+
+:host >>> .subnav {
+  display: flex;
+  flex-direction: column;
 }

@@ -21,8 +21,12 @@ import { Env } from '../core/core.env';
         <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
         <a *ngIf="distDownloads" routerLinkActive="active" [routerLink]="[base, 'downloads']">Download Metrics</a>
       </nav>
-      <publish-story-status [id]="id" [story]="story"></publish-story-status>
-      <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
+      <div class="sticky-area">
+        <div class="sticky-container">
+          <publish-story-status [id]="id" [story]="story"></publish-story-status>
+          <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
+        </div>
+      </div>
     </prx-tabs>
   `
 })
