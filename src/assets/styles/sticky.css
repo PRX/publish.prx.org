@@ -1,12 +1,9 @@
 
-.sticky-area {
-  flex-grow: 1;
-}
 
 .sticky-container {
   position: sticky;
-  /* Safari support */
+  /* Safari support. */
   position: -webkit-sticky;
-  /* Roughtly header height + hero toolbar height + 20px */
-  top: 170px;
+  /* Must set a default top threshold. */
+  top: 0;
 }
