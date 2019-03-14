@@ -1,6 +1,24 @@
 /**
  * Story general styling
  */
+
 button.delete {
   margin: 30px 0 0 90px;
+}
+
+.sticky-area {
+  flex-grow: 1;
+}
+
+.sticky-container {
+  position: sticky;
+  /* Safari support */
+  position: -webkit-sticky;
+  /* Roughtly header height + hero toolbar height + 20px */
+  top: 170px;
+}
+
+:host >>> .subnav {
+  display: flex;
+  flex-direction: column;
 }
