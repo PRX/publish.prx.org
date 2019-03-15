@@ -32,8 +32,8 @@ describe('DashboardSeriesComponent', () => {
     comp.series.mockItems('prx:stories', []);
     comp.series.count = () => 1;
     fix.detectChanges();
-    expect(el).toQueryAttr('a', 'href', 'series/99');
-    expect(el).toQueryAttr('h1 a', 'href', 'series/99');
+    expect(el).toQueryAttr('.title > a', 'href', '/series/99');
+    expect(el).toQueryAttr('h1 a', 'href', '/series/99');
   });
 
   cit('provides a link to view all stories in a series', (fix, el, comp) => {
@@ -43,7 +43,7 @@ describe('DashboardSeriesComponent', () => {
     comp.series.mockItems('prx:stories', []);
     comp.series.count = () => 1;
     fix.detectChanges();
-    expect(el).toQueryAttr('p.count a', 'href', 'search;tab=stories;seriesId=99');
+    expect(el).toQueryAttr('p.count a', 'href', '/search;tab=stories;seriesId=99');
   });
 
 });

@@ -14,7 +14,7 @@ import { StoryModel, SeriesModel } from '../shared';
     <div *ngIf="noseries" class="noseries">
       <header>
         <h2>Your Standalone Episodes</h2>
-        <a *ngIf="count > -1" class="all" [routerLink]="['search', { tab: 'stories', seriesId: -1 }]">View All {{count}} &raquo;</a>
+        <a *ngIf="count > -1" class="all" [routerLink]="['/search', { tab: 'stories', seriesId: -1 }]">View All {{count}} &raquo;</a>
       </header>
       <div class="series-actions">
         <a class="button" [routerLink]="['/story/new']">Create an Episode</a>
@@ -22,16 +22,16 @@ import { StoryModel, SeriesModel } from '../shared';
     </div>
     <header *ngIf="!noseries">
       <div class="title">
-        <a [routerLink]="['series', id]">
+        <a [routerLink]="['/series', id]">
           <prx-image [imageDoc]="series"></prx-image>
         </a>
         <p class="count">
           <span *ngIf="count === 0">0 Episodes</span>
-          <a *ngIf="count > 0" [routerLink]="['search', { tab: 'stories', seriesId: id }]">
+          <a *ngIf="count > 0" [routerLink]="['/search', { tab: 'stories', seriesId: id }]">
             {{count | i18nPlural: {'=1' : '1 Episode', 'other' : '# Episodes'} }}
           </a>
         </p>
-        <h1><a [routerLink]="['series', id]">{{title}}</a></h1>
+        <h1><a [routerLink]="['/series', id]">{{title}}</a></h1>
         <p class="updated">Last updated {{updated | timeago}}</p>
       </div>
       <div class="series-actions">
