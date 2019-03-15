@@ -1,0 +1,26 @@
+<div class="main">
+  <section>
+    <header>
+      <h2>Your Series</h2>
+      <a *ngIf="totalCount" class="all" [routerLink]="['search', { tab: 'series'}]">View All {{totalCount}} &raquo;</a>
+    </header>
+    <prx-spinner *ngIf="!isLoaded"></prx-spinner>
+    <div *ngIf="noSeries">
+      <div class="empty">You have no series available to manage via the Publish app.
+        <br/>Older PRX series must be managed on
+        <a href="https://www.prx.org/series/manage">the old version of PRX.org</a>.
+        <a [routerLink]="['series/new']" class="new-series">
+          <i class="icon-plus" aria-hidden="true"></i>
+          <span>New Series</span>
+        </a>
+      </div>
+      <publish-dashboard-series noseries=true [auth]="auth"></publish-dashboard-series>
+    </div>
+
+    <div *ngIf="series">
+      <publish-dashboard-series *ngFor="let s of series" [auth]="auth" [series]="s"></publish-dashboard-series>
+      <publish-dashboard-series noseries=true [auth]="auth"></publish-dashboard-series>
+    </div>
+
+  </section>
+</div>
