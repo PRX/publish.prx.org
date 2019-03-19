@@ -35,7 +35,7 @@ import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
 
       <prx-fancy-field textinput [model]="story" name="productionNotes" label="Production Notes">
         <div class="fancy-hint">Helpful information for the production and/or ad sales teams.<br/>
-        Ex: 'Sensitive content about suicide in segment 2.'</div>
+        Ex: 'Descriptions of violence in segment 2.'</div>
       </prx-fancy-field>
 
       <hr/>
