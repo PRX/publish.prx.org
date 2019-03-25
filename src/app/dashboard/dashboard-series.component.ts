@@ -44,7 +44,7 @@ import { StoryModel, SeriesModel } from '../shared';
         <button class="btn-link" [disabled]="!isListView">Calendar</button>
       </div>
       <div>
-        <select>
+        <select (change)="filterByPublishState($event.target.value)">
           <option selected disabled value="undefined">Filter by publish state</option>
           <option *ngFor="let state of publishStates" [value]="state" [selected]="state === publishStateFilter">
             {{state | capitalize}}
@@ -90,9 +90,6 @@ export class DashboardSeriesComponent implements OnInit {
       this.loadSeriesDistribution();
     }
   }
-  get storiesNoun(): string {
-    return this.count === 1 ? 'episode' : 'episodes';
-  }
 
   loadSeriesStories() {
     this.id = this.series.id;
@@ -109,7 +106,7 @@ export class DashboardSeriesComponent implements OnInit {
 
     this.series.followItems('prx:stories', {
       per,
-      filters: 'v4',
+      filters: this.publishStateFilter ? `v4,state=${this.publishStateFilter}` : 'v4',
       sorts: 'published_released_at: desc',
       zoom: 'prx:image'
     }).subscribe((stories: HalDoc[]) => {
@@ -124,6 +121,8 @@ export class DashboardSeriesComponent implements OnInit {
                 episodeDistribution.loadRelated('episode').subscribe(() => {
                   this.episodeLoaders[i] = false;
                 })
+              } else {
+                this.episodeLoaders[i] = false;
               }
             });
           } else {
@@ -156,7 +155,7 @@ export class DashboardSeriesComponent implements OnInit {
 
     let account = this.auth.follow('prx:default-account');
     let stories = this.auth.followItems('prx:stories', {
-      filters: 'noseries,v4',
+      filters: this.publishStateFilter ? `noseries,v4,state=${this.publishStateFilter}` : 'noseries,v4',
       per,
       sorts: 'published_released_at: desc'
     });
@@ -174,7 +173,13 @@ export class DashboardSeriesComponent implements OnInit {
   }
 
   filterByPublishState(state: string) {
+    this.stories = null;
     this.publishStateFilter = state;
+    if (this.noseries) {
+      this.loadStandaloneStories();
+    } else {
+      this.loadSeriesStories();
+    }
   }
 
 }

@@ -46,4 +46,19 @@ describe('DashboardSeriesComponent', () => {
     expect(el).toQueryAttr('p.count a', 'href', '/search;tab=stories;seriesId=99');
   });
 
+  cit('filters by publish state', (fix, el, comp) => {
+    comp.noseries = false;
+    comp.auth = auth;
+    comp.series = new MockHalDoc({id: 99});
+    comp.series.mockItems('prx:stories', []);
+    comp.series.count = () => 1;
+    spyOn(comp, 'loadSeriesStories');
+    spyOn(comp, 'loadStandaloneStories');
+    comp.filterByPublishState('published');
+    expect(comp.loadSeriesStories).toHaveBeenCalled();
+    comp.noseries = true;
+    comp.filterByPublishState('draft');
+    expect(comp.loadStandaloneStories).toHaveBeenCalled();
+  });
+
 });
