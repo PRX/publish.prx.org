@@ -79,7 +79,7 @@ export class DashboardStoryComponent implements OnInit {
   loadData() {
     this.storyTitle = this.story.title;
     this.storyTeaser = this.story.shortDescription;
-    this.storyDate = this.story.publishedAt || this.story.releasedAt || this.story.updatedAt || this.story.lastStored;
+    this.storyDate = this.story.publishedAt || this.story.releasedAt;
   }
 
   setMetricsUrlParams() {
