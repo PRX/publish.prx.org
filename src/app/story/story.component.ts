@@ -19,7 +19,6 @@ import { Env } from '../core/core.env';
         <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
         <a *ngIf="distPodcast" routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Episode Info</a>
         <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
-        <a *ngIf="distDownloads" routerLinkActive="active" [routerLink]="[base, 'downloads']">Download Metrics</a>
       </nav>
       <div class="sticky-area">
         <div class="sticky-container">
@@ -41,7 +40,6 @@ export class StoryComponent implements OnInit {
   // distribution specific tabs
   distPodcast = false;
   distPlayer = false;
-  distDownloads = false;
 
   constructor(
     private cms: CmsService,
@@ -114,12 +112,10 @@ export class StoryComponent implements OnInit {
     if (this.story && this.story.isNew) {
       this.story.getSeriesDistribution('podcast').subscribe(dist => {
         this.distPodcast = dist ? true : false;
-        this.distDownloads = false;
       });
     } else if (this.story) {
       this.story.loadRelated('distributions').subscribe(() => {
         this.distPodcast = this.story.distributions.some(d => d.kind === 'episode');
-        this.distDownloads = (this.distPodcast && Env.METRICS_HOST) ? true : false;
       });
     }
   }
