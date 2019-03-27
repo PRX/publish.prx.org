@@ -12,7 +12,7 @@ import { StoryStatusComponent } from './directives/status.component';
 const storyChildRoutes = [
   { path: '',        component: BasicComponent },
   { path: 'podcast', component: PodcastComponent },
-  { path: 'player',  component: PlayerComponent }
+  { path: 'player',  component: PlayerComponent },
 ];
 
 export const storyRoutes: Routes = [
