@@ -1,7 +1,7 @@
 
 import { concat as observableConcat } from 'rxjs';
 
-import { map, mergeMap, toArray } from 'rxjs/operators';
+import { toArray } from 'rxjs/operators';
 import { Component, Input, OnInit } from '@angular/core';
 
 import { HalDoc } from '../core';
