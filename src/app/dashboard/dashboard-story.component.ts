@@ -2,8 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { StoryModel, SeriesModel } from '../shared';
 import { Env } from '../core/core.env';
 
-declare const encodeURI: any;
-
 @Component({
   selector: 'publish-dashboard-story',
   styleUrls: ['dashboard-story.component.css'],
