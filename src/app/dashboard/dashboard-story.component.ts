@@ -10,11 +10,11 @@ import { Env } from '../core/core.env';
     <p class="story-date">{{storyDate | date:"M/d"}}</p>
     <div class="title">
       <h2>
-        <a *ngIf="storyTitle" [routerLink]="editLink">{{storyTitle}}</a>
-        <a *ngIf="!storyTitle" [routerLink]="editLink">{{storyDate | date:"MMM d, y"}}</a>
+        <a *ngIf="story?.title" [routerLink]="editLink">{{story?.title}}</a>
+        <a *ngIf="!story?.title" [routerLink]="editLink">{{(story?.publishedAt || story?.releasedAt) | date:"MMM d, y"}}</a>
       </h2>
       <h3>
-        <span class="teaser">{{storyTeaser}}</span>
+        <span class="teaser">{{story.shortDescription}}</span>
         <span *ngIf="status" class="{{status}} status text">{{status}}</span>
       </h3>
     </div>
@@ -37,8 +37,6 @@ export class DashboardStoryComponent implements OnInit {
 
   editLink: any[];
 
-  storyTitle: string;
-  storyTeaser: string;
   storyDate: Date;
 
   status: string;
@@ -47,7 +45,6 @@ export class DashboardStoryComponent implements OnInit {
   ngOnInit() {
     this.setLink();
     this.setStatus();
-    this.loadData();
     this.setMetricsUrlParams();
   }
 
@@ -72,12 +69,6 @@ export class DashboardStoryComponent implements OnInit {
     } else {
       this.status = 'published';
     }
-  }
-
-  loadData() {
-    this.storyTitle = this.story.title;
-    this.storyTeaser = this.story.shortDescription;
-    this.storyDate = this.story.publishedAt || this.story.releasedAt;
   }
 
   setMetricsUrlParams() {

@@ -12,10 +12,11 @@ describe('DashboardSeriesComponent', () => {
   stubPipe('capitalize');
 
   let auth;
+  let account;
   let series;
   beforeEach(() => {
     auth = cms.mock('prx:authorization', {});
-    auth.mock('prx:default-account', {});
+    account = auth.mock('prx:default-account', {});
     auth.mock('prx:series', {}).mockItems('prx:stories', []);
     auth.mockItems('prx:stories', []);
     series = new SeriesModel(auth, new MockHalDoc({id: 99, count: () => 1}));
@@ -24,6 +25,7 @@ describe('DashboardSeriesComponent', () => {
   cit('displays standalone stories', (fix, el, comp) => {
     comp.noseries = true;
     comp.auth = auth;
+    comp.account = account;
     fix.detectChanges();
     expect(el).toContainText('Your Standalone Episodes');
   });

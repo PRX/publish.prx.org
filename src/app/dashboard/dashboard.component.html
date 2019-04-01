@@ -14,12 +14,12 @@
           <span>New Series</span>
         </a>
       </div>
-      <publish-dashboard-series noseries=true [auth]="auth"></publish-dashboard-series>
+      <publish-dashboard-series noseries=true [auth]="auth" [account]="account"></publish-dashboard-series>
     </div>
 
     <div *ngIf="series">
       <publish-dashboard-series *ngFor="let s of series" [series]="s"></publish-dashboard-series>
-      <publish-dashboard-series noseries=true [auth]="auth"></publish-dashboard-series>
+      <publish-dashboard-series noseries=true [auth]="auth" [account]="account"></publish-dashboard-series>
     </div>
 
   </section>

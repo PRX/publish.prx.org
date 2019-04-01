@@ -1,6 +1,6 @@
 
 import { concat } from 'rxjs';
-import { filter, mergeMap } from 'rxjs/operators';
+import { filter, mergeMap, map } from 'rxjs/operators';
 
 import { toArray } from 'rxjs/operators';
 import { Component, Input, OnInit } from '@angular/core';
@@ -67,6 +67,7 @@ export class DashboardSeriesComponent implements OnInit {
   PER_SERIES = 10;
 
   @Input() series: SeriesModel;
+  @Input() account: HalDoc;
   @Input() auth: HalDoc;
   @Input() noseries: boolean;
 
@@ -106,28 +107,31 @@ export class DashboardSeriesComponent implements OnInit {
     this.series.doc.followItems('prx:stories', {
       per,
       filters: this.publishStateFilter ? `v4,state=${this.publishStateFilter}` : 'v4',
-      sorts: 'published_released_at: desc',
-      zoom: 'prx:image'
-    }).subscribe((stories: HalDoc[]) => {
-      this.stories = stories.map(story => new StoryModel(this.series.doc, story, false));
-      this.storyLoaders = null;
-      this.stories
-        .forEach((story: StoryModel, i) => {
-          if (story.publishedAt && story.publishedAt.valueOf() <= Date.now()) {
-            story.loadRelated('distributions').subscribe(() => {
-              const episodeDistribution = story.distributions.find(d => d.kind === 'episode');
-              if (episodeDistribution) {
-                episodeDistribution.loadRelated('episode').subscribe(() => {
-                  this.episodeLoaders[i] = false;
-                })
-              } else {
-                this.episodeLoaders[i] = false;
-              }
-            });
-          } else {
+      sorts: 'published_released_at: desc'
+    }).pipe(
+      map((stories: HalDoc[]) => {
+        this.stories = stories.map(story => new StoryModel(this.series.doc, story, false));
+        this.storyLoaders = null;
+        return this.stories;
+      }),
+      mergeMap((stories: StoryModel[]) => {
+        return stories.map(story => story.loadRelated('distributions'))
+      }),
+      map(() => {
+        const distributions = this.stories.filter((story, i) => {
+          const episodeDistribution = story.distributions.find(d => d.kind === 'episode');
+          if (!episodeDistribution) {
             this.episodeLoaders[i] = false;
           }
+          return episodeDistribution;
         });
+        return distributions;
+      }),
+      mergeMap((stories: StoryModel[]) => {
+        return stories.map(story => story.distributions.find(d => d.kind === 'episode').loadRelated('episode'))
+      })
+    ).subscribe(() => {
+      this.episodeLoaders.fill(false);
     });
   }
 
@@ -152,21 +156,15 @@ export class DashboardSeriesComponent implements OnInit {
     const per = this.PER_SERIES;
     this.storyLoaders = Array(1); // just one
 
-    const account = this.auth.follow('prx:default-account');
-    const stories = this.auth.followItems('prx:stories', {
+    this.auth.followItems('prx:stories', {
       filters: this.publishStateFilter ? `noseries,v4,state=${this.publishStateFilter}` : 'noseries,v4',
       per,
       sorts: 'published_released_at: desc'
-    });
-
-    concat(account, stories).pipe(toArray()).subscribe((results) => {
-      const accountDoc = <HalDoc> results[0];
-      const storyDocs = <HalDoc[]> results[1];
-
+    }).subscribe((stories: HalDoc[]) => {
       // parent result total is embedded in child total
-      this.count = storyDocs.length ? storyDocs[0].total() : 0;
+      this.count = stories.length ? stories[0].total() : 0;
 
-      this.stories = storyDocs.map(story => new StoryModel(accountDoc, story, false));
+      this.stories = stories.map(story => new StoryModel(this.account, story, false));
       this.storyLoaders = null;
     });
   }
