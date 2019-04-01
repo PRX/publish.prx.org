@@ -1,0 +1,35 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+header select ~ select {
+  margin-left: 6px;
+}
+option[disabled] {
+  display: none;
+}
+
+h2 {
+  margin-top: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #676767;
+}
+
+publish-calendar-story {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #fff;
+}
+.story-loader {
+  position: relative;
+  display: block;
+  background: #ddd;
+}
+publish-calendar-story, .story-loader {
+  height: 78px;
+  margin-top: 10px;
+}

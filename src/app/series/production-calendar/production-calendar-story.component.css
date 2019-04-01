@@ -1,0 +1,65 @@
+.title {
+  max-width: calc(100% - 2 * 78px);
+}
+h2 {
+  font-size: 16px;
+}
+h2, h3 {
+  padding: 0 10px;
+  font-weight: 100;
+  line-height: 21px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+h3 {
+  display: flex;
+}
+h3 .teaser {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.story-date {
+  flex-basis: 75px;
+  font-size: 2em;
+  text-align: center;
+}
+.status {
+  background-color: #444;
+}
+.status.bar {
+  width: 3px;
+  align-self: stretch;
+}
+.status.text {
+  color: #fff;
+  padding: 3px;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  text-transform: uppercase;
+  margin-left: 10px;
+}
+.status.draft, .status.new {
+  background-color: #ffa500;
+}
+.status.scheduled {
+  background-color: #61A85D;
+}
+.status.published {
+  background-color: #0089bc;
+}
+.segments {
+  position: relative;
+  width: 78px;
+  margin-left: auto;
+  text-align: right;
+  padding-right: 10px;
+}
+.segments prx-spinner >>> .spinner {
+  margin: auto 20px;
+}
+.segments span {
+  font-weight: bold;
+  white-space: nowrap;
+}

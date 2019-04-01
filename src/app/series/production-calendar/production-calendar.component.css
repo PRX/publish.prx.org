@@ -1,0 +1,39 @@
+.hero {
+  background: #818181 url('/assets/images/towers.png') repeat;
+  min-height: 120px;
+}
+.hero > section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+h1 {
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 40px;
+  padding: 40px 0;
+  color: #fff;
+}
+h3 {
+  color: #fff;
+  font-size: 16px;
+  line-height: 60px;
+  font-weight: 400;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  float: right;
+}
+prx-image {
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
+  background-color: #a3a3a3;
+  display: block;
+  float: left;
+}
+.main > section {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
