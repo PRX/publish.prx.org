@@ -1,8 +1,6 @@
 
-import { concat } from 'rxjs';
 import { filter, mergeMap, map } from 'rxjs/operators';
 
-import { toArray } from 'rxjs/operators';
 import { Component, Input, OnInit } from '@angular/core';
 
 import { HalDoc } from '../core';

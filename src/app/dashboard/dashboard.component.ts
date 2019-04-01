@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { mergeMap } from 'rxjs/operators';
 import { CmsService, HalDoc } from '../core';
 import { SeriesModel } from '../shared';
 
@@ -21,18 +22,20 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.isLoaded = false;
-    this.cms.auth.subscribe(auth => {
-      this.auth = auth;
-      // only load v4 series
-      auth.follow('prx:default-account').subscribe((account: HalDoc) => {
+    this.cms.auth.pipe(
+      mergeMap((auth: HalDoc) => {
+        this.auth = auth;
+        return auth.follow('prx:default-account');
+      }),
+      mergeMap((account: HalDoc) => {
         this.account = account;
-        auth.followItems('prx:series', {filters: 'v4', zoom: 'prx:image'}).subscribe(series => {
-          this.isLoaded = true;
-          this.totalCount = series.length ? series[0].total() : 0;
-          this.noSeries = (series.length < 1) ? true : null;
-          this.series = series.map(s => new SeriesModel(auth, s));
-        });
-      });
+        return this.auth.followItems('prx:series', {filters: 'v4', zoom: 'prx:image'});
+      })
+    ).subscribe((series: HalDoc[]) => {
+      this.isLoaded = true;
+      this.totalCount = series.length ? series[0].total() : 0;
+      this.noSeries = (series.length < 1) ? true : null;
+      this.series = series.map(s => new SeriesModel(this.account, s));
     });
   }
 
