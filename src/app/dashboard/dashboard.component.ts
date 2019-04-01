@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CmsService, HalDoc } from '../core';
+import { SeriesModel } from '../shared';
 
 @Component({
   selector: 'publish-dashboard',
@@ -13,7 +14,7 @@ export class DashboardComponent implements OnInit {
   totalCount: number;
   noSeries: boolean;
   auth: HalDoc;
-  series: HalDoc[];
+  series: SeriesModel[];
 
   constructor(private cms: CmsService) {}
 
@@ -27,7 +28,7 @@ export class DashboardComponent implements OnInit {
         this.isLoaded = true;
         this.totalCount = series.length ? series[0].total() : 0;
         this.noSeries = (series.length < 1) ? true : null;
-        this.series = series;
+        this.series = series.map(s => new SeriesModel(auth, s));
       });
     });
   }

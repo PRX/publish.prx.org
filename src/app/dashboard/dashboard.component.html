@@ -18,7 +18,7 @@
     </div>
 
     <div *ngIf="series">
-      <publish-dashboard-series *ngFor="let s of series" [auth]="auth" [series]="s"></publish-dashboard-series>
+      <publish-dashboard-series *ngFor="let s of series" [series]="s"></publish-dashboard-series>
       <publish-dashboard-series noseries=true [auth]="auth"></publish-dashboard-series>
     </div>
 

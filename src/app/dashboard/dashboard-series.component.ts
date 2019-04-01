@@ -1,5 +1,6 @@
 
-import { concat as observableConcat } from 'rxjs';
+import { concat } from 'rxjs';
+import { filter, mergeMap } from 'rxjs/operators';
 
 import { toArray } from 'rxjs/operators';
 import { Component, Input, OnInit } from '@angular/core';
@@ -23,7 +24,7 @@ import { StoryModel, SeriesModel } from '../shared';
     <header *ngIf="!noseries">
       <div class="title">
         <a [routerLink]="['/series', id]">
-          <prx-image [imageDoc]="series"></prx-image>
+          <prx-image [imageDoc]="series?.doc"></prx-image>
         </a>
         <p class="count">
           <span *ngIf="count === 0">0 Episodes</span>
@@ -40,8 +41,8 @@ import { StoryModel, SeriesModel } from '../shared';
     </header>
     <div class="list-actions">
       <div>
-        <button class="btn-link" [disabled]="isListView">Episode List</button> |
-        <button class="btn-link" [disabled]="!isListView">Calendar</button>
+        <button class="btn-link" disabled>Episode List</button> |
+        <a [routerLink]="['/series', id, 'calendar']">Calendar</a>
       </div>
       <div>
         <select (change)="filterByPublishState($event.target.value)">
@@ -54,7 +55,7 @@ import { StoryModel, SeriesModel } from '../shared';
     </div>
     <div class="story-list">
       <publish-dashboard-story *ngFor="let s of stories; let i = index"
-        [story]="s" [series]="seriesModel" [episodeLoader]="episodeLoaders && episodeLoaders[i]" [podcastLoader]="podcastLoader">
+        [story]="s" [series]="series" [episodeLoader]="episodeLoaders && episodeLoaders[i]" [podcastLoader]="podcastLoader">
       </publish-dashboard-story>
       <div *ngFor="let l of storyLoaders" class="story-loader"><prx-spinner></prx-spinner></div>
     </div>
@@ -65,7 +66,7 @@ export class DashboardSeriesComponent implements OnInit {
 
   PER_SERIES = 10;
 
-  @Input() series: HalDoc;
+  @Input() series: SeriesModel;
   @Input() auth: HalDoc;
   @Input() noseries: boolean;
 
@@ -73,12 +74,10 @@ export class DashboardSeriesComponent implements OnInit {
   id: number;
   title: string;
   updated: Date;
-  seriesModel: SeriesModel;
   stories: StoryModel[];
   storyLoaders: boolean[];
   episodeLoaders: boolean[];
   podcastLoader: boolean;
-  isListView = true;
   publishStates = ['draft', 'scheduled', 'published'];
   publishStateFilter: string;
 
@@ -94,23 +93,23 @@ export class DashboardSeriesComponent implements OnInit {
   loadSeriesStories() {
     this.id = this.series.id;
     this.title = this.series['title'];
-    this.count = this.series.count('prx:stories');
+    this.count = this.series.doc.count('prx:stories');
     this.updated = new Date(this.series['updatedAt']);
 
     // how many stories to display?
-    const total = this.series.count('prx:stories');
+    const total = this.series.doc.count('prx:stories');
     const max = this.PER_SERIES;
     const per = Math.min(total, max);
     this.storyLoaders = Array(per);
     this.episodeLoaders = Array(per).fill(true);
 
-    this.series.followItems('prx:stories', {
+    this.series.doc.followItems('prx:stories', {
       per,
       filters: this.publishStateFilter ? `v4,state=${this.publishStateFilter}` : 'v4',
       sorts: 'published_released_at: desc',
       zoom: 'prx:image'
     }).subscribe((stories: HalDoc[]) => {
-      this.stories = stories.map(story => new StoryModel(this.series, story, false));
+      this.stories = stories.map(story => new StoryModel(this.series.doc, story, false));
       this.storyLoaders = null;
       this.stories
         .forEach((story: StoryModel, i) => {
@@ -133,19 +132,19 @@ export class DashboardSeriesComponent implements OnInit {
   }
 
   loadSeriesDistribution() {
-    this.auth.follow('prx:default-account').subscribe((account: HalDoc) => {
-      this.podcastLoader = true;
-      this.seriesModel = new SeriesModel(account, this.series);
-      this.seriesModel.loadRelated('distributions').subscribe(() => {
-        const podcastDistribution = this.seriesModel.distributions.find(d => d.kind === 'podcast');
-        if (podcastDistribution) {
-          podcastDistribution.loadRelated('podcast').subscribe(() => {
-            this.podcastLoader = false;
-          });
-        } else {
+    let podcastDistribution;
+    this.podcastLoader = true;
+    this.series.loadRelated('distributions').pipe(
+      filter(() => {
+        podcastDistribution = this.series.distributions.find(d => d.kind === 'podcast');
+        if (!podcastDistribution) {
           this.podcastLoader = false;
         }
-      })
+        return this.podcastLoader;
+      }),
+      mergeMap(() => podcastDistribution.loadRelated('podcast'))
+    ).subscribe(() => {
+      this.podcastLoader = false;
     });
   }
 
@@ -153,16 +152,16 @@ export class DashboardSeriesComponent implements OnInit {
     const per = this.PER_SERIES;
     this.storyLoaders = Array(1); // just one
 
-    let account = this.auth.follow('prx:default-account');
-    let stories = this.auth.followItems('prx:stories', {
+    const account = this.auth.follow('prx:default-account');
+    const stories = this.auth.followItems('prx:stories', {
       filters: this.publishStateFilter ? `noseries,v4,state=${this.publishStateFilter}` : 'noseries,v4',
       per,
       sorts: 'published_released_at: desc'
     });
 
-    observableConcat(account, stories).pipe(toArray()).subscribe((results) => {
-      let accountDoc = <HalDoc> results[0];
-      let storyDocs = <HalDoc[]> results[1];
+    concat(account, stories).pipe(toArray()).subscribe((results) => {
+      const accountDoc = <HalDoc> results[0];
+      const storyDocs = <HalDoc[]> results[1];
 
       // parent result total is embedded in child total
       this.count = storyDocs.length ? storyDocs[0].total() : 0;
