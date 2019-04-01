@@ -7,14 +7,14 @@ import { Env } from '../core/core.env';
   styleUrls: ['dashboard-story.component.css'],
   template: `
     <div *ngIf="status" class="{{status}} status bar"></div>
-    <p class="story-date">{{storyDate | date:"M/d"}}</p>
+    <p class="story-date">{{(story?.publishedAt || story?.releasedAt) | date:"M/d"}}</p>
     <div class="title">
       <h2>
         <a *ngIf="story?.title" [routerLink]="editLink">{{story?.title}}</a>
         <a *ngIf="!story?.title" [routerLink]="editLink">{{(story?.publishedAt || story?.releasedAt) | date:"MMM d, y"}}</a>
       </h2>
       <h3>
-        <span class="teaser">{{story.shortDescription}}</span>
+        <span class="teaser">{{story?.shortDescription}}</span>
         <span *ngIf="status" class="{{status}} status text">{{status}}</span>
       </h3>
     </div>
