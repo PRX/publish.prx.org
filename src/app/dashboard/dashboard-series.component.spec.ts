@@ -1,4 +1,4 @@
-import { cit, create, cms, stubPipe, stub } from '../../testing';
+import { cit, create, cms, stubPipe } from '../../testing';
 import { MockHalDoc } from 'ngx-prx-styleguide';
 import { DashboardSeriesComponent } from './dashboard-series.component';
 import { SeriesModel } from 'app/shared';
