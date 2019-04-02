@@ -8,13 +8,12 @@ describe('DashboardComponent', () => {
   let auth;
   beforeEach(() => {
     auth = cms.mock('prx:authorization', {});
-    auth.mockItems('prx:series', []);
+    auth.mockItems('prx:series', []).forEach(s => s.mock('prx:account'));
     auth.mock('prx:default-account', {});
     auth.mockItems('prx:stories', []);
   });
 
   cit('shows a loading spinner', (fix, el, comp) => {
-    expect(el).not.toQuery('prx-spinner');
     comp.isLoaded = false;
     fix.detectChanges();
     expect(el).toQuery('prx-spinner');
@@ -31,12 +30,13 @@ describe('DashboardComponent', () => {
 
   describe('with one or more series', () => {
 
-    beforeEach(() => auth.mockItems('prx:series', [{}, {}, {}]));
+    beforeEach(() => auth.mockItems('prx:series', [{}, {}, {}]).forEach(s => s.mock('prx:account')));
 
     cit('shows a list of series', (fix, el, comp) => {
+      fix.detectChanges();
       expect(el).toContainText('View All 3');
       let series = el.queryAll(By.css('publish-dashboard-series'));
-      expect(series.length).toEqual(4);
+      expect(series.length).toEqual(4); // 1 + standalone series
       expect(series[0].nativeElement.getAttribute('noseries')).toBeNull();
       expect(series[3].nativeElement.getAttribute('noseries')).toEqual('true');
     });

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, forkJoin } from 'rxjs';
+import { mergeMap, map } from 'rxjs/operators';
 import { CmsService, HalDoc } from '../core';
+import { SeriesModel } from '../shared';
 
 @Component({
   selector: 'publish-dashboard',
@@ -13,22 +16,35 @@ export class DashboardComponent implements OnInit {
   totalCount: number;
   noSeries: boolean;
   auth: HalDoc;
-  series: HalDoc[];
+  defaultAccount: HalDoc;
+  series: SeriesModel[];
 
   constructor(private cms: CmsService) {}
 
   ngOnInit() {
-    this.isLoaded = false;
-    this.cms.auth.subscribe(auth => {
-      this.auth = auth;
+    let seriesDocs: HalDoc[];
 
-      // only load v4 series
-      auth.followItems('prx:series', {filters: 'v4', zoom: 'prx:image'}).subscribe(series => {
-        this.isLoaded = true;
+    this.cms.auth.pipe(
+      mergeMap((auth: HalDoc) => {
+        this.auth = auth;
+        return auth.follow('prx:default-account');
+      }),
+      mergeMap((defaultAccount: HalDoc) => {
+        this.defaultAccount = defaultAccount;
+        return this.auth.followItems('prx:series', {filters: 'v4', zoom: 'prx:image'});
+      }),
+      mergeMap((series: HalDoc[]) => {
+        seriesDocs = series;
         this.totalCount = series.length ? series[0].total() : 0;
         this.noSeries = (series.length < 1) ? true : null;
-        this.series = series;
-      });
+        return series.map(s => s.follow('prx:account'));
+      }),
+      mergeMap((account: Observable<HalDoc>) => {
+        return account;
+      })
+    ).subscribe((account: HalDoc) => {
+      this.isLoaded = true;
+      this.series = seriesDocs.map(s => new SeriesModel(account, s));
     });
   }
 

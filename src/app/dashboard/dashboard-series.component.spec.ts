@@ -1,6 +1,7 @@
 import { cit, create, cms, stubPipe } from '../../testing';
 import { MockHalDoc } from 'ngx-prx-styleguide';
 import { DashboardSeriesComponent } from './dashboard-series.component';
+import { SeriesModel } from 'app/shared';
 
 
 describe('DashboardSeriesComponent', () => {
@@ -11,54 +12,55 @@ describe('DashboardSeriesComponent', () => {
   stubPipe('capitalize');
 
   let auth;
+  let account;
+  let series;
   beforeEach(() => {
     auth = cms.mock('prx:authorization', {});
-    auth.mock('prx:default-account', {});
-    auth.mock('prx:series', {});
+    account = auth.mock('prx:default-account', {});
+    auth.mock('prx:series', {}).mockItems('prx:stories', []);
     auth.mockItems('prx:stories', []);
+    series = new SeriesModel(auth, new MockHalDoc({id: 99, count: () => 1}));
   });
 
   cit('displays standalone stories', (fix, el, comp) => {
     comp.noseries = true;
     comp.auth = auth;
+    comp.account = account;
     fix.detectChanges();
     expect(el).toContainText('Your Standalone Episodes');
   });
 
-  cit('provides a link to the series', (fix, el, comp) => {
-    comp.noseries = false;
-    comp.auth = auth;
-    comp.series = new MockHalDoc({id: 99});
-    comp.series.mockItems('prx:stories', []);
-    comp.series.count = () => 1;
-    fix.detectChanges();
-    expect(el).toQueryAttr('.title > a', 'href', '/series/99');
-    expect(el).toQueryAttr('h1 a', 'href', '/series/99');
-  });
+  describe('Series', () => {
+    beforeEach(() => {
+    });
 
-  cit('provides a link to view all stories in a series', (fix, el, comp) => {
-    comp.noseries = false;
-    comp.auth = auth;
-    comp.series = new MockHalDoc({id: 99});
-    comp.series.mockItems('prx:stories', []);
-    comp.series.count = () => 1;
-    fix.detectChanges();
-    expect(el).toQueryAttr('p.count a', 'href', '/search;tab=stories;seriesId=99');
-  });
+    cit('provides a link to the series', (fix, el, comp) => {
+      comp.noseries = false;
+      comp.series = series;
+      fix.detectChanges();
+      expect(el).toQueryAttr('.title > a', 'href', '/series/99');
+      expect(el).toQueryAttr('h1 a', 'href', '/series/99');
+    });
 
-  cit('filters by publish state', (fix, el, comp) => {
-    comp.noseries = false;
-    comp.auth = auth;
-    comp.series = new MockHalDoc({id: 99});
-    comp.series.mockItems('prx:stories', []);
-    comp.series.count = () => 1;
-    spyOn(comp, 'loadSeriesStories');
-    spyOn(comp, 'loadStandaloneStories');
-    comp.filterByPublishState('published');
-    expect(comp.loadSeriesStories).toHaveBeenCalled();
-    comp.noseries = true;
-    comp.filterByPublishState('draft');
-    expect(comp.loadStandaloneStories).toHaveBeenCalled();
-  });
+    cit('provides a link to view all stories in a series', (fix, el, comp) => {
+      comp.noseries = false;
+      comp.series = series;
+      fix.detectChanges();
+      expect(el).toQueryAttr('p.count a', 'href', '/search;tab=stories;seriesId=99');
+    });
+
+    cit('filters by publish state', (fix, el, comp) => {
+      comp.noseries = false;
+      comp.series = series;
+      spyOn(comp, 'loadSeriesStories');
+      spyOn(comp, 'loadStandaloneStories');
+      comp.filterByPublishState('published');
+      expect(comp.loadSeriesStories).toHaveBeenCalled();
+      comp.noseries = true;
+      comp.filterByPublishState('draft');
+      expect(comp.loadStandaloneStories).toHaveBeenCalled();
+    });
+  })
+
 
 });
