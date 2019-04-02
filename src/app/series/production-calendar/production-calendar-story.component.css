@@ -18,6 +18,7 @@ h3 {
 h3 .teaser {
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-right: 10px;
 }
 .story-date {
   flex-basis: 75px;
@@ -38,7 +39,6 @@ h3 .teaser {
   font-size: 11px;
   line-height: 14px;
   text-transform: uppercase;
-  margin-left: 10px;
 }
 .status.draft, .status.new {
   background-color: #ffa500;

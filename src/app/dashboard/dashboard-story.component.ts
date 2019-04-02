@@ -14,7 +14,7 @@ import { Env } from '../core/core.env';
         <a *ngIf="!story?.title" [routerLink]="editLink">{{(story?.publishedAt || story?.releasedAt) | date:"MMM d, y"}}</a>
       </h2>
       <h3>
-        <span class="teaser">{{story?.shortDescription}}</span>
+        <span class="teaser" *ngIf="story?.shortDescription">{{story?.shortDescription}}</span>
         <span *ngIf="status" class="{{status}} status text">{{status}}</span>
       </h3>
     </div>
