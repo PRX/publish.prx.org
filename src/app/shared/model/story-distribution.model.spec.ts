@@ -54,4 +54,9 @@ describe('StoryDistributionModel', () => {
     expect(dist.episode.guid).toEqual('some-guid');
   });
 
+  it('hacks the distribution url for podcast distributions to get at the podcast id', () => {
+    const dist = new StoryDistributionModel(series, story, episodeDist);
+    expect(dist.feederEpisodeId).toEqual('1234');
+  });
+
 });

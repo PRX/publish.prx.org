@@ -82,4 +82,9 @@ describe('DistributionModel', () => {
     expect(dist.invalid()).toMatch(/must pick at least one/i);
   });
 
+  it('hacks the distribution url for podcast distributions to get at the podcast id', () => {
+    const dist = new DistributionModel(series, podDist);
+    expect(dist.feederPodcastId).toEqual('1234');
+  });
+
 });

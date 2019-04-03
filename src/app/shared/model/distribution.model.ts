@@ -86,6 +86,13 @@ export class DistributionModel extends BaseModel {
     return {podcast, versionTemplates};
   }
 
+  get feederPodcastId(): string {
+    if (this.kind === 'podcast' && this.url) {
+      const parts = this.url.match(/\/(.[^\/]*)$/);
+      return parts && parts.length > 1 && parts[1];
+    }
+  }
+
   decode() {
     this.id = this.doc['id'];
     this.kind = this.doc['kind'] || '';
