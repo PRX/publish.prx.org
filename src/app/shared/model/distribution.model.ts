@@ -88,8 +88,7 @@ export class DistributionModel extends BaseModel {
 
   get feederPodcastId(): string {
     if (this.kind === 'podcast' && this.url) {
-      const parts = this.url.match(/\/(.[^\/]*)$/);
-      return parts && parts.length > 1 && parts[1];
+      return this.url.split('/').pop();
     }
   }
 

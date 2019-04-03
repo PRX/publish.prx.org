@@ -53,8 +53,7 @@ export class StoryDistributionModel extends BaseModel {
 
   get feederEpisodeId(): string {
     if (this.kind === 'episode' && this.url) {
-      const parts = this.url.match(/\/(.[^\/]*)$/);
-      return parts && parts.length > 1 && parts[1];
+      return this.url.split('/').pop();
     }
   }
 
