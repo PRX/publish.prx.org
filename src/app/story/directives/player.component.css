@@ -13,8 +13,9 @@ input {
   margin-bottom: 4px;
 }
 button, .button {
-  padding-top: 9px;
-  padding-bottom: 8px;
+  padding-top: 10px;
+  padding-bottom: 9px;
+  vertical-align: top;
 }
 button {
   background-color: #ff9600;
