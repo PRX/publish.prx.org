@@ -89,9 +89,9 @@ export class DashboardStoryComponent implements OnInit {
         && this.series && this.series.distributions) {
       const seriesDistribution = this.series.distributions.find(d => d.kind === 'podcast')
       const storyDistribution = this.story.distributions.find(d => d.kind === 'episode');
-      if (seriesDistribution && seriesDistribution.podcast && storyDistribution && storyDistribution.episode) {
-        const podcastId = seriesDistribution.podcast.id;
-        const episodeGuid = encodeURIComponent(storyDistribution.episode.id);
+      const podcastId = seriesDistribution && seriesDistribution.feederPodcastId;
+      const episodeGuid = storyDistribution && encodeURIComponent(storyDistribution.feederEpisodeId);
+      if (podcastId && episodeGuid) {
         return `${Env.METRICS_HOST}/${podcastId}/reach/episodes/daily;episodePage=1;guids=${episodeGuid}${this.metricsUrlParams}`;
       }
     }
