@@ -95,12 +95,9 @@ import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
         to either delay or back-date its release, select the desired release date and time here.
         Otherwise, the episode will be released immediately once published.
         </div>
-        <prx-datepicker *ngIf="showReleasedAt"
+        <prx-tz-datepicker *ngIf="showReleasedAt"
           [date]="story.releasedAt" (dateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
-        </prx-datepicker>
-        <prx-timepicker *ngIf="showReleasedAt"
-          [date]="story.releasedAt" (timeChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
-        </prx-timepicker>
+        </prx-tz-datepicker>
       </prx-fancy-field>
 
     </form>
