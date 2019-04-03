@@ -51,6 +51,12 @@ export class StoryDistributionModel extends BaseModel {
     return {episode: episode};
   }
 
+  get feederEpisodeId(): string {
+    if (this.kind === 'episode' && this.url) {
+      return this.url.split('/').pop();
+    }
+  }
+
   decode() {
     this.id = this.doc['id'];
     this.kind = this.doc['kind'] || '';

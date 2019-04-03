@@ -1,5 +1,5 @@
 
-import { filter, mergeMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -114,19 +114,6 @@ export class DashboardSeriesComponent implements OnInit {
       }),
       mergeMap((stories: StoryModel[]) => {
         return stories.map(story => story.loadRelated('distributions'))
-      }),
-      map(() => {
-        const distributions = this.stories.filter((story, i) => {
-          const episodeDistribution = story.distributions.find(d => d.kind === 'episode');
-          if (!episodeDistribution) {
-            this.episodeLoaders[i] = false;
-          }
-          return episodeDistribution;
-        });
-        return distributions;
-      }),
-      mergeMap((stories: StoryModel[]) => {
-        return stories.map(story => story.distributions.find(d => d.kind === 'episode').loadRelated('episode'))
       })
     ).subscribe(() => {
       this.episodeLoaders.fill(false);
@@ -134,18 +121,8 @@ export class DashboardSeriesComponent implements OnInit {
   }
 
   loadSeriesDistribution() {
-    let podcastDistribution;
     this.podcastLoader = true;
-    this.series.loadRelated('distributions').pipe(
-      filter(() => {
-        podcastDistribution = this.series.distributions.find(d => d.kind === 'podcast');
-        if (!podcastDistribution) {
-          this.podcastLoader = false;
-        }
-        return this.podcastLoader;
-      }),
-      mergeMap(() => podcastDistribution.loadRelated('podcast'))
-    ).subscribe(() => {
+    this.series.loadRelated('distributions').subscribe(() => {
       this.podcastLoader = false;
     });
   }
