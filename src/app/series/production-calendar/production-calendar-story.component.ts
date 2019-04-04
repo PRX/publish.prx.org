@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { StoryModel, SeriesModel } from '../../shared';
-import { Env } from '../../core/core.env';
 
 @Component({
   selector: 'publish-calendar-story',
@@ -18,9 +17,9 @@ import { Env } from '../../core/core.env';
         <span *ngIf="status" class="{{status}} status text">{{status}}</span>
       </h3>
     </div>
-    <div class="segments">
+    <div class="actions">
       <prx-spinner *ngIf="episodeLoader || podcastLoader" inverse="true"></prx-spinner>
-      <span *ngIf="segments">{{segments | i18nPlural: {'=1' : '1 Segment', 'other' : '# Segments'} }}</span>
+      <span *ngIf="template">{{ template }}</span>
     </div>
   `
 })
@@ -53,8 +52,7 @@ export class ProductionCalendarStoryComponent implements OnInit {
     }
   }
 
-  get segments(): number {
-    return this.story && this.story.versions && this.story.versions.length &&
-      this.story.versions[0].files && this.story.versions[0].files.length;
+  get template(): string {
+    return this.story && this.story.versions && this.story.versions.length && this.story.versions[0].label;
   }
 }
