@@ -18,12 +18,6 @@ h2 {
   color: #676767;
 }
 
-publish-calendar-story {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  background: #fff;
-}
 .story-loader {
   position: relative;
   display: block;

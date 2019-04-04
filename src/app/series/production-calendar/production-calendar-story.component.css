@@ -1,5 +1,11 @@
+:host {
+  display: grid;
+  grid-template-columns: 3px 78px auto min-content;
+  align-items: center;
+  background: #fff;
+}
 .title {
-  max-width: calc(100% - 2 * 78px);
+  overflow: auto;
 }
 h2 {
   font-size: 16px;
@@ -23,7 +29,7 @@ h3 .teaser {
 .story-date {
   flex-basis: 75px;
   font-size: 2em;
-  text-align: center;
+  justify-self: center;
 }
 .status {
   background-color: #444;
@@ -49,17 +55,16 @@ h3 .teaser {
 .status.published {
   background-color: #0089bc;
 }
-.segments {
+.actions {
   position: relative;
-  width: 78px;
-  margin-left: auto;
-  text-align: right;
+  display: flex;
   padding-right: 10px;
 }
-.segments prx-spinner >>> .spinner {
+.actions prx-spinner >>> .spinner {
   margin: auto 20px;
 }
-.segments span {
-  font-weight: bold;
-  white-space: nowrap;
+.actions span {
+  line-height: 1.25em;
+  text-align: center;
+  overflow: auto;
 }
