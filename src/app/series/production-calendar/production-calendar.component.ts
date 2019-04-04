@@ -47,10 +47,8 @@ export class ProductionCalendarComponent implements OnInit {
   }
 
   loadSeries() {
-    this.cms.auth.follow('prx:series', {id: this.id}).subscribe((seriesDoc: HalDoc) => {
-      seriesDoc.follow('prx:account').subscribe((accountDoc: HalDoc) => {
-          this.series = new SeriesModel(accountDoc, seriesDoc);
-        });
+    this.cms.auth.follow('prx:series', {id: this.id, zoom: 'prx:image'}).subscribe((series: HalDoc) => {
+        this.series = new SeriesModel(null, series, false);
       },
       err => {
         if (err.status === 404 && err.name === 'HalHttpError') {
