@@ -1,7 +1,6 @@
 
 import { Component, Input, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
-import { filter, mergeMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { HalDoc } from '../../core';
 import { StoryModel, SeriesModel } from '../../shared';
 
@@ -64,7 +63,6 @@ export class ProductionCalendarSeriesComponent implements OnInit {
 
   ngOnInit() {
     this.loadSeriesStories();
-    this.loadSeriesDistribution();
     this.loadLastDatedStory();
   }
 
@@ -78,8 +76,7 @@ export class ProductionCalendarSeriesComponent implements OnInit {
     this.storyLoaders = Array(per);
     this.episodeLoaders = Array(per).fill(true);
 
-    const afterToday = new Date();
-    let filters = `v4,after=${afterToday.getFullYear()}-${afterToday.getMonth() + 1}-${afterToday.getDate()}`;
+    let filters: string;
     if (this.monthFilter) {
       const after = new Date(this.monthFilter);
       let before = new Date(after.valueOf());
@@ -87,6 +84,9 @@ export class ProductionCalendarSeriesComponent implements OnInit {
       const afterStr = `${after.getFullYear()}-${after.getMonth() + 1}-${after.getDate()}`;
       const beforeStr = `${before.getFullYear()}-${before.getMonth() + 1}-${before.getDate()}`;
       filters = `v4,after=${afterStr},before=${beforeStr}`
+    } else {
+      const afterToday = new Date();
+      filters = `v4,after=${afterToday.getFullYear()}-${afterToday.getMonth() + 1}-${afterToday.getDate()}`;
     }
     if (this.publishStateFilter) {
       filters = filters += `,state=${this.publishStateFilter}`;
@@ -96,37 +96,26 @@ export class ProductionCalendarSeriesComponent implements OnInit {
       per,
       filters,
       sorts: 'published_released_at: asc'
-    }).subscribe((stories: HalDoc[]) => {
-      this.stories = stories.map(story => new StoryModel(this.series.doc, story, false)).reduce((acc, story) => {
-        const storyDate = story.publishedAt || story.releasedAt;
-        const monthKey = `${storyDate.getFullYear()}-${storyDate.getMonth() + 1}-1`;
-        acc[monthKey] = acc[monthKey] ?  [...acc[monthKey], story] : [story];
-        return acc;
-      }, {});
+    }).pipe(
+      map((stories: HalDoc[]) => {
+        this.stories = stories.map(story => new StoryModel(this.series.doc, story, false)).reduce((acc, story) => {
+          const storyDate = story.publishedAt || story.releasedAt;
+          const monthKey = `${storyDate.getFullYear()}-${storyDate.getMonth() + 1}-1`;
+          acc[monthKey] = acc[monthKey] ?  [...acc[monthKey], story] : [story];
+          return acc;
+        }, {});
 
-      this.storyLoaders = null;
+        this.storyLoaders = null;
 
-      this.storyMonths = Object.keys(this.stories);
+        this.storyMonths = Object.keys(this.stories);
 
-      Object.keys(this.stories).forEach(key => {
-        this.stories[key].forEach((story: StoryModel, i) => {
-          if (story.publishedAt && story.publishedAt.valueOf() <= Date.now()) {
-            forkJoin(story.loadRelated('distributions'), story.loadRelated('versions')).subscribe(() => {
-              const episodeDistribution = story.distributions.find(d => d.kind === 'episode');
-              if (episodeDistribution) {
-                episodeDistribution.loadRelated('episode').subscribe(() => {
-                  this.episodeLoaders[i] = false;
-                })
-              } else {
-                this.episodeLoaders[i] = false;
-              }
-            });
-          } else {
-            this.episodeLoaders[i] = false;
-          }
-        });
+        return Object.keys(this.stories).map(key => {
+          return this.stories[key].map((story: StoryModel, i) => {
+            return story.loadRelated('versions');
+          });
+        })
       })
-    });
+    ).subscribe(() => this.episodeLoaders.fill(false));
   }
 
   loadLastDatedStory() {
@@ -138,25 +127,6 @@ export class ProductionCalendarSeriesComponent implements OnInit {
       sorts: 'published_released_at: desc'
     }).subscribe((stories: HalDoc[]) => {
       this.lastStoryDate = stories.length && new Date((stories[0]['publishedAt'] || stories[0]['releasedAt']));
-    });
-  }
-
-  loadSeriesDistribution() {
-    let podcastDistribution;
-    this.podcastLoader = true;
-    this.series.loadRelated('distributions').pipe(
-      filter(() => {
-        podcastDistribution = this.series.distributions.find(d => d.kind === 'podcast');
-        if (!podcastDistribution) {
-          this.podcastLoader = false;
-        }
-        return this.podcastLoader;
-      }),
-      mergeMap(() => {
-        return forkJoin(podcastDistribution.loadRelated('podcast'), podcastDistribution.loadRelated('versionTemplates'));
-      })
-    ).subscribe(() => {
-      this.podcastLoader = false;
     });
   }
 
