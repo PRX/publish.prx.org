@@ -6,25 +6,21 @@ import { Env } from '../core/core.env';
   selector: 'publish-dashboard-story',
   styleUrls: ['dashboard-story.component.css'],
   template: `
-    <div *ngIf="status" class="{{status}} status bar"></div>
-    <p class="story-date">{{(story?.publishedAt || story?.releasedAt) | date:"M/d"}}</p>
-    <div class="title">
-      <h2>
-        <a *ngIf="story?.title" [routerLink]="editLink">{{story?.title}}</a>
-        <a *ngIf="!story?.title" [routerLink]="editLink">{{(story?.publishedAt || story?.releasedAt) | date:"MMM d, y"}}</a>
-      </h2>
-      <h3>
-        <span class="teaser" *ngIf="story?.shortDescription">{{story?.shortDescription}}</span>
-        <span *ngIf="status" class="{{status}} status text">{{status}}</span>
-      </h3>
-    </div>
-    <div class="actions">
-      <prx-spinner *ngIf="episodeLoader || podcastLoader" inverse="true"></prx-spinner>
-      <a *ngIf="metricsUrl" [href]="metricsUrl" rel="noopener noreferrer" target="_blank">
-        <span class="icon-bar-chart"></span>
-      </a>
-      <a [routerLink]="editLink"><span class="icon-pencil"></span></a>
-    </div>
+    <prx-episode-card
+      [editLink]="['/story', story.id]"
+      [date]="story.publishedAt || story.releasedAt"
+      dateFormat="M/d"
+      [title]="story.title"
+      [teaser]="story.shortDescription"
+      [status]="status">
+      <div class="actions">
+        <prx-spinner *ngIf="episodeLoader || podcastLoader" inverse="true"></prx-spinner>
+        <a *ngIf="metricsUrl" [href]="metricsUrl" rel="noopener noreferrer" target="_blank">
+          <span class="icon-bar-chart"></span>
+        </a>
+        <a [routerLink]="['/story', this.story.id]"><span class="icon-pencil"></span></a>
+      </div>
+    </prx-episode-card>
   `
 })
 
@@ -36,8 +32,6 @@ export class DashboardStoryComponent implements OnInit {
   @Input() podcastLoader: boolean;
 
   editLink: any[];
-
-  storyDate: Date;
 
   status: string;
   metricsUrlParams: string;

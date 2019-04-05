@@ -22,8 +22,9 @@ h2 {
   position: relative;
   display: block;
   background: #ddd;
+  height: 78px;
 }
 publish-calendar-story, .story-loader {
-  height: 78px;
+  display: block;
   margin-top: 10px;
 }

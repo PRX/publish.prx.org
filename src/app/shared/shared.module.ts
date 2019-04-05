@@ -10,7 +10,7 @@ import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
-  DatepickerModule, FancyFormModule, HeroModule, ImageModule,
+  DatepickerModule, EpisodeListModule, FancyFormModule, HeroModule, ImageModule,
   ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
 import { StickyDirective } from './sticky/sticky.directive';
 
@@ -34,6 +34,7 @@ import { StickyDirective } from './sticky/sticky.directive';
   exports: [
     AdvancedSectionComponent,
     CommonModule,
+    EpisodeListModule,
     FormsModule,
     CopyInputDirective,
     DatepickerModule,
@@ -55,6 +56,7 @@ import { StickyDirective } from './sticky/sticky.directive';
   ],
   imports: [
     CommonModule,
+    EpisodeListModule,
     FormsModule,
     RouterModule,
     DatepickerModule,

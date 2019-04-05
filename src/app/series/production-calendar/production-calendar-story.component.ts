@@ -5,22 +5,18 @@ import { StoryModel, SeriesModel } from '../../shared';
   selector: 'publish-calendar-story',
   styleUrls: ['production-calendar-story.component.css'],
   template: `
-    <div *ngIf="status" class="{{status}} status bar"></div>
-    <p class="story-date">{{(story.publishedAt || story.releasedAt) | date:"d"}}</p>
-    <div class="title">
-      <h2>
-        <a *ngIf="story?.title" [routerLink]="['/story', this.story.id]">{{story.title}}</a>
-        <a *ngIf="!story?.title" [routerLink]="['/story', this.story.id]">{{(story.publishedAt || story.releasedAt) | date:"MMM d, y"}}</a>
-      </h2>
-      <h3>
-        <span class="teaser" *ngIf="story?.shortDescription">{{story?.shortDescription}}</span>
-        <span *ngIf="status" class="{{status}} status text">{{status}}</span>
-      </h3>
-    </div>
-    <div class="actions">
-      <prx-spinner *ngIf="episodeLoader || podcastLoader" inverse="true"></prx-spinner>
-      <span *ngIf="template">{{ template }}</span>
-    </div>
+    <prx-episode-card
+      [editLink]="['/story', story.id]"
+      [date]="story.publishedAt || story.releasedAt"
+      dateFormat="d"
+      [title]="story.title"
+      [teaser]="story.shortDescription"
+      [status]="status">
+      <div class="actions">
+        <prx-spinner *ngIf="episodeLoader || podcastLoader" inverse="true"></prx-spinner>
+        <span *ngIf="template">{{ template }}</span>
+      </div>
+    </prx-episode-card>
   `
 })
 
