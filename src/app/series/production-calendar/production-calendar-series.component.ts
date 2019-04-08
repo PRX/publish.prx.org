@@ -1,6 +1,8 @@
 
 import { Component, Input, OnInit } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { formatDate } from '@angular/common';
+import { map, toArray } from 'rxjs/operators';
+import { concat } from 'rxjs';
 import { HalDoc } from '../../core';
 import { StoryModel, SeriesModel } from '../../shared';
 
@@ -8,20 +10,24 @@ import { StoryModel, SeriesModel } from '../../shared';
   selector: 'publish-calendar-series',
   styleUrls: ['production-calendar-series.component.css'],
   template: `
-    <header>
-      <select (change)="filterByMonth($event.target.value)">
-        <option selected disabled value="undefined">Filter by month</option>
-        <option *ngFor="let month of months" [value]="month" [selected]="month === monthFilter">
-          {{month | date:"MMMM y"}}
-        </option>
-      </select>
+    <header *ngIf="stories">
+      <prx-select
+        placeholder="Filter by month"
+        [options]="allMonthOptions"
+        [selected]="monthFilter"
+        single="true"
+        closeOnSelect="true"
+        (onSelect)="filterByMonth($event)">
+      </prx-select>
 
-      <select (change)="filterByPublishState($event.target.value)">
-        <option selected disabled value="undefined">Filter by publish state</option>
-        <option *ngFor="let state of publishStates" [value]="state" [selected]="state === publishStateFilter">
-          {{state | capitalize}}
-        </option>
-      </select>
+      <prx-select
+        placeholder="Filter by publish state"
+        [options]="publishStateOptions"
+        [selected]="publishStateFilter"
+        single="true"
+        closeOnSelect="true"
+        (onSelect)="filterByPublishState($event)">
+      </prx-select>
     </header>
 
     <section>
@@ -51,13 +57,15 @@ export class ProductionCalendarSeriesComponent implements OnInit {
   episodeLoaders: boolean[];
   podcastLoader: boolean;
   publishStates = ['draft', 'scheduled', 'published'];
+  publishStateOptions = this.publishStates.map(s => s.length && [s.charAt(0).toUpperCase() + s.slice(1), s]);;
   publishStateFilter: string;
+  allMonthOptions: any[][];
   monthFilter: string;
+  firstStoryDate: Date;
   lastStoryDate: Date;
 
   ngOnInit() {
     this.loadSeriesStories();
-    this.loadLastDatedStory();
   }
 
   loadSeriesStories() {
@@ -75,8 +83,8 @@ export class ProductionCalendarSeriesComponent implements OnInit {
       const after = new Date(this.monthFilter);
       let before = new Date(after.valueOf());
       before.setMonth(before.getMonth() + 1);
-      const afterStr = `${after.getFullYear()}-${after.getMonth() + 1}-${after.getDate()}`;
-      const beforeStr = `${before.getFullYear()}-${before.getMonth() + 1}-${before.getDate()}`;
+      const afterStr = `${after.getFullYear()}-${after.getMonth() + 1}-1`;
+      const beforeStr = `${before.getFullYear()}-${before.getMonth() + 1}-1`;
       filters = `v4,after=${afterStr},before=${beforeStr}`
     } else {
       const afterToday = new Date();
@@ -86,11 +94,23 @@ export class ProductionCalendarSeriesComponent implements OnInit {
       filters = filters += `,state=${this.publishStateFilter}`;
     }
 
-    this.series.doc.followItems('prx:stories', {
-      per,
-      filters,
-      sorts: 'published_released_at: asc'
-    }).pipe(
+    concat(
+      this.loadTopStory('asc'),
+      this.loadTopStory('desc'),
+      this.series.doc.followItems('prx:stories', {
+        per,
+        filters,
+        sorts: 'published_released_at: asc'
+      })
+    ).pipe(
+      toArray(),
+      map((results: HalDoc[][]) => {
+        const firstStory = results[0]; // ordered by published_released_at asc
+        this.firstStoryDate = firstStory.length && new Date((firstStory[0]['publishedAt'] || firstStory[0]['releasedAt']));
+        const lastStory = results[1]; // ordered by published_released_at desc
+        this.lastStoryDate = lastStory.length && new Date((lastStory[0]['publishedAt'] || lastStory[0]['releasedAt']));
+        return results[2]; // paged stories
+      }),
       map((stories: HalDoc[]) => {
         this.setStoryMonths(stories.map(story => new StoryModel(this.series.doc, story, false)));
 
@@ -112,18 +132,17 @@ export class ProductionCalendarSeriesComponent implements OnInit {
     }, {});
 
     this.storyMonths = Object.keys(this.stories);
+    this.setAllMonthOptions();
     this.storyLoaders = null;
   }
 
-  loadLastDatedStory() {
+  loadTopStory(order: 'asc' | 'desc') {
     const afterToday = new Date();
     const filters = `v4,after=${afterToday.getFullYear()}-${afterToday.getMonth() + 1}-${afterToday.getDate()}`;
-    this.series.doc.followItems('prx:stories', {
+    return this.series.doc.followItems('prx:stories', {
       per: 1,
       filters,
-      sorts: 'published_released_at: desc'
-    }).subscribe((stories: HalDoc[]) => {
-      this.lastStoryDate = stories.length && new Date((stories[0]['publishedAt'] || stories[0]['releasedAt']));
+      sorts: `published_released_at: ${order}`
     });
   }
 
@@ -133,15 +152,15 @@ export class ProductionCalendarSeriesComponent implements OnInit {
     this.loadSeriesStories();
   }
 
-  get months(): Date[] {
-    if (this.storyMonths && this.storyMonths.length && this.lastStoryDate) {
+  setAllMonthOptions() {
+    if (this.firstStoryDate && this.lastStoryDate) {
       let months = [];
-      let date = new Date(this.storyMonths[0]);
+      let date = new Date(this.firstStoryDate);
       while (date.valueOf() < this.lastStoryDate.valueOf()) {
         months.push(new Date(date.valueOf()));
         date.setMonth(date.getMonth() + 1);
       }
-      return months;
+      this.allMonthOptions = months.map(m => [formatDate(m, 'MMMM y', 'en-US'), m.toLocaleString()]);
     }
   }
 

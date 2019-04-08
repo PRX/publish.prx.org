@@ -1,8 +1,5 @@
-header select ~ select {
+header prx-select ~ prx-select {
   margin-left: 6px;
-}
-option[disabled] {
-  display: none;
 }
 
 h2 {

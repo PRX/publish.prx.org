@@ -1,4 +1,4 @@
-import { cit, create, cms, stubPipe, By } from '../../../testing';
+import { cit, create, cms, By } from '../../../testing';
 import { MockHalDoc } from 'ngx-prx-styleguide';
 import { ProductionCalendarSeriesComponent } from './production-calendar-series.component';
 import { SeriesModel, StoryModel } from 'app/shared';
@@ -7,8 +7,6 @@ import { SeriesModel, StoryModel } from 'app/shared';
 describe('ProductionCalendarSeriesComponent', () => {
 
   create(ProductionCalendarSeriesComponent, false);
-
-  stubPipe('capitalize');
 
   let auth;
   let series;
@@ -33,7 +31,6 @@ describe('ProductionCalendarSeriesComponent', () => {
     comp.setStoryMonths(stories.map(s => new StoryModel(series.doc, new MockHalDoc(s))));
     fix.detectChanges();
     expect(comp.storyMonths.length).toEqual(stories.length);
-    expect(el).toQuery('h2');
     const months = el.queryAll(By.css('h2'));
     months.forEach((m, i) => expect(m.nativeElement.textContent).toContain(storyDates[i].getFullYear()));
   });

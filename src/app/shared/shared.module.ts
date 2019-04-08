@@ -11,7 +11,7 @@ import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowW
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   DatepickerModule, EpisodeListModule, FancyFormModule, HeroModule, ImageModule,
-  ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
+  ModalModule, SelectModule, SpinnerModule , TagsModule} from 'ngx-prx-styleguide';
 import { StickyDirective } from './sticky/sticky.directive';
 
 @NgModule({
@@ -50,9 +50,11 @@ import { StickyDirective } from './sticky/sticky.directive';
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
+    SelectModule,
     SpinnerModule,
-    WysiwygComponent,
-    StickyDirective
+    StickyDirective,
+    TagsModule,
+    WysiwygComponent
   ],
   imports: [
     CommonModule,
@@ -64,7 +66,9 @@ import { StickyDirective } from './sticky/sticky.directive';
     HeroModule,
     ImageModule,
     ModalModule,
-    SpinnerModule
+    SelectModule,
+    SpinnerModule,
+    TagsModule
   ],
   providers: [
     AuthGuard,
