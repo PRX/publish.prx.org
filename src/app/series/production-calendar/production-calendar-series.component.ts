@@ -9,25 +9,19 @@ import { StoryModel, SeriesModel } from '../../shared';
   styleUrls: ['production-calendar-series.component.css'],
   template: `
     <header>
-      <div>
-        <select (change)="filterByMonth($event.target.value)">
-          <option selected disabled value="undefined">Filter by month</option>
-          <option *ngFor="let month of months" [value]="month" [selected]="month === monthFilter">
-            {{month | date:"MMMM y"}}
-          </option>
-        </select>
+      <select (change)="filterByMonth($event.target.value)">
+        <option selected disabled value="undefined">Filter by month</option>
+        <option *ngFor="let month of months" [value]="month" [selected]="month === monthFilter">
+          {{month | date:"MMMM y"}}
+        </option>
+      </select>
 
-        <select (change)="filterByPublishState($event.target.value)">
-          <option selected disabled value="undefined">Filter by publish state</option>
-          <option *ngFor="let state of publishStates" [value]="state" [selected]="state === publishStateFilter">
-            {{state | capitalize}}
-          </option>
-        </select>
-      </div>
-
-      <div>
-        <a class="button" [routerLink]="['/series', series.id]">CSV Export</a>
-      </div>
+      <select (change)="filterByPublishState($event.target.value)">
+        <option selected disabled value="undefined">Filter by publish state</option>
+        <option *ngFor="let state of publishStates" [value]="state" [selected]="state === publishStateFilter">
+          {{state | capitalize}}
+        </option>
+      </select>
     </header>
 
     <section>

@@ -1,9 +1,3 @@
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
 header select ~ select {
   margin-left: 6px;
 }
