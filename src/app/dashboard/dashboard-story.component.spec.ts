@@ -1,4 +1,4 @@
-import { cit, create, stubPipe } from '../../testing';
+import { cit, create } from '../../testing';
 import { DashboardStoryComponent } from './dashboard-story.component';
 import { By } from '@angular/platform-browser';
 import { SeriesModel, StoryModel, DistributionModel, StoryDistributionModel } from 'app/shared';
@@ -8,9 +8,6 @@ import { MockHalDoc } from 'ngx-prx-styleguide';
 describe('DashboardStoryComponent', () => {
 
   create(DashboardStoryComponent, false);
-
-  stubPipe('duration');
-  stubPipe('date');
 
   cit('status for unpublished stories is draft', (fix, el, comp) => {
     comp.story = {isNew: false, publishedAt: null, changed: () => true};

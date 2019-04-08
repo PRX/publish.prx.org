@@ -18,7 +18,7 @@ import { Env } from '../core/core.env';
         <a *ngIf="metricsUrl" [href]="metricsUrl" rel="noopener noreferrer" target="_blank">
           <span class="icon-bar-chart"></span>
         </a>
-        <a [routerLink]="['/story', this.story.id]"><span class="icon-pencil"></span></a>
+        <a [routerLink]="['/story', story.id]"><span class="icon-pencil"></span></a>
       </div>
     </prx-episode-card>
   `
@@ -31,26 +31,12 @@ export class DashboardStoryComponent implements OnInit {
   @Input() episodeLoader: boolean;
   @Input() podcastLoader: boolean;
 
-  editLink: any[];
-
   status: string;
   metricsUrlParams: string;
 
   ngOnInit() {
-    this.setLink();
     this.setStatus();
     this.setMetricsUrlParams();
-  }
-
-  setLink() {
-    if (this.story.isNew) {
-      this.editLink = ['/story/new'];
-      if (this.story.parent) {
-        this.editLink.push(this.story.parent.id);
-      }
-    } else {
-      this.editLink = ['/story', this.story.id];
-    }
   }
 
   setStatus() {
