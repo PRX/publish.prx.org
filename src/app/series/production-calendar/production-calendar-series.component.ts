@@ -92,24 +92,27 @@ export class ProductionCalendarSeriesComponent implements OnInit {
       sorts: 'published_released_at: asc'
     }).pipe(
       map((stories: HalDoc[]) => {
-        this.stories = stories.map(story => new StoryModel(this.series.doc, story, false)).reduce((acc, story) => {
-          const storyDate = story.publishedAt || story.releasedAt;
-          const monthKey = `${storyDate.getFullYear()}-${storyDate.getMonth() + 1}-1`;
-          acc[monthKey] = acc[monthKey] ?  [...acc[monthKey], story] : [story];
-          return acc;
-        }, {});
+        this.setStoryMonths(stories.map(story => new StoryModel(this.series.doc, story, false)));
 
-        this.storyLoaders = null;
-
-        this.storyMonths = Object.keys(this.stories);
-
-        return Object.keys(this.stories).map(key => {
-          return this.stories[key].map((story: StoryModel, i) => {
+        return this.storyMonths.map(key => {
+          return this.stories[key].map((story: StoryModel) => {
             return story.loadRelated('versions');
           });
         })
       })
     ).subscribe(() => this.episodeLoaders.fill(false));
+  }
+
+  setStoryMonths(stories: StoryModel[]) {
+    this.stories = stories.reduce((acc, story) => {
+      const storyDate = story.publishedAt || story.releasedAt;
+      const monthKey = `${storyDate.getFullYear()}-${storyDate.getMonth() + 1}-1`;
+      acc[monthKey] = acc[monthKey] ?  [...acc[monthKey], story] : [story];
+      return acc;
+    }, {});
+
+    this.storyMonths = Object.keys(this.stories);
+    this.storyLoaders = null;
   }
 
   loadLastDatedStory() {

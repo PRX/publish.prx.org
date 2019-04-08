@@ -52,7 +52,7 @@ export class ProductionCalendarComponent implements OnInit {
       },
       err => {
         if (err.status === 404 && err.name === 'HalHttpError') {
-          this.toastr.error('No series found. Redirecting to home page');
+          this.toastr.error('No series found. Redirecting to home page.');
           console.error(`Series with id ${this.id} not found`);
           setTimeout(() => this.router.navigate(['/']), 3000);
         } else {
