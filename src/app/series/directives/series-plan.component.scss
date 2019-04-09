@@ -1,0 +1,41 @@
+
+header {
+  margin-bottom: 24px;
+}
+section {
+  margin: 24px 0;
+}
+h1 {
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+h2 {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+.horizontal-checkboxes {
+  margin: 14px 0;
+  prx-checkbox {
+    margin-right: 14px;
+  }
+  .label {
+    font-size: 16px;
+  }
+}
+.recurring {
+  prx-checkbox {
+    display: block;
+    margin: 10px 0;
+  }
+  input {
+    max-width: 120px;
+    height: 40px;
+  }
+}
+prx-calpicker {
+  display: inline-block;
+}
