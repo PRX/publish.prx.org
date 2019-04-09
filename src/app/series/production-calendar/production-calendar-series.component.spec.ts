@@ -8,7 +8,6 @@ describe('ProductionCalendarSeriesComponent', () => {
 
   create(ProductionCalendarSeriesComponent, false);
 
-  let auth;
   let series;
   let storyDates = new Array(3);
   for (let i = 0; i < 3; i++) {
@@ -21,9 +20,8 @@ describe('ProductionCalendarSeriesComponent', () => {
     {title: 'ep2', publishedAt: storyDates[2]}
   ];
   beforeEach(() => {
-    auth = cms.mock('prx:authorization', {});
-    auth.mock('prx:series', {}).mockItems('prx:stories', stories);
     series = new SeriesModel(null, new MockHalDoc({id: 99, count: () => 1}));
+    series.doc.mockItems('prx:stories', stories);
   });
 
   cit('loads series into month map', (fix, el, comp) => {
@@ -46,4 +44,15 @@ describe('ProductionCalendarSeriesComponent', () => {
     comp.filterByMonth('2019-04-01');
     expect(comp.loadSeriesStories).toHaveBeenCalled();
   });
+
+  cit('only gets first and last story on initial load', (fix, el, comp) => {
+    spyOn(comp, 'loadTopStory');
+    comp.series = series;
+    fix.detectChanges();
+    expect(comp.loadTopStory).toHaveBeenCalledTimes(2);
+    comp.firstStoryDate = storyDates[0];
+    comp.lastStoryDate = storyDates[storyDates.length - 1];
+    comp.filterByPublishState('published');
+    expect(comp.loadTopStory).toHaveBeenCalledTimes(2);
+  })
 });

@@ -2,7 +2,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { map, toArray } from 'rxjs/operators';
-import { concat } from 'rxjs';
+import { concat, of } from 'rxjs';
 import { HalDoc } from '../../core';
 import { StoryModel, SeriesModel } from '../../shared';
 
@@ -95,8 +95,8 @@ export class ProductionCalendarSeriesComponent implements OnInit {
     }
 
     concat(
-      this.loadTopStory('asc'),
-      this.loadTopStory('desc'),
+      this.firstStoryDate ? of([{publishedAt: this.firstStoryDate}]) : this.loadTopStory('asc'),
+      this.lastStoryDate ? of([{publishedAt: this.lastStoryDate}]) : this.loadTopStory('desc'),
       this.series.doc.followItems('prx:stories', {
         per,
         filters,
