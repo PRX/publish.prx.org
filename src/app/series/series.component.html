@@ -31,6 +31,7 @@
   <nav>
     <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
     <a routerLinkActive="active" [routerLink]="[base, 'templates']">Audio Templates</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'plan']" *ngIf="series?.id">Plan Episodes</a>
     <a routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Info</a>
     <a *ngIf="fromImport"
       routerLinkActive="active"
