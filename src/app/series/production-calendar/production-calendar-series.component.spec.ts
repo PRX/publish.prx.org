@@ -61,5 +61,9 @@ describe('ProductionCalendarSeriesComponent', () => {
     comp.series = series;
     fix.detectChanges();
     expect(el.query(By.css('prx-episode-card'))).toBeNull();
+    expect(el.query(By.css('p.no-episodes')).nativeElement.innerText).toContain('plan episodes');
+    comp.filterByPublishState('published');
+    fix.detectChanges();
+    expect(el.query(By.css('p.no-episodes')).nativeElement.innerText).toContain('filter criteria');
   })
 });
