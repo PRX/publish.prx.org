@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Observable, Subscription, concat, of } from 'rxjs';
+import { Observable, Subscription, concat } from 'rxjs';
 import { concatMap, mergeMap } from 'rxjs/operators';
 import { TabService, SimpleDate, HalDoc } from 'ngx-prx-styleguide';
 
@@ -142,9 +142,9 @@ export class SeriesPlanComponent implements OnDestroy {
 
   createDraft(date: SimpleDate): Observable<HalDoc> {
     const releasedAt = date.toLocaleDate(/* TODO: hour offset? */);
-    const title = releasedAt.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})
+    const title = releasedAt.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
     return this.series.create('prx:stories', {}, {title, releasedAt})
-      .pipe(mergeMap(this.createVersion));
+      .pipe(mergeMap(story => this.createVersion(story)));
   }
 
   createVersion(story: HalDoc): Observable<HalDoc> {
