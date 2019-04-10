@@ -1,4 +1,4 @@
-import { cit, create, cms, By } from '../../../testing';
+import { cit, create, By } from '../../../testing';
 import { MockHalDoc } from 'ngx-prx-styleguide';
 import { ProductionCalendarSeriesComponent } from './production-calendar-series.component';
 import { SeriesModel, StoryModel } from 'app/shared';
@@ -54,5 +54,12 @@ describe('ProductionCalendarSeriesComponent', () => {
     comp.lastStoryDate = storyDates[storyDates.length - 1];
     comp.filterByPublishState('published');
     expect(comp.loadTopStory).toHaveBeenCalledTimes(2);
+  });
+
+  cit('gracefully handles no stories', (fix, el, comp) => {
+    series.doc.mockItems('prx:stories', []);
+    comp.series = series;
+    fix.detectChanges();
+    expect(el.query(By.css('prx-episode-card'))).toBeNull();
   })
 });

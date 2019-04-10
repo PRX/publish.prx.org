@@ -59,7 +59,7 @@ export class ProductionCalendarSeriesComponent implements OnInit {
   publishStates = ['draft', 'scheduled', 'published'];
   publishStateOptions = this.publishStates.map(s => s.length && [s.charAt(0).toUpperCase() + s.slice(1), s]);;
   publishStateFilter: string;
-  allMonthOptions: any[][];
+  allMonthOptions = [];
   monthFilter: string;
   firstStoryDate: Date;
   lastStoryDate: Date;
