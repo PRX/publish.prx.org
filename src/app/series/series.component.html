@@ -38,7 +38,7 @@
       >
       Import Status
     </a>
-    <a routerLinkActive="active" [routerLink]="[base, 'plan']" *ngIf="!series?.isNew">Plan Episodes</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'plan']" *ngIf="showPlanTab">Plan Episodes</a>
   </nav>
 
   <div class="links" *ngIf="series && !series?.isNew">
