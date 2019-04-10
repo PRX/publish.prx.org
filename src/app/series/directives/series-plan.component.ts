@@ -2,6 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { Observable, Subscription, concat } from 'rxjs';
 import { concatMap, mergeMap } from 'rxjs/operators';
 import { TabService, SimpleDate, HalDoc } from 'ngx-prx-styleguide';
+import { SeriesModel } from '../../shared';
 
 const MAX_PLAN_DAYS = 730;
 
@@ -43,19 +44,7 @@ export class SeriesPlanComponent implements OnDestroy {
   createError: string;
 
   constructor(tab: TabService) {
-    this.tabSub = tab.model.subscribe(s => {
-      this.series = s.doc;
-      this.seriesId = this.series.id;
-      this.series.followItems('prx:distributions').subscribe(docs => {
-        this.isPodcast = docs.some(doc => doc['kind'] === 'podcast');
-      });
-      this.series.followItems('prx:audio-version-templates').subscribe(docs => {
-        this.noTemplates = docs.length === 0;
-        this.templateOptions = docs.map(doc => [doc['label'], doc.expand('self')]);
-        this.templateLink = this.templateOptions.length ? this.templateOptions[0][1] : null;
-      });
-    });
-
+    this.tabSub = tab.model.subscribe((s: SeriesModel) => this.setSeries(s));
     this.planMinDate = new SimpleDate(this.tomorrow, true);
     this.planDefaultDate = this.planMinDate;
     this.generateStartingAt = this.planMinDate.toLocaleDate();
@@ -63,6 +52,19 @@ export class SeriesPlanComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.tabSub.unsubscribe();
+  }
+
+  setSeries(s: SeriesModel) {
+    this.series = s.doc;
+    this.seriesId = this.series.id;
+    this.series.followItems('prx:distributions').subscribe(docs => {
+      this.isPodcast = docs.some(doc => doc['kind'] === 'podcast');
+    });
+    this.series.followItems('prx:audio-version-templates').subscribe(docs => {
+      this.noTemplates = docs.length === 0;
+      this.templateOptions = docs.map(doc => [doc['label'], doc.expand('self')]);
+      this.templateLink = this.templateOptions.length ? this.templateOptions[0][1] : null;
+    });
   }
 
   selectTemplate(link: string) {
