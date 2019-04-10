@@ -1,21 +1,28 @@
 
 header {
   margin-bottom: 24px;
+  h1 {
+    font-size: 30px;
+    line-height: 36px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
 }
 section {
   margin: 24px 0;
-}
-h1 {
-  font-size: 30px;
-  line-height: 36px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-h2 {
-  font-size: 24px;
-  line-height: 30px;
-  font-weight: 400;
-  margin-bottom: 6px;
+  h2 {
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+  > p {
+    margin: 6px 0;
+  }
+  > p.error {
+    font-weight: 400;
+    color: #e32;
+  }
 }
 .horizontal-checkboxes {
   margin: 14px 0;
@@ -35,7 +42,4 @@ h2 {
     max-width: 120px;
     height: 40px;
   }
-}
-prx-calpicker {
-  display: inline-block;
 }

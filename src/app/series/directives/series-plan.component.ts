@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { TabService, SimpleDate } from 'ngx-prx-styleguide';
-import { SeriesModel } from '../../shared';
+import { Observable, Subscription, of as observableOf, concat } from 'rxjs';
+import { concatMap, delay } from 'rxjs/operators';
+import { TabService, SimpleDate, HalDoc } from 'ngx-prx-styleguide';
 
 const MAX_PLAN_DAYS = 730;
 
@@ -13,13 +13,17 @@ const MAX_PLAN_DAYS = 730;
 export class SeriesPlanComponent implements OnDestroy {
 
   tabSub: Subscription;
-  series: SeriesModel;
+  series: HalDoc;
   seriesId: number;
+
+  isPodcast = false;
+  noTemplates = false;
+  templateOptions: string[][] = [];
+  templateLink: string;
 
   planMinDate: SimpleDate;
   planDefaultDate: SimpleDate;
   planned: SimpleDate[] = [];
-  audioVersionOptions: string[][];
 
   objectKeys = Object.keys;
   days = {0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false};
@@ -33,10 +37,23 @@ export class SeriesPlanComponent implements OnDestroy {
   generateMax = 10;
   recurLimit = true;
 
+  creating = false;
+  created = 0;
+  createSuccess = false;
+  createError: string;
+
   constructor(tab: TabService) {
-    this.tabSub = tab.model.subscribe((s: SeriesModel) => {
-      this.seriesId = s.id;
-      this.series = s;
+    this.tabSub = tab.model.subscribe(s => {
+      this.series = s.doc;
+      this.seriesId = this.series.id;
+      this.series.followItems('prx:distributions').subscribe(docs => {
+        this.isPodcast = docs.some(doc => doc['kind'] === 'podcast');
+      });
+      this.series.followItems('prx:audio-version-templates').subscribe(docs => {
+        this.noTemplates = docs.length === 0;
+        this.templateOptions = docs.map(doc => [doc['label'], doc.expand('self')]);
+        this.templateLink = this.templateOptions.length ? this.templateOptions[0][1] : null;
+      });
     });
 
     this.planMinDate = new SimpleDate(this.tomorrow, true);
@@ -46,6 +63,10 @@ export class SeriesPlanComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.tabSub.unsubscribe();
+  }
+
+  selectTemplate(link: string) {
+    this.templateLink = link;
   }
 
   toggleEveryOtherWeek() {
@@ -67,7 +88,9 @@ export class SeriesPlanComponent implements OnDestroy {
   }
 
   generate() {
-    this.planDefaultDate = null;
+    if (this.creating) { return; }
+
+    this.planDefaultDate = new SimpleDate(this.generateStartingAt, true);
     this.planned = [];
     if (Object.keys(this.weeks).some(k => this.weeks[k])) {
       this.everyOtherWeek = false;
@@ -80,13 +103,10 @@ export class SeriesPlanComponent implements OnDestroy {
 
       const day = date.getDay();
       if (this.days[day] && this.shouldGenerateWeek(date)) {
-        this.planDefaultDate = this.planDefaultDate || new SimpleDate(date, true);
         this.planned.push(new SimpleDate(date, true));
       }
       date.setDate(date.getDate() + 1);
     }
-
-    this.planDefaultDate = this.planDefaultDate || new SimpleDate(this.tomorrow, true);
   }
 
   shouldGenerateWeek(date: Date) {
@@ -109,6 +129,20 @@ export class SeriesPlanComponent implements OnDestroy {
   getWeekOfMonth(date: Date) {
     const zeroIndexedDate = date.getUTCDate() - 1;
     return Math.floor(zeroIndexedDate / 7) + 1;
+  }
+
+  createEpisodes() {
+    this.creating = true;
+    concat(this.planned).pipe(concatMap(date => this.createDraft(date))).subscribe(
+      _story => this.created++,
+      err => this.createError = `Something went wrong: ${err}`,
+      () => this.createSuccess = true,
+    );
+  }
+
+  // TODO
+  createDraft(date: SimpleDate): Observable<any> {
+    return observableOf(date).pipe(delay(1200));
   }
 
 }

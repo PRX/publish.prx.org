@@ -57,17 +57,41 @@
 
 <section>
   <h2>Audio Template</h2>
-  <p>This will help us forecast ad inventory available in each episode.</p>
+  <p *ngIf="isPodcast && !noTemplates">
+    Make sure you choose a template associated with your series
+    <a [routerLink]="['/series', seriesId, 'podcast']">Podcast Info</a>.
+    This will help us forecast ad inventory available in each episode.
+  </p>
+  <p *ngIf="!isPodcast && !noTemplates">
+    This template will determine how many segments your episodes have.
+  </p>
+  <p *ngIf="noTemplates" class="error">
+    WARNING: this series has no audio templates - planned episodes won't have a set number of segments.
+  </p>
+  <prx-select single closeOnSelect [clearable]=false [options]="templateOptions"
+    [selected]="templateLink" (onSelect)="selectTemplate($event)">
+  </prx-select>
 </section>
 
 <section>
   <h2 *ngIf="planned.length == 1">Planning 1 draft</h2>
   <h2 *ngIf="planned.length != 1">Planning {{planned.length}} drafts</h2>
-  <prx-calpicker [months]="6" [minDate]="planMinDate" [defaultDate]="planDefaultDate" [dates]="planned"></prx-calpicker>
+  <prx-calpicker [months]="6" [disabled]="creating" [dates]="planned"
+    [minDate]="planMinDate" [defaultDate]="planDefaultDate"></prx-calpicker>
 </section>
 
 <section>
-  <button [disabled]="!planned.length">
+  <prx-button *ngIf="!creating" [disabled]="planned.length == 0" (click)="createEpisodes()">
     Create {{planned.length}} episode draft{{planned.length == 1 ? '' : 's'}}
-  </button>
+  </prx-button>
+  <prx-button *ngIf="creating && !createSuccess && !createError" working=1>
+    Creating episode {{created + 1}}
+  </prx-button>
+  <prx-button *ngIf="createSuccess" disabled=1>
+    Created {{created}} episode{{created.length == 1 ? '' : 's'}}
+  </prx-button>
+  <p *ngIf="createSuccess">
+    Success! <a href="#">View your draft episodes</a>
+  </p>
+  <p *ngIf="createError" class="error">{{createError}}</p>
 </section>
