@@ -76,12 +76,6 @@ header .updated {
   display: flex;
   justify-content: space-between;
 }
-option[disabled] {
-  display: none;
-}
-.story-list {
-  margin-left: -10px;
-}
 publish-dashboard-story {
   display: flex;
   align-items: center;
@@ -92,9 +86,9 @@ publish-dashboard-story {
   position: relative;
   display: block;
   background: #ddd;
+  height: 78px;
 }
 publish-dashboard-story, .story-loader {
-  height: 78px;
+  display: block;
   margin-top: 10px;
-  margin-left: 10px;
 }

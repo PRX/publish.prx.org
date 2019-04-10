@@ -9,6 +9,7 @@ import { SeriesPodcastComponent } from './directives/series-podcast.component';
 import { SeriesFeedComponent } from './directives/series-feed.component';
 import { SeriesImportStatusComponent } from './directives/series-import-status.component';
 import { FileTemplateComponent } from './directives/file-template.component';
+import * as productionCalendar from './production-calendar/';
 
 const seriesChildRoutes = [
   { path: '',          component: SeriesBasicComponent },
@@ -32,6 +33,12 @@ export const seriesRoutes: Routes = [
     canActivate: [AuthGuard],
     canDeactivate: [DeactivateGuard],
     children: seriesChildRoutes
+  },
+  {
+    path: 'series/:id/calendar',
+    component: productionCalendar.ProductionCalendarComponent,
+    canActivate: [AuthGuard],
+    canDeactivate: [DeactivateGuard]
   }
 ];
 
@@ -42,7 +49,10 @@ export const seriesComponents: any[] = [
   SeriesPodcastComponent,
   SeriesFeedComponent,
   SeriesImportStatusComponent,
-  FileTemplateComponent
+  FileTemplateComponent,
+  productionCalendar.ProductionCalendarComponent,
+  productionCalendar.ProductionCalendarSeriesComponent,
+  productionCalendar.ProductionCalendarStoryComponent
 ];
 
 export const seriesProviders: any[] = [];

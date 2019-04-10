@@ -1,0 +1,21 @@
+header prx-select ~ prx-select {
+  margin-left: 6px;
+}
+
+h2 {
+  margin-top: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #676767;
+}
+
+.story-loader {
+  position: relative;
+  display: block;
+  background: #ddd;
+  height: 78px;
+}
+publish-calendar-story, .story-loader {
+  display: block;
+  margin-top: 10px;
+}

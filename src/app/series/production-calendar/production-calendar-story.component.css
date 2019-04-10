@@ -1,0 +1,15 @@
+.actions {
+  position: relative; /* for spinner */
+  display: flex;
+  padding-right: 10px;
+  max-height: 100%;
+  overflow: hidden;
+}
+.actions prx-spinner >>> .spinner {
+  margin: auto 20px;
+}
+.actions span {
+  line-height: 1.2em;
+  text-align: center;
+  font-weight: bold;
+}
