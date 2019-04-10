@@ -8,7 +8,7 @@ describe('DashboardComponent', () => {
   let auth;
   beforeEach(() => {
     auth = cms.mock('prx:authorization', {});
-    auth.mockItems('prx:series', []).forEach(s => s.mock('prx:account'));
+    auth.mockItems('prx:series', []);
     auth.mock('prx:default-account', {});
     auth.mockItems('prx:stories', []);
   });
@@ -30,7 +30,7 @@ describe('DashboardComponent', () => {
 
   describe('with one or more series', () => {
 
-    beforeEach(() => auth.mockItems('prx:series', [{}, {}, {}]).forEach(s => s.mock('prx:account')));
+    beforeEach(() => auth.mockItems('prx:series', [{}, {}, {}]));
 
     cit('shows a list of series', (fix, el, comp) => {
       fix.detectChanges();

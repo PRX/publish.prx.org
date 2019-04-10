@@ -9,7 +9,6 @@ describe('DashboardSeriesComponent', () => {
   create(DashboardSeriesComponent, false);
 
   stubPipe('timeago');
-  stubPipe('capitalize');
 
   let auth;
   let account;
@@ -19,7 +18,7 @@ describe('DashboardSeriesComponent', () => {
     account = auth.mock('prx:default-account', {});
     auth.mock('prx:series', {}).mockItems('prx:stories', []);
     auth.mockItems('prx:stories', []);
-    series = new SeriesModel(auth, new MockHalDoc({id: 99, count: () => 1}));
+    series = new SeriesModel(null, new MockHalDoc({id: 99, count: () => 1}));
   });
 
   cit('displays standalone stories', (fix, el, comp) => {
@@ -31,8 +30,6 @@ describe('DashboardSeriesComponent', () => {
   });
 
   describe('Series', () => {
-    beforeEach(() => {
-    });
 
     cit('provides a link to the series', (fix, el, comp) => {
       comp.noseries = false;
@@ -61,6 +58,5 @@ describe('DashboardSeriesComponent', () => {
       expect(comp.loadStandaloneStories).toHaveBeenCalled();
     });
   })
-
 
 });

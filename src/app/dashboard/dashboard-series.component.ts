@@ -39,16 +39,20 @@ import { StoryModel, SeriesModel } from '../shared';
     </header>
     <div class="list-actions">
       <div>
-        <button class="btn-link" disabled>Episode List</button> |
-        <a [routerLink]="['/series', id, 'calendar']">Calendar</a>
+        <button class="btn-link" disabled>Episode List</button>
+        <span *ngIf="series"> |
+          <a [routerLink]="['/series', id, 'calendar']">Calendar</a>
+        </span>
       </div>
       <div>
-        <select (change)="filterByPublishState($event.target.value)">
-          <option selected disabled value="undefined">Filter by publish state</option>
-          <option *ngFor="let state of publishStates" [value]="state" [selected]="state === publishStateFilter">
-            {{state | capitalize}}
-          </option>
-        </select>
+        <prx-select
+          placeholder="Filter by publish state"
+          [options]="publishStateOptions"
+          [selected]="publishStateFilter"
+          single="true"
+          closeOnSelect="true"
+          (onSelect)="filterByPublishState($event)">
+        </prx-select>
       </div>
     </div>
     <div class="story-list">
@@ -78,6 +82,7 @@ export class DashboardSeriesComponent implements OnInit {
   episodeLoaders: boolean[];
   podcastLoader: boolean;
   publishStates = ['draft', 'scheduled', 'published'];
+  publishStateOptions = this.publishStates.map(s => s.length && [s.charAt(0).toUpperCase() + s.slice(1), s]);
   publishStateFilter: string;
 
   ngOnInit() {
