@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Observable, Subscription, concat } from 'rxjs';
-import { concatMap, mergeMap } from 'rxjs/operators';
+import { map, concatMap, mergeMap } from 'rxjs/operators';
 import { TabService, SimpleDate, HalDoc } from 'ngx-prx-styleguide';
 import { SeriesModel } from '../../shared';
 
@@ -133,28 +133,30 @@ export class SeriesPlanComponent implements OnDestroy {
     return Math.floor(zeroIndexedDate / 7) + 1;
   }
 
-  createEpisodes() {
+  createEpisodes(): Observable<HalDoc[]> {
     this.creating = true;
-    concat(this.planned).pipe(concatMap(date => this.createDraft(date))).subscribe(
-      _story => this.created++,
+    const create = concat(this.planned).pipe(concatMap(date => this.createStory(date)));
+    create.subscribe(
+      _docs => this.created++,
       err => this.createError = `Something went wrong: ${err}`,
       () => this.createSuccess = true,
     );
+    return create;
   }
 
-  createDraft(date: SimpleDate): Observable<HalDoc> {
+  private createStory(date: SimpleDate): Observable<HalDoc[]> {
     const releasedAt = date.toLocaleDate(/* TODO: hour offset? */);
     const title = releasedAt.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
     return this.series.create('prx:stories', {}, {title, releasedAt})
       .pipe(mergeMap(story => this.createVersion(story)));
   }
 
-  createVersion(story: HalDoc): Observable<HalDoc> {
+  private createVersion(story: HalDoc): Observable<HalDoc[]> {
     if (this.templateLink) {
       const data = {set_audio_version_template_uri: this.templateLink};
-      return story.create('prx:audio-versions', {}, data);
+      return story.create('prx:audio-versions', {}, data).pipe(map(v => [story, v]));
     } else {
-      return story.create('prx:audio-versions', {}, {});
+      return story.create('prx:audio-versions', {}, {}).pipe(map(v => [story, v]));
     }
   }
 

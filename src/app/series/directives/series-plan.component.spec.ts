@@ -1,7 +1,7 @@
 import { cit, create, provide, cms } from '../../../testing';
 import { SeriesModel } from '../../shared';
 import { SeriesPlanComponent } from './series-plan.component';
-import { TabService } from 'ngx-prx-styleguide';
+import { TabService, SimpleDate } from 'ngx-prx-styleguide';
 
 fdescribe('SeriesPlanComponent', () => {
 
@@ -54,6 +54,14 @@ fdescribe('SeriesPlanComponent', () => {
     expect(comp.everyOtherWeek).toEqual(false);
   });
 
+  cit('toggles between max episodes and max date', (_fix, _el, comp) => {
+    comp.toggleRecur();
+    expect(comp.generateEndingAt).not.toEqual(null);
+
+    comp.toggleRecur();
+    expect(comp.generateEndingAt).toEqual(null);
+  });
+
   cit('plans episodes with a max number', (_fix, _el, comp) => {
     comp.generateStartingAt = new Date(2019, 1, 1);
     comp.days[2] = true;
@@ -98,6 +106,29 @@ fdescribe('SeriesPlanComponent', () => {
     expect(comp.planned.map(d => `${d}`)).toEqual([
       '2019-02-04', '2019-02-18', '2019-03-04', '2019-03-18', '2019-04-01'
     ]);
+  });
+
+  cit('creates stories and audio-versions', (_fix, _el, comp) => {
+    comp.series = series;
+    comp.templateLink = '/some/link';
+    comp.planned = [new SimpleDate('2019-02-01'), new SimpleDate('2019-02-02')];
+
+    const stories = [];
+    const versions = [];
+    comp.createEpisodes().subscribe(d => {
+      expect(d.length).toEqual(2);
+      stories.push(d[0]);
+      versions.push(d[1]);
+    });
+
+    expect(stories.length).toEqual(2);
+    expect(versions.length).toEqual(2);
+    expect(stories[0].title).toEqual('February 1, 2019');
+    expect(stories[0].releasedAt).toEqual(comp.planned[0].toLocaleDate());
+    expect(stories[1].title).toEqual('February 2, 2019');
+    expect(stories[1].releasedAt).toEqual(comp.planned[1].toLocaleDate());
+    expect(versions[0].set_audio_version_template_uri).toEqual('/some/link');
+    expect(versions[1].set_audio_version_template_uri).toEqual('/some/link');
   });
 
 });
