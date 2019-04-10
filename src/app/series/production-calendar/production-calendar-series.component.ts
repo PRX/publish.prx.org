@@ -38,6 +38,17 @@ import { StoryModel, SeriesModel } from '../../shared';
         </publish-calendar-story>
       </div>
       <div *ngFor="let l of storyLoaders" class="story-loader"><prx-spinner></prx-spinner></div>
+      <div *ngIf="storyMonths && storyMonths.length === 0">
+        <p class="no-episodes" *ngIf="publishStateFilter || monthFilter; else plan">
+          No episodes meet the filter criteria.
+        </p>
+        <ng-template #plan>
+          <p class="no-episodes">
+            There are no draft episodes.
+            Go <a [routerLink]="['/series', series.id, 'plan']">here</a> to plan episodes.
+          </p>
+        </ng-template>
+      </div>
     </section>
   `
 })
@@ -59,7 +70,7 @@ export class ProductionCalendarSeriesComponent implements OnInit {
   publishStates = ['draft', 'scheduled', 'published'];
   publishStateOptions = this.publishStates.map(s => s.length && [s.charAt(0).toUpperCase() + s.slice(1), s]);;
   publishStateFilter: string;
-  allMonthOptions: any[][];
+  allMonthOptions = [];
   monthFilter: string;
   firstStoryDate: Date;
   lastStoryDate: Date;
