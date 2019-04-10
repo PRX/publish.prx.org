@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
-import { Observable, Subscription, of as observableOf, concat } from 'rxjs';
-import { concatMap, delay } from 'rxjs/operators';
+import { Observable, Subscription, concat, of } from 'rxjs';
+import { concatMap, mergeMap } from 'rxjs/operators';
 import { TabService, SimpleDate, HalDoc } from 'ngx-prx-styleguide';
 
 const MAX_PLAN_DAYS = 730;
@@ -140,9 +140,20 @@ export class SeriesPlanComponent implements OnDestroy {
     );
   }
 
-  // TODO
-  createDraft(date: SimpleDate): Observable<any> {
-    return observableOf(date).pipe(delay(1200));
+  createDraft(date: SimpleDate): Observable<HalDoc> {
+    const releasedAt = date.toLocaleDate(/* TODO: hour offset? */);
+    const title = releasedAt.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'})
+    return this.series.create('prx:stories', {}, {title, releasedAt})
+      .pipe(mergeMap(this.createVersion));
+  }
+
+  createVersion(story: HalDoc): Observable<HalDoc> {
+    if (this.templateLink) {
+      const data = {set_audio_version_template_uri: this.templateLink};
+      return story.create('prx:audio-versions', {}, data);
+    } else {
+      return story.create('prx:audio-versions', {}, {});
+    }
   }
 
 }
