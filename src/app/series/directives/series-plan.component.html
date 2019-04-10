@@ -91,7 +91,7 @@
     Created {{created}} episode{{created.length == 1 ? '' : 's'}}
   </prx-button>
   <p *ngIf="createSuccess">
-    Success! <a href="#">View your draft episodes</a>
+    Success! <a [routerLink]="['/series', seriesId, 'calendar']">View your draft episodes</a>.
   </p>
   <p *ngIf="createError" class="error">{{createError}}</p>
 </section>
