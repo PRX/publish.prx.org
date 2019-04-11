@@ -128,9 +128,9 @@ describe('SeriesPlanComponent', () => {
     expect(stories.length).toEqual(2);
     expect(versions.length).toEqual(2);
     expect(stories[0].title).toEqual('February 1, 2019');
-    expect(stories[0].releasedAt).toEqual(comp.planned[0].toLocaleDate());
+    expect(stories[0].releasedAt).toEqual(comp.planned[0].toLocaleDate(12));
     expect(stories[1].title).toEqual('February 2, 2019');
-    expect(stories[1].releasedAt).toEqual(comp.planned[1].toLocaleDate());
+    expect(stories[1].releasedAt).toEqual(comp.planned[1].toLocaleDate(12));
     expect(versions[0].set_audio_version_template_uri).toEqual('/some/link');
     expect(versions[1].set_audio_version_template_uri).toEqual('/some/link');
   });
