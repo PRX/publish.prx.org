@@ -5,6 +5,7 @@ import { AuthGuard, DeactivateGuard } from 'ngx-prx-styleguide';
 import { SeriesComponent } from './series.component';
 import { SeriesBasicComponent } from './directives/series-basic.component';
 import { SeriesTemplatesComponent } from './directives/series-templates.component';
+import { SeriesPlanComponent } from './directives/series-plan.component';
 import { SeriesPodcastComponent } from './directives/series-podcast.component';
 import { SeriesFeedComponent } from './directives/series-feed.component';
 import { SeriesImportStatusComponent } from './directives/series-import-status.component';
@@ -14,6 +15,7 @@ import * as productionCalendar from './production-calendar/';
 const seriesChildRoutes = [
   { path: '',          component: SeriesBasicComponent },
   { path: 'templates', component: SeriesTemplatesComponent },
+  { path: 'plan',      component: SeriesPlanComponent },
   { path: 'podcast',   component: SeriesPodcastComponent },
   { path: 'list',   component: SeriesFeedComponent },
   { path: 'import-status',   component: SeriesImportStatusComponent }
@@ -46,6 +48,7 @@ export const seriesComponents: any[] = [
   SeriesComponent,
   SeriesBasicComponent,
   SeriesTemplatesComponent,
+  SeriesPlanComponent,
   SeriesPodcastComponent,
   SeriesFeedComponent,
   SeriesImportStatusComponent,
