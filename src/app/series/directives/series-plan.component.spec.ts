@@ -57,9 +57,11 @@ fdescribe('SeriesPlanComponent', () => {
   cit('toggles between max episodes and max date', (_fix, _el, comp) => {
     comp.toggleRecur();
     expect(comp.generateEndingAt).not.toEqual(null);
+    expect(comp.generateMax).toEqual(null);
 
     comp.toggleRecur();
     expect(comp.generateEndingAt).toEqual(null);
+    expect(comp.generateMax).not.toEqual(null);
   });
 
   cit('plans episodes with a max number', (_fix, _el, comp) => {

@@ -84,7 +84,7 @@ export class SeriesPlanComponent implements OnDestroy {
       this.generateMax = 10;
     } else {
       this.generateEndingAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-      this.generateMax = 10;
+      this.generateMax = null;
     }
     this.generate();
   }
