@@ -35,6 +35,7 @@ import { StoryModel, SeriesModel } from '../shared';
       </div>
       <div class="series-actions">
         <a class="button" [routerLink]="['/story/new', id]">Create an Episode</a>
+        <a class="button" [routerLink]="['/series', id, 'plan']">Plan Episodes</a>
       </div>
     </header>
     <div class="list-actions">
