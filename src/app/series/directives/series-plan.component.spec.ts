@@ -20,24 +20,26 @@ describe('SeriesPlanComponent', () => {
     series.mockItems('prx:audio-version-templates', [tpl1, tpl2]);
   });
 
-  // cit('loads the series templates', (_fix, _el, comp) => {
-  //   comp.setSeries(new SeriesModel(null, series));
-  //   expect(comp.templateOptions).toEqual([['one', '/link/one'], ['two', '/link/two']]);
-  //   expect(comp.templateLink).toEqual('/link/one');
-  // });
-  //
-  // cit('warns you to pick a podcast template', (fix, el, comp) => {
-  //   comp.setSeries(new SeriesModel(null, series));
-  //   fix.detectChanges();
-  //   expect(el).toMatch(/choose a template associated with your series podcast/i);
-  // });
-  //
-  // cit('warns for lack of templates', (fix, el, comp) => {
-  //   series.mockItems('prx:audio-version-templates', []);
-  //   comp.setSeries(new SeriesModel(null, series));
-  //   fix.detectChanges();
-  //   expect(el).toMatch(/series has no audio templates/i);
-  // });
+  cit('loads the series templates', (_fix, _el, comp) => {
+    comp.setSeries(new SeriesModel(null, series, false));
+    expect(comp.templateOptions).toEqual([['one', '/link/one'], ['two', '/link/two']]);
+    expect(comp.templateLink).toEqual('/link/one');
+  });
+
+  cit('warns you to pick a podcast template', (_fix, _el, comp) => {
+    comp.setSeries(new SeriesModel(null, series, false));
+    expect(comp.isPodcast).toEqual(true);
+    // fix.detectChanges();
+    // expect(el).toMatch(/choose a template associated with your series podcast/i);
+  });
+
+  cit('awarns for lack of templates', (_fix, _el, comp) => {
+    series.mockItems('prx:audio-version-templates', []);
+    comp.setSeries(new SeriesModel(null, series, false));
+    expect(comp.noTemplates).toEqual(true);
+    // fix.detectChanges();
+    // expect(el).toMatch(/series has no audio templates/i);
+  });
 
   cit('toggles between specific weeks and every-other', (_fix, _el, comp) => {
     comp.weeks[2] = true;
