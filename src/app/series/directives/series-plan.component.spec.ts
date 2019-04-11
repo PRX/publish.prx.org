@@ -3,7 +3,7 @@ import { SeriesModel } from '../../shared';
 import { SeriesPlanComponent } from './series-plan.component';
 import { TabService, SimpleDate } from 'ngx-prx-styleguide';
 
-fdescribe('SeriesPlanComponent', () => {
+describe('SeriesPlanComponent', () => {
 
   create(SeriesPlanComponent);
 
