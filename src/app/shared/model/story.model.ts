@@ -42,6 +42,7 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   VALIDATORS = {
     title:            [REQUIRED(true), LENGTH(1, 255)],
+    cleanTitle:       [LENGTH(0, 255)],
     shortDescription: [REQUIRED()],
     description:      [LENGTH(0, 4000)],
     productionNotes:  [LENGTH(0, 255)],
