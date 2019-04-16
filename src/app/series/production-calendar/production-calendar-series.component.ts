@@ -109,7 +109,7 @@ export class ProductionCalendarSeriesComponent implements OnInit {
       this.firstStoryDate ? of([{publishedAt: this.firstStoryDate}]) : this.loadTopStory('asc'),
       this.lastStoryDate ? of([{publishedAt: this.lastStoryDate}]) : this.loadTopStory('desc'),
       this.series.doc.followItems('prx:stories', {
-        per,
+        per: this.PER_SERIES, // don't use per/count for now to work around halcache sticking on an extra Bearer token
         filters,
         sorts: 'published_released_at: asc'
       })
