@@ -130,6 +130,8 @@ export class BasicComponent implements OnDestroy, DoCheck {
   ngDoCheck() {
     if (this.story && this.story.releasedAt) {
       this.showReleasedAt = true;
+    } else {
+      this.showReleasedAt = false
     }
     if (this.story && this.story.versions && this.versionTemplatesSelected) {
       this.setSelected();
@@ -198,6 +200,8 @@ export class BasicComponent implements OnDestroy, DoCheck {
     if (this.story.releasedAt) {
       this.story.releasedAt = null;
       this.notifyOfCanceledPublication();
+    } else {
+      this.story.releasedAt = new Date();
     }
   }
 
