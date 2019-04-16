@@ -167,7 +167,7 @@ export class ProductionCalendarSeriesComponent implements OnInit {
     if (this.firstStoryDate && this.lastStoryDate) {
       let months = [];
       let date = new Date(this.firstStoryDate);
-      while (date.valueOf() < this.lastStoryDate.valueOf()) {
+      while (date.valueOf() <= this.lastStoryDate.valueOf()) {
         months.push(new Date(date.valueOf()));
         date.setMonth(date.getMonth() + 1);
       }
