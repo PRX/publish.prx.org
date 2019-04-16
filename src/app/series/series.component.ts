@@ -163,6 +163,17 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   }
 
+  get showPlanTab() {
+    if (this.router && this.router.url && this.router.url.match(/\/plan$/)) {
+      if (this.series) {
+        return !this.series.isNew;
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+
   validationStrategy() {
     return NEW_SERIES_VALIDATIONS;
   }

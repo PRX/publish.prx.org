@@ -10,8 +10,8 @@ import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
 import { AuthGuard, DeactivateGuard, UnauthGuard, TzDatepickerModule,
-  DatepickerModule, FancyFormModule, HeroModule, ImageModule,
-  ModalModule, SpinnerModule } from 'ngx-prx-styleguide';
+  DatepickerModule, EpisodeListModule, FancyFormModule, HeroModule, ImageModule,
+  ModalModule, SelectModule, SpinnerModule , TagsModule} from 'ngx-prx-styleguide';
 import { StickyDirective } from './sticky/sticky.directive';
 
 @NgModule({
@@ -34,6 +34,7 @@ import { StickyDirective } from './sticky/sticky.directive';
   exports: [
     AdvancedSectionComponent,
     CommonModule,
+    EpisodeListModule,
     FormsModule,
     CopyInputDirective,
     DatepickerModule,
@@ -50,12 +51,15 @@ import { StickyDirective } from './sticky/sticky.directive';
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
+    SelectModule,
     SpinnerModule,
-    WysiwygComponent,
-    StickyDirective
+    StickyDirective,
+    TagsModule,
+    WysiwygComponent
   ],
   imports: [
     CommonModule,
+    EpisodeListModule,
     FormsModule,
     RouterModule,
     DatepickerModule,
@@ -63,7 +67,9 @@ import { StickyDirective } from './sticky/sticky.directive';
     HeroModule,
     ImageModule,
     ModalModule,
-    SpinnerModule
+    SelectModule,
+    SpinnerModule,
+    TagsModule
   ],
   providers: [
     AuthGuard,

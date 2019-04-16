@@ -117,4 +117,22 @@ describe('PlayerComponent', () => {
     expect(comp.copyIframe.search(/height="200"/)).not.toEqual(-1);
   });
 
+  cit('shows the episode mp3 url for podcast distributions', (fix, el, comp) => {
+    const dists = series.mockItems('prx:distributions', [{kind: 'podcast', url: 'http://some-where'}]);
+    dists[0].mock('http://some-where', {publishedUrl: 'http://published-url'});
+
+    const storyDists = story.mockItems('prx:distributions', [{kind: 'episode', url: 'http://some-where/episode'}]);
+    storyDists[0].mock('http://some-where/episode', {guid: 'episode1',
+      _links: {enclosure: {href: 'http://prefix/some-where/enclosure.mp3'}}});
+
+    tabModel.next(new StoryModel(series, story));
+    fix.detectChanges();
+    expect(el).toContainText('Direct link to your episode');
+
+    series.mockItems('prx:distributions', []);
+    tabModel.next(new StoryModel(series, story));
+    fix.detectChanges();
+    expect(el).not.toContainText('Direct link to your episode');
+  });
+
 });

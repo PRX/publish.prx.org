@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../shared';
 import { UploadModule } from '../upload';
-import { SelectModule, TabModule, TagsModule } from 'ngx-prx-styleguide';
+import { TabModule } from 'ngx-prx-styleguide';
 import { storyRouting, storyProviders, storyComponents } from './story.routing';
 
 @NgModule({
@@ -12,10 +12,8 @@ import { storyRouting, storyProviders, storyComponents } from './story.routing';
   ],
   imports: [
     CommonModule,
-    SelectModule,
     SharedModule,
-    TabModule,
-    TagsModule,
+    TabModule, // needs own TabModule for separate instance of TabService
     UploadModule,
     storyRouting
   ],

@@ -1,0 +1,62 @@
+/*
+ * Home page
+ */
+section {
+  padding: 40px 0;
+  min-height: 340px;
+}
+header {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  border-bottom: 1px solid #676767;
+  margin-bottom: 30px;
+}
+header h2 {
+  font-size: 25px;
+  line-height: 30px;
+  color: #343434;
+  flex: 1;
+}
+header a.create, header a.all {
+  font-size: 14px;
+  line-height: 22px;
+  margin-top: 8px;
+  margin-left: auto;
+  padding-left: 16px;
+}
+
+/* no series */
+.empty {
+  font-size: 14px;
+  margin: 40px 0;
+}
+.new-series {
+  width: 192px;
+  height: 192px;
+  position: relative;
+  background: #ddd;
+  margin-top: 10px;
+  display: block;
+  text-align: center;
+}
+.new-series i {
+  font-size: 80px;
+  margin-top: 56px;
+}
+.new-series span {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+}
+.new-series:hover {
+  color: #0070a1;
+  background-color: #ccc;
+}
+
+publish-dashboard-series {
+  display: block;
+  margin-bottom: 40px;
+}

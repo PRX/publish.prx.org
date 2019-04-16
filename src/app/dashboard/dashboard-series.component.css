@@ -1,0 +1,95 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  position: relative;
+  overflow: auto;
+  width: 100%;
+  margin-bottom: 10px;
+}
+header .title {
+  flex-grow: 1;
+  max-width: calc(100% - 140px);
+}
+.noseries .series-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.series-actions .button {
+  flex: 0;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+.series-actions {
+  margin-bottom: 10px;
+}
+header h2 {
+  flex-basis: 100%;
+  font-size: 25px;
+  line-height: 30px;
+  border-bottom: 1px solid #676767;
+  color: #343434;
+  margin-bottom: 1px;
+}
+header a.all {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+header prx-image {
+  width: 70px;
+  height: 70px;
+  margin-right: 10px;
+  background-color: #a3a3a3;
+  display: block;
+  float: left;
+}
+header .count {
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #a3a3a3;
+  font-size: 10px;
+  line-height: 10px;
+  font-weight: 600;
+  padding-top: 4px;
+}
+header .count a {
+  font-weight: normal;
+}
+header h1 {
+  font-size: 24px;
+  line-height: 34px;
+  font-weight: 400;
+}
+header h1 a {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+header .updated {
+  font-size: 11px;
+  font-weight: 100;
+  line-height: 18px;
+  display: block;
+}
+.list-actions {
+  display: flex;
+  justify-content: space-between;
+}
+publish-dashboard-story {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #fff;
+}
+.story-loader {
+  position: relative;
+  display: block;
+  background: #ddd;
+  height: 78px;
+}
+publish-dashboard-story, .story-loader {
+  display: block;
+  margin-top: 10px;
+}

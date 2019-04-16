@@ -1,0 +1,97 @@
+<header>
+  <h1>Plan Episodes</h1>
+  <p>
+    Save yourself some time by automatically creating multiple episode drafts
+    to create a production schedule, it may also help your revenue as our sales
+    teams will have access to dropdates to sell against. If you only wish to
+    add a single episode, <a [routerLink]="['/story/new', seriesId]">go here</a>.
+  </p>
+</header>
+
+<section>
+  <h2>Which day of the week do you plan to publish your episodes?</h2>
+  <p>
+    Publish will automatically create an episode draft for each day selected
+    on the weeks provided below. Select all that apply.
+  </p>
+  <div class="horizontal-checkboxes">
+    <prx-checkbox small
+      *ngFor="let idx of objectKeys(days)"
+      [(checked)]="days[idx]"
+      (change)="generate()">
+      <p class="label">{{dayLabels[idx]}}</p>
+    </prx-checkbox>
+  </div>
+</section>
+
+<section>
+  <h2>Which weeks of each month do you plan to publish?</h2>
+  <p>
+    Publish will create episode drafts during these weeks every month.
+    Select all that apply.
+  </p>
+  <div class="horizontal-checkboxes">
+    <prx-checkbox small
+      *ngFor="let weekNum of objectKeys(weeks)"
+      [(checked)]="weeks[weekNum]"
+      (change)="generate()">
+      <p class="label">Week {{weekNum}}</p>
+    </prx-checkbox>
+    <prx-checkbox small [checked]="everyOtherWeek" (change)="toggleEveryOtherWeek()">
+      <p class="label">Every Other</p>
+    </prx-checkbox>
+  </div>
+</section>
+
+<section class="recurring">
+  <h2>How long should episodes recur?</h2>
+  <p>This helps us to know how many drafts to create.</p>
+
+  <prx-checkbox small [checked]="recurLimit" (checkedChange)="toggleRecur()">Number of Episodes</prx-checkbox>
+  <prx-checkbox small [checked]="!recurLimit" (checkedChange)="toggleRecur()">End Date</prx-checkbox>
+
+  <prx-datepicker [(date)]="generateStartingAt" (dateChange)="generate()"></prx-datepicker>
+  <input *ngIf="recurLimit" type="number" [(ngModel)]="generateMax" (ngModelChange)="generate()"/>
+  <prx-datepicker *ngIf="!recurLimit" [(date)]="generateEndingAt" (dateChange)="generate()"></prx-datepicker>
+</section>
+
+<section>
+  <h2>Audio Template</h2>
+  <p *ngIf="isPodcast && !noTemplates">
+    Make sure you choose a template associated with your series
+    <a [routerLink]="['/series', seriesId, 'podcast']">Podcast Info</a>.
+    This will help us forecast ad inventory available in each episode.
+  </p>
+  <p *ngIf="!isPodcast && !noTemplates">
+    This template will determine how many segments your episodes have.
+  </p>
+  <p *ngIf="noTemplates" class="error">
+    WARNING: this series has no audio templates - planned episodes won't have a set number of segments.
+  </p>
+  <prx-select single closeOnSelect [clearable]=false [options]="templateOptions"
+    [selected]="templateLink" (onSelect)="selectTemplate($event)">
+  </prx-select>
+</section>
+
+<section>
+  <h2 *ngIf="planned.length == 1">Planning 1 draft</h2>
+  <h2 *ngIf="planned.length != 1">Planning {{planned.length}} drafts</h2>
+  <prx-calpicker [months]="6" [disabled]="creating" [dates]="planned"
+    [minDate]="planMinDate" [defaultDate]="planDefaultDate"></prx-calpicker>
+</section>
+
+<section>
+  <prx-button *ngIf="!creating" [disabled]="planned.length == 0" (click)="createEpisodes()">
+    Create {{planned.length}} episode draft{{planned.length == 1 ? '' : 's'}}
+  </prx-button>
+  <prx-button *ngIf="creating && !createSuccess && !createError" working=1>
+    Creating episode {{created + 1}}
+  </prx-button>
+  <prx-button *ngIf="createSuccess" disabled=1>
+    Created {{created}} episode{{created.length == 1 ? '' : 's'}}
+  </prx-button>
+  <p *ngIf="createSuccess">
+    Success! <a [routerLink]="['/series', seriesId, 'calendar']">View your draft episodes</a>.
+  </p>
+  <p *ngIf="createError" class="error">{{createError}}</p>
+</section>
