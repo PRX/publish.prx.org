@@ -115,6 +115,18 @@ describe('BasicComponent', () => {
       expect(comp.story.releasedAt).toBeNull();
     });
 
+    cit('updates showReleasedAt based on story releasedAt', (fix, el, comp) => {
+      const tomorrow = new Date(moment().add(1, 'days').valueOf());
+      comp.story = {
+        publishedAt: tomorrow,
+        releasedAt: tomorrow,
+        changed: () => true
+      };
+      fix.detectChanges();
+      expect(comp.showReleasedAt).toBeTruthy();
+      comp.story.releasedAt = null;
+      fix.detectChanges()
+      expect(comp.showReleasedAt).toBeFalsy();
+    });
   });
-
 });

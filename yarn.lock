@@ -4501,11 +4501,11 @@ moment-timezone@^0.5.23:
   dependencies:
     moment ">= 2.9.0"
 
-"moment@>= 2.9.0":
+"moment@>= 2.9.0", moment@^2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
 
-moment@>=2.14.0, moment@^2.18.1:
+moment@>=2.14.0:
   version "2.18.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
 
@@ -4621,9 +4621,10 @@ ng2-dragula@^1.3.1:
   dependencies:
     dragula "^3.7.2"
 
-ngx-prx-styleguide@2.9.1:
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.9.1.tgz#1a1299313fbd7e5784404100676d7786b383d3d6"
+ngx-prx-styleguide@2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.10.0.tgz#6e1c2a3f82d578c8665a93d68209a2f32ed0d005"
+  integrity sha512-pkR7emsGKP2CeVsdNXMzAweC44O0OnT4oW3bwCnCpm8P5AQtCN6M1XmTl5AgBWUJQWh4MjrTsZgJPVSYAm5I3w==
   dependencies:
     "@ng-select/ng-select" "^2.15.3"
     c3 "^0.4.11"
