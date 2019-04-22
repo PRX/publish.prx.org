@@ -3,13 +3,13 @@ header {
   justify-content: space-between;
   align-items: flex-end;
   position: relative;
-  overflow: auto;
+  overflow: hidden;
   width: 100%;
   margin-bottom: 10px;
 }
 header .title {
   flex-grow: 1;
-  max-width: calc(100% - 140px);
+  max-width: calc(100% - 270px);
 }
 .noseries .series-actions {
   display: flex;
@@ -21,6 +21,7 @@ header .title {
   margin-left: 8px;
 }
 .series-actions {
+  display: flex;
   margin-bottom: 10px;
 }
 header h2 {
