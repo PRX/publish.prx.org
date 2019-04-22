@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable ,  Subject ,  timer } from 'rxjs';
+import { Observable,  Subject } from 'rxjs';
 
-import { CmsService, HalDoc } from '../core';
+import { CmsService } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
 import { SeriesImportService } from './series-import.service';
-import { SeriesModel, SeriesImportModel } from '../shared';
+import { SeriesModel } from '../shared';
 import { NEW_SERIES_VALIDATIONS } from '../shared/model/series.model';
 
-import { map, debounceTime, takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 
 @Component({
   providers: [TabService],
@@ -161,17 +161,6 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
     return si;
 
-  }
-
-  get showPlanTab() {
-    if (this.router && this.router.url && this.router.url.match(/\/plan$/)) {
-      if (this.series) {
-        return !this.series.isNew;
-      } else {
-        return true;
-      }
-    }
-    return false;
   }
 
   validationStrategy() {
