@@ -4618,7 +4618,6 @@ newrelic@^2.4.2:
 ng-inline-svg@^8.3.0:
   version "8.4.1"
   resolved "https://registry.yarnpkg.com/ng-inline-svg/-/ng-inline-svg-8.4.1.tgz#6e3819161104a7fff40d5e0f6739f3f5c2aa6825"
-  integrity sha512-gqAw1FY6ZAmFjHw0fkIhvdIMzM4/Hb6Az4Jm0dHFsJqZeXsbcp8pGnzo00qvzBkch/zgvHoHCwmDqWHQaIK6zA==
 
 ng2-dragula@^1.3.1:
   version "1.5.0"
@@ -4626,10 +4625,9 @@ ng2-dragula@^1.3.1:
   dependencies:
     dragula "^3.7.2"
 
-ngx-prx-styleguide@2.11.2:
-  version "2.11.2"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.11.2.tgz#52561ed352f350f3bbeaa5c5de8400a3212c1633"
-  integrity sha512-UPStcrDTjPF6Zy67NxE2wq5vC5tPjOYwb11Og7UTJWr0lMJkO2Z6OSEewurO4bGzpwX8vARTZ4Pv4mmCMMOMJA==
+ngx-prx-styleguide@2.11.3:
+  version "2.11.3"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.11.3.tgz#d5d5aa1167b0408a835e74ea6a0c830b3cedef18"
   dependencies:
     "@ng-select/ng-select" "^2.15.3"
     c3 "^0.4.11"
