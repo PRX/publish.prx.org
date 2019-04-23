@@ -50,10 +50,10 @@ dd {
   background-color: #ffa500;
 }
 .status.scheduled {
-  background-color: #0089bc;
+  background-color: #61A85D;
 }
 .status.published {
-  background-color: #61A85D;
+  background-color: #0089bc;
 }
 .edit-status {
   margin-left: 6px;
