@@ -68,7 +68,7 @@ export class ProductionCalendarSeriesComponent implements OnInit {
   episodeLoaders: boolean[];
   podcastLoader: boolean;
   publishStates = ['draft', 'scheduled', 'published'];
-  publishStateOptions = this.publishStates.map(s => s.length && [s.charAt(0).toUpperCase() + s.slice(1), s]);;
+  publishStateOptions = this.publishStates.map(s => s.length && [s.charAt(0).toUpperCase() + s.slice(1), s]);
   publishStateFilter: string;
   allMonthOptions = [];
   monthFilter: string;
@@ -111,7 +111,8 @@ export class ProductionCalendarSeriesComponent implements OnInit {
       this.series.doc.followItems('prx:stories', {
         per: this.PER_SERIES, // don't use per/count for now to work around halcache sticking on an extra Bearer token
         filters,
-        sorts: 'published_released_at: asc'
+        sorts: 'published_released_at: asc',
+        zoom: 'prx:audio-versions'
       })
     ).pipe(
       toArray(),
@@ -153,7 +154,8 @@ export class ProductionCalendarSeriesComponent implements OnInit {
     return this.series.doc.followItems('prx:stories', {
       per: 1,
       filters,
-      sorts: `published_released_at: ${order}`
+      sorts: `published_released_at: ${order}`,
+      zoom: '0'
     });
   }
 

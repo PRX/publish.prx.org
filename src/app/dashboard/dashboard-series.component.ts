@@ -111,7 +111,8 @@ export class DashboardSeriesComponent implements OnInit {
     this.series.doc.followItems('prx:stories', {
       per,
       filters: this.publishStateFilter ? `v4,state=${this.publishStateFilter}` : 'v4',
-      sorts: 'published_released_at: desc'
+      sorts: 'published_released_at: desc',
+      zoom: 'prx:distributions'
     }).pipe(
       map((stories: HalDoc[]) => {
         this.stories = stories.map(story => new StoryModel(this.series.doc, story, false));
@@ -140,7 +141,8 @@ export class DashboardSeriesComponent implements OnInit {
     this.auth.followItems('prx:stories', {
       filters: this.publishStateFilter ? `noseries,v4,state=${this.publishStateFilter}` : 'noseries,v4',
       per,
-      sorts: 'published_released_at: desc'
+      sorts: 'published_released_at: desc',
+      zoom: 'prx:distributions'
     }).subscribe((stories: HalDoc[]) => {
       // parent result total is embedded in child total
       this.count = stories.length ? stories[0].total() : 0;
