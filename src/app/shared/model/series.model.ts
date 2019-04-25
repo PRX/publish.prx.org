@@ -120,6 +120,9 @@ export class SeriesModel extends BaseModel implements HasUpload {
   }
 
   discard(): any {
+    if (this.changed('accountId')) {
+      this.set('accountId', this.original['accountId']);
+    }
     super.discard();
     if (this.isNew) {
       this.defaultVersionTemplate();

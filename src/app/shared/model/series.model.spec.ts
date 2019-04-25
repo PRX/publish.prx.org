@@ -36,6 +36,18 @@ describe('SeriesModel', () => {
     expect(data['set_account_uri']).not.toMatch(/series-account-id/);
   });
 
+  it('restores account id on discard', () => {
+    const series = makeSeries(false);
+    const originalAccountId = series.accountId;
+    series.set('accountId', 200);
+    series.discard();
+    expect(originalAccountId).not.toBeNull();
+    expect(series.accountId).toEqual(originalAccountId);
+    series.set('accountId', null);
+    series.discard();
+    expect(series.accountId).toEqual(originalAccountId);
+  });
+
   it('allows clearing version templates on new series', () => {
     let series = makeSeries(true);
     expect(series.versionTemplates.length).toEqual(1);
