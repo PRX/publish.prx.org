@@ -149,4 +149,19 @@ describe('SeriesComponent', () => {
     expect(el).not.toContainText('Import Status');
   });
 
+  cit('shows plan episodes tab for series', (fix, el, comp) => {
+    activatedRoute.testParams = {id: '99'};
+    const series = auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
+    series.mock('prx:account', {id: 78});
+    series.mockItems('prx:podcast-imports', [{id: 333}]);
+    fix.detectChanges();
+    expect(el).toContainText('Plan Episodes');
+  });
+
+  cit('does not show plan episode for new series', (fix, el, comp) => {
+    activatedRoute.testParams = {};
+    fix.detectChanges();
+    expect(el).not.toContainText('Plan Episodes');
+  });
+
 });
