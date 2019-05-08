@@ -12,7 +12,9 @@ CMS_USE_LOCALSTORAGE=
 # prx auth
 AUTH_HOST=id.staging.prx.tech
 # for http://publish.prx.docker
-#AUTH_CLIENT_ID=rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D
+# AUTH_CLIENT_ID=rWeO7frPqkxmAR378PBlVwEQ0uf4F5u3Fwx8rv1D
+# for https://publish.prx.docker
+# AUTH_CLIENT_ID=R9AfbsVsKbC7dER34tEx9tTj4acFxgu1fTnqRuGs
 # for https://publish.prx.dev
 AUTH_CLIENT_ID=35zRqonwphKY05Uu2RA1YquwqyonSh3V6vAtnpB9
 
