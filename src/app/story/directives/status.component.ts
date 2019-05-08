@@ -57,20 +57,17 @@ import { StoryModel } from '../../shared';
           <p *ngIf="!changed">Complete</p>
         </ng-container>
       </dd>
+      <dt>Release</dt>
       <dd>
-        <prx-fancy-field label="Release Date">
-          <div class="fancy-hint">
-            <input type="checkbox" [ngModel]="showReleasedAt" (click)="toggleShowReleaseAt()" name="showReleasedAt" id="showReleasedAt">
-            <label for="showReleasedAt">Specify date and time to be published</label>
-          </div>
-          <div class="fancy-hint" *ngIf="showReleasedAt">If you'd like to manually alter this episode's publication
-          to either delay or back-date its release, select the desired release date and time here.
-          Otherwise, the episode will be released immediately once published.
-          </div>
-          <prx-tz-datepicker *ngIf="showReleasedAt"
-            [date]="story.releasedAt" (dateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
-          </prx-tz-datepicker>
-        </prx-fancy-field>
+        <input type="checkbox" [ngModel]="showReleasedAt" (click)="toggleShowReleaseAt()" name="showReleasedAt" id="showReleasedAt">
+        <label for="showReleasedAt">Specify date and time to be published</label>
+        <div class="fancy-hint" *ngIf="showReleasedAt">If you'd like to manually alter this episode's publication
+        to either delay or back-date its release, select the desired release date and time here.
+        Otherwise, the episode will be released immediately once published.
+        </div>
+        <prx-tz-datepicker *ngIf="showReleasedAt"
+          [date]="story.releasedAt" (dateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
+        </prx-tz-datepicker>
       </dd>
 
     </dl>
@@ -121,6 +118,10 @@ export class StoryStatusComponent implements DoCheck {
         this.showReleasedAt = false
       }
     }
+  }
+
+  get releasedAtChanged(): boolean {
+    return this.story && this.story.changed('releasedAt', false);
   }
 
   toggleShowReleaseAt() {

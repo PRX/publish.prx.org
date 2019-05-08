@@ -125,10 +125,6 @@ export class BasicComponent implements OnDestroy, DoCheck {
     return this.story && this.story.changed('description', false);
   }
 
-  get releasedAtChanged(): boolean {
-    return this.story && this.story.changed('releasedAt', false);
-  }
-
   get strict(): boolean {
     return (this.story && this.story.publishedAt) ? true : false;
   }
