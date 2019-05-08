@@ -85,21 +85,6 @@ import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
           </prx-fancy-field>
         </div>
       </prx-fancy-field>
-
-      <prx-fancy-field label="Release Date">
-        <div class="fancy-hint">
-          <input type="checkbox" [ngModel]="showReleasedAt" (click)="toggleShowReleaseAt()" name="showReleasedAt" id="showReleasedAt">
-          <label for="showReleasedAt">Specify date and time to be published</label>
-        </div>
-        <div class="fancy-hint" *ngIf="showReleasedAt">If you'd like to manually alter this episode's publication
-        to either delay or back-date its release, select the desired release date and time here.
-        Otherwise, the episode will be released immediately once published.
-        </div>
-        <prx-tz-datepicker *ngIf="showReleasedAt"
-          [date]="story.releasedAt" (dateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
-        </prx-tz-datepicker>
-      </prx-fancy-field>
-
     </form>
   `
 })
@@ -108,7 +93,6 @@ export class BasicComponent implements OnDestroy, DoCheck {
 
   story: StoryModel;
   tabSub: Subscription;
-  showReleasedAt = false;
   versionTemplates: { [id: number]: HalDoc; };
   versionTemplatesSelected: number[];
   versionTemplateOptions: string[][];
@@ -120,7 +104,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
   constructor(
     tab: TabService,
     private modal: ModalService,
-) {
+  ) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => {
       this.story = s;
       this.loadVersionTemplates();
@@ -128,11 +112,6 @@ export class BasicComponent implements OnDestroy, DoCheck {
   }
 
   ngDoCheck() {
-    if (this.story && this.story.releasedAt) {
-      this.showReleasedAt = true;
-    } else {
-      this.showReleasedAt = false
-    }
     if (this.story && this.story.versions && this.versionTemplatesSelected) {
       this.setSelected();
     }
@@ -195,16 +174,6 @@ export class BasicComponent implements OnDestroy, DoCheck {
     });
   }
 
-  toggleShowReleaseAt() {
-    this.showReleasedAt = !this.showReleasedAt;
-    if (this.story.releasedAt) {
-      this.story.releasedAt = null;
-      this.notifyOfCanceledPublication();
-    } else {
-      this.story.releasedAt = new Date();
-    }
-  }
-
   loadVersionTemplates() {
     this.story.getSeriesTemplates().subscribe(tdocs => {
       this.versionTemplates = {};
@@ -214,18 +183,6 @@ export class BasicComponent implements OnDestroy, DoCheck {
       });
       this.story.loadRelated('versions').subscribe(() => this.setSelected());
     });
-  }
-
-  notifyOfCanceledPublication() {
-    const futurePublished = this.story.publishedAt && new Date() < this.story.publishedAt;
-    const removingReleaseDate = this.story.changed('releasedAt') && !this.story.releasedAt;
-    if (removingReleaseDate && futurePublished) {
-      this.modal.alert(
-        '',
-        'Removing the scheduled release date for a published episode will unpublish the episode.',
-        () => {}
-      );
-    }
   }
 
   onTagsChange(tags: string[]) {

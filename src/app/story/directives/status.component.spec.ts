@@ -1,9 +1,10 @@
-import { cit, create, provide, stubPipe } from '../../../testing';
+import { cit, create, provide, stubPipe, By } from '../../../testing';
 import { Router } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
 import { RouterStub } from '../../../testing/stub.router';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryStatusComponent } from './status.component';
+import * as moment from 'moment';
 
 describe('StoryStatusComponent', () => {
 
@@ -16,6 +17,7 @@ describe('StoryStatusComponent', () => {
   let modalAlertBody: any;
   provide(ModalService, {
     show: (data) => modalAlertBody = data.body,
+    alert: (title, body) => modalAlertBody = body,
     confirm: (title, body) => modalAlertBody = body
   });
   beforeEach(() => modalAlertBody = null);
@@ -61,4 +63,37 @@ describe('StoryStatusComponent', () => {
     expect(el).toContainText('Ready to publish');
   });
 
+  cit('updates showReleasedAt based on story releasedAt', (fix, el, comp) => {
+    const tomorrow = new Date(moment().add(1, 'days').valueOf());
+    const scheduledStory = {
+      publishedAt: tomorrow,
+      releasedAt: tomorrow,
+      isPublished: () => false
+    };
+    mockStory(scheduledStory, comp, fix);
+    fix.detectChanges();
+    expect(comp.showReleasedAt).toBeTruthy();
+    comp.story.releasedAt = null;
+    fix.detectChanges()
+    expect(comp.showReleasedAt).toBeFalsy();
+  });
+
+  cit('alerts when unscheduling a future published episode', (fix, el, comp) => {
+    const tomorrow = new Date(moment().add(1, 'days').valueOf());
+    const scheduledStory = {
+      publishedAt: tomorrow,
+      releasedAt: tomorrow,
+      changed: () => true,
+      isPublished: () => false
+    };
+    mockStory(scheduledStory, comp, fix);
+    comp.showReleasedAt = true;
+    fix.detectChanges();
+
+    expect(modalAlertBody).toBeNull();
+    let cancelReleaseDate = el.query(By.css('#showReleasedAt')).nativeElement;
+    cancelReleaseDate.click();
+    expect(modalAlertBody).toMatch(/will unpublish/i);
+    expect(comp.story.releasedAt).toBeNull();
+  });
 });
