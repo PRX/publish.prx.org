@@ -82,15 +82,7 @@ interface StoryStatus {
         </prx-tz-datepicker>
       </dd>
     </dl>
-    <ng-container *ngIf="story">
-      <prx-button [model]="story" working=0 disabled=0 plain=1
-        [visible]="isChanged" (click)="discard()">Discard</prx-button>
-      <prx-button [model]="story" [visible]="isChanged || story.isNew"
-        [disabled]="isInvalid" (click)="save()">Save</prx-button>
-      <prx-button *ngIf="!story.isNew" working=0 disabled=1
-        [visible]="!isChanged">Saved</prx-button>
-      <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
-    </ng-container>
+    <publish-status-control [id]="id" [story]="story"></publish-status-control>
   `
 })
 
@@ -130,8 +122,6 @@ export class StoryStatusComponent implements DoCheck {
   isScheduled: boolean;
   notPublished: boolean;
   showReleasedAt: boolean;
-  isChanged: boolean;
-  isInvalid: string;
 
   normalInvalid: string;
   normalInvalidCount: string;
@@ -143,7 +133,6 @@ export class StoryStatusComponent implements DoCheck {
 
   constructor(private modal: ModalService,
               private toastr: ToastrService,
-              private router: Router,
               private angulartics2: Angulartics2) {}
 
   ngDoCheck() {
@@ -163,31 +152,11 @@ export class StoryStatusComponent implements DoCheck {
       } else {
         this.showReleasedAt = false
       }
-      this.isChanged = this.story.changed();
-      if (this.story && (this.story.isNew || !this.story.publishedAt)) {
-        this.isInvalid = this.story.invalid(null, false);
-      } else {
-        this.isInvalid = this.story.invalid(null, true); // strict
-      }
     }
   }
 
   statusChange(event) {
     console.log(event);
-  }
-
-  save() {
-    let wasNew = this.story.isNew;
-    this.story.save().subscribe(() => {
-      this.toastr.success('Episode saved');
-      if (wasNew) {
-        this.router.navigate(['/story', this.story.id]);
-      }
-    });
-  }
-
-  discard() {
-    this.story.discard();
   }
 
   get releasedAtChanged(): boolean {
@@ -292,27 +261,5 @@ export class StoryStatusComponent implements DoCheck {
     } else {
       return null;
     }
-  }
-
-  confirmDelete(event: MouseEvent): void {
-    if (event.target['blur']) {
-      event.target['blur']();
-    }
-    this.modal.confirm(
-      'Really delete?',
-      'Are you sure you want to delete this episode? This action cannot be undone.',
-      (confirm: boolean) => {
-        if (confirm) {
-          if (this.story.changed()) {
-            this.story.discard();
-          }
-          this.story.isDestroy = true;
-          this.story.save().subscribe(() => {
-            this.toastr.success('Episode deleted');
-            this.router.navigate(['/']);
-          });
-        }
-      }
-    );
   }
 }

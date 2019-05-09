@@ -1,7 +1,5 @@
-import { cit, create, provide, stubPipe, niceEl, By } from '../../../testing';
-import { Router } from '@angular/router';
+import { cit, create, provide, stubPipe, By } from '../../../testing';
 import { Angulartics2 } from 'angulartics2';
-import { RouterStub } from '../../../testing/stub.router';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryStatusComponent } from './status.component';
 import * as moment from 'moment';
@@ -9,8 +7,6 @@ import * as moment from 'moment';
 describe('StoryStatusComponent', () => {
 
   create(StoryStatusComponent);
-
-  provide(Router, RouterStub);
 
   stubPipe('date');
 
@@ -24,25 +20,6 @@ describe('StoryStatusComponent', () => {
   provide(ToastrService);
   provide(Angulartics2, {trackLocation: () => {}});
 
-  const expectDisabled = (el, text, shouldBeDisabled) => {
-    let button = el.queryAll(By.css('prx-button')).find(btn => {
-      return btn.nativeElement.textContent.trim() === text;
-    });
-    if (!button) {
-      fail(`Could not find button with text: ${text}`);
-    } else {
-      let isDisabled = button.nativeElement.disabled;
-      let ngDisabled = button.nativeElement.getAttribute('ng-reflect-disabled');
-      isDisabled = isDisabled || ngDisabled;
-      if (shouldBeDisabled && isDisabled === null) {
-        fail(`Expected disabled - ${niceEl(button)}`);
-      }
-      if (!shouldBeDisabled && isDisabled !== null) {
-        fail(`Expected enabled - ${niceEl(button)}`);
-      }
-    }
-  };
-
   const mockStory = (story, comp, fix) => {
     comp.story = story;
     comp.story.invalid = comp.story.invalid || (() => null);
@@ -54,15 +31,12 @@ describe('StoryStatusComponent', () => {
 
   cit('determines the appropriate status based on story', (fix, el, comp: StoryStatusComponent) => {
     mockStory({isNew: true}, comp, fix);
-    fix.detectChanges();
     expect(Object.entries(comp.storyStatus).filter(([_, stat]) => stat.active).length).toBe(1);
     expect(comp.currentStatus.name).toBe('draft');
     mockStory({publishedAt: new Date(), isPublished: () => null}, comp, fix);
-    fix.detectChanges();
     expect(Object.entries(comp.storyStatus).filter(([_, stat]) => stat.active).length).toBe(1);
     expect(comp.currentStatus.name).toBe('scheduled');
     mockStory({publishedAt: new Date(), isPublished: () => true}, comp, fix);
-    fix.detectChanges();
     expect(Object.entries(comp.storyStatus).filter(([_, stat]) => stat.active).length).toBe(1);
     expect(comp.currentStatus.name).toBe('published');
   });
@@ -71,40 +45,6 @@ describe('StoryStatusComponent', () => {
     expect(comp.currentStatus).toBe(null);
   });
 
-  cit('unstrictly saves new stories', (fix, el, comp) => {
-    mockStory({isNew: true, invalid: () => 'bad'}, comp, fix);
-    fix.detectChanges();
-    expect(el).toContainText('Save');
-    expectDisabled(el, 'Save', true);
-    comp.story.invalid = (f, strict) => strict ? 'bad' : null;
-    fix.detectChanges();
-    expectDisabled(el, 'Save', false);
-  });
-
-  cit('unstrictly saves unpublished stories', (fix, el, comp) => {
-    mockStory({invalid: () => 'bad'}, comp, fix);
-    fix.detectChanges();
-    expect(el).toContainText('Save');
-    expectDisabled(el, 'Save', true);
-    comp.story.invalid = (f, strict) => strict ? 'bad' : null;
-    fix.detectChanges();
-    expectDisabled(el, 'Save', false);
-  });
-
-  cit('strictly saves published stories', (fix, el, comp) => {
-    mockStory({publishedAt: new Date(), isPublished: () => null, invalid: () => 'bad'}, comp, fix);
-    fix.detectChanges();
-    expect(el).toContainText('Save');
-    expectDisabled(el, 'Save', true);
-    comp.story.invalid = (f, strict) => strict ? 'bad' : null;
-    fix.detectChanges();
-    expectDisabled(el, 'Save', true);
-    comp.story.invalid = (f, strict) => null;
-    fix.detectChanges();
-    expectDisabled(el, 'Save', false);
-  });
-
-  /*
   cit('shows story status', (fix, el, comp) => {
     mockStory({isNew: true}, comp, fix);
     expect(el).toQueryText('.status', 'Draft');
@@ -115,7 +55,6 @@ describe('StoryStatusComponent', () => {
     mockStory({publishedAt: new Date(), isPublished: () => true}, comp, fix);
     expect(el).toQueryText('.status', 'Published');
   });
-  */
 
   cit('strictly allows publishing', (fix, el, comp) => {
     mockStory({invalid: () => 'bad'}, comp, fix);
@@ -124,7 +63,6 @@ describe('StoryStatusComponent', () => {
     mockStory({invalid: (f, strict) => strict ? 'bad,stuff' : null}, comp, fix);
     expect(el).toContainText('Found 2 problems');
     mockStory({invalid: () => null}, comp, fix);
-    fix.detectChanges();
     expect(el).toContainText('Ready to publish');
   });
 
@@ -144,7 +82,6 @@ describe('StoryStatusComponent', () => {
       isPublished: () => false
     };
     mockStory(scheduledStory, comp, fix);
-    fix.detectChanges();
     expect(comp.showReleasedAt).toBeTruthy();
     comp.story.releasedAt = null;
     fix.detectChanges()
