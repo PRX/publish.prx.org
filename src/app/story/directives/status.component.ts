@@ -4,16 +4,28 @@ import { Angulartics2 } from 'angulartics2';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../../shared';
 
+interface StoryStatus {
+  active: boolean,
+  name: string,
+  class: string,
+  text:string
+}
+
 @Component({
   selector: 'publish-story-status',
   styleUrls: ['status.component.css'],
   template: `
     <h1>Publish</h1>
+    <h3>Status</h3>
+    <select (change)="statusChange($event.target.value)">
+      <option>Draft</option>
+      <option>Scheduled</option>
+      <option>Published</option>
+    </select>
     <dl>
-
       <dt>Status</dt>
       <dd>
-        <span [class]="statusClass">{{statusText}}</span>
+        <span *ngIf="currentStatus" [class]="currentStatus.class">{{currentStatus.text}}</span>
         <ng-container *ngIf="isPublished">
           <button *ngIf="editStatus" class="btn-link edit-status" (click)="toggleEdit()">Hide</button>
           <button *ngIf="!editStatus" class="btn-link edit-status" (click)="toggleEdit()">Edit</button>
@@ -86,8 +98,32 @@ export class StoryStatusComponent implements DoCheck {
   @Input() id: number;
   @Input() story: StoryModel;
 
-  statusClass: string;
-  statusText: string;
+  storyStatus: {[key: string]: StoryStatus} = {
+    draft: {
+      active: false,
+      name: 'draft',
+      class: 'status draft',
+      text: 'Draft'
+    },
+    scheduled: {
+      active: false,
+      name: 'scheduled',
+      class: 'status scheduled',
+      text: 'Scheduled'
+    },
+    published: {
+      active: false,
+      name: 'published',
+      class: 'status published',
+      text: 'Published'
+    }
+  }
+
+  get currentStatus(): StoryStatus | null {
+    const [_, stat] = Object.entries(this.storyStatus).find(([_, stat]) => stat.active) || [null, null];
+    return stat;
+  };
+
   isPublished: boolean;
   isReleased: boolean;
   isScheduled: boolean;
@@ -111,7 +147,7 @@ export class StoryStatusComponent implements DoCheck {
 
   ngDoCheck() {
     if (this.story) {
-      this.setStatus();
+      this.determineStatus();
       this.isPublished = this.story.publishedAt ? true : false;
       this.isReleased = this.story.releasedAt ? true : false;
       this.isScheduled = this.isPublished && !this.story.isPublished();
@@ -133,6 +169,10 @@ export class StoryStatusComponent implements DoCheck {
         this.isInvalid = this.story.invalid(null, true); // strict
       }
     }
+  }
+
+  statusChange(event) {
+    console.log(event);
   }
 
   save() {
@@ -175,16 +215,14 @@ export class StoryStatusComponent implements DoCheck {
     }
   }
 
-  setStatus() {
+  determineStatus() {
+    Object.entries(this.storyStatus).forEach(([_, stat]) => stat.active = false);
     if (this.story.isNew || !this.story.publishedAt) {
-      this.statusClass = 'status draft';
-      this.statusText = 'Draft';
+      this.storyStatus.draft.active = true;
     } else if (!this.story.isPublished()) {
-      this.statusClass = 'status scheduled';
-      this.statusText = 'Scheduled';
+      this.storyStatus.scheduled.active = true;
     } else {
-      this.statusClass = 'status published';
-      this.statusText = 'Published';
+      this.storyStatus.published.active = true;
     }
   }
 

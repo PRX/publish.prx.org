@@ -52,6 +52,25 @@ describe('StoryStatusComponent', () => {
     fix.detectChanges();
   };
 
+  cit('determines the appropriate status based on story', (fix, el, comp: StoryStatusComponent) => {
+    mockStory({isNew: true}, comp, fix);
+    fix.detectChanges();
+    expect(Object.entries(comp.storyStatus).filter(([_, stat]) => stat.active).length).toBe(1);
+    expect(comp.currentStatus.name).toBe('draft');
+    mockStory({publishedAt: new Date(), isPublished: () => null}, comp, fix);
+    fix.detectChanges();
+    expect(Object.entries(comp.storyStatus).filter(([_, stat]) => stat.active).length).toBe(1);
+    expect(comp.currentStatus.name).toBe('scheduled');
+    mockStory({publishedAt: new Date(), isPublished: () => true}, comp, fix);
+    fix.detectChanges();
+    expect(Object.entries(comp.storyStatus).filter(([_, stat]) => stat.active).length).toBe(1);
+    expect(comp.currentStatus.name).toBe('published');
+  });
+
+  cit('fails gracefully if status has not yet been determined', (fix, el, comp: StoryStatusComponent) => {
+    expect(comp.currentStatus).toBe(null);
+  });
+
   cit('unstrictly saves new stories', (fix, el, comp) => {
     mockStory({isNew: true, invalid: () => 'bad'}, comp, fix);
     fix.detectChanges();
@@ -85,6 +104,7 @@ describe('StoryStatusComponent', () => {
     expectDisabled(el, 'Save', false);
   });
 
+  /*
   cit('shows story status', (fix, el, comp) => {
     mockStory({isNew: true}, comp, fix);
     expect(el).toQueryText('.status', 'Draft');
@@ -95,6 +115,7 @@ describe('StoryStatusComponent', () => {
     mockStory({publishedAt: new Date(), isPublished: () => true}, comp, fix);
     expect(el).toQueryText('.status', 'Published');
   });
+  */
 
   cit('strictly allows publishing', (fix, el, comp) => {
     mockStory({invalid: () => 'bad'}, comp, fix);
