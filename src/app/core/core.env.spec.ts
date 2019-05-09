@@ -1,6 +1,6 @@
 import { Env } from './core.env';
 
-fdescribe('Env', () => {
+describe('Env', () => {
 
   let prev: any;
   beforeEach(() => {
