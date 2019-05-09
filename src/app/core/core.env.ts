@@ -39,10 +39,19 @@ const getTruthy = (name: string): boolean => {
   }
 };
 
+const getNumber = (name: string): number => {
+  if (window && window['ENV'] && window['ENV'][name] !== undefined) {
+    const num = parseInt(window['ENV'][name], 10);
+    return isNaN(num) ? 0 : num;
+  } else {
+    return DEFAULTS[name] || 0;
+  }
+};
+
 export class Env {
   public static get CMS_HOST():              string { return getVar('CMS_HOST'); }
-  public static get CMS_TTL():               number { return getVar('CMS_TTL'); }
-  public static get CMS_ROOT_TTL():          number { return getVar('CMS_ROOT_TTL'); }
+  public static get CMS_TTL():               number { return getNumber('CMS_TTL'); }
+  public static get CMS_ROOT_TTL():          number { return getNumber('CMS_ROOT_TTL'); }
   public static get CMS_USE_LOCALSTORAGE(): boolean { return getTruthy('CMS_USE_LOCALSTORAGE'); }
   public static get AUTH_HOST():             string { return getVar('AUTH_HOST'); }
   public static get AUTH_CLIENT_ID():        string { return getVar('AUTH_CLIENT_ID'); }
