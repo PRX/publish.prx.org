@@ -1,15 +1,9 @@
-
-import {of as observableOf, from as observableFrom,  Observable ,  ConnectableObservable ,  Subscriber, ObservableLike } from 'rxjs';
-
-import {publish, map} from 'rxjs/operators';
+import { of as observableOf, from as observableFrom, Observable, ConnectableObservable, Subscriber } from 'rxjs';
+import { publish, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-
-
-
-
-
-declare var require: any;
-const Evaporate = require('evaporate');
+import * as Evaporate from 'evaporate';
+import * as sparkMD5 from 'spark-md5';
+import { sha256 } from 'js-sha256';
 
 import { Env } from '../core.env';
 import { UUID } from './uuid';
@@ -22,10 +16,9 @@ export class UploadService {
 
   private evaporate: Observable<Evaporate>;
   private bucketName: string = Env.BUCKET_NAME;
+  private bucketAccel: boolean = Env.BUCKET_ACCELERATION;
   private signUrl: string = Env.SIGN_URL;
   private awsKey: string = Env.AWS_KEY;
-  private awsUrl: string = Env.AWS_URL;
-  private useCloudfront: boolean = Env.USE_CLOUDFRONT;
 
   constructor(private mimeTypeService: MimeTypeService) {
     this.evaporate = this.init();
@@ -37,12 +30,14 @@ export class UploadService {
       Evaporate.create({
         signerUrl: this.signUrl,
         aws_key: this.awsKey,
-        aws_url: this.awsUrl,
         bucket: this.bucketName,
-        cloudfront: this.useCloudfront,
+        s3Acceleration: this.bucketAccel,
         onlyRetryForSameFileName: true,
         logging: false,
-        awsSignatureVersion: '2'
+        awsSignatureVersion: '4',
+        computeContentMd5: true,
+        cryptoMd5Method: data => btoa(sparkMD5.ArrayBuffer.hash(data, true)),
+        cryptoHexEncodedHash256: sha256,
       }).then(evaporate => evaporate)
     );
   }
