@@ -89,6 +89,7 @@ interface StoryStatus {
         [disabled]="isInvalid" (click)="save()">Save</prx-button>
       <prx-button *ngIf="!story.isNew" working=0 disabled=1
         [visible]="!isChanged">Saved</prx-button>
+      <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
     </ng-container>
   `
 })
@@ -293,4 +294,25 @@ export class StoryStatusComponent implements DoCheck {
     }
   }
 
+  confirmDelete(event: MouseEvent): void {
+    if (event.target['blur']) {
+      event.target['blur']();
+    }
+    this.modal.confirm(
+      'Really delete?',
+      'Are you sure you want to delete this episode? This action cannot be undone.',
+      (confirm: boolean) => {
+        if (confirm) {
+          if (this.story.changed()) {
+            this.story.discard();
+          }
+          this.story.isDestroy = true;
+          this.story.save().subscribe(() => {
+            this.toastr.success('Episode deleted');
+            this.router.navigate(['/']);
+          });
+        }
+      }
+    );
+  }
 }

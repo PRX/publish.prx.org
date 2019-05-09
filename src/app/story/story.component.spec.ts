@@ -1,4 +1,4 @@
-import { cit, create, provide, cms, By } from '../../testing';
+import { cit, create, provide, cms } from '../../testing';
 import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -138,5 +138,4 @@ describe('StoryComponent', () => {
     fix.detectChanges();
     expect(el).toContainText('Podcast Episode Info');
   });
-
 });
