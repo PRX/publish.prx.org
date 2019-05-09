@@ -69,8 +69,15 @@ import { StoryModel } from '../../shared';
           [date]="story.releasedAt" (dateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
         </prx-tz-datepicker>
       </dd>
-
     </dl>
+    <ng-container *ngIf="story">
+      <prx-button [model]="story" working=0 disabled=0 plain=1
+        [visible]="isChanged" (click)="discard()">Discard</prx-button>
+      <prx-button [model]="story" [visible]="isChanged || story.isNew"
+        [disabled]="isInvalid" (click)="save()">Save</prx-button>
+      <prx-button *ngIf="!story.isNew" working=0 disabled=1
+        [visible]="!isChanged">Saved</prx-button>
+    </ng-container>
   `
 })
 
@@ -86,6 +93,8 @@ export class StoryStatusComponent implements DoCheck {
   isScheduled: boolean;
   notPublished: boolean;
   showReleasedAt: boolean;
+  isChanged: boolean;
+  isInvalid: string;
 
   normalInvalid: string;
   normalInvalidCount: string;
@@ -117,7 +126,27 @@ export class StoryStatusComponent implements DoCheck {
       } else {
         this.showReleasedAt = false
       }
+      this.isChanged = this.story.changed();
+      if (this.story && (this.story.isNew || !this.story.publishedAt)) {
+        this.isInvalid = this.story.invalid(null, false);
+      } else {
+        this.isInvalid = this.story.invalid(null, true); // strict
+      }
     }
+  }
+
+  save() {
+    let wasNew = this.story.isNew;
+    this.story.save().subscribe(() => {
+      this.toastr.success('Episode saved');
+      if (wasNew) {
+        this.router.navigate(['/story', this.story.id]);
+      }
+    });
+  }
+
+  discard() {
+    this.story.discard();
   }
 
   get releasedAtChanged(): boolean {
