@@ -21,10 +21,9 @@ AUTH_CLIENT_ID=35zRqonwphKY05Uu2RA1YquwqyonSh3V6vAtnpB9
 # aws uploading
 BUCKET_NAME=prx-up
 BUCKET_FOLDER=dev
+BUCKET_ACCELERATION=true
 SIGN_URL=your-signing-url
 AWS_KEY=your-aws-key
-AWS_URL=your-cloudfront-url
-USE_CLOUDFRONT=true
 
 # embeddable player
 PLAY_HOST=play.staging.prx.tech
