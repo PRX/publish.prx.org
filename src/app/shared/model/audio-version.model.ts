@@ -227,9 +227,12 @@ export class AudioVersionModel extends BaseModel implements HasUpload {
       for (let t of this.fileTemplates) {
         this.filesAndTemplates.push({file: null, tpl: t});
       }
-      for (let f of this.files.filter(file => !file.isDestroy)) {
+
+      // fill templates in reverse order - newest files first
+      let files = this.files.filter(file => !file.isDestroy).reverse();
+      for (let f of files) {
         let ft = this.filesAndTemplates.find(ftmp => ftmp.tpl && ftmp.tpl['position'] === f.position);
-        if (ft) {
+        if (ft && !ft.file) {
           f.setTemplate(ft.tpl);
           ft.file = f;
         } else {
