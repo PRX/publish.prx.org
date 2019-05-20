@@ -1,6 +1,5 @@
 import { Component, Input, DoCheck } from '@angular/core';
-import { Angulartics2 } from 'angulartics2';
-import { ModalService, ToastrService } from 'ngx-prx-styleguide';
+import { ModalService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../../shared';
 
 interface StoryStatus {
@@ -14,36 +13,21 @@ interface StoryStatus {
   selector: 'publish-story-status',
   styleUrls: ['status.component.css'],
   template: `
-    <h1>Publish</h1>
-    <h3>Status</h3>
-    <select (change)="statusChange($event.target.value)">
-      <option>Draft</option>
-      <option>Scheduled</option>
-      <option>Published</option>
-    </select>
+    <h1 [class]="currentStatus?.class">{{currentStatus?.text}}</h1>
+    <ng-container *ngIf="false">
+      <dd *ngIf="isPublished"><p>{{story.publishedAt | date:"short"}}</p></dd>
+      <dd *ngIf="isReleased && !isPublished"><p>{{story.releasedAt | date:"short"}}</p></dd>
+      <dd *ngIf="id"><p *ngIf="story?.updatedAt">{{story.updatedAt | date:"short"}}</p></dd>
+    </ng-container>
     <dl>
       <dt>Status</dt>
       <dd>
-        <span *ngIf="currentStatus" [class]="currentStatus.class">{{currentStatus.text}}</span>
-        <ng-container *ngIf="isPublished">
-          <button *ngIf="editStatus" class="btn-link edit-status" (click)="toggleEdit()">Hide</button>
-          <button *ngIf="!editStatus" class="btn-link edit-status" (click)="toggleEdit()">Edit</button>
-          <prx-button *ngIf="editStatus" [model]="story" visible=1 orange=1 disabled=0
-            [working]="isPublishing" (click)="togglePublish()">Unpublish</prx-button>
-        </ng-container>
+        <select (change)="statusChange($event.target.value)">
+          <option>Draft</option>
+          <option>Scheduled</option>
+          <option>Published</option>
+        </select>
       </dd>
-
-      <dt *ngIf="isPublished && isScheduled">Publishing</dt>
-      <dt *ngIf="isPublished && !isScheduled">Published</dt>
-      <dd *ngIf="isPublished"><p>{{story.publishedAt | date:"short"}}</p></dd>
-
-      <dt *ngIf="isReleased && !isPublished">Release</dt>
-      <dd *ngIf="isReleased && !isPublished"><p>{{story.releasedAt | date:"short"}}</p></dd>
-
-      <dt>Saved</dt>
-      <dd *ngIf="!id"><p>Not Saved</p></dd>
-      <dd *ngIf="id"><p *ngIf="story?.updatedAt">{{story.updatedAt | date:"short"}}</p></dd>
-
       <dt>Progress</dt>
       <dd *ngIf="!id">
         <p *ngIf="changed && !normalInvalid">Ready to create</p>
@@ -60,8 +44,6 @@ interface StoryStatus {
         <ng-container *ngIf="notPublished && !strictInvalid">
           <p *ngIf="changed">Ready after save</p>
           <p *ngIf="!changed">Ready to publish</p>
-          <prx-button [model]="story" visible=1 orange=1 [disabled]="changed"
-            [working]="isPublishing" (click)="togglePublish()">Publish</prx-button>
         </ng-container>
         <ng-container *ngIf="isPublished && !strictInvalid">
           <p *ngIf="changed">Unsaved changes</p>
@@ -94,19 +76,19 @@ export class StoryStatusComponent implements DoCheck {
     draft: {
       active: false,
       name: 'draft',
-      class: 'status draft',
+      class: 'draft',
       text: 'Draft'
     },
     scheduled: {
       active: false,
       name: 'scheduled',
-      class: 'status scheduled',
+      class: 'scheduled',
       text: 'Scheduled'
     },
     published: {
       active: false,
       name: 'published',
-      class: 'status published',
+      class: 'published',
       text: 'Published'
     }
   }
@@ -127,17 +109,13 @@ export class StoryStatusComponent implements DoCheck {
   strictInvalid: string;
   strictInvalidCount: string;
   changed: boolean;
-  editStatus: boolean;
   isPublishing: boolean;
 
-  constructor(private modal: ModalService,
-              private toastr: ToastrService,
-              private angulartics2: Angulartics2) {}
+  constructor(private modal: ModalService) {}
 
   ngDoCheck() {
     if (this.story) {
       this.determineStatus();
-      this.isPublished = this.story.publishedAt ? true : false;
       this.isReleased = this.story.releasedAt ? true : false;
       this.isScheduled = this.isPublished && !this.story.isPublished();
       this.notPublished = !this.isPublished;
@@ -236,20 +214,6 @@ export class StoryStatusComponent implements DoCheck {
     this.modal.show({title: title, body: `<ul>${msg}</ul>`, secondaryButton: 'Okay'});
   }
 
-  toggleEdit() {
-    this.editStatus = !this.editStatus;
-  }
-
-  togglePublish() {
-    this.isPublishing = true;
-    this.story.setPublished(!this.story.publishedAt).subscribe(() => {
-      this.angulartics2.eventTrack.next({ action: this.story.publishedAt ? 'publish' : 'unpublish',
-        properties: { category: 'episode', label: 'episode/' + this.story.doc.id }});
-      this.toastr.success(`Episode ${this.story.publishedAt ? 'published' : 'unpublished'}`);
-      this.isPublishing = false;
-      this.editStatus = false;
-    });
-  }
 
   private storyInvalid(strict): string {
     let invalids = this.story.invalid(null, strict);

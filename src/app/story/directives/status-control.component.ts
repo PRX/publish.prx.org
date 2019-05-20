@@ -2,6 +2,7 @@ import { Component, DoCheck, Input } from '@angular/core';
 import { StoryModel } from 'app/shared';
 import { ToastrService, ModalService } from 'ngx-prx-styleguide';
 import { Router } from '@angular/router';
+import { Angulartics2 } from 'angulartics2';
 
 @Component({
   selector: 'publish-status-control',
@@ -26,6 +27,8 @@ import { Router } from '@angular/router';
         Saved
         <div class="dropdown-menu-items">
           <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
+          <prx-button *ngIf="isPublished" [model]="story" visible=1 orange=1 disabled=0
+            [working]="isPublishing" (click)="togglePublish()">Unpublish</prx-button>
         </div>
       </prx-button>
     </ng-container>
@@ -38,13 +41,17 @@ export class StatusControlComponent implements DoCheck {
 
   isChanged: boolean;
   isInvalid: string;
+  isPublished: boolean;
+  isPublishing: boolean;
 
   constructor(private modal: ModalService,
               private toastr: ToastrService,
-              private router: Router) { }
+              private router: Router,
+              private angulartics2: Angulartics2) { }
 
   ngDoCheck() {
     if(this.story) {
+      this.isPublished = this.story.publishedAt ? true : false;
       this.isChanged = this.story.changed();
       if (this.story && (this.story.isNew || !this.story.publishedAt)) {
         this.isInvalid = this.story.invalid(null, false);
@@ -66,6 +73,16 @@ export class StatusControlComponent implements DoCheck {
 
   discard() {
     this.story.discard();
+  }
+
+  togglePublish() {
+    this.isPublishing = true;
+    this.story.setPublished(!this.story.publishedAt).subscribe(() => {
+      this.angulartics2.eventTrack.next({ action: this.story.publishedAt ? 'publish' : 'unpublish',
+        properties: { category: 'episode', label: 'episode/' + this.story.doc.id }});
+      this.toastr.success(`Episode ${this.story.publishedAt ? 'published' : 'unpublished'}`);
+      this.isPublishing = false;
+    });
   }
 
   confirmDelete(event: MouseEvent): void {

@@ -4,7 +4,7 @@ import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryStatusComponent } from './status.component';
 import * as moment from 'moment';
 
-describe('StoryStatusComponent', () => {
+fdescribe('StoryStatusComponent', () => {
 
   create(StoryStatusComponent);
 
@@ -47,13 +47,13 @@ describe('StoryStatusComponent', () => {
 
   cit('shows story status', (fix, el, comp) => {
     mockStory({isNew: true}, comp, fix);
-    expect(el).toQueryText('.status', 'Draft');
+    expect(el).toQueryText('h1', 'Draft');
     mockStory({isNew: false}, comp, fix);
-    expect(el).toQueryText('.status', 'Draft');
+    expect(el).toQueryText('h1', 'Draft');
     mockStory({publishedAt: new Date(), isPublished: () => false}, comp, fix);
-    expect(el).toQueryText('.status', 'Scheduled');
+    expect(el).toQueryText('h1', 'Scheduled');
     mockStory({publishedAt: new Date(), isPublished: () => true}, comp, fix);
-    expect(el).toQueryText('.status', 'Published');
+    expect(el).toQueryText('h1', 'Published');
   });
 
   cit('strictly allows publishing', (fix, el, comp) => {

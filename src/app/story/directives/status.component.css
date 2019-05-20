@@ -8,8 +8,18 @@ h1 {
   background-color: #aaa;
   padding: 8px 20px;
   margin-bottom: 4px;
-  font-weight: 400;
+  font-weight: 600;
   color: #fff;
+  text-transform: uppercase;
+}
+h1.draft {
+  background-color: #ffa500;
+}
+h1.scheduled {
+  background-color: #61A85D;
+}
+h1.published {
+  background-color: #0089bc;
 }
 dl {
   padding: 6px 10px 16px 16px
@@ -42,15 +52,6 @@ dd {
   font-size: 11px;
   text-transform: uppercase;
   line-height: 18px;
-}
-.status.draft {
-  background-color: #ffa500;
-}
-.status.scheduled {
-  background-color: #61A85D;
-}
-.status.published {
-  background-color: #0089bc;
 }
 .edit-status {
   margin-left: 6px;
