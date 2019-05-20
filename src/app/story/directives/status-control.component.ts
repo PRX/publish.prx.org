@@ -7,13 +7,27 @@ import { Router } from '@angular/router';
   selector: 'publish-status-control',
   template: `
     <ng-container *ngIf="story">
-      <prx-button [model]="story" [visible]="isChanged || story.isNew"
-        [disabled]="isInvalid" (click)="save()">Save</prx-button>
+      <prx-button
+        [model]="story"
+        [visible]="isChanged || story.isNew"
+        [disabled]="isInvalid"
+        [dropdown]="!story.isNew"
+        (click)="save()">
+        Save
+        <div class="dropdown-menu-items">
+          <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
+        </div>
+      </prx-button>
+
       <prx-button [model]="story" working=0 disabled=0 plain=1
         [visible]="isChanged" (click)="discard()">Discard</prx-button>
-      <prx-button *ngIf="!story.isNew" working=0 disabled=1
-        [visible]="!isChanged">Saved</prx-button>
-      <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
+
+      <prx-button dropdown=1 *ngIf="!story.isNew" working=0 disabled=1 [visible]="!isChanged">
+        Saved
+        <div class="dropdown-menu-items">
+          <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
+        </div>
+      </prx-button>
     </ng-container>
   `,
   styleUrls: ['./status-control.component.css']
