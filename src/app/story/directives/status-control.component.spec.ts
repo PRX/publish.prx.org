@@ -3,6 +3,7 @@ import { StatusControlComponent } from './status-control.component';
 import { Router } from '@angular/router';
 import { RouterStub } from '../../../testing/stub.router';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
+import { Angulartics2 } from 'angulartics2';
 
 describe('StatusControlComponent', () => {
   create(StatusControlComponent);
@@ -10,10 +11,11 @@ describe('StatusControlComponent', () => {
   provide(Router, RouterStub);
   provide(ModalService);
   provide(ToastrService);
+  provide(Angulartics2, {trackLocation: () => {}});
 
   const expectDisabled = (el, text, shouldBeDisabled) => {
     let button = el.queryAll(By.css('prx-button')).find(btn => {
-      return btn.nativeElement.textContent.trim() === text;
+      return btn.nativeElement.firstChild.data.trim() === text;
     });
     if (!button) {
       fail(`Could not find button with text: ${text}`);
@@ -38,6 +40,22 @@ describe('StatusControlComponent', () => {
     comp.id = comp.story.isNew ? null : 1234;
     fix.detectChanges();
   };
+
+  cit('strictly allows publishing', (fix, el, comp) => {
+    mockStory({invalid: () => 'bad'}, comp, fix);
+    expect(el).toContainText('Found 1 problem');
+    mockStory({invalid: (f, strict) => strict ? 'bad,stuff' : null}, comp, fix);
+    expect(el).toContainText('Found 2 problems');
+    mockStory({invalid: () => null}, comp, fix);
+    expect(el).toContainText('Ready to publish');
+  });
+
+  cit('shows remote status messages', (fix, el, comp) => {
+    mockStory({status: 'invalid', statusMessage: 'Remote invalid'}, comp, fix);
+    expect(el).toContainText('Found 1 problem');
+    mockStory({status: 'any', statusMessage: 'Remote invalid'}, comp, fix);
+    expect(el).toContainText('Ready to publish');
+  });
 
   cit('unstrictly saves new stories', (fix, el, comp) => {
     mockStory({isNew: true, invalid: () => 'bad'}, comp, fix);

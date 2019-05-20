@@ -1,10 +1,9 @@
 import { cit, create, provide, stubPipe, By } from '../../../testing';
-import { Angulartics2 } from 'angulartics2';
-import { ModalService, ToastrService } from 'ngx-prx-styleguide';
+import { ModalService } from 'ngx-prx-styleguide';
 import { StoryStatusComponent } from './status.component';
 import * as moment from 'moment';
 
-fdescribe('StoryStatusComponent', () => {
+describe('StoryStatusComponent', () => {
 
   create(StoryStatusComponent);
 
@@ -17,8 +16,6 @@ fdescribe('StoryStatusComponent', () => {
     confirm: (title, body) => modalAlertBody = body
   });
   beforeEach(() => modalAlertBody = null);
-  provide(ToastrService);
-  provide(Angulartics2, {trackLocation: () => {}});
 
   const mockStory = (story, comp, fix) => {
     comp.story = story;
@@ -54,24 +51,6 @@ fdescribe('StoryStatusComponent', () => {
     expect(el).toQueryText('h1', 'Scheduled');
     mockStory({publishedAt: new Date(), isPublished: () => true}, comp, fix);
     expect(el).toQueryText('h1', 'Published');
-  });
-
-  cit('strictly allows publishing', (fix, el, comp) => {
-    mockStory({invalid: () => 'bad'}, comp, fix);
-    expect(el).toContainText('Publish');
-    expect(el).toContainText('Found 1 problem');
-    mockStory({invalid: (f, strict) => strict ? 'bad,stuff' : null}, comp, fix);
-    expect(el).toContainText('Found 2 problems');
-    mockStory({invalid: () => null}, comp, fix);
-    expect(el).toContainText('Ready to publish');
-  });
-
-  cit('shows remote status messages', (fix, el, comp) => {
-    mockStory({status: 'invalid', statusMessage: 'Remote invalid'}, comp, fix);
-    expect(el).toContainText('Publish');
-    expect(el).toContainText('Found 1 problem');
-    mockStory({status: 'any', statusMessage: 'Remote invalid'}, comp, fix);
-    expect(el).toContainText('Ready to publish');
   });
 
   cit('updates showReleasedAt based on story releasedAt', (fix, el, comp) => {

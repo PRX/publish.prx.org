@@ -28,28 +28,6 @@ interface StoryStatus {
           <option>Published</option>
         </select>
       </dd>
-      <dt>Progress</dt>
-      <dd *ngIf="!id">
-        <p *ngIf="changed && !normalInvalid">Ready to create</p>
-        <p *ngIf="changed && normalInvalid" class="error">Unable to create</p>
-        <button *ngIf="changed && normalInvalid" class="btn-link"
-          (click)="showProblems()">{{normalInvalidCount}}</button>
-      </dd>
-      <dd *ngIf="id">
-        <ng-container *ngIf="strictInvalid">
-          <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
-          <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
-          <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
-        </ng-container>
-        <ng-container *ngIf="notPublished && !strictInvalid">
-          <p *ngIf="changed">Ready after save</p>
-          <p *ngIf="!changed">Ready to publish</p>
-        </ng-container>
-        <ng-container *ngIf="isPublished && !strictInvalid">
-          <p *ngIf="changed">Unsaved changes</p>
-          <p *ngIf="!changed">Complete</p>
-        </ng-container>
-      </dd>
       <dt>Release</dt>
       <dd>
         <input type="checkbox" [ngModel]="showReleasedAt" (click)="toggleShowReleaseAt()" name="showReleasedAt" id="showReleasedAt">
@@ -101,14 +79,8 @@ export class StoryStatusComponent implements DoCheck {
   isPublished: boolean;
   isReleased: boolean;
   isScheduled: boolean;
-  notPublished: boolean;
   showReleasedAt: boolean;
 
-  normalInvalid: string;
-  normalInvalidCount: string;
-  strictInvalid: string;
-  strictInvalidCount: string;
-  changed: boolean;
   isPublishing: boolean;
 
   constructor(private modal: ModalService) {}
@@ -118,12 +90,6 @@ export class StoryStatusComponent implements DoCheck {
       this.determineStatus();
       this.isReleased = this.story.releasedAt ? true : false;
       this.isScheduled = this.isPublished && !this.story.isPublished();
-      this.notPublished = !this.isPublished;
-      this.normalInvalid = this.storyInvalid(false);
-      this.normalInvalidCount = this.countProblems(false);
-      this.strictInvalid = this.storyInvalid(true);
-      this.strictInvalidCount = this.countProblems(true);
-      this.changed = this.story.changed();
       if (this.story && this.story.releasedAt) {
         this.showReleasedAt = true;
       } else {
@@ -170,59 +136,6 @@ export class StoryStatusComponent implements DoCheck {
       this.storyStatus.scheduled.active = true;
     } else {
       this.storyStatus.published.active = true;
-    }
-  }
-
-  formatInvalid(str: string): string {
-    str = str.trim();
-    str = str.replace(/shortdescription/i, 'teaser');
-    str = str.charAt(0).toUpperCase() + str.slice(1);
-    return str;
-  }
-
-  formatInvalids(strict = false): string[] {
-    let invalids = strict ? this.strictInvalid : this.normalInvalid;
-    if (invalids) {
-      return invalids.split(',').map(s => this.formatInvalid(s));
-    } else {
-      return [];
-    }
-  }
-
-  countProblems(strict = false): string {
-    let count = this.formatInvalids(strict).length;
-    return count === 1 ? `Found 1 problem` : `Found ${count} problems`;
-  }
-
-  showProblems() {
-    let normals = this.formatInvalids(false);
-    let stricts = this.formatInvalids(true).filter(s => normals.indexOf(s) === -1);
-
-    let title = 'Validation errors';
-    let msg = '';
-    normals.forEach(s => msg += `<li class="error">${s}</li>`);
-    if (this.isPublished) {
-      stricts.forEach(s => msg += `<li class="error">${s}</li>`);
-    }
-    if (this.id && !this.isPublished) {
-      stricts.forEach(s => msg += `<li>${s}</li>`);
-      if (normals.length === 0) {
-        title = 'Not ready to publish';
-      }
-    }
-
-    this.modal.show({title: title, body: `<ul>${msg}</ul>`, secondaryButton: 'Okay'});
-  }
-
-
-  private storyInvalid(strict): string {
-    let invalids = this.story.invalid(null, strict);
-    if (invalids || this.story.status !== 'invalid') {
-      return invalids;
-    } else if (strict && !this.story.changed()) {
-      return this.story.statusMessage;
-    } else {
-      return null;
     }
   }
 }

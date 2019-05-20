@@ -8,6 +8,33 @@ import { Angulartics2 } from 'angulartics2';
   selector: 'publish-status-control',
   template: `
     <ng-container *ngIf="story">
+      <prx-button [model]="story" working=0 disabled=0 plain=1
+        [visible]="isChanged" (click)="discard()">Discard</prx-button>
+
+        <dl>
+        <dt>Progress</dt>
+        <dd *ngIf="!id">
+          <p *ngIf="isChanged && !normalInvalid">Ready to create</p>
+          <p *ngIf="isChanged && normalInvalid" class="error">Unable to create</p>
+          <button *ngIf="isChanged && normalInvalid" class="btn-link"
+            (click)="showProblems()">{{normalInvalidCount}}</button>
+        </dd>
+        <dd *ngIf="id">
+          <ng-container *ngIf="strictInvalid">
+            <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
+            <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
+            <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
+          </ng-container>
+          <ng-container *ngIf="notPublished && !strictInvalid">
+            <p *ngIf="isChanged">Ready after save</p>
+            <p *ngIf="!isChanged">Ready to publish</p>
+          </ng-container>
+          <ng-container *ngIf="isPublished && !strictInvalid">
+            <p *ngIf="isChanged">Unsaved changes</p>
+            <p *ngIf="!isChanged">Complete</p>
+          </ng-container>
+        </dd>
+        </dl>
       <prx-button
         [model]="story"
         [visible]="isChanged || story.isNew"
@@ -19,9 +46,6 @@ import { Angulartics2 } from 'angulartics2';
           <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
         </div>
       </prx-button>
-
-      <prx-button [model]="story" working=0 disabled=0 plain=1
-        [visible]="isChanged" (click)="discard()">Discard</prx-button>
 
       <prx-button dropdown=1 *ngIf="!story.isNew" working=0 disabled=1 [visible]="!isChanged">
         Saved
@@ -43,6 +67,11 @@ export class StatusControlComponent implements DoCheck {
   isInvalid: string;
   isPublished: boolean;
   isPublishing: boolean;
+  normalInvalid: string;
+  normalInvalidCount: string;
+  strictInvalid: string;
+  strictInvalidCount: string;
+  notPublished: boolean;
 
   constructor(private modal: ModalService,
               private toastr: ToastrService,
@@ -52,6 +81,11 @@ export class StatusControlComponent implements DoCheck {
   ngDoCheck() {
     if(this.story) {
       this.isPublished = this.story.publishedAt ? true : false;
+      this.normalInvalid = this.storyInvalid(false);
+      this.normalInvalidCount = this.countProblems(false);
+      this.strictInvalid = this.storyInvalid(true);
+      this.strictInvalidCount = this.countProblems(true);
+      this.notPublished = !this.isPublished;
       this.isChanged = this.story.changed();
       if (this.story && (this.story.isNew || !this.story.publishedAt)) {
         this.isInvalid = this.story.invalid(null, false);
@@ -105,5 +139,58 @@ export class StatusControlComponent implements DoCheck {
         }
       }
     );
+  }
+
+  formatInvalid(str: string): string {
+    str = str.trim();
+    str = str.replace(/shortdescription/i, 'teaser');
+    str = str.charAt(0).toUpperCase() + str.slice(1);
+    return str;
+  }
+
+  formatInvalids(strict = false): string[] {
+    let invalids = strict ? this.strictInvalid : this.normalInvalid;
+    if (invalids) {
+      return invalids.split(',').map(s => this.formatInvalid(s));
+    } else {
+      return [];
+    }
+  }
+
+  countProblems(strict = false): string {
+    let count = this.formatInvalids(strict).length;
+    return count === 1 ? `Found 1 problem` : `Found ${count} problems`;
+  }
+
+  showProblems() {
+    let normals = this.formatInvalids(false);
+    let stricts = this.formatInvalids(true).filter(s => normals.indexOf(s) === -1);
+
+    let title = 'Validation errors';
+    let msg = '';
+    normals.forEach(s => msg += `<li class="error">${s}</li>`);
+    if (this.isPublished) {
+      stricts.forEach(s => msg += `<li class="error">${s}</li>`);
+    }
+    if (this.id && !this.isPublished) {
+      stricts.forEach(s => msg += `<li>${s}</li>`);
+      if (normals.length === 0) {
+        title = 'Not ready to publish';
+      }
+    }
+
+    this.modal.show({title: title, body: `<ul>${msg}</ul>`, secondaryButton: 'Okay'});
+  }
+
+
+  private storyInvalid(strict): string {
+    let invalids = this.story.invalid(null, strict);
+    if (invalids || this.story.status !== 'invalid') {
+      return invalids;
+    } else if (strict && !this.story.changed()) {
+      return this.story.statusMessage;
+    } else {
+      return null;
+    }
   }
 }
