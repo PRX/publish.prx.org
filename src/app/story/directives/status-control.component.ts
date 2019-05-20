@@ -3,6 +3,7 @@ import { StoryModel } from 'app/shared';
 import { ToastrService, ModalService } from 'ngx-prx-styleguide';
 import { Router } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
+import { StoryStatus } from './status.component';
 
 @Component({
   selector: 'publish-status-control',
@@ -11,30 +12,33 @@ import { Angulartics2 } from 'angulartics2';
       <prx-button [model]="story" working=0 disabled=0 plain=1
         [visible]="isChanged" (click)="discard()">Discard</prx-button>
 
-        <dl>
-        <dt>Progress</dt>
-        <dd *ngIf="!id">
-          <p *ngIf="isChanged && !normalInvalid">Ready to create</p>
-          <p *ngIf="isChanged && normalInvalid" class="error">Unable to create</p>
-          <button *ngIf="isChanged && normalInvalid" class="btn-link"
-            (click)="showProblems()">{{normalInvalidCount}}</button>
-        </dd>
-        <dd *ngIf="id">
-          <ng-container *ngIf="strictInvalid">
-            <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
-            <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
-            <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
-          </ng-container>
-          <ng-container *ngIf="notPublished && !strictInvalid">
-            <p *ngIf="isChanged">Ready after save</p>
-            <p *ngIf="!isChanged">Ready to publish</p>
-          </ng-container>
-          <ng-container *ngIf="isPublished && !strictInvalid">
-            <p *ngIf="isChanged">Unsaved changes</p>
-            <p *ngIf="!isChanged">Complete</p>
-          </ng-container>
-        </dd>
-        </dl>
+        <ng-container *ngIf="nextStatus?.name !== 'draft'">
+          <dl>
+            <dt>Progress</dt>
+            <dd *ngIf="!id">
+              <p *ngIf="isChanged && !normalInvalid">Ready to create</p>
+              <p *ngIf="isChanged && normalInvalid" class="error">Unable to create</p>
+              <button *ngIf="isChanged && normalInvalid" class="btn-link"
+                (click)="showProblems()">{{normalInvalidCount}}</button>
+            </dd>
+            <dd *ngIf="id">
+              <ng-container *ngIf="strictInvalid">
+                <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
+                <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
+                <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
+              </ng-container>
+              <ng-container *ngIf="notPublished && !strictInvalid">
+                <p *ngIf="isChanged">Ready after save</p>
+                <p *ngIf="!isChanged">Ready to publish</p>
+              </ng-container>
+              <ng-container *ngIf="isPublished && !strictInvalid">
+                <p *ngIf="isChanged">Unsaved changes</p>
+                <p *ngIf="!isChanged">Complete</p>
+              </ng-container>
+            </dd>
+          </dl>
+        </ng-container>
+
       <prx-button
         [model]="story"
         [visible]="isChanged || story.isNew"
@@ -62,6 +66,7 @@ import { Angulartics2 } from 'angulartics2';
 export class StatusControlComponent implements DoCheck {
   @Input() id: number;
   @Input() story: StoryModel;
+  @Input() nextStatus: StoryStatus | null;
 
   isChanged: boolean;
   isInvalid: string;
@@ -139,6 +144,77 @@ export class StatusControlComponent implements DoCheck {
         }
       }
     );
+  }
+
+  /*              | saved | err | dropdate | nextStatus |             
+  publishnow      |   1   |  0  |   now    |   publish  |             
+  schedule        |   1   |  0  |    1     |  schedule  |             
+  foundproblems   |   0   |  1  |    ?     |     ?      |             
+  save(scheduled) |   0   |  0  |    1     |  schedule  |             
+  save&publish    |   0   |  0  |   now    |   publish  |             
+  save(draft)     |   0   |  0  |    0     |    draft   |             
+  */
+
+
+  // Normal invalid is for saving a draft
+  // Strict invalid is for publishing or scheduling
+  determineNextStep() {//: {saved: boolean, invalid: number, strict: boolean} {
+    if(!this.id) { // Unsaved
+      if(this.isChanged) {
+        if(!this.normalInvalid) {
+          //Ready to create
+          return { error: false }
+        } else {
+          //Unable to create
+          //(click)="showProblems()">{{normalInvalidCount}}</button>
+          return { error: this.normalInvalidCount }
+        }
+      }
+    } else { // Saved
+      if(this.strictInvalid) {
+        if(this.isPublished || this.normalInvalid) {
+          //Invalid episode
+        } else {
+          //Not ready to publish
+        }
+        // (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
+      } else if (this.notPublished) {
+        if(this.isChanged) {
+          // Ready after save
+        } else {
+          // Ready to publish
+        }
+      } else { // isPublished && !strictInvalid
+        if(this.isChanged) {
+          // Unsaved changes
+        } else {
+          // Complete
+        }
+      }
+    }
+/*
+<dd *ngIf="!id">
+  <p *ngIf="isChanged && !normalInvalid">Ready to create</p>
+  <p *ngIf="isChanged && normalInvalid" class="error">Unable to create</p>
+  <button *ngIf="isChanged && normalInvalid" class="btn-link"
+    (click)="showProblems()">{{normalInvalidCount}}</button>
+</dd>
+<dd *ngIf="id">
+  <ng-container *ngIf="strictInvalid">
+    <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
+    <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
+    <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
+  </ng-container>
+  <ng-container *ngIf="notPublished && !strictInvalid">
+    <p *ngIf="isChanged">Ready after save</p>
+    <p *ngIf="!isChanged">Ready to publish</p>
+  </ng-container>
+  <ng-container *ngIf="isPublished && !strictInvalid">
+    <p *ngIf="isChanged">Unsaved changes</p>
+    <p *ngIf="!isChanged">Complete</p>
+  </ng-container>
+</dd>
+*/
   }
 
   formatInvalid(str: string): string {

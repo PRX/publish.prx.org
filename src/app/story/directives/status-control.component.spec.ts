@@ -5,7 +5,7 @@ import { RouterStub } from '../../../testing/stub.router';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { Angulartics2 } from 'angulartics2';
 
-describe('StatusControlComponent', () => {
+fdescribe('StatusControlComponent', () => {
   create(StatusControlComponent);
 
   provide(Router, RouterStub);
@@ -86,4 +86,18 @@ describe('StatusControlComponent', () => {
     fix.detectChanges();
     expectDisabled(el, 'Save', false);
   });
+
+  cit('it correctly determines the next step', (fix, el, comp: StatusControlComponent) => {
+    comp.nextStatus = { active: false, name: 'draft', class: 'draft', text: 'Draft' };
+    // If it's going to draft and fails normal validation, it can't be saved
+    mockStory({isNew: true, invalid: () => 'bad', changed: () => true}, comp, fix);
+    expect(comp.determineNextStep().error).not.toBeFalsy();
+    // If it's going to draft and passes normal validation, it can be saved
+    comp.story.invalid = (f, strict) => strict ? 'bad' : null;
+    expect(comp.determineNextStep().error).toMatch(/Found.*problem/);
+    // If it's going to scheduled and fails strict validation, it can't be scheduled
+    // If it's going to scheduled and passes strict validation, it can be scheduled
+    // If it's going to published and fails strict validation, it can't be published
+    // If it's going to published and passes strict validation, it can be published
+  })
 });

@@ -2,7 +2,7 @@ import { Component, Input, DoCheck } from '@angular/core';
 import { ModalService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../../shared';
 
-interface StoryStatus {
+export interface StoryStatus {
   active: boolean,
   name: string,
   class: string,
@@ -23,9 +23,7 @@ interface StoryStatus {
       <dt>Status</dt>
       <dd>
         <select (change)="statusChange($event.target.value)">
-          <option>Draft</option>
-          <option>Scheduled</option>
-          <option>Published</option>
+          <option *ngFor="let status of storyStatus | keyvalue" [value]="status.key">{{status.value.text}}</option>
         </select>
       </dd>
       <dt>Release</dt>
@@ -41,7 +39,7 @@ interface StoryStatus {
         </prx-tz-datepicker>
       </dd>
     </dl>
-    <publish-status-control [id]="id" [story]="story"></publish-status-control>
+    <publish-status-control [id]="id" [story]="story" [nextStatus]="nextStatus"></publish-status-control>
   `
 })
 
@@ -71,10 +69,8 @@ export class StoryStatusComponent implements DoCheck {
     }
   }
 
-  get currentStatus(): StoryStatus | null {
-    const [_, stat] = Object.entries(this.storyStatus).find(([_, stat]) => stat.active) || [null, null];
-    return stat;
-  };
+  currentStatus: StoryStatus | null = null;
+  nextStatus: StoryStatus | null = null;
 
   isPublished: boolean;
   isReleased: boolean;
@@ -99,7 +95,7 @@ export class StoryStatusComponent implements DoCheck {
   }
 
   statusChange(event) {
-    console.log(event);
+    this.nextStatus = this.storyStatus[event];
   }
 
   get releasedAtChanged(): boolean {
@@ -137,5 +133,8 @@ export class StoryStatusComponent implements DoCheck {
     } else {
       this.storyStatus.published.active = true;
     }
+    const [_, stat] = Object.entries(this.storyStatus).find(([_, stat]) => stat.active) || [null, null];
+    this.currentStatus = stat;
+    if(!this.nextStatus) { this.nextStatus = this.currentStatus }
   }
 }
