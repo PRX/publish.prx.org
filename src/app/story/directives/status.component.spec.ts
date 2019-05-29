@@ -28,14 +28,11 @@ describe('StoryStatusComponent', () => {
 
   cit('determines the appropriate status based on story', (fix, el, comp: StoryStatusComponent) => {
     mockStory({isNew: true}, comp, fix);
-    expect(Object.entries(comp.storyStatus).filter(([_, stat]) => stat.active).length).toBe(1);
-    expect(comp.currentStatus.name).toBe('draft');
+    expect(comp.currentStatus).toBe('draft');
     mockStory({publishedAt: new Date(), isPublished: () => null}, comp, fix);
-    expect(Object.entries(comp.storyStatus).filter(([_, stat]) => stat.active).length).toBe(1);
-    expect(comp.currentStatus.name).toBe('scheduled');
+    expect(comp.currentStatus).toBe('scheduled');
     mockStory({publishedAt: new Date(), isPublished: () => true}, comp, fix);
-    expect(Object.entries(comp.storyStatus).filter(([_, stat]) => stat.active).length).toBe(1);
-    expect(comp.currentStatus.name).toBe('published');
+    expect(comp.currentStatus).toBe('published');
   });
 
   cit('fails gracefully if status has not yet been determined', (fix, el, comp: StoryStatusComponent) => {

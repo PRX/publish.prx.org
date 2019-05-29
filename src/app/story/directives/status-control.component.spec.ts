@@ -88,7 +88,7 @@ fdescribe('StatusControlComponent', () => {
   });
 
   cit('it correctly determines the next step', (fix, el, comp: StatusControlComponent) => {
-    comp.nextStatus = { active: false, name: 'draft', class: 'draft', text: 'Draft' };
+    comp.nextStatus = 'draft';
     // If it's going to draft and fails normal validation, it can't be saved
     mockStory({isNew: true, invalid: () => 'bad', changed: () => true}, comp, fix);
     expect(comp.determineNextStep().error).not.toBeFalsy();

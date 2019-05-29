@@ -2,18 +2,12 @@ import { Component, Input, DoCheck } from '@angular/core';
 import { ModalService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../../shared';
 
-export interface StoryStatus {
-  active: boolean,
-  name: string,
-  class: string,
-  text:string
-}
-
+export type StoryStatus = 'draft' | 'scheduled' | 'published';
 @Component({
   selector: 'publish-story-status',
   styleUrls: ['status.component.css'],
   template: `
-    <h1 [class]="currentStatus?.class">{{currentStatus?.text}}</h1>
+    <h1 [class]="currentStatus">{{currentStatus}}</h1>
     <ng-container *ngIf="false">
       <dd *ngIf="isPublished"><p>{{story.publishedAt | date:"short"}}</p></dd>
       <dd *ngIf="isReleased && !isPublished"><p>{{story.releasedAt | date:"short"}}</p></dd>
@@ -23,7 +17,9 @@ export interface StoryStatus {
       <dt>Status</dt>
       <dd>
         <select (change)="statusChange($event.target.value)">
-          <option *ngFor="let status of storyStatus | keyvalue" [value]="status.key">{{status.value.text}}</option>
+          <option *ngFor="let status of statusOptions"
+                  [value]="status"
+                  [selected]="status === currentStatus">{{status | titlecase}}</option>
         </select>
       </dd>
       <dt>Release</dt>
@@ -48,29 +44,9 @@ export class StoryStatusComponent implements DoCheck {
   @Input() id: number;
   @Input() story: StoryModel;
 
-  storyStatus: {[key: string]: StoryStatus} = {
-    draft: {
-      active: false,
-      name: 'draft',
-      class: 'draft',
-      text: 'Draft'
-    },
-    scheduled: {
-      active: false,
-      name: 'scheduled',
-      class: 'scheduled',
-      text: 'Scheduled'
-    },
-    published: {
-      active: false,
-      name: 'published',
-      class: 'published',
-      text: 'Published'
-    }
-  }
-
-  currentStatus: StoryStatus | null = null;
-  nextStatus: StoryStatus | null = null;
+  statusOptions = ['draft', 'scheduled', 'published'];
+  currentStatus: StoryStatus;
+  nextStatus: StoryStatus;
 
   isPublished: boolean;
   isReleased: boolean;
@@ -94,8 +70,8 @@ export class StoryStatusComponent implements DoCheck {
     }
   }
 
-  statusChange(event) {
-    this.nextStatus = this.storyStatus[event];
+  statusChange(status: StoryStatus) {
+    this.nextStatus = status;
   }
 
   get releasedAtChanged(): boolean {
@@ -125,16 +101,13 @@ export class StoryStatusComponent implements DoCheck {
   }
 
   determineStatus() {
-    Object.entries(this.storyStatus).forEach(([_, stat]) => stat.active = false);
     if (this.story.isNew || !this.story.publishedAt) {
-      this.storyStatus.draft.active = true;
+      this.currentStatus = 'draft';
     } else if (!this.story.isPublished()) {
-      this.storyStatus.scheduled.active = true;
+      this.currentStatus = 'scheduled';
     } else {
-      this.storyStatus.published.active = true;
+      this.currentStatus = 'published';
     }
-    const [_, stat] = Object.entries(this.storyStatus).find(([_, stat]) => stat.active) || [null, null];
-    this.currentStatus = stat;
-    if(!this.nextStatus) { this.nextStatus = this.currentStatus }
+    if (!this.nextStatus) { this.nextStatus = this.currentStatus }
   }
 }

@@ -12,7 +12,7 @@ import { StoryStatus } from './status.component';
       <prx-button [model]="story" working=0 disabled=0 plain=1
         [visible]="isChanged" (click)="discard()">Discard</prx-button>
 
-        <ng-container *ngIf="nextStatus?.name !== 'draft'">
+        <ng-container *ngIf="nextStatus !== 'draft'">
           <dl>
             <dt>Progress</dt>
             <dd *ngIf="!id">
@@ -66,7 +66,7 @@ import { StoryStatus } from './status.component';
 export class StatusControlComponent implements DoCheck {
   @Input() id: number;
   @Input() story: StoryModel;
-  @Input() nextStatus: StoryStatus | null;
+  @Input() nextStatus: StoryStatus;
 
   isChanged: boolean;
   isInvalid: string;
@@ -84,7 +84,7 @@ export class StatusControlComponent implements DoCheck {
               private angulartics2: Angulartics2) { }
 
   ngDoCheck() {
-    if(this.story) {
+    if (this.story) {
       this.isPublished = this.story.publishedAt ? true : false;
       this.normalInvalid = this.storyInvalid(false);
       this.normalInvalidCount = this.countProblems(false);
@@ -158,34 +158,34 @@ export class StatusControlComponent implements DoCheck {
 
   // Normal invalid is for saving a draft
   // Strict invalid is for publishing or scheduling
-  determineNextStep() {//: {saved: boolean, invalid: number, strict: boolean} {
-    if(!this.id) { // Unsaved
-      if(this.isChanged) {
-        if(!this.normalInvalid) {
-          //Ready to create
+  determineNextStep() {// : {saved: boolean, invalid: number, strict: boolean} {
+    if (!this.id) { // Unsaved
+      if (this.isChanged) {
+        if (!this.normalInvalid) {
+          // Ready to create
           return { error: false }
         } else {
-          //Unable to create
-          //(click)="showProblems()">{{normalInvalidCount}}</button>
+          // Unable to create
+          // (click)="showProblems()">{{normalInvalidCount}}</button>
           return { error: this.normalInvalidCount }
         }
       }
     } else { // Saved
-      if(this.strictInvalid) {
-        if(this.isPublished || this.normalInvalid) {
-          //Invalid episode
+      if (this.strictInvalid) {
+        if (this.isPublished || this.normalInvalid) {
+          // Invalid episode
         } else {
-          //Not ready to publish
+          // Not ready to publish
         }
         // (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
       } else if (this.notPublished) {
-        if(this.isChanged) {
+        if (this.isChanged) {
           // Ready after save
         } else {
           // Ready to publish
         }
       } else { // isPublished && !strictInvalid
-        if(this.isChanged) {
+        if (this.isChanged) {
           // Unsaved changes
         } else {
           // Complete
