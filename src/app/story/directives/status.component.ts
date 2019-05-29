@@ -13,7 +13,7 @@ export type StoryStatus = 'draft' | 'scheduled' | 'published';
       <dd *ngIf="isReleased && !isPublished"><p>{{story.releasedAt | date:"short"}}</p></dd>
       <dd *ngIf="id"><p *ngIf="story?.updatedAt">{{story.updatedAt | date:"short"}}</p></dd>
     </ng-container>
-    <dl>
+    <dl *ngIf="story">
       <dt>Status</dt>
       <dd>
         <select (change)="statusChange($event.target.value)">
@@ -22,16 +22,10 @@ export type StoryStatus = 'draft' | 'scheduled' | 'published';
                   [selected]="status === currentStatus">{{status | titlecase}}</option>
         </select>
       </dd>
-      <dt>Release</dt>
+      <dt>Dropdate</dt>
       <dd>
-        <input type="checkbox" [ngModel]="showReleasedAt" (click)="toggleShowReleaseAt()" name="showReleasedAt" id="showReleasedAt">
-        <label for="showReleasedAt">Specify date and time to be published</label>
-        <div class="fancy-hint" *ngIf="showReleasedAt">If you'd like to manually alter this episode's publication
-        to either delay or back-date its release, select the desired release date and time here.
-        Otherwise, the episode will be released immediately once published.
-        </div>
-        <prx-tz-datepicker *ngIf="showReleasedAt"
-          [date]="story.releasedAt" (dateChange)="story.set('releasedAt', $event)" [changed]="releasedAtChanged">
+        <prx-tz-datepicker
+          [date]="story.releasedAt" (dateChange)="setDate($event)" [changed]="story.changed('releasedAt', false)">
         </prx-tz-datepicker>
       </dd>
     </dl>
@@ -51,7 +45,6 @@ export class StoryStatusComponent implements DoCheck {
   isPublished: boolean;
   isReleased: boolean;
   isScheduled: boolean;
-  showReleasedAt: boolean;
 
   isPublishing: boolean;
 
@@ -62,11 +55,6 @@ export class StoryStatusComponent implements DoCheck {
       this.determineStatus();
       this.isReleased = this.story.releasedAt ? true : false;
       this.isScheduled = this.isPublished && !this.story.isPublished();
-      if (this.story && this.story.releasedAt) {
-        this.showReleasedAt = true;
-      } else {
-        this.showReleasedAt = false
-      }
     }
   }
 
@@ -74,17 +62,12 @@ export class StoryStatusComponent implements DoCheck {
     this.nextStatus = status;
   }
 
-  get releasedAtChanged(): boolean {
-    return this.story && this.story.changed('releasedAt', false);
-  }
-
-  toggleShowReleaseAt() {
-    this.showReleasedAt = !this.showReleasedAt;
-    if (this.story.releasedAt) {
-      this.story.releasedAt = null;
-      this.notifyOfCanceledPublication();
-    } else {
-      this.story.releasedAt = new Date();
+  setDate(date: Date) {
+    if (this.story) {
+      this.story.set('releasedAt', date); // always sets releasedAt, see CMS story model update_published_to_released
+      if (!date) {
+        this.notifyOfCanceledPublication();
+      }
     }
   }
 

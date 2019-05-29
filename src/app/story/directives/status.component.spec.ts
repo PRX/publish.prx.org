@@ -22,6 +22,7 @@ describe('StoryStatusComponent', () => {
     comp.story.invalid = comp.story.invalid || (() => null);
     comp.story.changed = comp.story.changed || (() => false);
     comp.story.isNew = comp.story.isNew || false;
+    comp.story.isPublished = story.isPublished ? story.isPublished : () => false;
     comp.id = comp.story.isNew ? null : 1234;
     fix.detectChanges();
   };
@@ -36,32 +37,18 @@ describe('StoryStatusComponent', () => {
   });
 
   cit('fails gracefully if status has not yet been determined', (fix, el, comp: StoryStatusComponent) => {
-    expect(comp.currentStatus).toBe(null);
+    expect(comp.currentStatus).toBeUndefined();
   });
 
   cit('shows story status', (fix, el, comp) => {
     mockStory({isNew: true}, comp, fix);
-    expect(el).toQueryText('h1', 'Draft');
+    expect(el).toQueryText('h1', 'draft');
     mockStory({isNew: false}, comp, fix);
-    expect(el).toQueryText('h1', 'Draft');
+    expect(el).toQueryText('h1', 'draft');
     mockStory({publishedAt: new Date(), isPublished: () => false}, comp, fix);
-    expect(el).toQueryText('h1', 'Scheduled');
+    expect(el).toQueryText('h1', 'scheduled');
     mockStory({publishedAt: new Date(), isPublished: () => true}, comp, fix);
-    expect(el).toQueryText('h1', 'Published');
-  });
-
-  cit('updates showReleasedAt based on story releasedAt', (fix, el, comp) => {
-    const tomorrow = new Date(moment().add(1, 'days').valueOf());
-    const scheduledStory = {
-      publishedAt: tomorrow,
-      releasedAt: tomorrow,
-      isPublished: () => false
-    };
-    mockStory(scheduledStory, comp, fix);
-    expect(comp.showReleasedAt).toBeTruthy();
-    comp.story.releasedAt = null;
-    fix.detectChanges()
-    expect(comp.showReleasedAt).toBeFalsy();
+    expect(el).toQueryText('h1', 'published');
   });
 
   cit('alerts when unscheduling a future published episode', (fix, el, comp) => {
@@ -69,16 +56,15 @@ describe('StoryStatusComponent', () => {
     const scheduledStory = {
       publishedAt: tomorrow,
       releasedAt: tomorrow,
+      set: function (field, value) { this[field] = value; },
       changed: () => true,
       isPublished: () => false
     };
     mockStory(scheduledStory, comp, fix);
-    comp.showReleasedAt = true;
     fix.detectChanges();
 
     expect(modalAlertBody).toBeNull();
-    let cancelReleaseDate = el.query(By.css('#showReleasedAt')).nativeElement;
-    cancelReleaseDate.click();
+    comp.setDate(null);
     expect(modalAlertBody).toMatch(/will unpublish/i);
     expect(comp.story.releasedAt).toBeNull();
   });

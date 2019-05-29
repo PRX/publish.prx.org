@@ -5,7 +5,7 @@ import { RouterStub } from '../../../testing/stub.router';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { Angulartics2 } from 'angulartics2';
 
-fdescribe('StatusControlComponent', () => {
+describe('StatusControlComponent', () => {
   create(StatusControlComponent);
 
   provide(Router, RouterStub);
