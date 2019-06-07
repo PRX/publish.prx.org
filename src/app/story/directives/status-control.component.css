@@ -1,0 +1,18 @@
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 1em 1em;
+}
+
+.action prx-button {
+  margin-left: 0.5em;
+}
+
+button.secondary {
+  color: red;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 100px;
+}

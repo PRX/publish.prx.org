@@ -1,65 +1,41 @@
-import { Component, DoCheck, Input } from '@angular/core';
+import { Component, DoCheck, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { StoryModel } from 'app/shared';
 import { ToastrService, ModalService } from 'ngx-prx-styleguide';
 import { Router } from '@angular/router';
 import { Angulartics2 } from 'angulartics2';
 import { StoryStatus } from './status.component';
 
+interface PublishBoxButton {
+  text: string,
+  action: Function,
+  disabled?: boolean,
+  color?: 'red' | 'orange' | 'green' | 'plain'
+}
 @Component({
   selector: 'publish-status-control',
   template: `
-    <ng-container *ngIf="story">
+    <hr>
+    <div class="actions" *ngIf="story">
       <prx-button [model]="story" working=0 disabled=0 plain=1
-        [visible]="isChanged" (click)="discard()">Discard</prx-button>
+        [visible]="isChanged || nextStatus !== currentStatus" (click)="discard()">Discard</prx-button>
 
-        <ng-container *ngIf="nextStatus !== 'draft'">
-          <dl>
-            <dt>Progress</dt>
-            <dd *ngIf="!id">
-              <p *ngIf="isChanged && !normalInvalid">Ready to create</p>
-              <p *ngIf="isChanged && normalInvalid" class="error">Unable to create</p>
-              <button *ngIf="isChanged && normalInvalid" class="btn-link"
-                (click)="showProblems()">{{normalInvalidCount}}</button>
-            </dd>
-            <dd *ngIf="id">
-              <ng-container *ngIf="strictInvalid">
-                <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
-                <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
-                <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
-              </ng-container>
-              <ng-container *ngIf="notPublished && !strictInvalid">
-                <p *ngIf="isChanged">Ready after save</p>
-                <p *ngIf="!isChanged">Ready to publish</p>
-              </ng-container>
-              <ng-container *ngIf="isPublished && !strictInvalid">
-                <p *ngIf="isChanged">Unsaved changes</p>
-                <p *ngIf="!isChanged">Complete</p>
-              </ng-container>
-            </dd>
-          </dl>
-        </ng-container>
-
-      <prx-button
+      <prx-button *ngIf="buttons" #dropdownButton
         [model]="story"
-        [visible]="isChanged || story.isNew"
-        [disabled]="isInvalid"
-        [dropdown]="!story.isNew"
-        (click)="save()">
-        Save
-        <div class="dropdown-menu-items">
-          <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
+        visible="true"
+        [disabled]="buttons.primary.disabled"
+        [red]="buttons.primary.color === 'red'"
+        [orange]="buttons.primary.color === 'orange'"
+        [green]="buttons.primary.color === 'green'"
+        [dropdown]="buttons.secondary"
+        (click)="buttons.primary.action()">
+        {{ buttons.primary.text }}
+        <div *ngIf="buttons.secondary" class="dropdown-menu-items">
+          <button *ngIf="id" class="secondary" (click)="buttons.secondary.action($event)">
+            {{ buttons.secondary.text }} <prx-icon name="cancel" color="red" size="1.5em"></prx-icon>
+          </button>
         </div>
       </prx-button>
-
-      <prx-button dropdown=1 *ngIf="!story.isNew" working=0 disabled=1 [visible]="!isChanged">
-        Saved
-        <div class="dropdown-menu-items">
-          <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
-          <prx-button *ngIf="isPublished" [model]="story" visible=1 orange=1 disabled=0
-            [working]="isPublishing" (click)="togglePublish()">Unpublish</prx-button>
-        </div>
-      </prx-button>
-    </ng-container>
+    </div>
   `,
   styleUrls: ['./status-control.component.css']
 })
@@ -67,16 +43,19 @@ export class StatusControlComponent implements DoCheck {
   @Input() id: number;
   @Input() story: StoryModel;
   @Input() nextStatus: StoryStatus;
+  @Input() currentStatus: StoryStatus;
+  @Output() status = new EventEmitter<StoryStatus>();
+  @ViewChild('dropdownButton') dropdownButton: ElementRef;
 
   isChanged: boolean;
-  isInvalid: string;
-  isPublished: boolean;
+  hasPublishDate: boolean;
   isPublishing: boolean;
   normalInvalid: string;
-  normalInvalidCount: string;
   strictInvalid: string;
-  strictInvalidCount: string;
-  notPublished: boolean;
+  buttons: {
+    primary: PublishBoxButton,
+    secondary?: PublishBoxButton
+  };
 
   constructor(private modal: ModalService,
               private toastr: ToastrService,
@@ -85,23 +64,130 @@ export class StatusControlComponent implements DoCheck {
 
   ngDoCheck() {
     if (this.story) {
-      this.isPublished = this.story.publishedAt ? true : false;
+      this.hasPublishDate = !!this.story.publishedAt;
       this.normalInvalid = this.storyInvalid(false);
-      this.normalInvalidCount = this.countProblems(false);
       this.strictInvalid = this.storyInvalid(true);
-      this.strictInvalidCount = this.countProblems(true);
-      this.notPublished = !this.isPublished;
       this.isChanged = this.story.changed();
-      if (this.story && (this.story.isNew || !this.story.publishedAt)) {
-        this.isInvalid = this.story.invalid(null, false);
+      this.determineButtonActions();
+    }
+  }
+
+  determineButtonActions() {
+    switch (this.nextStatus) {
+    //////////// DRAFT ////////////
+    case 'draft':
+      if (!this.isChanged || !this.normalInvalid) {
+        this.buttons = {
+          primary: {
+            text: 'Save',
+            action: () => this.save(),
+            disabled: !this.isChanged,
+            color: 'orange'
+          }
+        }
       } else {
-        this.isInvalid = this.story.invalid(null, true); // strict
+        this.buttons = {
+          primary: {
+            text: this.countProblems(false),
+            action: () => this.showProblems(),
+            disabled: false,
+            color: 'red'
+          }
+        }
+      }
+      break;
+    //////////// SCHEDULED ////////////
+    case 'scheduled':
+      if (this.strictInvalid) {
+        this.buttons = {
+          primary: {
+            text: this.countProblems(true),
+            action: () => this.showProblems(),
+            disabled: false,
+            color: 'red'
+          }
+        }
+      } else {
+        if (this.currentStatus === 'draft') {
+          // promoting from Draft to Scheduled
+          this.buttons = {
+            primary: {
+              text: 'Schedule',
+              action: () => this.saveAndPublish(),
+              disabled: false,
+              color: 'green'
+            }
+          }
+        } else {
+          // already scheduled
+          this.buttons = {
+            primary: {
+              text: 'Save',
+              action: () => this.save(),
+              disabled: !this.isChanged,
+              color: 'green'
+            }
+          }
+        }
+      }
+      break;
+    //////////// PUBLISHED ////////////
+    case 'published':
+      if (this.strictInvalid) {
+        this.buttons = {
+          primary: {
+            text: this.countProblems(true),
+            action: () => this.showProblems(),
+            disabled: false,
+            color: 'red'
+          }
+        }
+      } else {
+        if (this.currentStatus !== 'published') {
+          this.buttons = {
+            primary: {
+              text: 'Publish Now',
+              // TODO: a story should not publish while audio is processing
+              action: () => this.saveAndPublish(),
+              disabled: false,
+              // color: 'blue' // button default
+            }
+          }
+        } else {
+          // already published
+          this.buttons = {
+            primary: {
+              text: 'Save & Publish',
+              action: () => this.save(),
+              disabled: !this.isChanged,
+              // color: 'blue' // button default
+            }
+          }
+        }
+      }
+      break;
+    }
+
+    // secondary button if !isNew
+    if (this.id && this.buttons) {
+      if (this.currentStatus !== 'published') {
+        this.buttons.secondary = {
+          text: 'Delete',
+          action: (event) => this.confirmDelete(event),
+          color: 'red'
+        }
+      } else {
+        this.buttons.secondary = {
+          text: 'Unpublish',
+          action: (event) => this.unpublish(event),
+          color: 'red'
+        }
       }
     }
   }
 
   save() {
-    let wasNew = this.story.isNew;
+    const wasNew = this.story.isNew;
     this.story.save().subscribe(() => {
       this.toastr.success('Episode saved');
       if (wasNew) {
@@ -110,8 +196,37 @@ export class StatusControlComponent implements DoCheck {
     });
   }
 
+  saveAndPublish() {
+    this.story.save().subscribe(() => {
+      // TODO: a story should not publish while audio is processing
+      if (!this.story.publishedAt) {
+        this.togglePublish();
+      }
+    });
+  }
+
   discard() {
+    this.status.emit(this.currentStatus);
     this.story.discard();
+  }
+
+  unpublish(event) {
+    if (event.target['blur']) {
+      event.target['blur']();
+    }
+    // #185 workaround for dropdown button causing primary click, also needs to close dropdown on click
+    this.dropdownButton['onDropdownClick'](event);
+
+    // confirm unpublish
+    this.modal.confirm(
+      'Are you sure?',
+      'You do not need to unpublish the episode to update the content.',
+      (confirm: boolean) => {
+        if (confirm) {
+          this.togglePublish();
+        }
+      }
+    );
   }
 
   togglePublish() {
@@ -128,6 +243,8 @@ export class StatusControlComponent implements DoCheck {
     if (event.target['blur']) {
       event.target['blur']();
     }
+    // #185 workaround for dropdown button
+    this.dropdownButton['onDropdownClick'](event);
     this.modal.confirm(
       'Really delete?',
       'Are you sure you want to delete this episode? This action cannot be undone.',
@@ -146,77 +263,6 @@ export class StatusControlComponent implements DoCheck {
     );
   }
 
-  /*              | saved | err | dropdate | nextStatus |             
-  publishnow      |   1   |  0  |   now    |   publish  |             
-  schedule        |   1   |  0  |    1     |  schedule  |             
-  foundproblems   |   0   |  1  |    ?     |     ?      |             
-  save(scheduled) |   0   |  0  |    1     |  schedule  |             
-  save&publish    |   0   |  0  |   now    |   publish  |             
-  save(draft)     |   0   |  0  |    0     |    draft   |             
-  */
-
-
-  // Normal invalid is for saving a draft
-  // Strict invalid is for publishing or scheduling
-  determineNextStep() {// : {saved: boolean, invalid: number, strict: boolean} {
-    if (!this.id) { // Unsaved
-      if (this.isChanged) {
-        if (!this.normalInvalid) {
-          // Ready to create
-          return { error: false }
-        } else {
-          // Unable to create
-          // (click)="showProblems()">{{normalInvalidCount}}</button>
-          return { error: this.normalInvalidCount }
-        }
-      }
-    } else { // Saved
-      if (this.strictInvalid) {
-        if (this.isPublished || this.normalInvalid) {
-          // Invalid episode
-        } else {
-          // Not ready to publish
-        }
-        // (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
-      } else if (this.notPublished) {
-        if (this.isChanged) {
-          // Ready after save
-        } else {
-          // Ready to publish
-        }
-      } else { // isPublished && !strictInvalid
-        if (this.isChanged) {
-          // Unsaved changes
-        } else {
-          // Complete
-        }
-      }
-    }
-/*
-<dd *ngIf="!id">
-  <p *ngIf="isChanged && !normalInvalid">Ready to create</p>
-  <p *ngIf="isChanged && normalInvalid" class="error">Unable to create</p>
-  <button *ngIf="isChanged && normalInvalid" class="btn-link"
-    (click)="showProblems()">{{normalInvalidCount}}</button>
-</dd>
-<dd *ngIf="id">
-  <ng-container *ngIf="strictInvalid">
-    <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
-    <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
-    <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
-  </ng-container>
-  <ng-container *ngIf="notPublished && !strictInvalid">
-    <p *ngIf="isChanged">Ready after save</p>
-    <p *ngIf="!isChanged">Ready to publish</p>
-  </ng-container>
-  <ng-container *ngIf="isPublished && !strictInvalid">
-    <p *ngIf="isChanged">Unsaved changes</p>
-    <p *ngIf="!isChanged">Complete</p>
-  </ng-container>
-</dd>
-*/
-  }
-
   formatInvalid(str: string): string {
     str = str.trim();
     str = str.replace(/shortdescription/i, 'teaser');
@@ -225,7 +271,7 @@ export class StatusControlComponent implements DoCheck {
   }
 
   formatInvalids(strict = false): string[] {
-    let invalids = strict ? this.strictInvalid : this.normalInvalid;
+    const invalids = strict ? this.strictInvalid : this.normalInvalid;
     if (invalids) {
       return invalids.split(',').map(s => this.formatInvalid(s));
     } else {
@@ -234,28 +280,23 @@ export class StatusControlComponent implements DoCheck {
   }
 
   countProblems(strict = false): string {
-    let count = this.formatInvalids(strict).length;
-    return count === 1 ? `Found 1 problem` : `Found ${count} problems`;
+    const invalids = strict ? this.strictInvalid : this.normalInvalid;
+    const count = invalids && invalids.split(',').length || 0;
+    return count === 1 ? `Found 1 Problem` : `Found ${count} Problems`;
   }
 
   showProblems() {
-    let normals = this.formatInvalids(false);
-    let stricts = this.formatInvalids(true).filter(s => normals.indexOf(s) === -1);
+    const normals = this.formatInvalids(false);
+    const stricts = this.formatInvalids(true).filter(s => normals.indexOf(s) === -1);
 
-    let title = 'Validation errors';
-    let msg = '';
-    normals.forEach(s => msg += `<li class="error">${s}</li>`);
-    if (this.isPublished) {
-      stricts.forEach(s => msg += `<li class="error">${s}</li>`);
-    }
-    if (this.id && !this.isPublished) {
-      stricts.forEach(s => msg += `<li>${s}</li>`);
-      if (normals.length === 0) {
-        title = 'Not ready to publish';
-      }
+    const title = 'Validation errors';
+    let errors = [];
+    normals.forEach(s => errors.push(`<li class="error">${s}</li>`));
+    if (this.hasPublishDate || this.nextStatus !== 'draft') {
+      stricts.forEach(s => errors.push(`<li class="error">${s}</li>`));
     }
 
-    this.modal.show({title: title, body: `<ul>${msg}</ul>`, secondaryButton: 'Okay'});
+    this.modal.show({title, body: `<ul>${errors.join('')}</ul>`, secondaryButton: 'Okay'});
   }
 
 

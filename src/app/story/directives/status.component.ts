@@ -7,29 +7,36 @@ export type StoryStatus = 'draft' | 'scheduled' | 'published';
   selector: 'publish-story-status',
   styleUrls: ['status.component.css'],
   template: `
-    <h1 [class]="currentStatus">{{currentStatus}}</h1>
-    <ng-container *ngIf="false">
-      <dd *ngIf="isPublished"><p>{{story.publishedAt | date:"short"}}</p></dd>
-      <dd *ngIf="isReleased && !isPublished"><p>{{story.releasedAt | date:"short"}}</p></dd>
-      <dd *ngIf="id"><p *ngIf="story?.updatedAt">{{story.updatedAt | date:"short"}}</p></dd>
-    </ng-container>
-    <dl *ngIf="story">
+    <h2 [class]="currentStatus">{{currentStatus}}</h2>
+    <dl>
       <dt>Status</dt>
       <dd>
-        <select (change)="statusChange($event.target.value)">
+        <select *ngIf="currentStatus !== 'published'; else published"
+          [ngModel]="nextStatus"
+          (ngModelChange)="statusChange($event)">
           <option *ngFor="let status of statusOptions"
-                  [value]="status"
-                  [selected]="status === currentStatus">{{status | titlecase}}</option>
+                  [value]="status">{{status | titlecase}}</option>
         </select>
+        <ng-template #published>Published</ng-template>
       </dd>
+
+      <dt>Last Saved</dt>
+      <dd *ngIf="!id">Not Saved</dd>
+      <dd *ngIf="id">{{story.updatedAt | date: 'short'}}</dd>
+
       <dt>Dropdate</dt>
       <dd>
-        <prx-tz-datepicker
-          [date]="story.releasedAt" (dateChange)="setDate($event)" [changed]="story.changed('releasedAt', false)">
+        <prx-tz-datepicker *ngIf="nextStatus !== 'published' || currentStatus === 'published'; else publishImmediately"
+          [date]="date" (dateChange)="setDate($event)" [changed]="dateChanged">
         </prx-tz-datepicker>
+        <ng-template #publishImmediately>Publish Immediately</ng-template>
       </dd>
     </dl>
-    <publish-status-control [id]="id" [story]="story" [nextStatus]="nextStatus"></publish-status-control>
+    <publish-status-control
+      [id]="id" [story]="story"
+      [nextStatus]="nextStatus"
+      [currentStatus]="currentStatus"
+      (status)="statusChange($event)"></publish-status-control>
   `
 })
 
@@ -42,33 +49,50 @@ export class StoryStatusComponent implements DoCheck {
   currentStatus: StoryStatus;
   nextStatus: StoryStatus;
 
-  isPublished: boolean;
-  isReleased: boolean;
-  isScheduled: boolean;
-
-  isPublishing: boolean;
-
   constructor(private modal: ModalService) {}
 
   ngDoCheck() {
     if (this.story) {
       this.determineStatus();
-      this.isReleased = this.story.releasedAt ? true : false;
-      this.isScheduled = this.isPublished && !this.story.isPublished();
     }
   }
 
   statusChange(status: StoryStatus) {
     this.nextStatus = status;
+    if (this.currentStatus !== 'draft' && status === 'draft') {
+      // clear publishedAt to unpublish scheduled episodes
+      this.story.set('releasedAt', null);
+    } else if (this.currentStatus !== 'scheduled' && status === 'scheduled' && !this.story.releasedAt) {
+      // initialize releasedAt for scheduling
+      this.story.set('releasedAt', new Date());
+    } else if (this.currentStatus !== 'published' && status === 'published' && this.story.releasedAt) {
+      // if set, clear releasedAt for publish now
+      this.story.set('releasedAt', null);
+    }
+  }
+
+  get date() {
+    if (this.story && this.story.releasedAt) {
+      return this.story.releasedAt;
+    } else if (this.story && this.story.publishedAt && this.story.publishedAt.valueOf() <= new Date().valueOf()) {
+      return this.story.publishedAt;
+    }
   }
 
   setDate(date: Date) {
     if (this.story) {
-      this.story.set('releasedAt', date); // always sets releasedAt, see CMS story model update_published_to_released
-      if (!date) {
+      // set releasedAt, see CMS story model update_published_to_released
+      this.story.set('releasedAt', date);
+      // Legacy: This actually does nothing. Removing date from datepicker is not valid and does not emit change.
+      // ...but if it did actually unset releasedAt, then we'd want to notify so keep
+      if (this.nextStatus !== 'draft' && !date) {
         this.notifyOfCanceledPublication();
       }
     }
+  }
+
+  get dateChanged(): boolean {
+    return this.story && this.story.changed('releasedAt', false);
   }
 
   notifyOfCanceledPublication() {

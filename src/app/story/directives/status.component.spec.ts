@@ -42,13 +42,13 @@ describe('StoryStatusComponent', () => {
 
   cit('shows story status', (fix, el, comp) => {
     mockStory({isNew: true}, comp, fix);
-    expect(el).toQueryText('h1', 'draft');
+    expect(el).toQueryText('h2', 'draft');
     mockStory({isNew: false}, comp, fix);
-    expect(el).toQueryText('h1', 'draft');
+    expect(el).toQueryText('h2', 'draft');
     mockStory({publishedAt: new Date(), isPublished: () => false}, comp, fix);
-    expect(el).toQueryText('h1', 'scheduled');
+    expect(el).toQueryText('h2', 'scheduled');
     mockStory({publishedAt: new Date(), isPublished: () => true}, comp, fix);
-    expect(el).toQueryText('h1', 'published');
+    expect(el).toQueryText('h2', 'published');
   });
 
   cit('alerts when unscheduling a future published episode', (fix, el, comp) => {
