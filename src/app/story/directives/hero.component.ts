@@ -19,8 +19,6 @@ import { StoryModel } from '../../shared';
       </div>
       <div class="hero-info" *ngIf="story">
         <h2>{{story.title || '(Untitled)'}}</h2>
-        <p *ngIf="story?.isNew">Not saved</p>
-        <p *ngIf="!story?.isNew">Last saved at {{story.updatedAt | timeago}}</p>
       </div>
     </prx-hero>
     `
