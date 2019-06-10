@@ -77,12 +77,24 @@ export class StatusControlComponent implements DoCheck {
     //////////// DRAFT ////////////
     case 'draft':
       if (!this.isChanged || !this.normalInvalid) {
-        this.buttons = {
-          primary: {
-            text: 'Save',
-            action: () => this.save(),
-            disabled: !this.isChanged,
-            color: 'orange'
+        if (this.currentStatus === 'scheduled') {
+          // Scheduled to Draft
+          this.buttons = {
+            primary: {
+              text: this.isChanged ? 'Save & Unschedule' : 'Unschedule',
+              action: () => this.isChanged ? this.saveAndUnschedule() : this.unschedule(),
+              disabled: false,
+              color: 'orange'
+            }
+          }
+        } else {
+          this.buttons = {
+            primary: {
+              text: 'Save',
+              action: () => this.save(),
+              disabled: !this.isChanged,
+              color: 'orange'
+            }
           }
         }
       } else {
@@ -203,6 +215,16 @@ export class StatusControlComponent implements DoCheck {
         this.togglePublish();
       }
     });
+  }
+
+  saveAndUnschedule() {
+    this.story.save().subscribe(() => {
+      this.togglePublish();
+    })
+  }
+
+  unschedule() {
+    this.togglePublish();
   }
 
   discard() {

@@ -37,3 +37,6 @@ prx-tz-datepicker {
 prx-tz-datepicker >>> * {
   flex-basis: auto;
 }
+select.changed {
+  outline: 5px auto #f09b4c;
+}

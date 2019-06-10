@@ -12,6 +12,7 @@ export type StoryStatus = 'draft' | 'scheduled' | 'published';
       <dt>Status</dt>
       <dd>
         <select *ngIf="currentStatus !== 'published'; else published"
+          [class.changed]="nextStatus !== currentStatus"
           [ngModel]="nextStatus"
           (ngModelChange)="statusChange($event)">
           <option *ngFor="let status of statusOptions"
@@ -59,10 +60,7 @@ export class StoryStatusComponent implements DoCheck {
 
   statusChange(status: StoryStatus) {
     this.nextStatus = status;
-    if (this.currentStatus !== 'draft' && status === 'draft') {
-      // clear publishedAt to unpublish scheduled episodes
-      this.story.set('releasedAt', null);
-    } else if (this.currentStatus !== 'scheduled' && status === 'scheduled' && !this.story.releasedAt) {
+    if (this.currentStatus !== 'scheduled' && status === 'scheduled' && !this.story.releasedAt) {
       // initialize releasedAt for scheduling
       this.story.set('releasedAt', new Date());
     } else if (this.currentStatus !== 'published' && status === 'published' && this.story.releasedAt) {
