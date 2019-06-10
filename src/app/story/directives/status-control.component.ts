@@ -203,7 +203,7 @@ export class StatusControlComponent implements DoCheck {
   get working() {
     return this.story &&
       (this.story.isSaving || this.isPublishing ||
-        this.story.versions.some(version => version.files.some(file => file.isProcessing || file.isUploading)));
+        (this.story.versions && this.story.versions.some(version => version.files.some(file => file.isProcessing || file.isUploading))));
   }
 
   save() {
