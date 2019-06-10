@@ -3,7 +3,7 @@
   width: 250px;
   margin-right: 40px;
 }
-.prx-feed-url input, .feed-url input {
+.prx-feed-url input {
   padding: 10px 8px;
   margin-bottom: 4px;
 }
@@ -13,16 +13,27 @@
 input.changed {
   outline: 5px auto #f09b4c;
 }
-.feed-url input {
-  min-width: 400px;
-}
-.feed-url button, .feed-url .button {
-  padding-top: 9px;
-  padding-bottom: 8px;
-}
 .feed-url button {
   background-color: #ff9600;
 }
 .feed-url button:hover, .feed-url button:focus {
   background-color: #ec8200;
+}
+.feed-url_checkbox {
+  text-indent: -1.35em;
+  padding-left: 1.35em;
+}
+.feed-url_checkbox > input {
+  margin-right: 0.35em;
+}
+.feed-url_input-group {
+  display: grid;
+  grid-template-columns: 1fr max-content max-content;
+  align-content: center;
+  margin-top: 0.5rem;
+  line-height: 2.5rem;
+}
+.feed-url_input-group > * {
+  line-height: inherit;
+  padding: 0 0.75rem;
 }

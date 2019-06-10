@@ -129,15 +129,17 @@
       <div class="fancy-hint">
         The public URL for your podcast feed. Feel free to share this URL with listeners. If you need to alter this URL once you have subscribers, set the <a target="_blank" rel="noopener" [href]="this.itunesNewFeedURLDoc">New Feed URL</a> as well.
       </div>
-      <p>
+      <div class="feed-url_checkbox">
         <input type="checkbox" (change)="setNewFeedToPublicFeed($event)" [checked]="podcast.publicFeedUrl === podcast.newFeedUrl" id="matchFeeds">
         <label for="matchFeeds">Check to set your podcast's New Feed URL to this URL as well.</label>
-      </p>
-      <input type="text" [ngModel]="podcast?.publicFeedUrl" name="publicFeedUrl" #pubFeed
-       [prxAdvancedConfirm]="publicFeedChangeConfirm" [prxModel]="podcast" prxName="publicFeedUrl" (ngModelChange)="podcast.set('publicFeedUrl', $event)"
-       [class.changed]="podcast.changed('publicFeedUrl', false)"/>
-      <button [publishCopyInput]="pubFeed">Copy</button>
-      <a class="button" target="_blank" rel="noopener" [href]="podcast?.publicFeedUrl">Open Link</a>
+      </div>
+      <div class="feed-url_input-group">
+        <input type="text" [ngModel]="podcast?.publicFeedUrl" name="publicFeedUrl" #pubFeed
+        [prxAdvancedConfirm]="publicFeedChangeConfirm" [prxModel]="podcast" prxName="publicFeedUrl" (ngModelChange)="podcast.set('publicFeedUrl', $event)"
+        [class.changed]="podcast.changed('publicFeedUrl', false)" />
+        <button [publishCopyInput]="pubFeed">Copy</button>
+        <a class="button" target="_blank" rel="noopener" [href]="podcast?.publicFeedUrl">Open Link</a>
+      </div>
     </prx-fancy-field>
 
     <prx-fancy-field *ngIf="!podcast?.hasPublicFeed" label="Public Feed Url" textinput [model]="podcast" name="publicFeedUrl">
