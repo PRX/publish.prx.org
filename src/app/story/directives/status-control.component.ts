@@ -1,4 +1,6 @@
 import { Component, DoCheck, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { interval } from 'rxjs';
+import { skipWhile, mergeMap } from 'rxjs/operators';
 import { StoryModel } from 'app/shared';
 import { ToastrService, ModalService } from 'ngx-prx-styleguide';
 import { Router } from '@angular/router';
@@ -23,6 +25,7 @@ interface PublishBoxButton {
         [model]="story"
         visible="true"
         [disabled]="buttons.primary.disabled"
+        [working]="working"
         [red]="buttons.primary.color === 'red'"
         [orange]="buttons.primary.color === 'orange'"
         [green]="buttons.primary.color === 'green'"
@@ -159,7 +162,6 @@ export class StatusControlComponent implements DoCheck {
           this.buttons = {
             primary: {
               text: 'Publish Now',
-              // TODO: a story should not publish while audio is processing
               action: () => this.saveAndPublish(),
               disabled: false,
               // color: 'blue' // button default
@@ -198,6 +200,12 @@ export class StatusControlComponent implements DoCheck {
     }
   }
 
+  get working() {
+    return this.story &&
+      (this.story.isSaving || this.isPublishing ||
+        this.story.versions.some(version => version.files.some(file => file.isProcessing || file.isUploading)));
+  }
+
   save() {
     const wasNew = this.story.isNew;
     this.story.save().subscribe(() => {
@@ -210,9 +218,18 @@ export class StatusControlComponent implements DoCheck {
 
   saveAndPublish() {
     this.story.save().subscribe(() => {
-      // TODO: a story should not publish while audio is processing
-      if (!this.story.publishedAt) {
+      // a story should not publish while audio is processing
+      if (!this.story.publishedAt &&
+        this.story.versions.every(version => version.files.every(file => !file.isProcessing))) {
         this.togglePublish();
+      } else {
+        const poll = interval(2000).pipe(
+          mergeMap(() => this.story.doc.reload()),
+          skipWhile(() => this.story.versions.some(version => version.files.some(file => file.isProcessing)))
+        ).subscribe(() => {
+          this.togglePublish();
+          poll.unsubscribe();
+        })
       }
     });
   }
@@ -246,6 +263,7 @@ export class StatusControlComponent implements DoCheck {
       (confirm: boolean) => {
         if (confirm) {
           this.togglePublish();
+          this.status.emit('draft'); // updates the Status dropdown back to draft
         }
       }
     );

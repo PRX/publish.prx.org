@@ -9,10 +9,13 @@
 }
 
 button.secondary {
-  color: red;
+  color: #ee4d3e;
   background-color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-width: 100px;
+}
+button.secondary:hover, button.secondary:focus {
+  color: #ff0000;
 }
