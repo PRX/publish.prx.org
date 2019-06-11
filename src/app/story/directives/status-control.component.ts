@@ -128,7 +128,7 @@ export class StatusControlComponent implements DoCheck {
           this.buttons = {
             primary: {
               text: 'Schedule',
-              action: () => this.saveAndPublish(),
+              action: () => this.saveAndPublish('scheduled for publishing'),
               disabled: false,
               color: 'green'
             }
@@ -162,7 +162,7 @@ export class StatusControlComponent implements DoCheck {
           this.buttons = {
             primary: {
               text: 'Publish Now',
-              action: () => this.saveAndPublish(),
+              action: () => this.saveAndPublish('published'),
               disabled: false,
               // color: 'blue' // button default
             }
@@ -216,18 +216,17 @@ export class StatusControlComponent implements DoCheck {
     });
   }
 
-  saveAndPublish() {
+  saveAndPublish(toast: string) {
     this.story.save().subscribe(() => {
       // a story should not publish while audio is processing
-      if (!this.story.publishedAt &&
-        this.story.versions.every(version => version.files.every(file => !file.isProcessing))) {
-        this.togglePublish();
+      if (this.story.versions.every(version => version.files.every(file => !file.isProcessing))) {
+        this.togglePublish(toast);
       } else {
         const poll = interval(2000).pipe(
           mergeMap(() => this.story.doc.reload()),
           skipWhile(() => this.story.versions.some(version => version.files.some(file => file.isProcessing)))
         ).subscribe(() => {
-          this.togglePublish();
+          this.togglePublish(toast);
           poll.unsubscribe();
         })
       }
@@ -236,12 +235,12 @@ export class StatusControlComponent implements DoCheck {
 
   saveAndUnschedule() {
     this.story.save().subscribe(() => {
-      this.togglePublish();
+      this.togglePublish('unscheduled');
     })
   }
 
   unschedule() {
-    this.togglePublish();
+    this.togglePublish('unscheduled');
   }
 
   discard() {
@@ -262,19 +261,19 @@ export class StatusControlComponent implements DoCheck {
       'You do not need to unpublish the episode to update the content.',
       (confirm: boolean) => {
         if (confirm) {
-          this.togglePublish();
+          this.togglePublish('unpublished');
           this.status.emit('draft'); // updates the Status dropdown back to draft
         }
       }
     );
   }
 
-  togglePublish() {
+  togglePublish(toast: string) {
     this.isPublishing = true;
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
       this.angulartics2.eventTrack.next({ action: this.story.publishedAt ? 'publish' : 'unpublish',
         properties: { category: 'episode', label: 'episode/' + this.story.doc.id }});
-      this.toastr.success(`Episode ${this.story.publishedAt ? 'published' : 'unpublished'}`);
+      this.toastr.success(`Episode ${toast}`);
       this.isPublishing = false;
     });
   }
