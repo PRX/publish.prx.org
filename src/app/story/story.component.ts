@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Observable ,  Subject } from 'rxjs';
-
+import { Observable , Subject } from 'rxjs';
 import { CmsService } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../shared';
-import { Env } from '../core/core.env';
 
 @Component({
   providers: [TabService],
@@ -20,10 +18,9 @@ import { Env } from '../core/core.env';
         <a *ngIf="distPodcast" routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Episode Info</a>
         <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
       </nav>
-      <div class="sticky-area">
+      <div class="sticky-area" *ngIf="story">
         <div class="sticky-container">
           <publish-story-status [id]="id" [story]="story"></publish-story-status>
-          <button *ngIf="id" class="delete" (click)="confirmDelete($event)">Delete</button>
         </div>
       </div>
     </prx-tabs>
@@ -141,27 +138,4 @@ export class StoryComponent implements OnInit {
       return true;
     }
   }
-
-  confirmDelete(event: MouseEvent): void {
-    if (event.target['blur']) {
-      event.target['blur']();
-    }
-    this.modal.confirm(
-      'Really delete?',
-      'Are you sure you want to delete this episode?  This action cannot be undone.',
-      (confirm: boolean) => {
-        if (confirm) {
-          if (this.story.changed()) {
-            this.story.discard();
-          }
-          this.story.isDestroy = true;
-          this.story.save().subscribe(() => {
-            this.toastr.success('Episode deleted');
-            this.router.navigate(['/']);
-          });
-        }
-      }
-    );
-  }
-
 }

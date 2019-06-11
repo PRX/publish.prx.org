@@ -2,18 +2,13 @@ import { cit, create, cms, provide, By } from '../../../testing';
 import { of as observableOf } from 'rxjs';
 import { BasicComponent } from './basic.component';
 import { ModalService, TabService } from 'ngx-prx-styleguide';
-import * as moment from 'moment';
 
 describe('BasicComponent', () => {
 
   create(BasicComponent);
 
   provide(TabService);
-
-  let modalAlertMsg: any;
-  provide(ModalService, {
-    alert: (title, msg) => { modalAlertMsg = msg; }
-  });
+  provide(ModalService);
 
   cit('does not render until the story is loaded', (fix, el, edit) => {
     edit.story = null;
@@ -30,7 +25,7 @@ describe('BasicComponent', () => {
     comp.story = {images: [], changed: () => false, invalid: () => false};
     fix.detectChanges();
 
-    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(12);
+    expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(11);
     expect(el.queryAll(By.css('publish-wysiwyg')).length).toEqual(1);
     expect(el).toContainText('Tweetable title');
     expect(el).toContainText('clean version of the title');
@@ -96,37 +91,6 @@ describe('BasicComponent', () => {
       expect(story.versions[0].isDestroy).toEqual(true);
       expect(story.versions[0].files[0].isDestroy).toEqual(false);
       expect(story.versions[0].files[1].isDestroy).toEqual(false);
-    });
-
-    cit('alerts when unscheduling a future published episode', (fix, el, comp) => {
-      const tomorrow = new Date(moment().add(1, 'days').valueOf());
-      comp.story = {
-        publishedAt: tomorrow,
-        releasedAt: tomorrow,
-        changed: () => true
-      };
-      comp.showReleasedAt = true;
-      fix.detectChanges();
-
-      expect(modalAlertMsg).toBeUndefined();
-      let cancelReleaseDate = el.query(By.css('#showReleasedAt')).nativeElement;
-      cancelReleaseDate.click();
-      expect(modalAlertMsg).toMatch(/will unpublish/i);
-      expect(comp.story.releasedAt).toBeNull();
-    });
-
-    cit('updates showReleasedAt based on story releasedAt', (fix, el, comp) => {
-      const tomorrow = new Date(moment().add(1, 'days').valueOf());
-      comp.story = {
-        publishedAt: tomorrow,
-        releasedAt: tomorrow,
-        changed: () => true
-      };
-      fix.detectChanges();
-      expect(comp.showReleasedAt).toBeTruthy();
-      comp.story.releasedAt = null;
-      fix.detectChanges()
-      expect(comp.showReleasedAt).toBeFalsy();
     });
   });
 });

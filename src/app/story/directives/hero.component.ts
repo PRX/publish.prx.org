@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, DoCheck } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { HalDoc } from '../../core';
 import { ToastrService } from 'ngx-prx-styleguide';
@@ -19,22 +19,12 @@ import { StoryModel } from '../../shared';
       </div>
       <div class="hero-info" *ngIf="story">
         <h2>{{story.title || '(Untitled)'}}</h2>
-        <p *ngIf="story?.isNew">Not saved</p>
-        <p *ngIf="!story?.isNew">Last saved at {{story.updatedAt | timeago}}</p>
-      </div>
-      <div class="hero-actions" *ngIf="story">
-        <prx-button [model]="story" working=0 disabled=0 plain=1
-          [visible]="isChanged" (click)="discard()">Discard</prx-button>
-        <prx-button [model]="story" [visible]="isChanged || story.isNew"
-          [disabled]="isInvalid" (click)="save()">Save</prx-button>
-        <prx-button *ngIf="!story.isNew" working=0 disabled=1
-          [visible]="!isChanged">Saved</prx-button>
       </div>
     </prx-hero>
     `
 })
 
-export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
+export class StoryHeroComponent implements OnInit, OnChanges {
 
   @Input() id: number;
   @Input() story: StoryModel;
@@ -54,17 +44,6 @@ export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
     this.updateBanner();
   }
 
-  ngDoCheck() {
-    if (this.story) {
-      this.isChanged = this.story.changed();
-      if (this.story.isNew || !this.story.publishedAt) {
-        this.isInvalid = this.story.invalid(null, false);
-      } else {
-        this.isInvalid = this.story.invalid(null, true); // strict
-      }
-    }
-  }
-
   updateBanner() {
     if (this.story) {
       if (this.story.isNew && this.story.parent && this.story.parent.isa('series')) {
@@ -74,19 +53,4 @@ export class StoryHeroComponent implements OnInit, OnChanges, DoCheck {
       }
     }
   }
-
-  save() {
-    let wasNew = this.story.isNew;
-    this.story.save().subscribe(() => {
-      this.toastr.success('Episode saved');
-      if (wasNew) {
-        this.router.navigate(['/story', this.story.id]);
-      }
-    });
-  }
-
-  discard() {
-    this.story.discard();
-  }
-
 }

@@ -9,9 +9,9 @@ import { AdvancedSectionComponent, CopyInputDirective } from './form';
 import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
-import { AuthGuard, DeactivateGuard, UnauthGuard, TzDatepickerModule,
-  DatepickerModule, EpisodeListModule, FancyFormModule, HeroModule, ImageModule,
-  ModalModule, SelectModule, SpinnerModule , TagsModule} from 'ngx-prx-styleguide';
+import { AuthGuard, DeactivateGuard, UnauthGuard,
+  DatepickerModule, EpisodeListModule, FancyFormModule, HeroModule, IconModule, ImageModule,
+  ModalModule, SelectModule, SpinnerModule, TagsModule, TzDatepickerModule } from 'ngx-prx-styleguide';
 import { StickyDirective } from './sticky/sticky.directive';
 
 @NgModule({
@@ -45,6 +45,7 @@ import { StickyDirective } from './sticky/sticky.directive';
     FileSizePipe,
     FocusDirective,
     HeroModule,
+    IconModule,
     ImageModule,
     ImageUploadComponent,
     TimeAgoPipe,

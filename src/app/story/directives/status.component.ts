@@ -1,64 +1,43 @@
 import { Component, Input, DoCheck } from '@angular/core';
-import { Router } from '@angular/router';
-import { Angulartics2 } from 'angulartics2';
-import { ModalService, ToastrService } from 'ngx-prx-styleguide';
+import { ModalService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../../shared';
 
+export type StoryStatus = 'draft' | 'scheduled' | 'published';
 @Component({
   selector: 'publish-story-status',
   styleUrls: ['status.component.css'],
   template: `
-    <h1>Publish</h1>
+    <h2 [class]="currentStatus">{{currentStatus}}</h2>
     <dl>
-
       <dt>Status</dt>
       <dd>
-        <span [class]="statusClass">{{statusText}}</span>
-        <ng-container *ngIf="isPublished">
-          <button *ngIf="editStatus" class="btn-link edit-status" (click)="toggleEdit()">Hide</button>
-          <button *ngIf="!editStatus" class="btn-link edit-status" (click)="toggleEdit()">Edit</button>
-          <prx-button *ngIf="editStatus" [model]="story" visible=1 orange=1 disabled=0
-            [working]="isPublishing" (click)="togglePublish()">Unpublish</prx-button>
-        </ng-container>
+        <select *ngIf="currentStatus !== 'published'; else published"
+          [class.changed]="nextStatus !== currentStatus"
+          [ngModel]="nextStatus"
+          (ngModelChange)="statusChange($event)">
+          <option *ngFor="let status of statusOptions"
+                  [value]="status">{{status | titlecase}}</option>
+        </select>
+        <ng-template #published>Published</ng-template>
       </dd>
 
-      <dt *ngIf="isPublished && isScheduled">Publishing</dt>
-      <dt *ngIf="isPublished && !isScheduled">Published</dt>
-      <dd *ngIf="isPublished"><p>{{story.publishedAt | date:"short"}}</p></dd>
+      <dt>Last Saved</dt>
+      <dd *ngIf="!id">Not Saved</dd>
+      <dd *ngIf="id">{{story.updatedAt | date: 'short'}}</dd>
 
-      <dt *ngIf="isReleased && !isPublished">Release</dt>
-      <dd *ngIf="isReleased && !isPublished"><p>{{story.releasedAt | date:"short"}}</p></dd>
-
-      <dt>Saved</dt>
-      <dd *ngIf="!id"><p>Not Saved</p></dd>
-      <dd *ngIf="id"><p *ngIf="story?.updatedAt">{{story.updatedAt | date:"short"}}</p></dd>
-
-      <dt>Progress</dt>
-      <dd *ngIf="!id">
-        <p *ngIf="changed && !normalInvalid">Ready to create</p>
-        <p *ngIf="changed && normalInvalid" class="error">Unable to create</p>
-        <button *ngIf="changed && normalInvalid" class="btn-link"
-          (click)="showProblems()">{{normalInvalidCount}}</button>
+      <dt>Dropdate</dt>
+      <dd>
+        <prx-tz-datepicker *ngIf="nextStatus !== 'published' || currentStatus === 'published'; else publishImmediately"
+          [date]="date" (dateChange)="setDate($event)" [changed]="dateChanged">
+        </prx-tz-datepicker>
+        <ng-template #publishImmediately>Publish Immediately</ng-template>
       </dd>
-      <dd *ngIf="id">
-        <ng-container *ngIf="strictInvalid">
-          <p *ngIf="isPublished || normalInvalid" class="error">Invalid episode</p>
-          <p *ngIf="notPublished && !normalInvalid">Not ready to publish</p>
-          <button (click)="showProblems()" class="btn-link">{{strictInvalidCount}}</button>
-        </ng-container>
-        <ng-container *ngIf="notPublished && !strictInvalid">
-          <p *ngIf="changed">Ready after save</p>
-          <p *ngIf="!changed">Ready to publish</p>
-          <prx-button [model]="story" visible=1 orange=1 [disabled]="changed"
-            [working]="isPublishing" (click)="togglePublish()">Publish</prx-button>
-        </ng-container>
-        <ng-container *ngIf="isPublished && !strictInvalid">
-          <p *ngIf="changed">Unsaved changes</p>
-          <p *ngIf="!changed">Complete</p>
-        </ng-container>
-      </dd>
-
     </dl>
+    <publish-status-control
+      [id]="id" [story]="story"
+      [nextStatus]="nextStatus"
+      [currentStatus]="currentStatus"
+      (status)="statusChange($event)"></publish-status-control>
   `
 })
 
@@ -67,119 +46,73 @@ export class StoryStatusComponent implements DoCheck {
   @Input() id: number;
   @Input() story: StoryModel;
 
-  statusClass: string;
-  statusText: string;
-  isPublished: boolean;
-  isReleased: boolean;
-  isScheduled: boolean;
-  notPublished: boolean;
+  statusOptions = ['draft', 'scheduled', 'published'];
+  currentStatus: StoryStatus;
+  nextStatus: StoryStatus;
 
-  normalInvalid: string;
-  normalInvalidCount: string;
-  strictInvalid: string;
-  strictInvalidCount: string;
-  changed: boolean;
-  editStatus: boolean;
-  isPublishing: boolean;
-
-  constructor(private modal: ModalService,
-              private toastr: ToastrService,
-              private router: Router,
-              private angulartics2: Angulartics2) {}
+  constructor(private modal: ModalService) {}
 
   ngDoCheck() {
     if (this.story) {
-      this.setStatus();
-      this.isPublished = this.story.publishedAt ? true : false;
-      this.isReleased = this.story.releasedAt ? true : false;
-      this.isScheduled = this.isPublished && !this.story.isPublished();
-      this.notPublished = !this.isPublished;
-      this.normalInvalid = this.storyInvalid(false);
-      this.normalInvalidCount = this.countProblems(false);
-      this.strictInvalid = this.storyInvalid(true);
-      this.strictInvalidCount = this.countProblems(true);
-      this.changed = this.story.changed();
+      this.determineStatus();
     }
   }
 
-  setStatus() {
-    if (this.story.isNew || !this.story.publishedAt) {
-      this.statusClass = 'status draft';
-      this.statusText = 'Draft';
-    } else if (!this.story.isPublished()) {
-      this.statusClass = 'status scheduled';
-      this.statusText = 'Scheduled';
-    } else {
-      this.statusClass = 'status published';
-      this.statusText = 'Published';
+  statusChange(status: StoryStatus) {
+    this.nextStatus = status;
+    if (this.currentStatus !== 'scheduled' && status === 'scheduled' && !this.story.releasedAt) {
+      // initialize releasedAt for scheduling
+      this.story.set('releasedAt', new Date());
+    } else if (this.currentStatus !== 'published' && status === 'published' && this.story.releasedAt) {
+      // if set, clear releasedAt for publish now
+      this.story.set('releasedAt', null);
     }
   }
 
-  formatInvalid(str: string): string {
-    str = str.trim();
-    str = str.replace(/shortdescription/i, 'teaser');
-    str = str.charAt(0).toUpperCase() + str.slice(1);
-    return str;
-  }
-
-  formatInvalids(strict = false): string[] {
-    let invalids = strict ? this.strictInvalid : this.normalInvalid;
-    if (invalids) {
-      return invalids.split(',').map(s => this.formatInvalid(s));
-    } else {
-      return [];
+  get date() {
+    if (this.story && this.story.releasedAt) {
+      return this.story.releasedAt;
+    } else if (this.story && this.story.publishedAt && this.story.publishedAt.valueOf() <= new Date().valueOf()) {
+      return this.story.publishedAt;
     }
   }
 
-  countProblems(strict = false): string {
-    let count = this.formatInvalids(strict).length;
-    return count === 1 ? `Found 1 problem` : `Found ${count} problems`;
-  }
-
-  showProblems() {
-    let normals = this.formatInvalids(false);
-    let stricts = this.formatInvalids(true).filter(s => normals.indexOf(s) === -1);
-
-    let title = 'Validation errors';
-    let msg = '';
-    normals.forEach(s => msg += `<li class="error">${s}</li>`);
-    if (this.isPublished) {
-      stricts.forEach(s => msg += `<li class="error">${s}</li>`);
-    }
-    if (this.id && !this.isPublished) {
-      stricts.forEach(s => msg += `<li>${s}</li>`);
-      if (normals.length === 0) {
-        title = 'Not ready to publish';
+  setDate(date: Date) {
+    if (this.story) {
+      // set releasedAt, see CMS story model update_published_to_released
+      this.story.set('releasedAt', date);
+      // Legacy: This actually does nothing. Removing date from datepicker is not valid and does not emit change.
+      // ...but if it did actually unset releasedAt, then we'd want to notify so keep
+      if (this.nextStatus !== 'draft' && !date) {
+        this.notifyOfCanceledPublication();
       }
     }
-
-    this.modal.show({title: title, body: `<ul>${msg}</ul>`, secondaryButton: 'Okay'});
   }
 
-  toggleEdit() {
-    this.editStatus = !this.editStatus;
+  get dateChanged(): boolean {
+    return this.story && this.story.changed('releasedAt', false);
   }
 
-  togglePublish() {
-    this.isPublishing = true;
-    this.story.setPublished(!this.story.publishedAt).subscribe(() => {
-      this.angulartics2.eventTrack.next({ action: this.story.publishedAt ? 'publish' : 'unpublish',
-        properties: { category: 'episode', label: 'episode/' + this.story.doc.id }});
-      this.toastr.success(`Episode ${this.story.publishedAt ? 'published' : 'unpublished'}`);
-      this.isPublishing = false;
-      this.editStatus = false;
-    });
-  }
-
-  private storyInvalid(strict): string {
-    let invalids = this.story.invalid(null, strict);
-    if (invalids || this.story.status !== 'invalid') {
-      return invalids;
-    } else if (strict && !this.story.changed()) {
-      return this.story.statusMessage;
-    } else {
-      return null;
+  notifyOfCanceledPublication() {
+    const futurePublished = this.story.publishedAt && new Date() < this.story.publishedAt;
+    const removingReleaseDate = this.story.changed('releasedAt') && !this.story.releasedAt;
+    if (removingReleaseDate && futurePublished) {
+      this.modal.alert(
+        '',
+        'Removing the scheduled release date for a published episode will unpublish the episode.',
+        () => {}
+      );
     }
   }
 
+  determineStatus() {
+    if (this.story.isNew || !this.story.publishedAt) {
+      this.currentStatus = 'draft';
+    } else if (!this.story.isPublished()) {
+      this.currentStatus = 'scheduled';
+    } else {
+      this.currentStatus = 'published';
+    }
+    if (!this.nextStatus) { this.nextStatus = this.currentStatus }
+  }
 }
