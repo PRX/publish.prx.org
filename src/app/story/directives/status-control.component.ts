@@ -11,7 +11,8 @@ interface PublishBoxButton {
   text: string,
   action: Function,
   disabled?: boolean,
-  color?: 'red' | 'orange' | 'green' | 'plain'
+  color?: 'red' | 'orange' | 'green' | 'plain',
+  icon?: string
 }
 @Component({
   selector: 'publish-status-control',
@@ -34,7 +35,7 @@ interface PublishBoxButton {
         {{ buttons.primary.text }}
         <div *ngIf="buttons.secondary" class="dropdown-menu-items">
           <button *ngIf="id" class="secondary" (click)="buttons.secondary.action($event)">
-            {{ buttons.secondary.text }} <prx-icon name="cancel" color="red" size="1.5em"></prx-icon>
+            {{ buttons.secondary.text }} <prx-icon [name]="buttons.secondary.icon" color="red" size="1em"></prx-icon>
           </button>
         </div>
       </prx-button>
@@ -188,13 +189,13 @@ export class StatusControlComponent implements DoCheck {
         this.buttons.secondary = {
           text: 'Delete',
           action: (event) => this.confirmDelete(event),
-          color: 'red'
+          icon: 'trash'
         }
       } else {
         this.buttons.secondary = {
           text: 'Unpublish',
           action: (event) => this.unpublish(event),
-          color: 'red'
+          icon: 'cancel-circle'
         }
       }
     }
@@ -217,6 +218,7 @@ export class StatusControlComponent implements DoCheck {
   }
 
   saveAndPublish(toast: string) {
+    const wasNew = this.story.isNew;
     this.story.save().subscribe(() => {
       // a story should not publish while audio is processing
       if (this.story.versions.every(version => version.files.every(file => !file.isProcessing))) {
@@ -227,6 +229,9 @@ export class StatusControlComponent implements DoCheck {
           skipWhile(() => this.story.versions.some(version => version.files.some(file => file.isProcessing)))
         ).subscribe(() => {
           this.togglePublish(toast);
+          if (wasNew) {
+            this.router.navigate(['/story', this.story.id]);
+          }
           poll.unsubscribe();
         })
       }
