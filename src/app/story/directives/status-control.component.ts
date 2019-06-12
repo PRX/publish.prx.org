@@ -217,6 +217,7 @@ export class StatusControlComponent implements DoCheck {
   }
 
   saveAndPublish(toast: string) {
+    const wasNew = this.story.isNew;
     this.story.save().subscribe(() => {
       // a story should not publish while audio is processing
       if (this.story.versions.every(version => version.files.every(file => !file.isProcessing))) {
@@ -227,6 +228,9 @@ export class StatusControlComponent implements DoCheck {
           skipWhile(() => this.story.versions.some(version => version.files.some(file => file.isProcessing)))
         ).subscribe(() => {
           this.togglePublish(toast);
+          if (wasNew) {
+            this.router.navigate(['/story', this.story.id]);
+          }
           poll.unsubscribe();
         })
       }
