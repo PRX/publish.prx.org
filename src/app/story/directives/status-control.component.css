@@ -19,3 +19,7 @@ button.secondary {
 button.secondary:hover, button.secondary:focus {
   color: #ff0000;
 }
+
+button.secondary prx-icon {
+  margin-left: 1em;
+}
