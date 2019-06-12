@@ -1,7 +1,5 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
-import { Router } from '@angular/router';
 import { HalDoc } from '../../core';
-import { ToastrService } from 'ngx-prx-styleguide';
 import { StoryModel } from '../../shared';
 
 @Component({
@@ -33,14 +31,11 @@ export class StoryHeroComponent implements OnInit, OnChanges {
   isChanged: boolean;
   isInvalid: string;
 
-  constructor(private router: Router,
-              private toastr: ToastrService) {}
-
-  ngOnInit() {
+ ngOnInit() {
     this.updateBanner();
   }
 
-  ngOnChanges(changes: any) {
+  ngOnChanges() {
     this.updateBanner();
   }
 
