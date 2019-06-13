@@ -24,6 +24,7 @@ dl {
   padding: 1em;
 }
 dt {
+  font-weight: 600;
   padding-top: 1em;
 }
 dt:first-child {
