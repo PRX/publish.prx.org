@@ -1,5 +1,5 @@
 <prx-auth [host]="authHost" [client]="authClient"></prx-auth>
-<prx-header>
+<prx-header prxSticky="all">
   <prx-navitem *ngIf="loggedIn" route="/" text="Home"></prx-navitem>
   <prx-navitem *ngIf="authorized" route="/series-import" text="Import Podcast"></prx-navitem>
   <prx-navitem *ngIf="authorized" route="/series/new" text="New Series"></prx-navitem>
