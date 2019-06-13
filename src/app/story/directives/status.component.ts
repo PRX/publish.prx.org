@@ -70,10 +70,8 @@ export class StoryStatusComponent implements DoCheck {
   }
 
   get date() {
-    if (this.story && this.story.releasedAt) {
-      return this.story.releasedAt;
-    } else if (this.story && this.story.publishedAt && this.story.publishedAt.valueOf() <= new Date().valueOf()) {
-      return this.story.publishedAt;
+    if (this.story) {
+      return this.story.releasedAt || this.story.publishedAt;
     }
   }
 

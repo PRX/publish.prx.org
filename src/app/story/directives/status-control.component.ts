@@ -209,8 +209,17 @@ export class StatusControlComponent implements DoCheck {
 
   save() {
     const wasNew = this.story.isNew;
+    const releasedAtChanged = this.story.releasedAt && this.story.changed('releasedAt', false);
     this.story.save().subscribe(() => {
-      this.toastr.success('Episode saved');
+      if (releasedAtChanged && this.nextStatus === 'published' && this.story.releasedAt.valueOf() > Date.now().valueOf()) {
+          this.status.emit('scheduled');
+          this.toastr.success('Episode scheduled for publishing');
+      } else if (releasedAtChanged && this.nextStatus === 'scheduled' && this.story.releasedAt.valueOf() < Date.now().valueOf()) {
+          this.status.emit('published');
+          this.toastr.success('Episode published');
+      } else {
+        this.toastr.success('Episode saved');
+      }
       if (wasNew) {
         this.router.navigate(['/story', this.story.id]);
       }
