@@ -234,7 +234,6 @@ export class StatusControlComponent implements DoCheck {
         this.togglePublish(toast);
       } else {
         const poll = interval(2000).pipe(
-          mergeMap(() => this.story.doc.reload()),
           skipWhile(() => this.story.versions.some(version => version.files.some(file => file.isProcessing)))
         ).subscribe(() => {
           this.togglePublish(toast);
