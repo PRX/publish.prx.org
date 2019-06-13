@@ -31,19 +31,35 @@ const getVar = (name: string): any => {
   }
 };
 
+const getTruthy = (name: string): boolean => {
+  if (window && window['ENV'] && window['ENV'][name] !== undefined) {
+    return [true, 'true', 1, '1'].indexOf(window['ENV'][name]) > -1;
+  } else {
+    return DEFAULTS[name] || false;
+  }
+};
+
+const getNumber = (name: string): number => {
+  if (window && window['ENV'] && window['ENV'][name] !== undefined) {
+    const num = parseInt(window['ENV'][name], 10);
+    return isNaN(num) ? 0 : num;
+  } else {
+    return DEFAULTS[name] || 0;
+  }
+};
+
 export class Env {
   public static get CMS_HOST():              string { return getVar('CMS_HOST'); }
-  public static get CMS_TTL():               number { return getVar('CMS_TTL'); }
-  public static get CMS_ROOT_TTL():          number { return getVar('CMS_ROOT_TTL'); }
-  public static get CMS_USE_LOCALSTORAGE(): boolean { return getVar('CMS_USE_LOCALSTORAGE'); }
+  public static get CMS_TTL():               number { return getNumber('CMS_TTL'); }
+  public static get CMS_ROOT_TTL():          number { return getNumber('CMS_ROOT_TTL'); }
+  public static get CMS_USE_LOCALSTORAGE(): boolean { return getTruthy('CMS_USE_LOCALSTORAGE'); }
   public static get AUTH_HOST():             string { return getVar('AUTH_HOST'); }
   public static get AUTH_CLIENT_ID():        string { return getVar('AUTH_CLIENT_ID'); }
   public static get BUCKET_NAME():           string { return getVar('BUCKET_NAME'); }
   public static get BUCKET_FOLDER():         string { return getVar('BUCKET_FOLDER'); }
+  public static get BUCKET_ACCELERATION():  boolean { return getTruthy('BUCKET_ACCELERATION'); }
   public static get SIGN_URL():              string { return getVar('SIGN_URL'); }
   public static get AWS_KEY():               string { return getVar('AWS_KEY'); }
-  public static get AWS_URL():               string { return getVar('AWS_URL'); }
-  public static get USE_CLOUDFRONT():       boolean { return getVar('USE_CLOUDFRONT'); }
-  public static get PLAY_HOST():            boolean { return getVar('PLAY_HOST'); }
+  public static get PLAY_HOST():             string { return getVar('PLAY_HOST'); }
   public static get METRICS_HOST():          string { return getVar('METRICS_HOST'); }
 }

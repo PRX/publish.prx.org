@@ -11,8 +11,7 @@ import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowW
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   DatepickerModule, EpisodeListModule, FancyFormModule, HeroModule, IconModule, ImageModule,
-  ModalModule, SelectModule, SpinnerModule, TagsModule, TzDatepickerModule } from 'ngx-prx-styleguide';
-import { StickyDirective } from './sticky/sticky.directive';
+  ModalModule, SelectModule, SpinnerModule, TagsModule, TzDatepickerModule, StickyModule, StatusBarModule } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [
@@ -28,8 +27,7 @@ import { StickyDirective } from './sticky/sticky.directive';
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
-    WysiwygComponent,
-    StickyDirective
+    WysiwygComponent
   ],
   exports: [
     AdvancedSectionComponent,
@@ -54,7 +52,8 @@ import { StickyDirective } from './sticky/sticky.directive';
     TextOverflowWebkitLineClampComponent,
     SelectModule,
     SpinnerModule,
-    StickyDirective,
+    StatusBarModule,
+    StickyModule,
     TagsModule,
     WysiwygComponent
   ],
@@ -70,6 +69,8 @@ import { StickyDirective } from './sticky/sticky.directive';
     ModalModule,
     SelectModule,
     SpinnerModule,
+    StatusBarModule,
+    StickyModule,
     TagsModule
   ],
   providers: [

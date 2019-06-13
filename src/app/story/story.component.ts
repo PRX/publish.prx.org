@@ -19,7 +19,7 @@ import { StoryModel } from '../shared';
         <a *ngIf="distPlayer" routerLinkActive="active" [routerLink]="[base, 'player']">Embeddable Player</a>
       </nav>
       <div class="sticky-area" *ngIf="story">
-        <div class="sticky-container">
+        <div prxSticky="sidebar" class="sticky-container">
           <publish-story-status [id]="id" [story]="story"></publish-story-status>
         </div>
       </div>

@@ -116,6 +116,23 @@ describe('AudioVersionModel', () => {
       expect(version.filesAndTemplates[3].tpl).toBeNull();
     });
 
+    it('includes duplicate positions when assigning templates to files', () => {
+      templateMock.mockItems('prx:audio-file-templates', [{position: 1, label: 'at1'}, {position: 2, label: 'at2'}]);
+      let files = [{position: 1, label: 'f1'}, {position: 1, label: 'f2'}, {position: 2, label: 'f3'}];
+      let version = makeVersion({}, files);
+      expect(version.filesAndTemplates.length).toEqual(3);
+
+      // files assigned a template will have their label overwritten
+      expect(version.filesAndTemplates[0].file.label).toEqual('at1');
+      expect(version.filesAndTemplates[0].tpl).not.toBeNull();
+      expect(version.filesAndTemplates[1].file.label).toEqual('at2');
+      expect(version.filesAndTemplates[1].tpl).not.toBeNull();
+
+      // oldest file (1st in the files[]) doesn't get a template
+      expect(version.filesAndTemplates[2].file.label).toEqual('f1');
+      expect(version.filesAndTemplates[2].tpl).toBeNull();
+    });
+
   });
 
   describe('encode', () => {

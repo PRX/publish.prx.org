@@ -6,19 +6,16 @@ import { StoryModel } from '../../shared';
   selector: 'publish-story-hero',
   styleUrls: ['hero.component.css'],
   template: `
-    <prx-hero>
-      <div class="hero-title">
-        <h1 *ngIf="id">Edit Episode</h1>
-        <h1 *ngIf="!id">Create Episode</h1>
-        <a *ngIf="series" class="series" [routerLink]="['/series', series.id]">
-          <prx-image [imageDoc]="series"></prx-image>
-          <h3>{{series.title || '(Untitled Series)'}}</h3>
-        </a>
-      </div>
-      <div class="hero-info" *ngIf="story">
-        <h2>{{story.title || '(Untitled)'}}</h2>
-      </div>
-    </prx-hero>
+    <prx-status-bar prxSticky="all" class="status_bar">
+      <a prx-status-bar-link routerLink="/">
+        <prx-status-bar-icon name="chevron-left" aria-label="Return To Home"></prx-status-bar-icon>
+      </a>
+      <prx-status-bar-text bold uppercase>{{ !id ? 'Create' : 'Edit' }} Episode</prx-status-bar-text>
+      <prx-status-bar-text italic stretch>{{story && story.title || '(Untitled)'}}</prx-status-bar-text>
+      <a prx-status-bar-link [routerLink]="['/series', series.id]" alignArt="right" *ngIf="series">
+        <prx-status-bar-image [src]="series" alignAart="right"></prx-status-bar-image> {{series.title || '(Untitled Series)'}}
+      </a>
+    </prx-status-bar>
     `
 })
 
