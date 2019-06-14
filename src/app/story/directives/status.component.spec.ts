@@ -1,4 +1,4 @@
-import { cit, create, provide, stubPipe, By } from '../../../testing';
+import { cit, create, provide, stubPipe } from '../../../testing';
 import { ModalService } from 'ngx-prx-styleguide';
 import { StoryStatusComponent } from './status.component';
 import * as moment from 'moment';
@@ -67,5 +67,33 @@ describe('StoryStatusComponent', () => {
     comp.setDate(null);
     expect(modalAlertBody).toMatch(/will unpublish/i);
     expect(comp.story.releasedAt).toBeNull();
+  });
+
+  cit('shows the date without a toggle when it has not yet been set', (fix, el, comp) => {
+    mockStory({isNew: true}, comp, fix);
+    expect(el).toQuery('prx-tz-datepicker');
+    expect(el).not.toQuery('dt.dropdate input[type=checkbox]+label');
+  });
+
+  cit('shows the date after it has been changed but not the toggle if it has not been saved', (fix, el, comp) => {
+    mockStory({releasedAt: new Date(), isPublished: () => false, changed: (field) => field === 'releasedAt'}, comp, fix);
+    expect(el).toQuery('prx-tz-datepicker');
+    expect(el).not.toQuery('dt.dropdate input[type=checkbox]+label');
+  });
+
+  cit('does not show the date by default after it has been set', (fix, el, comp) => {
+    comp.editingDate = false; // set up: component initialized by test with empty date
+    mockStory({releasedAt: new Date(), isPublished: () => false, changed: () => false}, comp, fix);
+    expect(el).not.toQuery('prx-tz-datepicker');
+    expect(el).toQueryText('dt.dropdate input[type=checkbox]+label', 'Edit');
+  });
+
+  cit('shows the date when toggled', (fix, el, comp) => {
+    comp.editingDate = false; // set up: component initialized by test with empty date
+    mockStory({releasedAt: new Date(), isPublished: () => false, changed: () => false}, comp, fix);
+    expect(el).not.toQuery('prx-tz-datepicker');
+    comp.editingDate = true;
+    fix.detectChanges();
+    expect(el).toQuery('prx-tz-datepicker');
   });
 });
