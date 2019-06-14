@@ -40,3 +40,21 @@ prx-tz-datepicker >>> * {
 select.changed {
   outline: 5px auto #f09b4c;
 }
+
+dt.dropdate {
+  display: flex;
+  align-items: center;
+}
+dt.dropdate > * {
+  flex-basis: initial;
+}
+dt.dropdate input[type=checkbox] {
+  display: none;
+}
+dt.dropdate input[type=checkbox]+label {
+  color: #0089bc;
+  margin-left: 1em;
+}
+dt.dropdate input[type=checkbox]+label:hover {
+  color: #0070a1;
+}

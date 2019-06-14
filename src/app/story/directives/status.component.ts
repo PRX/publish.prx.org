@@ -25,11 +25,22 @@ export type StoryStatus = 'draft' | 'scheduled' | 'published';
       <dd *ngIf="!id">Not Saved</dd>
       <dd *ngIf="id">{{story.updatedAt | date: 'short'}}</dd>
 
-      <dt>Dropdate</dt>
+      <dt class="dropdate">
+        Dropdate
+        <input type="checkbox" id="editDate" (click)="editingDate = !editingDate">
+        <label for="editDate" *ngIf="date && !dateChanged">
+          <ng-container *ngIf="editingDate; else editDate">Hide</ng-container>
+          <ng-template #editDate>Edit</ng-template>
+        </label>
+      </dt>
       <dd>
-        <prx-tz-datepicker *ngIf="nextStatus !== 'published' || currentStatus === 'published'; else publishImmediately"
-          [date]="date" (dateChange)="setDate($event)" [changed]="dateChanged">
-        </prx-tz-datepicker>
+        <ng-container *ngIf="nextStatus !== 'published' || currentStatus === 'published'; else publishImmediately">
+          <prx-tz-datepicker
+            *ngIf="editingDate; else showDate"
+            [date]="date" (dateChange)="setDate($event)" [changed]="dateChanged">
+          </prx-tz-datepicker>
+          <ng-template #showDate>{{ date | date: 'short' }}</ng-template>
+        </ng-container>
         <ng-template #publishImmediately>Publish Immediately</ng-template>
       </dd>
     </dl>
@@ -49,10 +60,12 @@ export class StoryStatusComponent implements DoCheck {
   statusOptions = ['draft', 'scheduled', 'published'];
   currentStatus: StoryStatus;
   nextStatus: StoryStatus;
+  editingDate: boolean;
 
   constructor(private modal: ModalService) {}
 
   ngDoCheck() {
+    this.editingDate = this.editingDate || !this.date;
     if (this.story) {
       this.determineStatus();
     }
