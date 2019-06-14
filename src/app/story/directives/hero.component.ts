@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { HalDoc } from '../../core';
 import { StoryModel } from '../../shared';
 
@@ -19,7 +19,7 @@ import { StoryModel } from '../../shared';
     `
 })
 
-export class StoryHeroComponent implements OnInit, OnChanges {
+export class StoryHeroComponent implements OnChanges {
 
   @Input() id: number;
   @Input() story: StoryModel;
@@ -28,16 +28,12 @@ export class StoryHeroComponent implements OnInit, OnChanges {
   isChanged: boolean;
   isInvalid: string;
 
- ngOnInit() {
-    this.updateBanner();
-  }
-
   ngOnChanges() {
-    this.updateBanner();
+    this.updateSeries();
   }
 
-  updateBanner() {
-    if (this.story) {
+  updateSeries() {
+    if (this.story && !this.series) {
       if (this.story.isNew && this.story.parent && this.story.parent.isa('series')) {
         this.series = this.story.parent;
       } else if (!this.story.isNew && this.story.doc.has('prx:series')) {
