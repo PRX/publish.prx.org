@@ -8,6 +8,7 @@ import { BasicComponent } from './directives/basic.component';
 import { PodcastComponent } from './directives/podcast.component';
 import { PlayerComponent } from './directives/player.component';
 import { StoryStatusComponent } from './directives/status.component';
+import { StatusControlComponent } from './directives/status-control.component';
 
 const storyChildRoutes = [
   { path: '',        component: BasicComponent },
@@ -45,7 +46,8 @@ export const storyComponents: any[] = [
   BasicComponent,
   PodcastComponent,
   PlayerComponent,
-  StoryStatusComponent
+  StoryStatusComponent,
+  StatusControlComponent
 ];
 
 export const storyProviders: any[] = [];
