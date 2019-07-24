@@ -6,61 +6,93 @@ export const CATEGORIES = [
   'Business',
   'Comedy',
   'Education',
-  'Games & Hobbies',
-  'Government & Organizations',
-  'Health',
+  'Fiction',
+  'Government',
+  'History',
+  'Health & Fitness',
   'Kids & Family',
+  'Leisure',
   'Music',
-  'News & Politics',
+  'News',
   'Religion & Spirituality',
-  'Science & Medicine',
+  'Science',
   'Society & Culture',
-  'Sports & Recreation',
+  'Sports',
   'Technology',
+  'True Crime',
   'TV & Film'
 ];
 
 export const SUBCATEGORIES = {
   'Arts': [
+    'Books',
     'Design',
     'Fashion & Beauty',
     'Food',
-    'Literature',
     'Performing Arts',
     'Visual Arts'
   ],
   'Business': [
-    'Business News',
     'Careers',
+    'Entrepreneurship',
     'Investing',
-    'Management & Marketing',
-    'Shopping'
+    'Management',
+    'Marketing',
+    'Non-Profit'
+  ],
+  'Comedy': [
+    'Comedy Interviews',
+    'Improv',
+    'Stand-Up'
   ],
   'Education': [
-    'Educational Technology',
-    'Higher Education',
-    'K-12',
-    'Language Courses',
-    'Training'
+    'Courses',
+    'How To',
+    'Language Learning',
+    'Self-Improvement'
   ],
-  'Games & Hobbies': [
+  'Fiction': [
+    'Comedy Fiction',
+    'Drama',
+    'Science Fiction'
+  ],
+  'Health & Fitness': [
+    'Alternative Health',
+    'Fitness',
+    'Medicine',
+    'Mental Health',
+    'Nutrition',
+    'Sexuality'
+  ],
+  'Kids & Family': [
+    'Education for Kids',
+    'Parenting',
+    'Pets & Animals',
+    'Stories for Kids'
+  ],
+  'Leisure': [
+    'Animation & Manga',
     'Automotive',
     'Aviation',
+    'Crafts',
+    'Games',
     'Hobbies',
-    'Other Games',
+    'Home & Garden',
     'Video Games'
   ],
-  'Government & Organizations': [
-    'Local',
-    'National',
-    'Non-Profit',
-    'Regional'
+  'Music': [
+    'Music Commentary',
+    'Music History',
+    'Music Interviews'
   ],
-  'Health': [
-    'Alternative Health',
-    'Fitness & Nutrition',
-    'Self-Help',
-    'Sexuality'
+  'News': [
+    'Business News',
+    'Daily News',
+    'Entertainment News',
+    'News Commentary',
+    'Politics',
+    'Sports News',
+    'Tech News'
   ],
   'Religion & Spirituality': [
     'Buddhism',
@@ -68,30 +100,49 @@ export const SUBCATEGORIES = {
     'Hinduism',
     'Islam',
     'Judaism',
-    'Other',
+    'Religion',
     'Spirituality'
   ],
-  'Science & Medicine': [
-    'Medicine',
+  'Science': [
+    'Astronomy',
+    'Chemistry',
+    'Earth Sciences',
+    'Life Sciences',
+    'Mathematics',
     'Natural Sciences',
+    'Nature',
+    'Physics',
     'Social Sciences'
   ],
   'Society & Culture': [
-    'History',
+    'Documentary',
     'Personal Journals',
     'Philosophy',
-    'Places & Travel'
+    'Places & Travel',
+    'Relationships'
   ],
-  'Sports & Recreation': [
-    'Amateur',
-    'College & High School',
-    'Outdoor',
-    'Professional'
+  'Sports': [
+    'Baseball',
+    'Basketball',
+    'Cricket',
+    'Fantasy Sports',
+    'Football',
+    'Golf',
+    'Hockey',
+    'Rugby',
+    'Running',
+    'Soccer',
+    'Swimming',
+    'Tennis',
+    'Volleyball',
+    'Wilderness',
+    'Wrestling'
   ],
-  'Technology': [
-    'Gadgets',
-    'Tech News',
-    'Podcasting',
-    'Software How-To'
+  'TV & Film': [
+    'After Shows',
+    'Film History',
+    'Film Interviews',
+    'Film Reviews',
+    'TV Reviews'
   ]
 };

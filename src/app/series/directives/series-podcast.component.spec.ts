@@ -57,20 +57,20 @@ describe('SeriesPodcastComponent', () => {
 
     comp.podcast.category = 'Music';
     comp.setSubCategories();
-    expect(comp.subCategories).toEqual([]);
+    expect(comp.subCategories).toEqual(['', 'Music Commentary', 'Music History', 'Music Interviews']);
 
     comp.podcast.category = 'Technology';
     comp.setSubCategories();
-    expect(comp.subCategories).toEqual(['', 'Gadgets', 'Tech News', 'Podcasting', 'Software How-To']);
+    expect(comp.subCategories).toEqual([]);
   });
 
   cit('unsets subcategory when the category changes', (fix, el, comp) => {
-    comp.podcast = {set: () => null, category: 'Technology', subCategory: ''};
+    comp.podcast = {set: () => null, category: 'Leisure', subCategory: ''};
     spyOn(comp.podcast, 'set').and.stub();
     comp.setSubCategories();
     expect(comp.podcast.set).not.toHaveBeenCalled();
 
-    comp.podcast.subCategory = 'Gadgets';
+    comp.podcast.subCategory = 'Crafts';
     comp.setSubCategories();
     expect(comp.podcast.set).not.toHaveBeenCalled();
 
