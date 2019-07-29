@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FooterModule, HalModule, HeaderModule, ModalModule, ModalService, ToastrModule, ToastrService } from 'ngx-prx-styleguide';
 
-import { PlayerService } from './audio';
+import { PlayerService } from 'ngx-prx-styleguide';
 import { CmsService, FeederService } from './hal';
-import { MimeTypeService, UploadService } from './upload';
+import { MimeTypeService, UploadService } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [],

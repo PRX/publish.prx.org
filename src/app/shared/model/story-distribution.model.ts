@@ -5,8 +5,7 @@ import {map} from 'rxjs/operators';
 
 
 import { HalDoc } from '../../core';
-import { BaseModel } from 'ngx-prx-styleguide';
-import { REQUIRED } from './invalid';
+import { BaseModel, REQUIRED } from 'ngx-prx-styleguide';
 import { FeederEpisodeModel } from './feeder-episode.model';
 
 export class StoryDistributionModel extends BaseModel {

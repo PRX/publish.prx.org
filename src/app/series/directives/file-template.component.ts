@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ModalService } from 'ngx-prx-styleguide';
-import { AudioVersionTemplateModel, AudioFileTemplateModel } from '../../shared';
+import { AudioFileTemplateModel, AudioVersionTemplateModel } from 'ngx-prx-styleguide';
 
 @Component({
   selector: 'publish-file-template',

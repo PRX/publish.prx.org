@@ -4,15 +4,14 @@ import {of as observableOf,  Observable } from 'rxjs';
 import {map} from 'rxjs/operators';
 
 
-import { HalDoc, Upload } from '../../core';
-import { BaseModel, ValidatorMap } from 'ngx-prx-styleguide';
+import { HalDoc } from '../../core';
+import { BaseModel, ValidatorMap, REQUIRED, LENGTH } from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
 import { SeriesImportModel } from './series-import.model';
-import { AudioVersionTemplateModel } from './audio-version-template.model';
-import { AudioFileTemplateModel } from './audio-file-template.model';
 import { DistributionModel } from './distribution.model';
-import { REQUIRED, LENGTH } from './invalid';
-import { HasUpload, applyMixins } from './upload';
+import { AudioVersionTemplateModel, AudioFileTemplateModel } from 'ngx-prx-styleguide';
+import { HasUpload, applyMixins } from 'ngx-prx-styleguide';
+import { Upload } from 'ngx-prx-styleguide';
 
 export const IMPORT_SERIES_VALIDATIONS: ValidatorMap = {
   importUrl: [REQUIRED()],

@@ -2,10 +2,9 @@ import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ModalService, TabService } from 'ngx-prx-styleguide';
 import {
-  SeriesModel,
-  AudioVersionTemplateModel,
-  AudioFileTemplateModel
+  SeriesModel
 } from '../../shared';
+import { AudioVersionTemplateModel, AudioFileTemplateModel } from 'ngx-prx-styleguide';
 
 @Component({
   styleUrls: ['series-templates.component.css'],

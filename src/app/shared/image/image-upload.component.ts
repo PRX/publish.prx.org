@@ -1,6 +1,6 @@
 import { Component, Input, DoCheck } from '@angular/core';
-import { UploadService } from '../../core';
 import { StoryModel, SeriesModel, ImageModel } from '../model';
+import { UploadService } from 'ngx-prx-styleguide';
 
 @Component({
   selector: 'publish-image-upload',

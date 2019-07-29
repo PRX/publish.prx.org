@@ -2,19 +2,13 @@
 import {from as observableFrom, of as observableOf,  Observable } from 'rxjs';
 
 import {map, toArray, concatAll, mergeMap} from 'rxjs/operators';
-
-
-
-
-
-
-import { HalDoc, Upload } from '../../core';
-import { BaseModel } from 'ngx-prx-styleguide';
-import { AudioVersionModel } from './audio-version.model';
+import { HalDoc } from '../../core';
+import { BaseModel, REQUIRED, LENGTH, RELATIONS } from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
 import { StoryDistributionModel } from './story-distribution.model';
-import { REQUIRED, LENGTH, RELATIONS } from './invalid';
-import { HasUpload, applyMixins } from './upload';
+import { AudioVersionModel } from 'ngx-prx-styleguide';
+import { HasUpload, applyMixins } from 'ngx-prx-styleguide';
+import { Upload } from 'ngx-prx-styleguide';
 
 export class StoryModel extends BaseModel implements HasUpload {
 

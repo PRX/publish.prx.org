@@ -4,10 +4,10 @@ import {of as observableOf,  Observable } from 'rxjs';
 import {map} from 'rxjs/operators';
 
 
-import { HalDoc, Upload } from '../../core';
-import { BaseModel } from 'ngx-prx-styleguide';
+import { HalDoc } from '../../core';
+import { BaseModel, REQUIRED, LENGTH } from 'ngx-prx-styleguide';
 import { DistributionModel } from './distribution.model';
-import { REQUIRED, LENGTH } from './invalid';
+import { Upload } from 'ngx-prx-styleguide';
 
 export class SeriesImportModel extends BaseModel {
 

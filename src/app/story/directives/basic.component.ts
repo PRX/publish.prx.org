@@ -1,7 +1,8 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { StoryModel, AudioVersionModel } from '../../shared';
+import { StoryModel } from '../../shared';
 import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
+import { AudioVersionModel } from 'ngx-prx-styleguide';
 
 @Component({
   styleUrls: ['basic.component.css'],

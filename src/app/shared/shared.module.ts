@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { TimeAgoPipe } from './date';
-import { DurationPipe, FileSelectDirective, FileSizePipe } from './file';
 import { AdvancedSectionComponent, CopyInputDirective } from './form';
 import { ImageFileComponent, ImageUploadComponent } from './image';
 import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowWebkitLineClampComponent } from './text-overflow';
@@ -12,6 +11,7 @@ import { FocusDirective, WysiwygComponent } from './wysiwyg';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   DatepickerModule, EpisodeListModule, FancyFormModule, HeroModule, IconModule, ImageModule,
   ModalModule, SelectModule, SpinnerModule, TagsModule, TzDatepickerModule, StickyModule, StatusBarModule } from 'ngx-prx-styleguide';
+import { DurationPipe, FileSelectDirective, FileSizePipe } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [

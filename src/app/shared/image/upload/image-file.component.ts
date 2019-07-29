@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ImageModel, StoryModel, SeriesModel } from '../../model';
-import { UploadService } from '../../../core';
+import { UploadService } from 'ngx-prx-styleguide';
 
 @Component({
   selector: 'publish-image-file',

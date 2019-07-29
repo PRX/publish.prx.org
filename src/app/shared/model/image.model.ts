@@ -3,8 +3,9 @@ import {throwError as observableThrowError,  Observable } from 'rxjs';
 
 import {map} from 'rxjs/operators';
 
-import { HalDoc, Upload } from '../../core';
-import { UploadableModel } from './upload';
+import { HalDoc } from '../../core';
+import { UploadableModel } from 'ngx-prx-styleguide';
+import { Upload } from 'ngx-prx-styleguide';
 
 export class ImageModel extends UploadableModel {
 
