@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ImageModel, StoryModel, SeriesModel } from '../../model';
 import { UploadService } from 'ngx-prx-styleguide';
+import { Env } from 'app/core/core.env';
 
 @Component({
   selector: 'publish-image-file',
@@ -72,7 +73,15 @@ export class ImageFileComponent implements OnInit, OnDestroy {
   @Input() thumbnailWidth: string;
   @Input() thumbnailHeight: string;
 
-  constructor(private uploadService: UploadService) {}
+  constructor(private uploadService: UploadService) {
+    uploadService.createWithConfig({
+      bucketName: Env.BUCKET_NAME,
+      bucketAccel: Env.BUCKET_ACCELERATION,
+      bucketFolder: Env.BUCKET_FOLDER,
+      signUrl: Env.SIGN_URL,
+      awsKey: Env.AWS_KEY
+    });
+  }
 
   ngOnInit() {
     if (this.image && this.image.uuid) {
