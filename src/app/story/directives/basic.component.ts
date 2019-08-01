@@ -72,7 +72,7 @@ import { AudioVersionModel } from 'ngx-prx-styleguide';
 
       <prx-fancy-field label="Categories">
         <div class="fancy-hint">Enter categories relevant to the content of your episode. Type the category and press Enter to set it.</div>
-        <prx-tags [selected]="story.tags" [options]="quickTags" (onChange)="onTagsChange($event)"></prx-tags>
+        <prx-tags [selected]="story.tags" [options]="quickTags" (change)="onTagsChange($event)"></prx-tags>
       </prx-fancy-field>
 
       <prx-fancy-field label="Season and Episode Numbers">
