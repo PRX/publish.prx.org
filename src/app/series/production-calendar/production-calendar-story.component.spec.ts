@@ -1,8 +1,8 @@
 import { cit, create } from '../../../testing';
 import { ProductionCalendarStoryComponent } from './production-calendar-story.component';
 import { By } from '@angular/platform-browser';
-import { StoryModel, AudioVersionModel } from 'app/shared';
-import { MockHalDoc } from 'ngx-prx-styleguide';
+import { StoryModel } from 'app/shared';
+import { MockHalDoc, AudioVersionModel } from 'ngx-prx-styleguide';
 
 describe('ProductionCalendarStoryComponent', () => {
 

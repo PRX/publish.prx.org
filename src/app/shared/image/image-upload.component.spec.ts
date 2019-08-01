@@ -1,7 +1,7 @@
 import { cit, create, provide } from '../../../testing';
 import { of as observableOf } from 'rxjs';
 import { ImageUploadComponent } from './image-upload.component';
-import { UploadService } from '../../core/upload/upload.service';
+import { UploadService } from 'ngx-prx-styleguide';
 
 describe('ImageUploadComponent', () => {
 
@@ -9,7 +9,8 @@ describe('ImageUploadComponent', () => {
 
   provide(UploadService, {
     add: () => observableOf(null),
-    validFileType: () => true
+    validFileType: () => true,
+    createWithConfig: () => null
   });
 
   let imageDataURI = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';

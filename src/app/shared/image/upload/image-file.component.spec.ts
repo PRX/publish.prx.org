@@ -1,11 +1,14 @@
 import { cit, create, provide, By } from '../../../../testing';
 import { ImageFileComponent } from './image-file.component';
-import { UploadService } from '../../../core/upload/upload.service';
+import { UploadService } from 'ngx-prx-styleguide';
 
 describe('ImageFileComponent', () => {
 
   create(ImageFileComponent, false);
-  provide(UploadService, {find: uuid => uuid === 'testuuid' ? 'foobar' : null});
+  provide(UploadService, {
+    find: uuid => uuid === 'testuuid' ? 'foobar' : null,
+    createWithConfig: () => null
+  });
 
   const mockImage = (data: any = {}): {} => {
     let file = <any> {};

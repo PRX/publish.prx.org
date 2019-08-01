@@ -1,7 +1,7 @@
 import { of as observableOf } from 'rxjs';
 import { cms } from '../../../testing';
 import { StoryModel } from './story.model';
-import { AudioVersionModel } from './audio-version.model';
+import { AudioVersionModel } from 'ngx-prx-styleguide';
 
 describe('StoryModel', () => {
 
