@@ -42,7 +42,7 @@ import { AudioVersionModel } from 'ngx-prx-styleguide';
       <hr/>
 
       <prx-fancy-field required label="Audio Files">
-        
+
         <prx-select
           *ngIf="versionTemplateOptions" class="file-select" placeholder="Select Template..."
           [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
@@ -50,7 +50,7 @@ import { AudioVersionModel } from 'ngx-prx-styleguide';
           [class.invalid]="versionsInvalid" [class.changed]="versionsChanged">
         </prx-select>
         <prx-spinner *ngIf="!undeletedVersions"></prx-spinner>
-        <publish-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></publish-upload>
+        <prx-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></prx-upload>
         <div *ngIf="undeletedVersions?.length === 0" class="fancy-hint">
           Pick a version of your audio files to upload for this episode.
         </div>

@@ -20,7 +20,7 @@ import { Env } from 'app/core/core.env';
         <p *ngIf="suggestSize">Suggested size: {{suggestSize}} px</p>
       </div>
       <input type="file" [attr.id]="'image-file-' + purpose" accept="image/*"
-       publishFileSelect (file)="addUpload($event)" class.invalid="imgError"/>
+        prxFileSelect (file)="addUpload($event)" class.invalid="imgError"/>
       <label class="button" [attr.for]="'image-file-' + purpose">Add Image</label>
 
     </div>
