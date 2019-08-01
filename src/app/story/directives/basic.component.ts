@@ -46,7 +46,7 @@ import { AudioVersionModel } from 'ngx-prx-styleguide';
         <prx-select
           *ngIf="versionTemplateOptions" class="file-select" placeholder="Select Template..."
           [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
-          (onSelect)="updateVersions($event)" [maxSelectedItems]="1" [closeOnSelect]="true"
+          (select)="updateVersions($event)" [maxSelectedItems]="1" [closeOnSelect]="true"
           [class.invalid]="versionsInvalid" [class.changed]="versionsChanged">
         </prx-select>
         <prx-spinner *ngIf="!undeletedVersions"></prx-spinner>

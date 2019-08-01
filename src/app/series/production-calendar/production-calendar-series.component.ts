@@ -17,7 +17,7 @@ import { StoryModel, SeriesModel } from '../../shared';
         [selected]="monthFilter"
         single="true"
         closeOnSelect="true"
-        (onSelect)="filterByMonth($event)">
+        (select)="filterByMonth($event)">
       </prx-select>
 
       <prx-select
@@ -26,7 +26,7 @@ import { StoryModel, SeriesModel } from '../../shared';
         [selected]="publishStateFilter"
         single="true"
         closeOnSelect="true"
-        (onSelect)="filterByPublishState($event)">
+        (select)="filterByPublishState($event)">
       </prx-select>
     </header>
 

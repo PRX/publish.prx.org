@@ -69,7 +69,7 @@
     WARNING: this series has no audio templates - planned episodes won't have a set number of segments.
   </p>
   <prx-select single closeOnSelect [clearable]=false [options]="templateOptions"
-    [selected]="templateLink" (onSelect)="selectTemplate($event)">
+    [selected]="templateLink" (select)="selectTemplate($event)">
   </prx-select>
 </section>
 
