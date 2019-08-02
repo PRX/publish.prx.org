@@ -1,13 +1,9 @@
 
-import {of as observableOf,  Observable } from 'rxjs';
-
-import {map} from 'rxjs/operators';
-
-
+import { of as observableOf, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HalDoc } from '../../core';
-import { BaseModel, BaseInvalid, REQUIRED } from 'ngx-prx-styleguide';
+import { AudioVersionTemplateModel, BaseModel, BaseInvalid, REQUIRED } from 'ngx-prx-styleguide';
 import { FeederPodcastModel } from './feeder-podcast.model';
-import { AudioVersionTemplateModel } from 'ngx-prx-styleguide';
 
 const REQUIRE_IF_LOADED: BaseInvalid = (key: string, value: any): string => {
   if (value !== undefined && value.length === 0) {
