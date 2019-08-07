@@ -1,6 +1,7 @@
 import { Component, Input, DoCheck } from '@angular/core';
-import { UploadService } from '../../core';
 import { StoryModel, SeriesModel, ImageModel } from '../model';
+import { UploadService } from 'ngx-prx-styleguide';
+import { Env } from 'app/core/core.env';
 
 @Component({
   selector: 'publish-image-upload',
@@ -19,7 +20,7 @@ import { StoryModel, SeriesModel, ImageModel } from '../model';
         <p *ngIf="suggestSize">Suggested size: {{suggestSize}} px</p>
       </div>
       <input type="file" [attr.id]="'image-file-' + purpose" accept="image/*"
-       publishFileSelect (file)="addUpload($event)" class.invalid="imgError"/>
+        prxFileSelect (file)="addUpload($event)" class.invalid="imgError"/>
       <label class="button" [attr.for]="'image-file-' + purpose">Add Image</label>
 
     </div>
@@ -56,7 +57,15 @@ export class ImageUploadComponent implements DoCheck {
   hasImages = false;
   hasDestroyed = false;
 
-  constructor(private uploadService: UploadService) {}
+  constructor(private uploadService: UploadService) {
+    uploadService.createWithConfig({
+      bucketName: Env.BUCKET_NAME,
+      bucketAccel: Env.BUCKET_ACCELERATION,
+      bucketFolder: Env.BUCKET_FOLDER,
+      signUrl: Env.SIGN_URL,
+      awsKey: Env.AWS_KEY
+    });
+  }
 
   // avoid dom changes - don't touch the images array until necessary
   ngDoCheck() {

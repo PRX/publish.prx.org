@@ -5,13 +5,13 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { TabService } from 'ngx-prx-styleguide';
 import { CmsService } from '../../core';
 import {
-  AudioVersionModel,
   DistributionModel,
   FeederEpisodeModel,
   StoryModel,
   StoryDistributionModel,
   WysiwygComponent
 } from '../../shared';
+import { AudioVersionModel } from 'ngx-prx-styleguide';
 
 @Component({
   styleUrls: ['podcast.component.css'],

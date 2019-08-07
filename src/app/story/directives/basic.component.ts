@@ -1,7 +1,8 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { StoryModel, AudioVersionModel } from '../../shared';
+import { StoryModel } from '../../shared';
 import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
+import { AudioVersionModel } from 'ngx-prx-styleguide';
 
 @Component({
   styleUrls: ['basic.component.css'],
@@ -41,15 +42,15 @@ import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
       <hr/>
 
       <prx-fancy-field required label="Audio Files">
-        
+
         <prx-select
           *ngIf="versionTemplateOptions" class="file-select" placeholder="Select Template..."
           [selected]="versionTemplatesSelected" [options]="versionTemplateOptions"
-          (onSelect)="updateVersions($event)" [maxSelectedItems]="1" [closeOnSelect]="true"
+          (select)="updateVersions($event)" [maxSelectedItems]="1" [closeOnSelect]="true"
           [class.invalid]="versionsInvalid" [class.changed]="versionsChanged">
         </prx-select>
         <prx-spinner *ngIf="!undeletedVersions"></prx-spinner>
-        <publish-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></publish-upload>
+        <prx-upload *ngFor="let v of undeletedVersions" [version]="v" [strict]="strict"></prx-upload>
         <div *ngIf="undeletedVersions?.length === 0" class="fancy-hint">
           Pick a version of your audio files to upload for this episode.
         </div>
@@ -71,7 +72,7 @@ import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
 
       <prx-fancy-field label="Categories">
         <div class="fancy-hint">Enter categories relevant to the content of your episode. Type the category and press Enter to set it.</div>
-        <prx-tags [selected]="story.tags" [options]="quickTags" (onChange)="onTagsChange($event)"></prx-tags>
+        <prx-tags [selected]="story.tags" [options]="quickTags" (change)="onTagsChange($event)"></prx-tags>
       </prx-fancy-field>
 
       <prx-fancy-field label="Season and Episode Numbers">

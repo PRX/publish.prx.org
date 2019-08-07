@@ -34,10 +34,6 @@
               "node_modules/ngx-prx-styleguide/assets/styles/bundle.scss",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "src/styles.css"
-            ],
-            "scripts": [
-              "src/assets/aurora/aurora.js",
-              "src/assets/aurora/mp3.js"
             ]
           },
           "configurations": {
@@ -84,10 +80,6 @@
             "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [
-              "src/assets/aurora/aurora.js",
-              "src/assets/aurora/mp3.js"
-            ],
             "styles": [
               "node_modules/pikaday/css/pikaday.css",
               "node_modules/pikaday/css/triangle.css",

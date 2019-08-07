@@ -12,10 +12,10 @@ hr {
   margin-bottom: 10px;
 }
 
-publish-upload {
+prx-upload {
   margin-bottom: 30px;
 }
-publish-upload:last-child {
+prx-upload:last-child {
   margin-bottom: 0;
 }
 

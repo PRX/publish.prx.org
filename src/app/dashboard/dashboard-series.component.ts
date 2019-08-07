@@ -52,7 +52,7 @@ import { StoryModel, SeriesModel } from '../shared';
           [selected]="publishStateFilter"
           single="true"
           closeOnSelect="true"
-          (onSelect)="filterByPublishState($event)">
+          (select)="filterByPublishState($event)">
         </prx-select>
       </div>
     </div>
