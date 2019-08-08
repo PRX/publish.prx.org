@@ -9,15 +9,17 @@ import { ToastrService } from 'ngx-prx-styleguide';
   selector: 'publish-calendar',
   styleUrls: ['production-calendar.component.css'],
   template: `
-    <div class="hero">
-      <section>
-        <h1>Production Calendar</h1>
-        <a *ngIf="series" [routerLink]="['/series', series.id]">
-          <prx-image [imageDoc]="series.doc"></prx-image>
-          <h3>{{series.title}}</h3>
+    <prx-status-bar prxSticky="all" class="status_bar">
+      <a prx-status-bar-link routerLink="/">
+        <prx-status-bar-icon name="chevron-left" aria-label="Return To Home"></prx-status-bar-icon>
+      </a>
+      <prx-status-bar-text bold uppercase stretch>Production Calendar</prx-status-bar-text>
+      <ng-container *ngIf="series">
+        <a prx-status-bar-link [routerLink]="['/series', series.id]" alignArt="right" *ngIf="series">
+          <prx-status-bar-image [src]="series.doc" alignAart="right"></prx-status-bar-image> {{series.title || '(Untitled Series)'}}
         </a>
-      </section>
-    </div>
+      </ng-container>
+    </prx-status-bar>
 
     <div class="main">
       <section>
