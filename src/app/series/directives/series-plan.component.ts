@@ -145,7 +145,7 @@ export class SeriesPlanComponent implements OnDestroy {
   }
 
   private createStory(date: SimpleDate): Observable<HalDoc[]> {
-    const releasedAt = date.toLocaleDate(12);
+    const releasedAt = date.toLocaleDate(0);
     const title = releasedAt.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
     return this.series.create('prx:stories', {}, {title, releasedAt})
       .pipe(mergeMap(story => this.createVersion(story)));
