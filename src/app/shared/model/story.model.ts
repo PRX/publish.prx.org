@@ -1,14 +1,12 @@
-
-import {from as observableFrom, of as observableOf,  Observable } from 'rxjs';
-
-import {map, toArray, concatAll, mergeMap} from 'rxjs/operators';
+import { from as observableFrom, of as observableOf, Observable } from 'rxjs';
+import { map, toArray, concatAll, mergeMap} from 'rxjs/operators';
 import { HalDoc } from '../../core';
-import { BaseModel, REQUIRED, LENGTH, RELATIONS } from 'ngx-prx-styleguide';
+import {
+  BaseModel, REQUIRED, LENGTH, RELATIONS, Upload, AudioVersionModel,
+  HasUpload, createGetUploads, createSetUploads
+} from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
 import { StoryDistributionModel } from './story-distribution.model';
-import { AudioVersionModel } from 'ngx-prx-styleguide';
-import { HasUpload, applyMixins } from 'ngx-prx-styleguide';
-import { Upload } from 'ngx-prx-styleguide';
 
 export class StoryModel extends BaseModel implements HasUpload {
 
@@ -45,8 +43,12 @@ export class StoryModel extends BaseModel implements HasUpload {
 
   // HasUpload mixin
   hasUploadMap: string;
-  getUploads: (rel: string) => Observable<(HalDoc|string)[]>;
-  setUploads: (rel: string, uuids?: string[]) => void;
+  get getUploads() {
+    return createGetUploads();
+  }
+  get setUploads() {
+    return createSetUploads();
+  }
 
   constructor(seriesOrAccount: HalDoc, story?: HalDoc, loadRelated = true) {
     super();
@@ -238,5 +240,3 @@ export class StoryModel extends BaseModel implements HasUpload {
   }
 
 }
-
-applyMixins(StoryModel, [HasUpload]);

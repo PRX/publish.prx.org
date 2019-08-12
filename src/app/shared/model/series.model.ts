@@ -1,16 +1,12 @@
-
-import {of as observableOf,  Observable } from 'rxjs';
-
-import {map} from 'rxjs/operators';
-
-
+import { of as observableOf, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HalDoc } from '../../core';
 import { BaseModel, ValidatorMap, REQUIRED, LENGTH } from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
 import { SeriesImportModel } from './series-import.model';
 import { DistributionModel } from './distribution.model';
 import { AudioVersionTemplateModel, AudioFileTemplateModel } from 'ngx-prx-styleguide';
-import { HasUpload, applyMixins } from 'ngx-prx-styleguide';
+import { HasUpload, createGetUploads, createSetUploads } from 'ngx-prx-styleguide';
 import { Upload } from 'ngx-prx-styleguide';
 
 export const IMPORT_SERIES_VALIDATIONS: ValidatorMap = {
@@ -50,8 +46,12 @@ export class SeriesModel extends BaseModel implements HasUpload {
 
   // HasUpload mixin
   hasUploadMap: string;
-  getUploads: (rel: string) => Observable<(HalDoc|string)[]>;
-  setUploads: (rel: string, uuids?: string[]) => void;
+  get getUploads() {
+    return createGetUploads();
+  }
+  get setUploads() {
+    return createSetUploads();
+  }
 
   constructor(account: HalDoc, series?: HalDoc, loadRelated = true) {
     super();
@@ -213,5 +213,3 @@ export class SeriesModel extends BaseModel implements HasUpload {
     return !this.doc || this.doc['appVersion'] === 'v4';
   }
 }
-
-applyMixins(SeriesModel, [HasUpload]);
