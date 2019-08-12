@@ -51,6 +51,6 @@ describe('ProductionCalendarComponent', () => {
     activatedRoute.testParams = {id: '99'};
     auth.mock('prx:series', {id: 99, title: 'my series title'});
     fix.detectChanges();
-    expect(el).toQueryAttr('.hero section > a', 'href', '/series/99');
+    expect(el).toQueryAttr('prx-status-bar > a:last-child', 'href', '/series/99');
   });
 });
