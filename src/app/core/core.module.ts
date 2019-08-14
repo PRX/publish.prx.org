@@ -5,7 +5,6 @@ import { FooterModule, HalModule, HeaderModule, ModalModule, ModalService, Toast
 
 import { PlayerService } from 'ngx-prx-styleguide';
 import { CmsService, FeederService } from './hal';
-import { MimeTypeService, UploadService } from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [],
@@ -23,10 +22,8 @@ import { MimeTypeService, UploadService } from 'ngx-prx-styleguide';
   providers: [
     CmsService,
     FeederService,
-    MimeTypeService,
     ModalService,
     PlayerService,
-    UploadService,
     ToastrService
   ]
 })
