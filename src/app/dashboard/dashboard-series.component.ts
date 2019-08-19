@@ -1,10 +1,7 @@
 
-import { mergeMap, map } from 'rxjs/operators';
-
 import { Component, Input, OnInit } from '@angular/core';
-
 import { HalDoc } from '../core';
-import { StoryModel, SeriesModel } from '../shared';
+import { SeriesModel } from '../shared';
 
 @Component({
   selector: 'publish-dashboard-series',
@@ -46,8 +43,7 @@ import { StoryModel, SeriesModel } from '../shared';
         [series]="series"
         publishState="draft"
         heading="Scheduled and Draft Episodes"
-        showCalendar="true"
-        [podcastLoader]="podcastLoader">
+        showCalendar="true">
       </publish-dashboard-story-list>
       <publish-dashboard-story-list
         [auth]="auth"
@@ -55,8 +51,7 @@ import { StoryModel, SeriesModel } from '../shared';
         [noseries]="noseries"
         [series]="series"
         publishState="published"
-        heading="Published Episodes"
-        [podcastLoader]="podcastLoader">
+        heading="Published Episodes">
       </publish-dashboard-story-list>
     </div>
   `
@@ -72,7 +67,6 @@ export class DashboardSeriesComponent implements OnInit {
   id: number;
   title: string;
   updated: Date;
-  podcastLoader: boolean;
   publishStates = ['draft', 'scheduled', 'published'];
   publishStateOptions = this.publishStates.map(s => s.length && [s.charAt(0).toUpperCase() + s.slice(1), s]);
   publishStateFilter: string;
@@ -82,7 +76,6 @@ export class DashboardSeriesComponent implements OnInit {
       this.standaloneStories();
     } else {
       this.seriesStories();
-      this.loadSeriesDistribution();
     }
   }
 
@@ -91,13 +84,6 @@ export class DashboardSeriesComponent implements OnInit {
     this.title = this.series['title'];
     this.count = this.series.doc.count('prx:stories');
     this.updated = new Date(this.series['updatedAt']);
-  }
-
-  loadSeriesDistribution() {
-    this.podcastLoader = true;
-    this.series.loadRelated('distributions').subscribe(() => {
-      this.podcastLoader = false;
-    });
   }
 
   standaloneStories() {

@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
       }),
       mergeMap((defaultAccount: HalDoc) => {
         this.defaultAccount = defaultAccount;
-        return this.auth.followItems('prx:series', {filters: 'v4', zoom: 'prx:image,prx:distributions'});
+        return this.auth.followItems('prx:series', {filters: 'v4', zoom: 'prx:image'});
       }),
     ).subscribe((series: HalDoc[]) => {
       this.isLoaded = true;
