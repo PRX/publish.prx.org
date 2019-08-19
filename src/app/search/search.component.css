@@ -3,12 +3,12 @@ header {
   overflow: auto;
   width: 100%;
   border-bottom: 1px solid #676767;
-  margin: 10px 0;
 }
 header h2 {
   font-size: 25px;
   line-height: 30px;
   color: #343434;
+  padding-top: 10px;
 }
 
 header .tab {
