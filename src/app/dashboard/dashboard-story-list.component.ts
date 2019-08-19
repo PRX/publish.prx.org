@@ -50,11 +50,15 @@ export class DashboardStoryListComponent implements OnInit {
     const per = Math.min(total, max);
     this.storyLoaders = Array(per);
     this.episodeLoaders = Array(per).fill(true);
+    const filters = this.showCalendar ?
+      `v4,state=${publishStateFilter},after=${new Date().toISOString()}` :
+      `v4,state=${publishStateFilter}`;
+    const sorts = this.showCalendar ? 'published_released_at: asc' : 'published_at: desc';
 
     this.series.doc.followItems('prx:stories', {
       per,
-      filters: `v4,state=${publishStateFilter}`,
-      sorts: 'published_released_at: desc',
+      filters,
+      sorts,
       zoom: 'prx:distributions'
     }).pipe(
       map((stories: HalDoc[]) => {
