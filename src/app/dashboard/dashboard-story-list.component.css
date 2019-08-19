@@ -11,3 +11,10 @@ prx-episode-card, .story-loader {
   font-size: 18px;
   color: #676767;
 }
+.call-to-action {
+  margin-top: 20px;
+  text-align: center;
+}
+.call-to-action a {
+  font-weight: bold;
+}

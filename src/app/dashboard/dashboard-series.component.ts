@@ -42,16 +42,14 @@ import { SeriesModel } from '../shared';
         [noseries]="noseries"
         [series]="series"
         publishState="draft"
-        heading="Scheduled and Draft Episodes"
-        showCalendar="true">
+        isDraftList="true">
       </publish-dashboard-story-list>
       <publish-dashboard-story-list
         [auth]="auth"
         [account]="account"
         [noseries]="noseries"
         [series]="series"
-        publishState="published"
-        heading="Published Episodes">
+        publishState="published">
       </publish-dashboard-story-list>
     </div>
   `

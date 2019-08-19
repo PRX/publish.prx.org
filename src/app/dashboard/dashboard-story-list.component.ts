@@ -5,12 +5,15 @@ import { StoryModel, SeriesModel } from '../shared';
 @Component({
   selector: 'publish-dashboard-story-list',
   template: `
-    <h2 *ngIf="series && (stories?.length || storyLoaders)">
-      <span class="list-heading">{{heading}} <span *ngIf="storyLoaders">Loading...</span></span>
-      <span *ngIf="showCalendar"> |
+    <h2>
+      <span class="list-heading">
+        {{ isDraftList ? 'Draft and Scheduled Episodes' : 'Published Episodes'}} <span *ngIf="storyLoaders">Loading...</span>
+      </span>
+      <span *ngIf="isDraftList && series"> |
         <a [routerLink]="['/series', series.id, 'calendar']">Calendar view</a>
       </span>
     </h2>
+
     <prx-episode-card
       *ngFor="let s of stories"
       [editLink]="['/story', s.id]"
@@ -21,6 +24,18 @@ import { StoryModel, SeriesModel } from '../shared';
       [status]="storyStatus(s)">
     </prx-episode-card>
     <div *ngFor="let l of storyLoaders" class="story-loader"><prx-spinner></prx-spinner></div>
+
+    <p class="call-to-action" *ngIf="isDraftList && series && stories?.length < 3">
+      The more drafts you add, the better we can support your podcast.
+      Please add
+      <a [routerLink]="['/series', series.id, 'plan']">
+        all of your known upcoming episodes
+      </a>
+      to the Production Calendar.
+    </p>
+    <p class="call-to-action" *ngIf="!isDraftList && series && stories?.length === 0">
+      You haven't published any episodes on your podcast yet.
+    </p>
   `,
   styleUrls: ['dashboard-story-list.component.css']
 })
@@ -31,8 +46,7 @@ export class DashboardStoryListComponent implements OnInit {
   @Input() noseries: boolean;
   @Input() series: SeriesModel;
   @Input() publishState: string;
-  @Input() heading: string;
-  @Input() showCalendar: boolean;
+  @Input() isDraftList: boolean;
   PER_SERIES = 10;
   stories: StoryModel[];
   storyLoaders: boolean[];
@@ -51,8 +65,8 @@ export class DashboardStoryListComponent implements OnInit {
     const max = this.PER_SERIES;
     const per = Math.min(total, max);
     this.storyLoaders = Array(per);
-    const filters = this.storyFilter(publishStateFilter, this.showCalendar);
-    const sorts = this.storySort(this.showCalendar);
+    const filters = this.storyFilter(publishStateFilter, this.isDraftList);
+    const sorts = this.storySort(this.isDraftList);
 
     this.series.doc.followItems('prx:stories', {per, filters, sorts, zoom: false}).subscribe((stories: HalDoc[]) => {
       this.stories = stories.map(story => new StoryModel(this.series.doc, story, false));
@@ -63,8 +77,8 @@ export class DashboardStoryListComponent implements OnInit {
   loadStandaloneStories(publishStateFilter: string) {
     const per = this.PER_SERIES;
     this.storyLoaders = Array(1); // just one
-    const filters = 'noseries,' + this.storyFilter(publishStateFilter, this.showCalendar);
-    const sorts = this.storySort(this.showCalendar);
+    const filters = 'noseries,' + this.storyFilter(publishStateFilter, this.isDraftList);
+    const sorts = this.storySort(this.isDraftList);
 
     this.auth.followItems('prx:stories', {per, filters, sorts, zoom: false}).subscribe((stories: HalDoc[]) => {
       this.stories = stories.map(story => new StoryModel(this.account, story, false));
