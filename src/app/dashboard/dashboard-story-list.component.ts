@@ -14,18 +14,20 @@ import { StoryModel, SeriesModel } from '../shared';
       </span>
     </h2>
 
-    <prx-episode-card
-      *ngFor="let s of stories"
-      [editLink]="['/story', s.id]"
-      [date]="s.publishedAt || s.releasedAt"
-      dateFormat="M/d"
-      [title]="s.title"
-      [teaser]="s.shortDescription"
-      [status]="storyStatus(s)">
-    </prx-episode-card>
+    <ng-container *ngIf="!storyLoaders && !storyLoaders?.length">
+      <prx-episode-card
+        *ngFor="let s of stories"
+        [editLink]="['/story', s.id]"
+        [date]="s.publishedAt || s.releasedAt"
+        dateFormat="M/d"
+        [title]="s.title"
+        [teaser]="s.shortDescription"
+        [status]="storyStatus(s)">
+      </prx-episode-card>
+    </ng-container>
     <div *ngFor="let l of storyLoaders" class="story-loader"><prx-spinner></prx-spinner></div>
 
-    <p class="call-to-action" *ngIf="isDraftList && series && stories?.length < 3">
+    <p class="call-to-action" *ngIf="isDraftList && series && totalEpisodesInList < 3">
       The more drafts you add, the better we can support your podcast.
       Please add
       <a [routerLink]="['/series', series.id, 'plan']">
@@ -33,9 +35,16 @@ import { StoryModel, SeriesModel } from '../shared';
       </a>
       to the Production Calendar.
     </p>
-    <p class="call-to-action" *ngIf="!isDraftList && series && stories?.length === 0">
+    <p class="call-to-action" *ngIf="!isDraftList && series && totalEpisodesInList === 0">
       You haven't published any episodes on your podcast yet.
     </p>
+
+    <publish-dashboard-story-list-paging
+      *ngIf="totalPages > 1"
+      [currentPage]="page"
+      [totalPages]="totalPages"
+      (showPage)="this.loadStoryPage($event)">
+    </publish-dashboard-story-list-paging>
   `,
   styleUrls: ['dashboard-story-list.component.css']
 })
@@ -50,39 +59,53 @@ export class DashboardStoryListComponent implements OnInit {
   PER_SERIES = 10;
   stories: StoryModel[];
   storyLoaders: boolean[];
+  page: number;
+  totalEpisodesInList: number;
+  totalPages: number;
 
   ngOnInit() {
+    this.loadStoryPage(1);
+  }
+
+  loadStoryPage(page: number) {
+    this.page = page;
     if (this.noseries) {
-      this.loadStandaloneStories(this.publishState);
+      this.loadStandaloneStories(this.publishState, page);
     } else {
-      this.loadSeriesStories(this.publishState);
+      this.loadSeriesStories(this.publishState, page);
     }
   }
 
-  loadSeriesStories(publishStateFilter: string) {
-    // how many stories to display?
-    const total = this.series.doc.count('prx:stories');
+  loadSeriesStories(publishStateFilter: string, page: number) {
+    // totalNumberEpisodes won't be accurate because it is all episodes, filters not applied
+    // but it really only affects how many spinners to display for estimated results
+    const totalNumberEpisodes = this.series.doc.count('prx:stories');
     const max = this.PER_SERIES;
-    const per = Math.min(total, max);
+    const per = Math.min(totalNumberEpisodes, max);
     this.storyLoaders = Array(per);
     const filters = this.storyFilter(publishStateFilter, this.isDraftList);
     const sorts = this.storySort(this.isDraftList);
 
-    this.series.doc.followItems('prx:stories', {per, filters, sorts, zoom: false}).subscribe((stories: HalDoc[]) => {
+    this.series.doc.followItems('prx:stories', {page, per, filters, sorts, zoom: false}).subscribe((stories: HalDoc[]) => {
       this.stories = stories.map(story => new StoryModel(this.series.doc, story, false));
       this.storyLoaders = null;
+      this.setTotalPages(stories.length ? stories[0].total() : 0);
     });
   }
 
-  loadStandaloneStories(publishStateFilter: string) {
+  loadStandaloneStories(publishStateFilter: string, page: number) {
     const per = this.PER_SERIES;
     this.storyLoaders = Array(1); // just one
     const filters = 'noseries,' + this.storyFilter(publishStateFilter, this.isDraftList);
     const sorts = this.storySort(this.isDraftList);
+    this.page = page;
 
-    this.auth.followItems('prx:stories', {per, filters, sorts, zoom: false}).subscribe((stories: HalDoc[]) => {
+    this.auth.followItems('prx:stories', {page, per, filters, sorts, zoom: false}).subscribe((stories: HalDoc[]) => {
       this.stories = stories.map(story => new StoryModel(this.account, story, false));
       this.storyLoaders = null;
+      if (stories.length) {
+        this.setTotalPages(stories[0].total());
+      }
     });
   }
 
@@ -105,6 +128,14 @@ export class DashboardStoryListComponent implements OnInit {
       return 'scheduled';
     } else {
       return 'published';
+    }
+  }
+
+  setTotalPages(totalInList: number) {
+    this.totalEpisodesInList = totalInList;
+    this.totalPages = Math.floor(totalInList / this.PER_SERIES);
+    if (totalInList % this.PER_SERIES) {
+      this.totalPages++;
     }
   }
 }

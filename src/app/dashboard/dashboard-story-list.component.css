@@ -18,3 +18,8 @@ prx-episode-card, .story-loader {
 .call-to-action a {
   font-weight: bold;
 }
+
+publish-dashboard-story-list-paging {
+  display: block;
+  margin-top: 10px;
+}
