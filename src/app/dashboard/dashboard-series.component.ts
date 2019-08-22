@@ -44,7 +44,7 @@ import { SeriesModel } from '../shared';
         [account]="account"
         [noseries]="noseries"
         [series]="series"
-        publishState="draft"
+        publishState="unpublished"
         isDraftList="true">
       </publish-dashboard-story-list>
       <publish-dashboard-story-list

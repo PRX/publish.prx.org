@@ -111,12 +111,12 @@ export class DashboardStoryListComponent implements OnInit {
 
   storyFilter(publishStateFilter: string, afterToday: boolean): string {
     return afterToday ?
-    `v4,state=${publishStateFilter},after=${new Date().toISOString()}` :
+    `v4,state=${publishStateFilter},afternull=${new Date().toISOString()}` :
     `v4,state=${publishStateFilter}`;
   }
 
   storySort(asc: boolean): string {
-    return asc ? 'published_released_at: asc' : 'published_at: desc';
+    return asc ? 'released_at: asc' : 'published_at: desc';
   }
 
   storyStatus(story: StoryModel): string {
