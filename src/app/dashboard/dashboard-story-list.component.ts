@@ -7,9 +7,9 @@ import { StoryModel, SeriesModel } from '../shared';
   template: `
     <h2>
       <span class="list-heading">
-        {{ isDraftList ? 'Draft and Scheduled Episodes' : 'Published Episodes'}} <span *ngIf="storyLoaders">Loading...</span>
+        {{ isUnpublishedList ? 'Draft and Scheduled Episodes' : 'Published Episodes'}} <span *ngIf="storyLoaders">Loading...</span>
       </span>
-      <span *ngIf="isDraftList && series"> |
+      <span *ngIf="isUnpublishedList && series"> |
         <a [routerLink]="['/series', series.id, 'calendar']">Calendar view</a>
       </span>
     </h2>
@@ -27,7 +27,7 @@ import { StoryModel, SeriesModel } from '../shared';
     </ng-container>
     <div *ngFor="let l of storyLoaders" class="story-loader"><prx-spinner></prx-spinner></div>
 
-    <p class="call-to-action" *ngIf="isDraftList && series && totalEpisodesInList < 3">
+    <p class="call-to-action" *ngIf="isUnpublishedList && series && totalEpisodesInList < 3">
       The more drafts you add, the better we can support your podcast.
       Please add
       <a [routerLink]="['/series', series.id, 'plan']">
@@ -35,16 +35,16 @@ import { StoryModel, SeriesModel } from '../shared';
       </a>
       to the Production Calendar.
     </p>
-    <p class="call-to-action" *ngIf="!isDraftList && series && totalEpisodesInList === 0">
+    <p class="call-to-action" *ngIf="!isUnpublishedList && series && totalEpisodesInList === 0">
       You haven't published any episodes on your podcast yet.
     </p>
 
-    <publish-dashboard-story-list-paging
+    <prx-paging
       *ngIf="totalPages > 1"
       [currentPage]="page"
       [totalPages]="totalPages"
       (showPage)="this.loadStoryPage($event)">
-    </publish-dashboard-story-list-paging>
+    </prx-paging>
   `,
   styleUrls: ['dashboard-story-list.component.css']
 })
@@ -54,8 +54,7 @@ export class DashboardStoryListComponent implements OnInit {
   @Input() account: HalDoc;
   @Input() noseries: boolean;
   @Input() series: SeriesModel;
-  @Input() publishState: string;
-  @Input() isDraftList: boolean;
+  @Input() isUnpublishedList = false;
   PER_SERIES = 10;
   stories: StoryModel[];
   storyLoaders: boolean[];
@@ -70,21 +69,22 @@ export class DashboardStoryListComponent implements OnInit {
   loadStoryPage(page: number) {
     this.page = page;
     if (this.noseries) {
-      this.loadStandaloneStories(this.publishState, page);
+      this.loadStandaloneStories(page);
     } else {
-      this.loadSeriesStories(this.publishState, page);
+      this.loadSeriesStories(page);
     }
   }
 
-  loadSeriesStories(publishStateFilter: string, page: number) {
+  loadSeriesStories(page: number) {
     // totalNumberEpisodes won't be accurate because it is all episodes, filters not applied
     // but it really only affects how many spinners to display for estimated results
     const totalNumberEpisodes = this.series.doc.count('prx:stories');
     const max = this.PER_SERIES;
     const per = Math.min(totalNumberEpisodes, max);
     this.storyLoaders = Array(per);
-    const filters = this.storyFilter(publishStateFilter, this.isDraftList);
-    const sorts = this.storySort(this.isDraftList);
+
+    const filters = this.storyFilter();
+    const sorts = this.storySort();
 
     this.series.doc.followItems('prx:stories', {page, per, filters, sorts, zoom: false}).subscribe((stories: HalDoc[]) => {
       this.stories = stories.map(story => new StoryModel(this.series.doc, story, false));
@@ -93,11 +93,11 @@ export class DashboardStoryListComponent implements OnInit {
     });
   }
 
-  loadStandaloneStories(publishStateFilter: string, page: number) {
+  loadStandaloneStories(page: number) {
     const per = this.PER_SERIES;
     this.storyLoaders = Array(1); // just one
-    const filters = 'noseries,' + this.storyFilter(publishStateFilter, this.isDraftList);
-    const sorts = this.storySort(this.isDraftList);
+    const filters = 'noseries,' + this.storyFilter();
+    const sorts = this.storySort();
     this.page = page;
 
     this.auth.followItems('prx:stories', {page, per, filters, sorts, zoom: false}).subscribe((stories: HalDoc[]) => {
@@ -109,14 +109,16 @@ export class DashboardStoryListComponent implements OnInit {
     });
   }
 
-  storyFilter(publishStateFilter: string, afterToday: boolean): string {
-    return afterToday ?
-    `v4,state=${publishStateFilter},afternull=${new Date().toISOString()}` :
-    `v4,state=${publishStateFilter}`;
+  storyFilter(): string {
+    if (this.isUnpublishedList) {
+      return `v4,state=unpublished,afternull=${new Date().toISOString()}`
+    } else {
+      return 'v4,state=published';
+    }
   }
 
-  storySort(asc: boolean): string {
-    return asc ? 'released_at: asc' : 'published_at: desc';
+  storySort(): string {
+    return this.isUnpublishedList ? 'released_at: asc' : 'published_at: desc';
   }
 
   storyStatus(story: StoryModel): string {

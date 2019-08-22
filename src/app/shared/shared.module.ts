@@ -10,7 +10,8 @@ import { TextOverflowEllipsesComponent, TextOverflowFadeComponent, TextOverflowW
 import { FocusDirective, WysiwygComponent } from './wysiwyg';
 import { AuthGuard, DeactivateGuard, UnauthGuard,
   DatepickerModule, EpisodeListModule, FancyFormModule, HeroModule, IconModule, ImageModule, UploadModule,
-  ModalModule, SelectModule, SpinnerModule, TagsModule, TzDatepickerModule, StickyModule, StatusBarModule } from 'ngx-prx-styleguide';
+  ModalModule, PagingModule, SelectModule, SpinnerModule, TagsModule, TzDatepickerModule, StickyModule, StatusBarModule
+} from 'ngx-prx-styleguide';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { AuthGuard, DeactivateGuard, UnauthGuard,
     TextOverflowEllipsesComponent,
     TextOverflowFadeComponent,
     TextOverflowWebkitLineClampComponent,
+    PagingModule,
     SelectModule,
     SpinnerModule,
     StatusBarModule,
@@ -62,6 +64,7 @@ import { AuthGuard, DeactivateGuard, UnauthGuard,
     HeroModule,
     ImageModule,
     ModalModule,
+    PagingModule,
     SelectModule,
     SpinnerModule,
     StatusBarModule,

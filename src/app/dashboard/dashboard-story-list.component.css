@@ -19,7 +19,8 @@ prx-episode-card, .story-loader {
   font-weight: bold;
 }
 
-publish-dashboard-story-list-paging {
+prx-paging {
   display: block;
+  text-align: center;
   margin-top: 10px;
 }

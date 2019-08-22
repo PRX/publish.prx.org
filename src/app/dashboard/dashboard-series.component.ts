@@ -44,15 +44,13 @@ import { SeriesModel } from '../shared';
         [account]="account"
         [noseries]="noseries"
         [series]="series"
-        publishState="unpublished"
-        isDraftList="true">
+        isUnpublishedList="true">
       </publish-dashboard-story-list>
       <publish-dashboard-story-list
         [auth]="auth"
         [account]="account"
         [noseries]="noseries"
-        [series]="series"
-        publishState="published">
+        [series]="series">
       </publish-dashboard-story-list>
     </div>
   `
