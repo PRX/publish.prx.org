@@ -45,18 +45,6 @@ describe('DashboardSeriesComponent', () => {
       fix.detectChanges();
       expect(el).toQueryAttr('p.count a', 'href', '/search;tab=stories;seriesId=99');
     });
-
-    cit('filters by publish state', (fix, el, comp) => {
-      comp.noseries = false;
-      comp.series = series;
-      spyOn(comp, 'loadSeriesStories');
-      spyOn(comp, 'loadStandaloneStories');
-      comp.filterByPublishState('published');
-      expect(comp.loadSeriesStories).toHaveBeenCalled();
-      comp.noseries = true;
-      comp.filterByPublishState('draft');
-      expect(comp.loadStandaloneStories).toHaveBeenCalled();
-    });
   })
 
 });

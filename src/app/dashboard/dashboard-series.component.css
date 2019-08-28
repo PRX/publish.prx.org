@@ -74,23 +74,11 @@ header .updated {
   line-height: 18px;
   display: block;
 }
-.list-actions {
+.story-lists {
   display: flex;
   justify-content: space-between;
 }
-publish-dashboard-story {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  background: #fff;
-}
-.story-loader {
-  position: relative;
-  display: block;
-  background: #ddd;
-  height: 78px;
-}
-publish-dashboard-story, .story-loader {
-  display: block;
-  margin-top: 10px;
+.story-lists > * {
+  flex: 0;
+  flex-basis: calc(50% - 10px);
 }

@@ -14,6 +14,10 @@ option[disabled] {
   display: none;
 }
 
+select {
+  margin-left: 6px;
+}
+
 .form-group {
   margin: 10px 0;
 }

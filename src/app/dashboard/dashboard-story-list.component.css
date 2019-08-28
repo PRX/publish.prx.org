@@ -1,0 +1,26 @@
+.story-loader {
+  position: relative;
+  display: block;
+  background: #ddd;
+  height: 78px;
+}
+prx-episode-card, .story-loader {
+  margin-top: 10px;
+}
+.list-heading {
+  font-size: 18px;
+  color: #676767;
+}
+.call-to-action {
+  margin-top: 20px;
+  text-align: center;
+}
+.call-to-action a {
+  font-weight: bold;
+}
+
+prx-paging {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+}
