@@ -1,7 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Angulartics2Module } from 'angulartics2';
-import { Angulartics2GoogleAnalytics } from 'angulartics2/ga';
 import { AuthModule } from 'ngx-prx-styleguide';
 
 import { AppComponent } from './app.component';
@@ -21,7 +20,7 @@ import { SeriesImportModule } from './series-import';
     routingComponents
   ],
   imports: [
-    Angulartics2Module.forRoot([ Angulartics2GoogleAnalytics ]),
+    Angulartics2Module.forRoot(),
     BrowserModule,
     CoreModule,
     AuthModule,
