@@ -7,6 +7,9 @@ env:
   parameter-store:
     CODECOV_TOKEN: "/prx/test/publish.prx.org/CODECOV_TOKEN"
 phases:
+  install:
+    runtime-versions:
+      docker: 18
   build:
     commands:
       - "cd $(ls -d */|head -n 1)"
