@@ -4315,11 +4315,6 @@ lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5, lodash@~4.17.10:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
-lodash@^4.17.11:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
-  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
-
 log4js@^0.6.31:
   version "0.6.38"
   resolved "https://registry.yarnpkg.com/log4js/-/log4js-0.6.38.tgz#2c494116695d6fb25480943d3fc872e662a522fd"
@@ -4770,7 +4765,7 @@ nan@^2.10.0, nan@^2.9.2:
   version "2.12.1"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.12.1.tgz#7b1aa193e9aa86057e3c7bbd0ac448e770925552"
 
-nan@^2.12.1, nan@^2.13.2:
+nan@^2.12.1:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
   integrity sha512-INOFj37C7k3AfaNTtX8RhsTw7qRy7eLET14cROi9+5HAVbbHuIWUHEauBv5qT4Av2tWasiTY1Jw6puUNqRJXQg==
@@ -4835,10 +4830,10 @@ ng2-dragula@^1.3.1:
   dependencies:
     dragula "^3.7.2"
 
-ngx-prx-styleguide@2.18.2:
-  version "2.18.2"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.18.2.tgz#9fc979e8c2eeb7e9359591af6a2ebe4d2ba59f17"
-  integrity sha512-/v2B6p5QZhiwfD1jIAezl+rrHgf0QJkp3E3xPRalBnxd/v36wxqN31UQXivTy9e8oSoKA3HcEAn8cTz8sHedRw==
+ngx-prx-styleguide@2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.19.0.tgz#f32a5ea18fe88014b5bba2566d8ec266e7293a3c"
+  integrity sha512-0PZPH2GNKENZMnMiPKVKCPheT3dm3aq6Ucbl/8s/KLItVOgS+7YeYXi/mYkUzleof5n9I6F+a/z28F4w6r6WGQ==
   dependencies:
     "@ng-select/ng-select" "^2.15.3"
     c3 "^0.4.11"
