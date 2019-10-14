@@ -57,7 +57,7 @@
     "prosemirror-schema-list": "0.18.0",
     "prosemirror-state": "0.18.0",
     "prosemirror-view": "0.18.0",
-    "prx-ng-serve": "^1.0.0",
+    "prx-ng-serve": "1.1.0",
     "rxjs": "~6.5.3",
     "spark-md5": "^3.0.0",
     "stickyfilljs": "^2.1.0",
