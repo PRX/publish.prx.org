@@ -26,6 +26,7 @@ export class AppComponent {
     private user: UserinfoService,
     private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics
   ) {
+    this.angulartics2GoogleAnalytics.startTracking();
     auth.token.subscribe(token => this.loadAccount(token));
     this.user.config(this.authHost);
   }
