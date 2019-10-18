@@ -15,12 +15,10 @@
     publish once the state is changed to scheduled. This will prevent you from
     resetting the value on each individual episode.
   </p>
-  <div class="horizontal-checkboxes">
-    <prx-timepicker
-      [date]="planTime"
-      (timeChange)="onTimeChange($event)"
-    ></prx-timepicker>
-  </div>
+  <prx-timepicker
+    [date]="planTime"
+    (timeChange)="onTimeChange($event)"
+  ></prx-timepicker>
 </section>
 
 <section>
