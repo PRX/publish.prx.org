@@ -66,6 +66,19 @@ describe('SeriesPlanComponent', () => {
     expect(comp.generateMax).not.toEqual(null);
   });
 
+  cit('creates episodes with a different time', (_fix, _el, comp) => {
+    const [planHours, planMinutes] = [10, 30];
+    comp.series = series;
+    comp.templateLink = '/some/link';
+    comp.planned = [new SimpleDate('2019-02-01')];
+    comp.planTime = new Date(2019, 1, 1, planHours, planMinutes);
+
+    comp.createEpisodes().subscribe(d => {
+      expect(d[0].releasedAt.getHours()).toEqual(planHours);
+      expect(d[0].releasedAt.getMinutes()).toEqual(planMinutes);
+    });
+  });
+
   cit('plans episodes with a max number', (_fix, _el, comp) => {
     comp.generateStartingAt = new Date(2019, 1, 1);
     comp.days[2] = true;

@@ -9,6 +9,21 @@
 </header>
 
 <section>
+  <h2>What time of day do you plan to publish your episodes?</h2>
+  <p>
+    Select the time of day in which episodes would automatically be set to
+    publish once the state is changed to scheduled. This will prevent you from
+    resetting the value on each individual episode.
+  </p>
+  <div class="horizontal-checkboxes">
+    <prx-timepicker
+      [date]="planTime"
+      (timeChange)="onTimeChange($event)"
+    ></prx-timepicker>
+  </div>
+</section>
+
+<section>
   <h2>Which day of the week do you plan to publish your episodes?</h2>
   <p>
     Publish will automatically create an episode draft for each day selected
