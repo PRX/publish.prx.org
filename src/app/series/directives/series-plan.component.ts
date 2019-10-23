@@ -24,6 +24,7 @@ export class SeriesPlanComponent implements OnDestroy {
 
   planMinDate: SimpleDate;
   planDefaultDate: SimpleDate;
+  planTime: Date;
   planned: SimpleDate[] = [];
 
   objectKeys = Object.keys;
@@ -47,11 +48,18 @@ export class SeriesPlanComponent implements OnDestroy {
     this.tabSub = tab.model.subscribe((s: SeriesModel) => this.setSeries(s));
     this.planMinDate = new SimpleDate(this.tomorrow, true);
     this.planDefaultDate = this.planMinDate;
+    this.planTime = new Date(
+      this.planDefaultDate.toLocaleDate().setHours(12)
+    );
     this.generateStartingAt = this.planMinDate.toLocaleDate();
   }
 
   ngOnDestroy() {
     this.tabSub.unsubscribe();
+  }
+
+  onTimeChange($event) {
+    this.planTime = $event;
   }
 
   setSeries(s: SeriesModel) {
@@ -145,7 +153,7 @@ export class SeriesPlanComponent implements OnDestroy {
   }
 
   private createStory(date: SimpleDate): Observable<HalDoc[]> {
-    const releasedAt = date.toLocaleDate(12);
+    const releasedAt = date.toLocaleDate(this.planTime.getHours(), this.planTime.getMinutes());
     const title = releasedAt.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'});
     return this.series.create('prx:stories', {}, {title, releasedAt})
       .pipe(mergeMap(story => this.createVersion(story)));
