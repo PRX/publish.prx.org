@@ -105,7 +105,7 @@ export class SeriesFeedComponent implements OnInit, OnDestroy {
     if (series.count('prx:stories')) {
       const per = PER_PAGE;
       const zoom = 0;
-      const sorts = 'released_at:desc,published_at:desc';
+      const sorts = 'published_released_at:desc';
       const page1 = series.follow('prx:stories', {per, zoom, sorts});
       this.loadPages(page1).subscribe(() => this.isLoaded = true);
     } else {
