@@ -111,7 +111,7 @@ export class DashboardStoryListComponent implements OnInit {
 
   storyFilter(): string {
     if (this.isUnpublishedList) {
-      return `v4,state=unpublished,afternull=${new Date().toISOString()}`
+      return `v4,state=unpublished`
     } else {
       return 'v4,state=published';
     }
