@@ -16,7 +16,6 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   subCategories: string[] = [];
   explicitOpts = ['Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
-  itunesExplicitDoc = 'https://support.apple.com/en-us/HT202005';
   itunesCategoryDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12';
   itunesNewFeedURLDoc = 'https://help.apple.com/itc/podcasts_connect/#/itca489031e0';
   podcastTypeOptions = [['Episodic', false], ['Serial', true]];
