@@ -13,8 +13,6 @@ describe('DistributionModel', () => {
   let tpls = podDist.mockItems('prx:audio-version-templates', [{id: 'template1', label: 'template1'}]);
   tpls[0].mockItems('prx:audio-file-templates', []);
 
-  beforeEach(() => window.localStorage.clear());
-
   it('loads no podcast by default', () => {
     let dist = new DistributionModel(series, podDist);
     expect(dist.kind).toEqual('podcast');

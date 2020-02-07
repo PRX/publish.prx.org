@@ -10,8 +10,6 @@ describe('StoryDistributionModel', () => {
   let episodeDist = series.mock('prx:distributions', {id: 'dist2', kind: 'episode', url: episodeUrl});
   let episode = episodeDist.mock(episodeUrl, {id: 'episode1'});
 
-  beforeEach(() => window.localStorage.clear());
-
   it('loads no episode by default', () => {
     let dist = new StoryDistributionModel(series, story, episodeDist);
     expect(dist.kind).toEqual('episode');

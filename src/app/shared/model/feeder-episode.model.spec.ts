@@ -7,8 +7,6 @@ describe('FeederEpisodeModel', () => {
   let story = series.mock('prx:story', {id: '186750'});
   let dist = story.mock('prx:distributions', {id: 'dist1', kind: 'episode'});
 
-  beforeEach(() => window.localStorage.clear());
-
   it('decodes author name and email and web link', () => {
     let doc = cms.mock('some-episode', {
       author: {name: 'John Q. Public', email: 'john@q.public.com'},

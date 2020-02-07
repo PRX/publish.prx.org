@@ -7,8 +7,6 @@ describe('FeederPodcastModel', () => {
   let dist = series.mock('prx:distributions', {id: 'dist1', kind: 'podcast'});
   let roleDist = series.mock('prx:accounts', {name: 'Foo', email: 'Bar'});
 
-  beforeEach(() => window.localStorage.clear());
-
   it('decodes itunes categories', () => {
     let doc = dist.mock('some-feeder', {itunesCategories: [
       {name: 'Foo', subcategories: ['some', 'stuff']},
