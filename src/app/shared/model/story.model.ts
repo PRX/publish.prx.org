@@ -3,10 +3,18 @@ import { map, toArray, concatAll, mergeMap} from 'rxjs/operators';
 import { HalDoc } from '../../core';
 import {
   BaseModel, REQUIRED, LENGTH, RELATIONS, Upload, AudioVersionModel,
-  HasUpload, createGetUploads, createSetUploads
+  HasUpload, createGetUploads, createSetUploads, BaseInvalid
 } from 'ngx-prx-styleguide';
 import { ImageModel } from './image.model';
 import { StoryDistributionModel } from './story-distribution.model';
+
+const NO_UNPUBLISHING_VIA_RELEASED: BaseInvalid = (_key, val: Date, _strict, model): string => {
+  const now = new Date().valueOf();
+  if (val && val.valueOf() > now && model.isPublished()) {
+    return 'Woh there - Dropdate cannot be in the future. Unpublish first if you really want this.';
+  }
+  return null;
+};
 
 export class StoryModel extends BaseModel implements HasUpload {
 
@@ -38,6 +46,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     shortDescription: [REQUIRED()],
     description:      [LENGTH(0, 4000)],
     productionNotes:  [LENGTH(0, 255)],
+    releasedAt:       [NO_UNPUBLISHING_VIA_RELEASED],
     versions:         [RELATIONS('You must include at least 1 version of your audio')]
   };
 

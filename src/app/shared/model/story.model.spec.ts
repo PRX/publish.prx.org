@@ -62,6 +62,23 @@ describe('StoryModel', () => {
 
   });
 
+  describe('invalid', () => {
+
+    it('will not move a published story back to scheduled', () => {
+      let story = makeStory({
+        publishedAt: '2002-02-02T02:02:02.000Z',
+        releasedAt: '2002-02-02T02:02:02.000Z'
+      });
+      expect(story.invalid('releasedAt')).toBeNull();
+
+      let tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      story.set('releasedAt', tomorrow);
+      expect(story.invalid('releasedAt')).toMatch('Dropdate cannot be in the future');
+    });
+
+  });
+
   describe('related', () => {
 
     it('loads audio versions', () => {
