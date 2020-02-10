@@ -37,9 +37,13 @@ export type StoryStatus = 'draft' | 'scheduled' | 'published';
         <ng-container *ngIf="nextStatus !== 'published' || currentStatus === 'published'; else publishImmediately">
           <prx-tz-datepicker
             *ngIf="editingDate; else showDate"
-            [date]="date" (dateChange)="setDate($event)" [changed]="dateChanged">
+            [date]="date"
+            (dateChange)="setDate($event)"
+            [changed]="dateChanged"
+            [invalid]="dateInvalid">
           </prx-tz-datepicker>
           <ng-template #showDate>{{ date | date: 'short' }}</ng-template>
+          <p *ngIf="dateInvalid" class="error-msg">{{dateInvalid}}</p>
         </ng-container>
         <ng-template #publishImmediately>Publish Immediately</ng-template>
       </dd>
@@ -102,6 +106,10 @@ export class StoryStatusComponent implements DoCheck {
 
   get dateChanged(): boolean {
     return this.story && this.story.changed('releasedAt', false);
+  }
+
+  get dateInvalid(): string {
+    return this.story && this.story.invalid('releasedAt');
   }
 
   notifyOfCanceledPublication() {

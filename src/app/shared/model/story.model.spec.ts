@@ -62,6 +62,25 @@ describe('StoryModel', () => {
 
   });
 
+  describe('invalid', () => {
+
+    it('will not move a published story back to scheduled', () => {
+      let yesterday = new Date(), tomorrow = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      let story = makeStory();
+      story.set('publishedAt', yesterday, true);
+      story.set('releasedAt', yesterday, true);
+      expect(story.isPublished()).toEqual(true);
+      expect(story.invalid('releasedAt')).toBeNull();
+
+      story.set('releasedAt', tomorrow);
+      expect(story.invalid('releasedAt')).toMatch('Dropdate cannot be in the future');
+    });
+
+  });
+
   describe('related', () => {
 
     it('loads audio versions', () => {

@@ -7,6 +7,9 @@ import { matchers } from './matchers';
 // custom jasmine matchers
 beforeEach(() => jasmine.addMatchers(matchers));
 
+// the localstorage basemodel code makes me sad
+beforeEach(() => window.localStorage.clear());
+
 // normal exports
 export { cit, create, contain, direct, provide, stub, stubPipe } from './components';
 export { findComponent, niceEl } from './helpers';

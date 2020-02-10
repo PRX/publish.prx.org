@@ -4830,10 +4830,10 @@ ng2-dragula@^1.3.1:
   dependencies:
     dragula "^3.7.2"
 
-ngx-prx-styleguide@2.19.0:
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.19.0.tgz#f32a5ea18fe88014b5bba2566d8ec266e7293a3c"
-  integrity sha512-0PZPH2GNKENZMnMiPKVKCPheT3dm3aq6Ucbl/8s/KLItVOgS+7YeYXi/mYkUzleof5n9I6F+a/z28F4w6r6WGQ==
+ngx-prx-styleguide@2.20.0:
+  version "2.20.0"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-2.20.0.tgz#1ca913efdf7e79b91416e58a39da536884ee23a3"
+  integrity sha512-s0xBAsw98zy6ZjC5qX1EMRhjAec/pGj+I3PI5HTjlplul5QXzTTDz7/qbdlwQSiiaeyflxAYugKD9IlwPza+1Q==
   dependencies:
     "@ng-select/ng-select" "^2.15.3"
     c3 "^0.4.11"

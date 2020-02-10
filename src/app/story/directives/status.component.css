@@ -58,3 +58,6 @@ dt.dropdate input[type=checkbox]+label {
 dt.dropdate input[type=checkbox]+label:hover {
   color: #0070a1;
 }
+p.error-msg {
+  color: #e32;
+}
