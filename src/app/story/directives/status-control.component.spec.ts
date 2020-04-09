@@ -10,8 +10,11 @@ describe('StatusControlComponent', () => {
 
   provide(Router, RouterStub);
   provide(ModalService);
-  provide(ToastrService);
   provide(Angulartics2, {trackLocation: () => {}});
+
+  let toastSuccessMsg: string, toastErrorMsg: string;
+  beforeEach(() => toastSuccessMsg = toastErrorMsg = null);
+  provide(ToastrService, { success: (m: string) => toastSuccessMsg = m, error: (m: string) => toastErrorMsg = m });
 
   const expectDisabled = (el, text, shouldBeDisabled) => {
     let button = el.queryAll(By.css('prx-button')).find(btn => {
@@ -52,6 +55,15 @@ describe('StatusControlComponent', () => {
     comp.currentStatus = 'published';
     fix.detectChanges();
     expectDisabled(el, 'Save & Publish', true);
+  });
+
+  cit('strictly toggles to published (after audio processing)', (fix, el, comp) => {
+    comp.nextStatus = 'published';
+    mockStory({invalid: () => 'bad'}, comp, fix);
+    comp.togglePublish('should not be able to publish this');
+    expect(comp.story.publishedAt).toEqual(undefined);
+    expect(toastSuccessMsg).toEqual(null);
+    expect(toastErrorMsg).toEqual('Unable to publish - check validation errors');
   });
 
   cit('shows remote status messages', (fix, el, comp) => {

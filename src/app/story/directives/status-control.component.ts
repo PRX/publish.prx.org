@@ -282,6 +282,11 @@ export class StatusControlComponent implements DoCheck {
   }
 
   togglePublish(toast: string) {
+    // prevent publishing invalid (usually audio-files mismatching after processing)
+    if (this.story.invalid() && !this.story.publishedAt) {
+      return this.toastr.error(`Unable to publish - check validation errors`);
+    }
+
     this.isPublishing = true;
     this.story.setPublished(!this.story.publishedAt).subscribe(() => {
       this.angulartics2.eventTrack.next({ action: this.story.publishedAt ? 'publish' : 'unpublish',
