@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs';
 import { cit, create, provide, niceEl, By } from '../../../testing';
 import { StatusControlComponent } from './status-control.component';
 import { Router } from '@angular/router';
@@ -10,11 +11,11 @@ describe('StatusControlComponent', () => {
 
   provide(Router, RouterStub);
   provide(ModalService);
-  provide(Angulartics2, {trackLocation: () => {}});
+  provide(Angulartics2, {trackLocation: () => {}, eventTrack: new Subject<any>()});
 
-  let toastSuccessMsg: string, toastErrorMsg: string;
-  beforeEach(() => toastSuccessMsg = toastErrorMsg = null);
-  provide(ToastrService, { success: (m: string) => toastSuccessMsg = m, error: (m: string) => toastErrorMsg = m });
+  let toastErrorMsg: string;
+  beforeEach(() => toastErrorMsg = null);
+  provide(ToastrService, { error: (m: string) => toastErrorMsg = m });
 
   const expectDisabled = (el, text, shouldBeDisabled) => {
     let button = el.queryAll(By.css('prx-button')).find(btn => {
@@ -59,11 +60,22 @@ describe('StatusControlComponent', () => {
 
   cit('strictly toggles to published (after audio processing)', (fix, el, comp) => {
     comp.nextStatus = 'published';
-    mockStory({invalid: () => 'bad'}, comp, fix);
+    mockStory({publishedAt: null, invalid: () => 'bad', setPublished: () => null}, comp, fix);
+    spyOn(comp.story, 'setPublished').and.returnValue(new Subject());
+
     comp.togglePublish('should not be able to publish this');
-    expect(comp.story.publishedAt).toEqual(undefined);
-    expect(toastSuccessMsg).toEqual(null);
+    expect(comp.story.setPublished).not.toHaveBeenCalled();
     expect(toastErrorMsg).toEqual('Unable to publish - check validation errors');
+  });
+
+  cit('unstrictly toggles to unpublished (after audio processing)', (fix, el, comp) => {
+    comp.nextStatus = 'unpublished';
+    mockStory({publishedAt: new Date(), invalid: () => 'bad', setPublished: () => null}, comp, fix);
+    spyOn(comp.story, 'setPublished').and.returnValue(new Subject());
+
+    comp.togglePublish('should be able to unpublish this');
+    expect(comp.story.setPublished).toHaveBeenCalledWith(false);
+    expect(toastErrorMsg).toEqual(null);
   });
 
   cit('shows remote status messages', (fix, el, comp) => {
