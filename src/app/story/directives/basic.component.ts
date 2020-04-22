@@ -99,7 +99,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
   versionTemplateOptions: string[][];
 
   quickTags: object[] = [
-    { name: 'Ad-Free', value: 'adfree', tooltip: 'Informs some distributions to not include ads.'}
+    { name: 'adfree', value: 'adfree', tooltip: 'Informs some distributions to not include ads.'}
   ];
 
   constructor(
