@@ -7,8 +7,8 @@ import { SeriesComponent } from './series.component';
 import { SeriesImportService } from './series-import.service';
 import { SeriesModel, SeriesImportModel } from '../shared';
 
-let activatedRoute = new ActivatedRouteStub();
-let router = new RouterStub();
+const activatedRoute = new ActivatedRouteStub();
+const router = new RouterStub();
 
 class MockHalHttpError extends Error {
   name = 'HalHttpError';
@@ -18,7 +18,6 @@ class MockHalHttpError extends Error {
 }
 
 describe('SeriesComponent', () => {
-
   create(SeriesComponent, false);
   provide(Router, router);
   provide(ActivatedRoute, activatedRoute);
@@ -34,22 +33,22 @@ describe('SeriesComponent', () => {
 
   let modalAlertTitle: any;
   provide(ModalService, {
-    alert: (a) => modalAlertTitle = a,
-    confirm: (p) => modalAlertTitle = p
+    alert: (a) => (modalAlertTitle = a),
+    confirm: (p) => (modalAlertTitle = p)
   });
 
   let toastErrorMsg: any;
-  provide(ToastrService, { success: () => {}, error: (msg) => toastErrorMsg = msg });
+  provide(ToastrService, { success: () => {}, error: (msg) => (toastErrorMsg = msg) });
 
   let auth;
   beforeEach(() => {
-    auth = cms.mock('prx:authorization', {});
+    auth = cms().mock('prx:authorization', {});
     modalAlertTitle = null;
   });
 
   cit('loads a series by id', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {id: 99, title: 'my series title'}).mock('prx:account', {id: 78});
+    activatedRoute.testParams = { id: '99' };
+    auth.mock('prx:series', { id: 99, title: 'my series title' }).mock('prx:account', { id: 78 });
     fix.detectChanges();
     expect(el).toContainText('my series title');
     expect(comp.series.id).toEqual(99);
@@ -64,14 +63,14 @@ describe('SeriesComponent', () => {
 
   cit('defaults new series to the default account', (fix, el, comp) => {
     activatedRoute.testParams = {};
-    auth.mock('prx:default-account', {id: 88});
+    auth.mock('prx:default-account', { id: 88 });
     fix.detectChanges();
     expect(comp.series.parent.id).toEqual(88);
   });
 
   cit('refuses to edit v3 series', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {appVersion: 'v3'}).mock('prx:account', {id: 78});
+    activatedRoute.testParams = { id: '99' };
+    auth.mock('prx:series', { appVersion: 'v3' }).mock('prx:account', { id: 78 });
     expect(modalAlertTitle).toBeNull();
     fix.detectChanges();
     expect(modalAlertTitle).toEqual('Cannot Edit Series');
@@ -79,10 +78,10 @@ describe('SeriesComponent', () => {
 
   cit('navigates to new series after save', (fix, el, comp) => {
     activatedRoute.testParams = {};
-    auth.mock('prx:default-account', {id: 88});
+    auth.mock('prx:default-account', { id: 88 });
     fix.detectChanges();
 
-    let btn = el.queryAll(By.css('prx-button')).find(e => {
+    const btn = el.queryAll(By.css('prx-button')).find((e) => {
       return e.nativeElement.textContent === 'Create';
     });
     expect(btn).not.toBeNull();
@@ -93,13 +92,13 @@ describe('SeriesComponent', () => {
   });
 
   cit('confirms deletion', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    let series = auth.mock('prx:series', {appVersion: 'v4'});
+    activatedRoute.testParams = { id: '99' };
+    const series = auth.mock('prx:series', { appVersion: 'v4' });
     series.mockItems('prx:stories', []);
-    series.mock('prx:account', {id: 88});
+    series.mock('prx:account', { id: 88 });
     fix.detectChanges();
 
-    let btn = el.queryAll(By.css('button')).find(e => {
+    const btn = el.queryAll(By.css('button')).find((e) => {
       return e.nativeElement.textContent === 'Delete';
     });
     expect(btn).not.toBeUndefined();
@@ -110,9 +109,9 @@ describe('SeriesComponent', () => {
   });
 
   cit('confirms discarding unsaved changes before leaving', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    auth = cms.mock('prx:authorization', {});
-    auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'}).mock('prx:account', {id: 78});
+    activatedRoute.testParams = { id: '99' };
+    // auth = cms.mock('prx:authorization', {});
+    auth.mock('prx:series', { id: 99, title: 'my series title', appVersion: 'v4' }).mock('prx:account', { id: 78 });
     fix.detectChanges();
     expect(comp.canDeactivate()).toEqual(true);
     spyOn(comp.series, 'changed').and.returnValue(true);
@@ -121,9 +120,9 @@ describe('SeriesComponent', () => {
   });
 
   cit('does not confirm for unsaved changes after delete', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    auth = cms.mock('prx:authorization', {});
-    auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'}).mock('prx:account', {id: 78});
+    activatedRoute.testParams = { id: '99' };
+    // auth = cms.mock('prx:authorization', {});
+    auth.mock('prx:series', { id: 99, title: 'my series title', appVersion: 'v4' }).mock('prx:account', { id: 78 });
     fix.detectChanges();
     comp.series.isDestroy = true;
     expect(comp.canDeactivate()).toEqual(true);
@@ -131,29 +130,29 @@ describe('SeriesComponent', () => {
   });
 
   cit('presents a podcast import status tab if derived from an import', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    let series = auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
-    series.mock('prx:account', {id: 78});
-    series.mockItems('prx:podcast-imports', [{id: 333}]);
+    activatedRoute.testParams = { id: '99' };
+    const series = auth.mock('prx:series', { id: 99, title: 'my series title', appVersion: 'v4' });
+    series.mock('prx:account', { id: 78 });
+    series.mockItems('prx:podcast-imports', [{ id: 333 }]);
     fix.detectChanges();
     expect(comp.fromImport).toEqual(true);
     expect(el).toContainText('Import Status');
   });
 
   cit('will not present a tab if not an imported series', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    let series = auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
-    series.mock('prx:account', {id: 78});
+    activatedRoute.testParams = { id: '99' };
+    const series = auth.mock('prx:series', { id: 99, title: 'my series title', appVersion: 'v4' });
+    series.mock('prx:account', { id: 78 });
     fix.detectChanges();
     expect(comp.fromImport).toEqual(false);
     expect(el).not.toContainText('Import Status');
   });
 
   cit('shows plan episodes tab for series', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    const series = auth.mock('prx:series', {id: 99, title: 'my series title', appVersion: 'v4'});
-    series.mock('prx:account', {id: 78});
-    series.mockItems('prx:podcast-imports', [{id: 333}]);
+    activatedRoute.testParams = { id: '99' };
+    const series = auth.mock('prx:series', { id: 99, title: 'my series title', appVersion: 'v4' });
+    series.mock('prx:account', { id: 78 });
+    series.mockItems('prx:podcast-imports', [{ id: 333 }]);
     fix.detectChanges();
     expect(el).toContainText('Plan Episodes');
   });
@@ -163,5 +162,4 @@ describe('SeriesComponent', () => {
     fix.detectChanges();
     expect(el).not.toContainText('Plan Episodes');
   });
-
 });

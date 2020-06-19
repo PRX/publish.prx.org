@@ -1,12 +1,11 @@
 import { cit, create, cms, provide } from '../../../testing';
 import { RouterStub, ActivatedRouteStub } from '../../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService, MockHalDoc } from 'ngx-prx-styleguide';
-import { SeriesModel } from '../../shared';
+import { ToastrService } from 'ngx-prx-styleguide';
 import { ProductionCalendarComponent } from './production-calendar.component';
 
-let activatedRoute = new ActivatedRouteStub();
-let router = new RouterStub();
+const activatedRoute = new ActivatedRouteStub();
+const router = new RouterStub();
 
 class MockHalHttpError extends Error {
   name = 'HalHttpError';
@@ -16,25 +15,24 @@ class MockHalHttpError extends Error {
 }
 
 describe('ProductionCalendarComponent', () => {
-
   create(ProductionCalendarComponent, false);
   provide(Router, router);
   provide(ActivatedRoute, activatedRoute);
 
   let toastErrorMsg: string;
-  provide(ToastrService, { success: () => {}, error: (msg) => toastErrorMsg = msg });
+  provide(ToastrService, { success: () => {}, error: (msg) => (toastErrorMsg = msg) });
 
   let auth;
   beforeEach(() => {
-    auth = cms.mock('prx:authorization', {});
-    auth.mock('prx:series', {id: 99, title: 'my series title'});
+    auth = cms().mock('prx:authorization', {});
+    auth.mock('prx:series', { id: 99, title: 'my series title' });
     auth.mock('prx:default-account', {});
     auth.mockItems('prx:stories', []);
   });
 
   cit('loads a series by id', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {id: 99, title: 'my series title'});
+    activatedRoute.testParams = { id: '99' };
+    auth.mock('prx:series', { id: 99, title: 'my series title' });
     fix.detectChanges();
     expect(el).toContainText('my series title');
     expect(comp.series.id).toEqual(99);
@@ -48,8 +46,8 @@ describe('ProductionCalendarComponent', () => {
   });
 
   cit('provides a link to the series', (fix, el, comp) => {
-    activatedRoute.testParams = {id: '99'};
-    auth.mock('prx:series', {id: 99, title: 'my series title'});
+    activatedRoute.testParams = { id: '99' };
+    auth.mock('prx:series', { id: 99, title: 'my series title' });
     fix.detectChanges();
     expect(el).toQueryAttr('prx-status-bar > a:last-child', 'href', '/series/99');
   });

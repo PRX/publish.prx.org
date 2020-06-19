@@ -3,46 +3,38 @@ import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { StoryComponent } from './story.component';
-import { ModalService, ToastrService } from 'ngx-prx-styleguide';
+import { ModalService, ToastrService, HalHttpError } from 'ngx-prx-styleguide';
 
-let router = new RouterStub();
-let activatedRoute = new ActivatedRouteStub();
-
-class MockHalHttpError extends Error {
-  name = 'HalHttpError';
-  constructor(public status: number, msg: string) {
-    super(msg);
-  }
-}
+const router = new RouterStub();
+const activatedRoute = new ActivatedRouteStub();
 
 describe('StoryComponent', () => {
-
   create(StoryComponent, false);
   provide(Router, router);
   provide(ActivatedRoute, activatedRoute);
 
   let modalAlertTitle: any;
   provide(ModalService, {
-    alert: (a) => modalAlertTitle = a,
-    confirm: (p) => modalAlertTitle = p
+    alert: (a) => (modalAlertTitle = a),
+    confirm: (p) => (modalAlertTitle = p)
   });
-  beforeEach(() => modalAlertTitle = null);
+  beforeEach(() => (modalAlertTitle = null));
 
   let toastErrorMsg: any;
-  provide(ToastrService, { success: () => {}, error: (msg) => toastErrorMsg = msg });
+  provide(ToastrService, { success: () => {}, error: (msg) => (toastErrorMsg = msg) });
 
   let auth, series, story;
   beforeEach(() => {
-    auth = cms.mock('prx:authorization', {});
-    auth.mock('prx:default-account', {title: 'DefaultAccountTitle'});
-    series = auth.mock('prx:series', {title: 'ExistingSeriesTitle'});
-    story = auth.mock('prx:story', {title: 'ExistingStoryTitle', appVersion: 'v4'});
+    auth = cms().mock('prx:authorization', {});
+    auth.mock('prx:default-account', { title: 'DefaultAccountTitle' });
+    series = auth.mock('prx:series', { title: 'ExistingSeriesTitle' });
+    story = auth.mock('prx:story', { title: 'ExistingStoryTitle', appVersion: 'v4' });
     story.mockItems('prx:audio-versions', []);
     story.mockItems('prx:images', []);
   });
 
   cit('renders an existing story', (fix, el, comp) => {
-    activatedRoute.testParams = {id: 1234};
+    activatedRoute.testParams = { id: 1234 };
     fix.detectChanges();
     expect(comp.id).toEqual(1234);
     expect(comp.seriesId).toBeFalsy();
@@ -50,14 +42,14 @@ describe('StoryComponent', () => {
   });
 
   cit('pops error if story does not exist', (fix, el, comp) => {
-    auth.mockError('prx:story', new MockHalHttpError(404, 'Story does not exist.'));
+    auth.mockError('prx:story', new HalHttpError(404, 'Story does not exist.'));
     comp.id = 100;
     comp.loadStory();
     expect(toastErrorMsg).toEqual('No episode found. Redirecting to new episode page');
   });
 
   cit('renders a new story in a series', (fix, el, comp) => {
-    activatedRoute.testParams = {seriesId: 5678};
+    activatedRoute.testParams = { seriesId: 5678 };
     fix.detectChanges();
     expect(comp.id).toBeFalsy();
     expect(comp.seriesId).toEqual(5678);
@@ -75,7 +67,7 @@ describe('StoryComponent', () => {
   });
 
   cit('confirms discarding unsaved changes before leaving', (fix, el, comp) => {
-    activatedRoute.testParams = {id: 1234};
+    activatedRoute.testParams = { id: 1234 };
     fix.detectChanges();
     expect(comp.canDeactivate()).toEqual(true);
     spyOn(comp.story, 'changed').and.returnValue(true);
@@ -84,7 +76,7 @@ describe('StoryComponent', () => {
   });
 
   cit('does not confirm for unsaved changes after delete', (fix, el, comp) => {
-    activatedRoute.testParams = {id: 1234};
+    activatedRoute.testParams = { id: 1234 };
     fix.detectChanges();
     comp.story.isDestroy = true;
     expect(comp.canDeactivate()).toEqual(true);
@@ -92,19 +84,17 @@ describe('StoryComponent', () => {
   });
 
   describe('with a v3 story', () => {
-
     beforeEach(() => {
-      story = auth.mock('prx:story', {title: 'SomeV3Story', appVersion: 'v3'});
+      story = auth.mock('prx:story', { title: 'SomeV3Story', appVersion: 'v3' });
       story.mockItems('prx:audio-versions', []);
       story.mockItems('prx:images', []);
     });
 
     cit('refuses to edit', (fix, el, comp) => {
-      activatedRoute.testParams = {id: 1234};
+      activatedRoute.testParams = { id: 1234 };
       fix.detectChanges();
       expect(modalAlertTitle).toMatch(/cannot edit episode/i);
     });
-
   });
 
   cit('shows the player tab for existing stories', (fix, el, comp) => {
@@ -118,22 +108,22 @@ describe('StoryComponent', () => {
   });
 
   cit('shows the podcast tab for existing stories', (fix, el, comp) => {
-    activatedRoute.testParams = {id: 1234};
-    story.mockItems('prx:distributions', [{kind: 'foobar'}]);
+    activatedRoute.testParams = { id: 1234 };
+    story.mockItems('prx:distributions', [{ kind: 'foobar' }]);
     fix.detectChanges();
     expect(el).not.toContainText('Podcast Episode Info');
-    story.mockItems('prx:distributions', [{kind: 'foobar'}, {kind: 'episode'}]);
+    story.mockItems('prx:distributions', [{ kind: 'foobar' }, { kind: 'episode' }]);
     comp.loadStory();
     fix.detectChanges();
     expect(el).toContainText('Podcast Episode Info');
   });
 
   cit('shows the podcast tab for new stories', (fix, el, comp) => {
-    activatedRoute.testParams = {seriesId: 5678};
-    series.mockItems('prx:distributions', [{kind: 'foobar'}]);
+    activatedRoute.testParams = { seriesId: 5678 };
+    series.mockItems('prx:distributions', [{ kind: 'foobar' }]);
     fix.detectChanges();
     expect(el).not.toContainText('Podcast Episode Info');
-    series.mockItems('prx:distributions', [{kind: 'foobar'}, {kind: 'podcast'}]);
+    series.mockItems('prx:distributions', [{ kind: 'foobar' }, { kind: 'podcast' }]);
     comp.loadStory();
     fix.detectChanges();
     expect(el).toContainText('Podcast Episode Info');

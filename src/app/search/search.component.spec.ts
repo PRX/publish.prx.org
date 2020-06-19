@@ -6,7 +6,6 @@ import { SearchComponent } from './search.component';
 let activatedRoute: ActivatedRouteStub = new ActivatedRouteStub();
 
 describe('SearchComponent', () => {
-
   create(SearchComponent);
 
   provide(Router, RouterStub);
@@ -15,7 +14,7 @@ describe('SearchComponent', () => {
   let auth;
   beforeEach(() => {
     activatedRoute.testParams = {};
-    auth = cms.mock('prx:authorization', {});
+    auth = cms().mock('prx:authorization', {});
     auth.mock('prx:default-account', {});
     auth.mockItems('prx:series', []);
     auth.mockItems('prx:series-search', []);
@@ -28,17 +27,16 @@ describe('SearchComponent', () => {
   });
 
   cit('searches via URL params', (fix, el, comp) => {
-    let params = {tab: 'stories', perPage: 12, orderBy: 'published_at', orderDesc: false, page: 1};
+    const params = { tab: 'stories', perPage: 12, orderBy: 'published_at', orderDesc: false, page: 1 };
     spyOn(comp.router, 'navigate');
     comp.searchWithParams(params);
     expect(comp.router.navigate).toHaveBeenCalledWith(['search', params]);
   });
 
   describe('on the stories tab', () => {
-
-    let storiesResults = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+    const storiesResults = new Array(15).fill({});
     beforeEach(() => {
-      activatedRoute.testParams = {tab: 'stories'};
+      activatedRoute.testParams = { tab: 'stories' };
       auth.mockItems('prx:stories-search', storiesResults);
     });
 
@@ -49,17 +47,15 @@ describe('SearchComponent', () => {
     });
 
     cit('shows paging controls', (fix, el, comp) => {
-      let pagingControls = el.queryAll(By.css('.pages > .btn-link'));
+      const pagingControls = el.queryAll(By.css('.pages > .btn-link'));
       expect(pagingControls.length).toEqual(5); // 5 = two pages, two next/prev arrows, and one View All
     });
-
   });
 
   describe('on the series tab', () => {
-
-    let seriesResults = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+    const seriesResults = new Array(10).fill({});
     beforeEach(() => {
-      activatedRoute.testParams = {tab: 'series'};
+      activatedRoute.testParams = { tab: 'series' };
       auth.mockItems('prx:series-search', seriesResults);
     });
 
@@ -68,15 +64,13 @@ describe('SearchComponent', () => {
       expect(comp.isLoaded).toBe(true);
       expect(comp.seriesResults.length).toEqual(seriesResults.length);
     });
-
   });
 
   describe('with remote errors', () => {
-
     beforeEach(() => {
       auth.count = () => 999;
       auth.mockError('prx:stories-search', new Error('Something went terribly awry'));
-      activatedRoute.testParams = {tab: 'stories'};
+      activatedRoute.testParams = { tab: 'stories' };
     });
 
     cit('catches and displays a search errors', (fix, el, comp) => {
@@ -85,7 +79,6 @@ describe('SearchComponent', () => {
       expect(comp.searchError).toBe(true);
       expect(el).toContainText('Your search query contains a syntax error');
     });
-
   });
 
   cit('adds wildcards to the end of searches', (fix, el, comp) => {
@@ -96,5 +89,4 @@ describe('SearchComponent', () => {
     expect(comp.addWildcard('hello worl*')).toEqual('hello worl*');
     expect(comp.addWildcard('hello worl ')).toEqual('hello worl ');
   });
-
 });

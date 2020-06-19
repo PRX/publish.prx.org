@@ -5,25 +5,24 @@ import { SeriesBasicComponent } from './series-basic.component';
 import { SeriesComponent } from '../series.component';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
 
-let activatedRoute = new ActivatedRouteStub();
-let router = new RouterStub();
+const activatedRoute = new ActivatedRouteStub();
+const router = new RouterStub();
 
 describe('SeriesBasicComponent', () => {
-
   create(SeriesBasicComponent);
 
   provide(TabService);
   provide(Router, router);
   provide(ActivatedRoute, activatedRoute);
   provide(ModalService);
-  provide(ToastrService, {success: () => {}});
+  provide(ToastrService, { success: () => {} });
   provide(SeriesComponent);
 
   beforeEach(() => {
-    let auth = cms.mock('prx:authorization', {});
+    const auth = cms().mock('prx:authorization', {});
     auth.mockItems('prx:accounts', [
-      {name: 'TheAccountName', type: 'IndividualAccount', id: 111},
-      {name: 'DefaultName', type: 'DefaultAccount', id: 222}
+      { name: 'TheAccountName', type: 'IndividualAccount', id: 111 },
+      { name: 'DefaultName', type: 'DefaultAccount', id: 222 }
     ]);
   });
 
@@ -32,7 +31,7 @@ describe('SeriesBasicComponent', () => {
     expect(el).not.toQuery('publish-wysiwyg');
     comp.series = {
       changed: () => false,
-      account: {name: 'DefaultAccount', id: '222'}
+      account: { name: 'DefaultAccount', id: '222' }
     };
     fix.detectChanges();
 
@@ -50,7 +49,7 @@ describe('SeriesBasicComponent', () => {
     expect(el).not.toQuery('publish-image-upload');
     comp.series = {
       changed: () => false,
-      account: {name: 'DefaultAccount', id: '222'}
+      account: { name: 'DefaultAccount', id: '222' }
     };
     fix.detectChanges();
     expect(el).toQuery('publish-image-upload');
@@ -58,9 +57,8 @@ describe('SeriesBasicComponent', () => {
   });
 
   cit('when user has access to more than one account, allows setting owner for series', (fix, el, comp) => {
-    comp.series = {isNew: true, changed: () => false, account: {name: 'DefaultAccount', id: '222'}};
+    comp.series = { isNew: true, changed: () => false, account: { name: 'DefaultAccount', id: '222' } };
     fix.detectChanges();
     expect(el).toContainText('Who is the owner');
   });
-
 });

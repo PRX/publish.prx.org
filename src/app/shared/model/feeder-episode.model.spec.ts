@@ -1,15 +1,15 @@
-import { cms } from '../../../testing';
+import { MockHalService } from 'ngx-prx-styleguide';
 import { FeederEpisodeModel } from './feeder-episode.model';
 
 describe('FeederEpisodeModel', () => {
-
-  let series = cms.mock('prx:series', {id: 'series1'});
-  let story = series.mock('prx:story', {id: '186750'});
-  let dist = story.mock('prx:distributions', {id: 'dist1', kind: 'episode'});
+  const cms = new MockHalService();
+  let series = cms.mock('prx:series', { id: 'series1' });
+  let story = series.mock('prx:story', { id: '186750' });
+  let dist = story.mock('prx:distributions', { id: 'dist1', kind: 'episode' });
 
   it('decodes author name and email and web link', () => {
     let doc = cms.mock('some-episode', {
-      author: {name: 'John Q. Public', email: 'john@q.public.com'},
+      author: { name: 'John Q. Public', email: 'john@q.public.com' },
       url: 'http://this.is.a.podcast/episode/3'
     });
     let episode = new FeederEpisodeModel(series, dist, doc);
@@ -22,9 +22,9 @@ describe('FeederEpisodeModel', () => {
     let episode = new FeederEpisodeModel(series, dist);
     expect(episode.encode()['author']).toBeNull();
     episode.set('authorName', 'name');
-    expect(episode.encode()['author']).toEqual({name: 'name'});
+    expect(episode.encode()['author']).toEqual({ name: 'name' });
     episode.set('authorEmail', 'email');
-    expect(episode.encode()['author']).toEqual({name: 'name',  email: 'email'});
+    expect(episode.encode()['author']).toEqual({ name: 'name', email: 'email' });
     episode.set('episodeUrl', 'http://google.com');
     expect(episode.encode()['url']).toEqual('http://google.com');
   });
@@ -35,7 +35,7 @@ describe('FeederEpisodeModel', () => {
     expect(newEpisode.invalid('guid', false)).toBeFalsy();
     expect(newEpisode.invalid('guid', true)).toBeFalsy();
 
-    let doc = cms.mock('some-episode', {id: 1234});
+    let doc = cms.mock('some-episode', { id: 1234 });
     let oldEpisode = new FeederEpisodeModel(series, dist, doc);
     expect(oldEpisode.guid).toEqual('');
     expect(oldEpisode.invalid('guid', false)).toBeFalsy();
@@ -51,5 +51,4 @@ describe('FeederEpisodeModel', () => {
     webEpisode.set('episodeUrl', 'https://notfeeder.prx.org');
     expect(webEpisode.episodeUrl).toEqual('https://notfeeder.prx.org');
   });
-
 });

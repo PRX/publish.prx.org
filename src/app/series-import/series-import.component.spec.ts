@@ -3,10 +3,9 @@ import { RouterStub, ActivatedRouteStub } from '../../testing/stub.router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService, ToastrService } from 'ngx-prx-styleguide';
 import { SeriesImportComponent } from './series-import.component';
-import { SeriesModel } from '../shared';
 
-let activatedRoute = new ActivatedRouteStub();
-let router = new RouterStub();
+const activatedRoute = new ActivatedRouteStub();
+const router = new RouterStub();
 
 class MockHalHttpError extends Error {
   name = 'HalHttpError';
@@ -16,7 +15,6 @@ class MockHalHttpError extends Error {
 }
 
 describe('SeriesImportComponent', () => {
-
   create(SeriesImportComponent, false);
   provide(Router, router);
   provide(ActivatedRoute, activatedRoute);
@@ -24,18 +22,18 @@ describe('SeriesImportComponent', () => {
 
   let modalAlertTitle: any;
   provide(ModalService, {
-    alert: (a) => modalAlertTitle = a,
-    confirm: (p) => modalAlertTitle = p
+    alert: (a) => (modalAlertTitle = a),
+    confirm: (p) => (modalAlertTitle = p)
   });
 
   let toastErrorMsg: any;
-  provide(ToastrService, { success: () => {}, error: (msg) => toastErrorMsg = msg });
+  provide(ToastrService, { success: () => {}, error: (msg) => (toastErrorMsg = msg) });
 
   let auth;
   beforeEach(() => {
-    auth = cms.mock('prx:authorization', {id: 100});
+    auth = cms().mock('prx:authorization', { id: 100 });
     modalAlertTitle = null;
-    auth.mock('prx:default-account', {id: 100});
+    auth.mock('prx:default-account', { id: 100 });
   });
 
   cit('defaults new podcast import to the default account', (fix, el, comp) => {
@@ -60,8 +58,8 @@ describe('SeriesImportComponent', () => {
 
   cit('validates an valid podcast rss', (fix, el, comp) => {
     activatedRoute.testParams = {};
-    auth.mock('prx:default-account', {id: 100});
-    auth.mock('prx:verify-rss', {feed: {}});
+    auth.mock('prx:default-account', { id: 100 });
+    auth.mock('prx:verify-rss', { feed: {} });
 
     fix.detectChanges();
 
@@ -73,11 +71,11 @@ describe('SeriesImportComponent', () => {
 
   cit('navigates to import status after save', (fix, el, comp) => {
     activatedRoute.testParams = {};
-    auth.mock('prx:default-account', {id: 100});
+    auth.mock('prx:default-account', { id: 100 });
     auth.mock('prx:verify-rss', {});
     fix.detectChanges();
 
-    let btn = el.queryAll(By.css('prx-button')).find(e => {
+    let btn = el.queryAll(By.css('prx-button')).find((e) => {
       return e.nativeElement.textContent === 'Import Podcast';
     });
     expect(btn).not.toBeNull();
@@ -89,11 +87,11 @@ describe('SeriesImportComponent', () => {
 
   cit('flushes unsaved audio version templates before save', (fix, el, comp) => {
     activatedRoute.testParams = {};
-    auth.mock('prx:default-account', {id: 100});
+    auth.mock('prx:default-account', { id: 100 });
     auth.mock('prx:verify-rss', {});
     fix.detectChanges();
 
-    let btn = el.queryAll(By.css('prx-button')).find(e => {
+    let btn = el.queryAll(By.css('prx-button')).find((e) => {
       return e.nativeElement.textContent === 'Import Podcast';
     });
     expect(btn).not.toBeNull();
@@ -102,5 +100,4 @@ describe('SeriesImportComponent', () => {
     btn.triggerEventHandler('click', null);
     expect(comp.series.flushVersionTemplates).toHaveBeenCalled();
   });
-
 });

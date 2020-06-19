@@ -2,14 +2,13 @@ import { cms } from '../../../testing';
 import { SeriesModel } from './series.model';
 
 describe('SeriesModel', () => {
-
   let accountMock: any, seriesMock: any;
   beforeEach(() => {
-    accountMock = cms.mock('prx:default-account', {id: 'account-id'});
-    accountMock.mock('self', {href: '/api/v1/accounts/account-id'});
+    accountMock = cms().mock('prx:default-account', { id: 'account-id' });
+    accountMock.mock('self', { href: '/api/v1/accounts/account-id' });
 
-    seriesMock = cms.mock('prx:series', {id: 'series-id'});
-    seriesMock.mock('prx:account', {href: '/api/v1/accounts/series-account-id'});
+    seriesMock = cms().mock('prx:series', { id: 'series-id' });
+    seriesMock.mock('prx:account', { href: '/api/v1/accounts/series-account-id' });
   });
 
   const makeSeries = (isNew: boolean) => {
@@ -54,5 +53,4 @@ describe('SeriesModel', () => {
     series.flushVersionTemplates();
     expect(series.versionTemplates.length).toEqual(0);
   });
-
 });
