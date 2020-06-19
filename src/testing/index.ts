@@ -16,7 +16,9 @@ export { findComponent, niceEl } from './helpers';
 export { By } from '@angular/platform-browser';
 
 // HACKY: export a getter to the current cms-mocks instance
-export const cms: MockHalService = null;
-Object.defineProperty(module.exports, 'cms', {
-  get: () => currentHal() || new MockHalService()
-});
+// export const cms: MockHalService = null;
+// Object.defineProperty(module.exports, 'cms', {
+//   get: () => currentHal() || new MockHalService()
+// });
+// ^ above hack stopped working, so...?
+export const cms = (): MockHalService => currentHal() || new MockHalService();

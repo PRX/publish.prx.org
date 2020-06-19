@@ -1,12 +1,12 @@
-FROM mhart/alpine-node:9.3.0
+FROM mhart/alpine-node:10.15.3 as builder
 
 LABEL maintainer="PRX <sysadmin@prx.org>"
 LABEL org.prx.app="yes"
 
 # install git, aws-cli
 RUN apk --no-cache add git ca-certificates \
-    python py-pip py-setuptools groff less && \
-    pip --no-cache-dir install awscli
+  python py-pip py-setuptools groff less && \
+  pip --no-cache-dir install awscli
 
 # install PRX aws-secrets scripts
 RUN git clone -o github https://github.com/PRX/aws-secrets
