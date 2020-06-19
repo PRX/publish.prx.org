@@ -110,7 +110,6 @@ describe('SeriesComponent', () => {
 
   cit('confirms discarding unsaved changes before leaving', (fix, el, comp) => {
     activatedRoute.testParams = { id: '99' };
-    // auth = cms.mock('prx:authorization', {});
     auth.mock('prx:series', { id: 99, title: 'my series title', appVersion: 'v4' }).mock('prx:account', { id: 78 });
     fix.detectChanges();
     expect(comp.canDeactivate()).toEqual(true);
@@ -121,7 +120,6 @@ describe('SeriesComponent', () => {
 
   cit('does not confirm for unsaved changes after delete', (fix, el, comp) => {
     activatedRoute.testParams = { id: '99' };
-    // auth = cms.mock('prx:authorization', {});
     auth.mock('prx:series', { id: 99, title: 'my series title', appVersion: 'v4' }).mock('prx:account', { id: 78 });
     fix.detectChanges();
     comp.series.isDestroy = true;
