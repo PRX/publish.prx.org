@@ -1,25 +1,16 @@
-
-import {forkJoin as observableForkJoin,  Observable ,  Subscription } from 'rxjs';
+import { forkJoin as observableForkJoin, Subscription } from 'rxjs';
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 
 import { TabService } from 'ngx-prx-styleguide';
 import { CmsService } from '../../core';
-import {
-  DistributionModel,
-  FeederEpisodeModel,
-  StoryModel,
-  StoryDistributionModel,
-  WysiwygComponent
-} from '../../shared';
+import { DistributionModel, FeederEpisodeModel, StoryModel, StoryDistributionModel, WysiwygComponent } from '../../shared';
 import { AudioVersionModel } from 'ngx-prx-styleguide';
 
 @Component({
   styleUrls: ['podcast.component.css'],
   templateUrl: 'podcast.component.html'
 })
-
 export class PodcastComponent implements OnDestroy {
-
   explicitOpts = ['Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   episodeTypeOptions = ['full', 'trailer', 'bonus'];
@@ -32,7 +23,7 @@ export class PodcastComponent implements OnDestroy {
   podcastExplicit: string;
   podcastAuthorName: string;
   podcastAuthorEmail: string;
-  @ViewChild('readonlyEditor') wysiwyg: WysiwygComponent;
+  @ViewChild('readonlyEditor', { static: false }) wysiwyg: WysiwygComponent;
 
   constructor(tab: TabService, private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.init(s));
@@ -50,7 +41,7 @@ export class PodcastComponent implements OnDestroy {
 
   loadStoryDistribution(story: StoryModel) {
     story.loadRelated('distributions', true).subscribe(() => {
-      this.storyDistribution = story.distributions.find(d => d.kind === 'episode');
+      this.storyDistribution = story.distributions.find((d) => d.kind === 'episode');
       if (this.storyDistribution) {
         this.storyDistribution.loadRelated('episode').subscribe(() => {
           this.episode = this.storyDistribution.episode;
@@ -60,7 +51,7 @@ export class PodcastComponent implements OnDestroy {
   }
 
   loadSeriesDistribution(story: StoryModel) {
-    story.getSeriesDistribution('podcast').subscribe(ddoc => {
+    story.getSeriesDistribution('podcast').subscribe((ddoc) => {
       let dist = new DistributionModel(null, ddoc);
       dist.loadRelated('podcast').subscribe(() => {
         this.podcastExplicit = dist.podcast ? dist.podcast.explicit : null;
@@ -72,12 +63,14 @@ export class PodcastComponent implements OnDestroy {
   }
 
   findPodcastAudioVersions(story: StoryModel, dist: DistributionModel) {
-    let loadTpls = dist.loadRelated('versionTemplates');
-    let loadVersions = story.loadRelated('versions');
+    const loadTpls = dist.loadRelated('versionTemplates');
+    const loadVersions = story.loadRelated('versions');
     observableForkJoin(loadTpls, loadVersions).subscribe(() => {
-      this.versions = dist.versionTemplates.map(vt => {
-        return story.versions.find(v => v.template && v.template.id === vt.id);
-      }).filter(v => v);
+      this.versions = dist.versionTemplates
+        .map((vt) => {
+          return story.versions.find((v) => v.template && v.template.id === vt.id);
+        })
+        .filter((v) => v);
     });
   }
 
@@ -97,7 +90,7 @@ export class PodcastComponent implements OnDestroy {
   }
 
   toggleAlternateSummary() {
-    let content = this.wysiwyg.getContent();
+    const content = this.wysiwyg.getContent();
     // if description is empty, assigning empty string to summary is falsey
     //  so the display doesn't swap to editable wysiwyg
     this.episode.set('summary', content ? content : ' ');
