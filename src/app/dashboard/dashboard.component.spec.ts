@@ -2,12 +2,11 @@ import { cit, create, cms, By } from '../../testing';
 import { DashboardComponent } from './dashboard.component';
 
 describe('DashboardComponent', () => {
-
   create(DashboardComponent);
 
   let auth;
   beforeEach(() => {
-    auth = cms.mock('prx:authorization', {});
+    auth = cms().mock('prx:authorization', {});
     auth.mockItems('prx:series', []);
     auth.mock('prx:default-account', {});
     auth.mockItems('prx:stories', []);
@@ -29,7 +28,6 @@ describe('DashboardComponent', () => {
   });
 
   describe('with one or more series', () => {
-
     beforeEach(() => auth.mockItems('prx:series', [{}, {}, {}]));
 
     cit('shows a list of series', (fix, el, comp) => {
@@ -40,7 +38,5 @@ describe('DashboardComponent', () => {
       expect(series[0].nativeElement.getAttribute('noseries')).toBeNull();
       expect(series[3].nativeElement.getAttribute('noseries')).toEqual('true');
     });
-
   });
-
 });

@@ -1,5 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild,
-  ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { BaseModel } from 'ngx-prx-styleguide';
 import { ImageModel } from '../model/image.model';
@@ -9,37 +8,40 @@ import { ProseMirrorMarkdownEditor, ProseMirrorImage, ProseMirrorFormatTypes } f
   selector: 'publish-wysiwyg',
   template: `
     <div #contentEditable [class.changed]="changed" [class.invalid]="invalid" [class.readonly]="!editable"></div>
-    <p *ngIf="invalid" class="error">{{invalid | capitalize}}</p>
+    <p *ngIf="invalid" class="error">{{ invalid | capitalize }}</p>
 
     <div class="overlay" *ngIf="showPrompt"></div>
     <div class="modal" *ngIf="hasSelection && showPrompt" tabindex="-1">
       <header><h1>Link to</h1></header>
       <section>
-          <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
-          <input publishFocus type="text" name="url" [(ngModel)]="linkURL" #url="ngModel" required/>
-          <label>Title</label>
-          <input type="text" name="title" [(ngModel)]="linkTitle"/>
-          <p class="error" [style.display]="isURLInvalid() ? 'block' : 'none'">URL is required</p>
+        <label>URL<span class="error" [style.display]="isURLInvalid() ? 'inline' : 'none'">*</span></label>
+        <input publishFocus type="text" name="url" [(ngModel)]="linkURL" #url="ngModel" required />
+        <label>Title</label>
+        <input type="text" name="title" [(ngModel)]="linkTitle" />
+        <p class="error" [style.display]="isURLInvalid() ? 'block' : 'none'">
+          URL is required
+        </p>
       </section>
       <footer>
-          <button (click)="createLink()">Okay</button>
-          <button (click)="hidePrompt()">Cancel</button>
+        <button (click)="createLink()">Okay</button>
+        <button (click)="hidePrompt()">Cancel</button>
       </footer>
     </div>
 
     <div class="modal" *ngIf="!hasSelection && showPrompt" tabindex="-1">
       <header><h1>Warning</h1></header>
       <section>
-        <p class="error">Please select text to create link or existing link to edit</p>
+        <p class="error">
+          Please select text to create link or existing link to edit
+        </p>
       </section>
       <footer>
         <button (click)="hidePrompt()">Okay</button>
       </footer>
     </div>
   `,
-  styleUrls: ['wysiwyg.component.css']
+  styleUrls: ['wysiwyg.component.css'],
 })
-
 export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() model: BaseModel;
   @Input() name: string;
@@ -51,10 +53,10 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @Input() images: ImageModel[];
   setModelValue = '';
 
-  @ViewChild('contentEditable') el: ElementRef;
+  @ViewChild('contentEditable', { static: true }) el: ElementRef;
   editor: ProseMirrorMarkdownEditor;
 
-  @ViewChild('url') url: NgModel;
+  @ViewChild('url', { static: false }) url: NgModel;
   linkURL: string;
   linkTitle: string;
   hasSelection = false;
@@ -63,16 +65,18 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private chgRef: ChangeDetectorRef) {}
 
   ngOnInit() {
-    if (this.model || (this.content || this.content === '')) {
+    if (this.model || this.content || this.content === '') {
       this.setModelValue = this.content;
-      this.editor = new ProseMirrorMarkdownEditor(this.el,
-                                                  this.content,
-                                                  this.inputFormat,
-                                                  this.outputFormat,
-                                                  this.editable,
-                                                  this.mapImages(),
-                                                  this.setModel.bind(this),
-                                                  this.promptForLink.bind(this));
+      this.editor = new ProseMirrorMarkdownEditor(
+        this.el,
+        this.content,
+        this.inputFormat,
+        this.outputFormat,
+        this.editable,
+        this.mapImages(),
+        this.setModel.bind(this),
+        this.promptForLink.bind(this)
+      );
     }
   }
 
@@ -93,10 +97,15 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   mapImages(): ProseMirrorImage[] {
-    return this.images && this.images.filter(img => !img.isDestroy).map(img => {
-      let name = img.filename || '[untitled]';
-      return new ProseMirrorImage(name, img.enclosureHref, img.caption, img.credit);
-    });
+    return (
+      this.images &&
+      this.images
+        .filter((img) => !img.isDestroy)
+        .map((img) => {
+          let name = img.filename || '[untitled]';
+          return new ProseMirrorImage(name, img.enclosureHref, img.caption, img.credit);
+        })
+    );
   }
 
   setModel(value: string) {

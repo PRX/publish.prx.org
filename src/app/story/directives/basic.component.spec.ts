@@ -4,7 +4,6 @@ import { BasicComponent } from './basic.component';
 import { ModalService, TabService } from 'ngx-prx-styleguide';
 
 describe('BasicComponent', () => {
-
   create(BasicComponent);
 
   provide(TabService);
@@ -14,7 +13,7 @@ describe('BasicComponent', () => {
     edit.story = null;
     fix.detectChanges();
     expect(el).not.toQuery('form');
-    edit.story = {changed: () => false, invalid: () => false};
+    edit.story = { changed: () => false, invalid: () => false };
     fix.detectChanges();
     expect(el).toQuery('form');
   });
@@ -22,7 +21,7 @@ describe('BasicComponent', () => {
   cit('shows the basic story edit fields', (fix, el, comp) => {
     expect(el).not.toQuery('prx-fancy-field');
     expect(el).not.toQuery('publish-wysiwyg');
-    comp.story = {images: [], changed: () => false, invalid: () => false};
+    comp.story = { images: [], changed: () => false, invalid: () => false };
     fix.detectChanges();
 
     expect(el.queryAll(By.css('prx-fancy-field')).length).toEqual(11);
@@ -37,29 +36,31 @@ describe('BasicComponent', () => {
   });
 
   cit('shows warning if no audio versions', (fix, el, comp) => {
-    comp.story = {versions: [], changed: () => false, invalid: () => false};
+    comp.story = { versions: [], changed: () => false, invalid: () => false };
     fix.detectChanges();
 
     expect(el).toContainText('Pick a version of your audio files to upload for this episode');
   });
 
   cit('shows tip if audio version is selected', (fix, el, comp) => {
-    comp.story = {versions: [{label: 'whatev', template: {id: 456}}], changed: () => false, invalid: () => false};
+    comp.story = { versions: [{ label: 'whatev', template: { id: 456 } }], changed: () => false, invalid: () => false };
     fix.detectChanges();
 
     expect(el).toContainText('Clear your selection to select another template');
   });
 
   describe('version select', () => {
-
     let story, versions, templates;
     beforeEach(() => {
-      versions = [{label: 'whatev', template: {id: 456}}];
-      templates = [{id: 123, label: 'tpl 123'}, {id: 456, label: 'tpl 456'}];
+      versions = [{ label: 'whatev', template: { id: 456 } }];
+      templates = [
+        { id: 123, label: 'tpl 123' },
+        { id: 456, label: 'tpl 456' }
+      ];
       story = {
         loadRelated: () => (story.versions = versions) && observableOf(true),
-        removeRelated: r => story.versions = story.versions.filter(v => v !== r),
-        getSeriesTemplates: () => observableOf(templates.map(t => cms.mock('prx:tpl', t)))
+        removeRelated: (r) => (story.versions = story.versions.filter((v) => v !== r)),
+        getSeriesTemplates: () => observableOf(templates.map((t) => cms().mock('prx:tpl', t)))
       };
     });
 
@@ -83,7 +84,7 @@ describe('BasicComponent', () => {
     });
 
     cit('undestroys audio files when their version is destroyed', (fix, el, comp) => {
-      versions[0].files = [{isDestroy: true}, {isDestroy: false}];
+      versions[0].files = [{ isDestroy: true }, { isDestroy: false }];
       comp.story = story;
       comp.loadVersionTemplates();
       comp.updateVersions([123]);

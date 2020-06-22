@@ -15,10 +15,7 @@ import { SearchModule } from './search';
 import { SeriesImportModule } from './series-import';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    routingComponents
-  ],
+  declarations: [AppComponent, routingComponents],
   imports: [
     Angulartics2Module.forRoot(),
     BrowserModule,
@@ -29,13 +26,9 @@ import { SeriesImportModule } from './series-import';
     SharedModule,
     StoryModule,
     SearchModule,
-    routing
+    routing,
   ],
-  providers: [
-    {provide: ErrorHandler, useClass: ErrorService},
-    routingProviders
-  ],
-  bootstrap: [AppComponent]
+  providers: [{ provide: ErrorHandler, useClass: ErrorService }, routingProviders],
+  bootstrap: [AppComponent],
 })
-
-export class AppModule { }
+export class AppModule {}

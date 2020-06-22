@@ -1,24 +1,24 @@
 import { Component, OnDestroy, DoCheck, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TabService } from 'ngx-prx-styleguide';
-import { SeriesModel, DistributionModel, FeederPodcastModel,
-         CATEGORIES, SUBCATEGORIES, WysiwygComponent } from '../../shared';
+import { SeriesModel, DistributionModel, FeederPodcastModel, CATEGORIES, SUBCATEGORIES, WysiwygComponent } from '../../shared';
 import * as languageMappingList from 'langmap';
 
 @Component({
   styleUrls: ['series-podcast.component.css'],
   templateUrl: 'series-podcast.component.html'
 })
-
 export class SeriesPodcastComponent implements OnDestroy, DoCheck {
-
   categories = CATEGORIES;
   subCategories: string[] = [];
   explicitOpts = ['Explicit', 'Clean'];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesCategoryDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12';
   itunesNewFeedURLDoc = 'https://help.apple.com/itc/podcasts_connect/#/itca489031e0';
-  podcastTypeOptions = [['Episodic', false], ['Serial', true]];
+  podcastTypeOptions = [
+    ['Episodic', false],
+    ['Serial', true]
+  ];
   audioVersionOptions: string[][];
 
   tabSub: Subscription;
@@ -28,15 +28,15 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
   languageOptions: string[][];
-  @ViewChild('readonlyEditor') wysiwyg: WysiwygComponent;
+  @ViewChild('readonlyEditor', { static: false }) wysiwyg: WysiwygComponent;
 
   constructor(tab: TabService) {
     this.languageOptions = this.getLanguageOptions();
     this.tabSub = tab.model.subscribe((s: SeriesModel) => {
       this.series = s;
       this.series.loadRelated('versionTemplates').subscribe(() => {
-        let realTemplates = this.series.versionTemplates.filter(t => t.doc);
-        this.audioVersionOptions = realTemplates.map(tpl => {
+        const realTemplates = this.series.versionTemplates.filter((t) => t.doc);
+        this.audioVersionOptions = realTemplates.map((tpl) => {
           return [tpl.label || '[Untitled]', tpl.doc.expand('self')];
         });
       });
@@ -45,11 +45,11 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   getLanguageOptions(): string[][] {
-    let result: string[][] = [];
-    for (let key in languageMappingList) {
+    const result: string[][] = [];
+    for (const key in languageMappingList) {
       if (languageMappingList.hasOwnProperty(key)) {
-        let name = `${languageMappingList[key]['englishName']} (${key.toLowerCase()})`;
-        let val = key.toLowerCase();
+        const name = `${languageMappingList[key]['englishName']} (${key.toLowerCase()})`;
+        const val = key.toLowerCase();
         result.push([name, val]);
       }
     }
@@ -77,11 +77,11 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   loadDistributions() {
-    let initial = this.initialDistributions;
+    const initial = this.initialDistributions;
     if (this.series && (!initial || this.series.distributions !== initial)) {
       this.initialDistributions = this.series.distributions;
       this.series.loadRelated('distributions').subscribe(() => {
-        this.distribution = this.series.distributions.find(d => d.kind === 'podcast');
+        this.distribution = this.series.distributions.find((d) => d.kind === 'podcast');
         if (this.distribution) {
           this.distribution.loadRelated('podcast').subscribe(() => {
             this.podcast = this.distribution.podcast;
@@ -97,7 +97,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   createDistribution() {
-    let podcastDist = new DistributionModel(this.series.doc);
+    const podcastDist = new DistributionModel(this.series.doc);
     podcastDist.set('kind', 'podcast');
     this.series.distributions.push(podcastDist);
     this.distribution = podcastDist;
@@ -132,7 +132,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   get publicFeedChangeConfirm(): string {
     if (this.podcast && this.podcast.original['publicFeedUrl']) {
-      let confirmMsg = `Are you sure you want to change your public feed URL
+      const confirmMsg = `Are you sure you want to change your public feed URL
                        from "${this.podcast.original['publicFeedUrl']}" to "${this.podcast.publicFeedUrl}"?
                        This will point your subscribers to a new feed location.
                        If you have existing subscribers at ${this.podcast.original['publicFeedUrl']},
@@ -160,8 +160,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
 
   get completeConfirm(): string {
     if (this.podcast && this.podcast.complete) {
-      let confirmMsg = 'Are you sure this podcast is complete? Apps will assume this show is over, and won\'t look for new episodes.';
-      return confirmMsg;
+      return 'Are you sure this podcast is complete? Apps will assume this show is over, and won\'t look for new episodes.';
     }
   }
 
@@ -175,7 +174,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   }
 
   toggleAlternateSummary() {
-    let content = this.wysiwyg.getContent();
+    const content = this.wysiwyg.getContent();
     // if description is empty, assigning empty string to summary is falsey
     //  so the display doesn't swap to editable wysiwyg
     this.podcast.set('summary', content ? content : ' ');

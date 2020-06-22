@@ -2,15 +2,14 @@ import { cms } from '../../../testing';
 import { DistributionModel } from './distribution.model';
 
 describe('DistributionModel', () => {
-
   let podcastUrl = 'http://some.where/your/podcast/1234';
-  let series = cms.mock('prx:series', {id: 'series1'});
-  let account = series.mock('prx:account', {name: 'my account name'});
-  let alternate = series.mock('alternate', {href: 'http://linkto.beta'});
-  let fooDist = series.mock('prx:distributions', {id: 'dist1', kind: 'foo'});
-  let podDist = series.mock('prx:distributions', {id: 'dist2', kind: 'podcast', url: podcastUrl});
-  let podcast = podDist.mock(podcastUrl, {id: 'pod1'});
-  let tpls = podDist.mockItems('prx:audio-version-templates', [{id: 'template1', label: 'template1'}]);
+  let series = cms().mock('prx:series', { id: 'series1' });
+  let account = series.mock('prx:account', { name: 'my account name' });
+  let alternate = series.mock('alternate', { href: 'http://linkto.beta' });
+  let fooDist = series.mock('prx:distributions', { id: 'dist1', kind: 'foo' });
+  let podDist = series.mock('prx:distributions', { id: 'dist2', kind: 'podcast', url: podcastUrl });
+  let podcast = podDist.mock(podcastUrl, { id: 'pod1' });
+  let tpls = podDist.mockItems('prx:audio-version-templates', [{ id: 'template1', label: 'template1' }]);
   tpls[0].mockItems('prx:audio-file-templates', []);
 
   it('loads no podcast by default', () => {
@@ -55,8 +54,8 @@ describe('DistributionModel', () => {
     let dist = new DistributionModel(series, podDist);
     expect(dist.podcast).toBeUndefined();
 
-     // a new-looking podcast model
-    dist.podcast = (new DistributionModel(series, null, true)).podcast;
+    // a new-looking podcast model
+    dist.podcast = new DistributionModel(series, null, true).podcast;
     dist.podcast.set('category', 'Education');
 
     dist.swapRelated().subscribe();
@@ -84,5 +83,4 @@ describe('DistributionModel', () => {
     const dist = new DistributionModel(series, podDist);
     expect(dist.feederPodcastId).toEqual('1234');
   });
-
 });
