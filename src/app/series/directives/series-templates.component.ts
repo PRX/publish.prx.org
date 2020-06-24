@@ -37,15 +37,12 @@ export class SeriesTemplatesComponent implements OnDestroy {
 
   confirmAddAudioVersion() {
     if (this.hasStories()) {
-      this.modal.confirm(
-        '',
-        'WHATTT??? why would you do that??? do you just hate dovetail? [frowny face paloma here]',
-        (confirm: boolean) => {
-          if (confirm) {
-            this.addAudioVersion();
-          }
-        }
-      );
+      const msg = `
+        It looks like you’re trying to add a new audio template to your series.
+        Before you do that, please confirm the show structure for this audio template
+        with the support team at <a href="mailto:podcast-support@prx.org">podcast-support@prx.org</a>.
+      `;
+      this.modal.confirm(null, msg, (confirm: boolean) => confirm && this.addAudioVersion(), 'Add audio template');
     } else {
       this.addAudioVersion();
     }
