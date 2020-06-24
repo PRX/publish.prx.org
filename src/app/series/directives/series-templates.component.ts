@@ -1,18 +1,14 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ModalService, TabService } from 'ngx-prx-styleguide';
-import {
-  SeriesModel
-} from '../../shared';
+import { SeriesModel } from '../../shared';
 import { AudioVersionTemplateModel, AudioFileTemplateModel } from 'ngx-prx-styleguide';
 
 @Component({
   styleUrls: ['series-templates.component.css'],
   templateUrl: 'series-templates.component.html'
 })
-
 export class SeriesTemplatesComponent implements OnDestroy {
-
   series: SeriesModel;
   tabSub: Subscription;
 
@@ -31,12 +27,25 @@ export class SeriesTemplatesComponent implements OnDestroy {
   }
 
   hasVersions(): boolean {
-    return !!this.series.versionTemplates.some(f => !f.isDestroy);
+    return !!this.series.versionTemplates.some((f) => !f.isDestroy);
   }
 
   hasDefaultVersion(): boolean {
     let t = this.series.versionTemplates[0];
     return t && t.isNew && !t.changed();
+  }
+
+  confirmAddAudioVersion() {
+    if (this.hasStories()) {
+      const msg = `
+        It looks like you’re trying to add a new audio template to your series.
+        Before you do that, please confirm the show structure for this audio template
+        with the support team at <a href="mailto:podcast-support@prx.org">podcast-support@prx.org</a>.
+      `;
+      this.modal.confirm(null, msg, (confirm: boolean) => confirm && this.addAudioVersion(), 'Add audio template');
+    } else {
+      this.addAudioVersion();
+    }
   }
 
   addAudioVersion(): AudioVersionTemplateModel {
@@ -87,7 +96,7 @@ export class SeriesTemplatesComponent implements OnDestroy {
   }
 
   canAddFile(version: AudioVersionTemplateModel): boolean {
-    return version.fileTemplates.filter(f => !f.isDestroy).length < 10;
+    return version.fileTemplates.filter((f) => !f.isDestroy).length < 10;
   }
 
   confirmAddFile(event: MouseEvent, version: AudioVersionTemplateModel) {
@@ -108,7 +117,7 @@ export class SeriesTemplatesComponent implements OnDestroy {
   }
 
   addFile(version: AudioVersionTemplateModel) {
-    let existing = version.fileTemplates.find(f => f.isDestroy);
+    let existing = version.fileTemplates.find((f) => f.isDestroy);
     if (existing) {
       existing.isDestroy = false;
     } else {
@@ -117,8 +126,10 @@ export class SeriesTemplatesComponent implements OnDestroy {
   }
 
   isLengthMoreStrict(version: AudioVersionTemplateModel) {
-    return (version.lengthMinimum > version.original['lengthMinimum'] ||
-    (version.lengthMaximum !== 0 && version.lengthMaximum < version.original['lengthMaximum']));
+    return (
+      version.lengthMinimum > version.original['lengthMinimum'] ||
+      (version.lengthMaximum !== 0 && version.lengthMaximum < version.original['lengthMaximum'])
+    );
   }
 
   lengthConfirm(version: AudioVersionTemplateModel, value: string, label: string): string {
@@ -127,5 +138,4 @@ export class SeriesTemplatesComponent implements OnDestroy {
         This change could invalidate your already published episodes.`;
     }
   }
-
 }

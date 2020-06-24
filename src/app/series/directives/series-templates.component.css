@@ -5,7 +5,7 @@
   width: 100%;
 }
 .version header {
-  background-color: #B8B8B8;
+  background-color: #b8b8b8;
   padding: 16px 14px;
   position: relative;
 }
@@ -23,8 +23,8 @@
 }
 .version section {
   background: #fff;
-  border-bottom: 1px solid #DDD;
-  border-top: 1px solid #DDD;
+  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
   margin-top: -1px;
   margin-bottom: 30px;
   padding: 18px 22px 0;
@@ -55,6 +55,10 @@
 .add-segment {
   margin-top: 20px;
 }
-.add-version i, .add-segment i {
+.add-version {
+  margin-right: 10px;
+}
+.add-version i,
+.add-segment i {
   vertical-align: bottom;
 }
