@@ -1,20 +1,36 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 
 import { HalDoc } from '../../core';
 import { BaseModel, REQUIRED, URL, LENGTH } from 'ngx-prx-styleguide';
 
 export class FeederPodcastModel extends BaseModel {
-
   // read-only
   id: number;
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl',
-             'enclosurePrefix', 'copyright', 'complete', 'language', 'summary', 'authorName',
-             'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName',
-             'managingEditorEmail', 'serialOrder'];
+  SETABLE = [
+    'category',
+    'subCategory',
+    'explicit',
+    'link',
+    'newFeedUrl',
+    'publicFeedUrl',
+    'enclosurePrefix',
+    'copyright',
+    'complete',
+    'language',
+    'summary',
+    'authorName',
+    'authorEmail',
+    'ownerName',
+    'ownerEmail',
+    'managingEditorName',
+    'managingEditorEmail',
+    'serialOrder',
+    'displayEpisodesCount',
+    'displayFullEpisodesCount'
+  ];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -31,6 +47,8 @@ export class FeederPodcastModel extends BaseModel {
   summary = '';
   hasPublicFeed = false;
   serialOrder = false;
+  displayEpisodesCount = '';
+  displayFullEpisodesCount = '';
 
   VALIDATORS = {
     category: [REQUIRED()],
@@ -111,10 +129,12 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.summary = this.doc['summary'];
     this.serialOrder = this.doc['serialOrder'] || false;
+    this.displayEpisodesCount = this.doc['displayEpisodesCount'] || '';
+    this.displayFullEpisodesCount = this.doc['displayFullEpisodesCount'] || '';
   }
 
   encode(): {} {
-    let data = <any> {};
+    let data = <any>{};
 
     // unset with nulls instead of blank strings
     data.complete = this.complete;
@@ -135,7 +155,7 @@ export class FeederPodcastModel extends BaseModel {
     // we can always send a categories array
     data.itunesCategories = [];
     if (this.category) {
-      data.itunesCategories = [{name: this.category, subcategories: []}];
+      data.itunesCategories = [{ name: this.category, subcategories: [] }];
       if (this.subCategory) {
         data.itunesCategories[0].subcategories.push(this.subCategory);
       }
@@ -150,6 +170,8 @@ export class FeederPodcastModel extends BaseModel {
 
     data.summary = this.summary || null;
     data.serialOrder = this.serialOrder || null;
+    data.displayEpisodesCount = this.displayEpisodesCount || null;
+    data.displayFullEpisodesCount = this.displayFullEpisodesCount || null;
 
     return data;
   }
