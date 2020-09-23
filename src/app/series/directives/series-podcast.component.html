@@ -126,6 +126,18 @@
       </publish-wysiwyg>
     </prx-fancy-field>
 
+    <prx-fancy-field label="Episode Limits">
+      <div class="fancy-hint">
+        You can optionally limit the number of episodes that will appear in your feed. Or reduce the amount of metadata included for your
+        oldest episodes to trim down your RSS file size. Leave blank to include all episodes and metadata.
+      </div>
+      <div class="span-fields">
+        <prx-fancy-field label="Limit Episodes" textinput [model]="podcast" name="displayEpisodesCount" small="1"> </prx-fancy-field>
+        <prx-fancy-field label="Limit Episode Metadata" textinput [model]="podcast" name="displayFullEpisodesCount" small="1">
+        </prx-fancy-field>
+      </div>
+    </prx-fancy-field>
+
     <prx-fancy-field label="PRX Feed" class="prx-feed-url" *ngIf="!distribution.isNew">
       <div class="fancy-hint" *ngIf="podcast?.hasPublicFeed">
         The private URL for your PRX podcast feed, providing the content for <a href="{{ podcast.publicFeedUrl }}">your public feed</a>.
