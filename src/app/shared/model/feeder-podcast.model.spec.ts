@@ -90,4 +90,26 @@ describe('FeederPodcastModel', () => {
     const podcast = new FeederPodcastModel(series, dist, doc);
     expect(podcast.language).toEqual('en-us');
   });
+
+  it('treats feeder episode limits as strings', () => {
+    const doc = dist.mock('some-feeder', { displayEpisodesCount: 123, displayFullEpisodesCount: 456 });
+    const podcast = new FeederPodcastModel(series, dist, doc);
+    expect(podcast.displayEpisodesCount).toEqual('123');
+    expect(podcast.displayFullEpisodesCount).toEqual('456');
+    expect(podcast.encode()['displayEpisodesCount']).toEqual(123);
+    expect(podcast.encode()['displayFullEpisodesCount']).toEqual(456);
+  });
+
+  it('validates feeder episode limits', () => {
+    const podcast = new FeederPodcastModel(series, dist);
+    podcast.set('displayEpisodesCount', '-1');
+    podcast.set('displayFullEpisodesCount', 'abc');
+    expect(podcast.invalid('displayEpisodesCount')).toMatch(/enter a positive number/i);
+    expect(podcast.invalid('displayFullEpisodesCount')).toMatch(/enter a positive number/i);
+
+    podcast.set('displayEpisodesCount', '');
+    podcast.set('displayFullEpisodesCount', '1');
+    expect(podcast.invalid('displayEpisodesCount')).toBeFalsy();
+    expect(podcast.invalid('displayFullEpisodesCount')).toBeFalsy();
+  });
 });
