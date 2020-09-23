@@ -126,22 +126,6 @@
       </publish-wysiwyg>
     </prx-fancy-field>
 
-    <prx-fancy-field label="Feed Episode Limit" textinput [model]="podcast" name="displayEpisodesCount">
-      <div class="fancy-hint">
-        You can optionally limit the number of episodes that will be publicly available in your feed. Your oldest episodes will disappear as
-        you publish newer ones. Leave this field blank to include all.
-      </div>
-    </prx-fancy-field>
-
-    <prx-fancy-field label="Feed Metadata Limit" textinput [model]="podcast" name="displayFullEpisodesCount">
-      <div class="fancy-hint">
-        You can optionally
-        <a target="_blank" rel="noopener" title="Limiting Episode Metadata" [href]="metadataLimitDoc">reduce the size of your RSS feed</a>
-        by trimming metadata from your oldest feed episodes. This many of your newest episodes will include <i>all</i> metadata, and older
-        episodes will omit certain RSS fields. Leave this field blank to include all metadata on every episode.
-      </div>
-    </prx-fancy-field>
-
     <prx-fancy-field label="PRX Feed" class="prx-feed-url" *ngIf="!distribution.isNew">
       <div class="fancy-hint" *ngIf="podcast?.hasPublicFeed">
         The private URL for your PRX podcast feed, providing the content for <a href="{{ podcast.publicFeedUrl }}">your public feed</a>.
@@ -210,6 +194,22 @@
     </prx-fancy-field>
 
     <publish-advanced-section>
+      <prx-fancy-field label="Feed Episode Limit" textinput [model]="podcast" name="displayEpisodesCount">
+        <div class="fancy-hint">
+          You can optionally limit the number of episodes that will be publicly available in your feed. Your oldest episodes will disappear
+          as you publish newer ones. Leave this field blank to include all.
+        </div>
+      </prx-fancy-field>
+
+      <prx-fancy-field label="Feed Metadata Limit" textinput [model]="podcast" name="displayFullEpisodesCount">
+        <div class="fancy-hint">
+          You can optionally
+          <a target="_blank" rel="noopener" title="Limiting Episode Metadata" [href]="metadataLimitDoc">reduce the size of your RSS feed</a>
+          by trimming metadata from your oldest feed episodes. This many of your newest episodes will include <i>all</i> metadata, and older
+          episodes will omit certain RSS fields. Leave this field blank to include all metadata on every episode.
+        </div>
+      </prx-fancy-field>
+
       <prx-fancy-field label="New Feed Url" textinput [model]="podcast" name="newFeedUrl" [advancedConfirm]="newFeedUrlConfirm">
         <div class="fancy-hint">
           If your podcast feed is moving, use this field to point to the new URL where your podcast is located. The current feed should be
