@@ -15,6 +15,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   itunesCategoryDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12';
   itunesNewFeedURLDoc = 'https://help.apple.com/itc/podcasts_connect/#/itca489031e0';
+  metadataLimitDoc = 'https://help.prx.org/hc/en-us/articles/360055869313-Limiting-Episode-Metadata';
   podcastTypeOptions = [
     ['Episodic', false],
     ['Serial', true]

@@ -126,15 +126,19 @@
       </publish-wysiwyg>
     </prx-fancy-field>
 
-    <prx-fancy-field label="Episode Limits">
+    <prx-fancy-field label="Feed Episode Limit" textinput [model]="podcast" name="displayEpisodesCount">
       <div class="fancy-hint">
-        You can optionally limit the number of episodes that will appear in your feed. Or reduce the amount of metadata included for your
-        oldest episodes to trim down your RSS file size. Leave blank to include all episodes and metadata.
+        You can optionally limit the number of episodes that will be publicly available in your feed. Your oldest episodes will disappear as
+        you publish newer ones. Leave this field blank to include all.
       </div>
-      <div class="span-fields">
-        <prx-fancy-field label="Limit Episodes" textinput [model]="podcast" name="displayEpisodesCount" small="1"> </prx-fancy-field>
-        <prx-fancy-field label="Limit Episode Metadata" textinput [model]="podcast" name="displayFullEpisodesCount" small="1">
-        </prx-fancy-field>
+    </prx-fancy-field>
+
+    <prx-fancy-field label="Feed Metadata Limit" textinput [model]="podcast" name="displayFullEpisodesCount">
+      <div class="fancy-hint">
+        You can optionally
+        <a target="_blank" rel="noopener" title="Limiting Episode Metadata" [href]="metadataLimitDoc">reduce the size of your RSS feed</a>
+        by trimming metadata from your oldest feed episodes. This many of your newest episodes will include <i>all</i> metadata, and older
+        episodes will omit certain RSS fields. Leave this field blank to include all metadata on every episode.
       </div>
     </prx-fancy-field>
 
