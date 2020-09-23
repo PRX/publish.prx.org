@@ -1,7 +1,13 @@
 import { throwError as observableThrowError, Observable } from 'rxjs';
-
 import { HalDoc } from '../../core';
-import { BaseModel, REQUIRED, URL, LENGTH } from 'ngx-prx-styleguide';
+import { BaseModel, BaseInvalid, REQUIRED, URL, LENGTH } from 'ngx-prx-styleguide';
+
+const POSITIVE_INT_OR_BLANK: BaseInvalid = (_key: string, value: any): string => {
+  if (value && !value.match(/^[1-9][0-9]*$/)) {
+    return 'Enter a positive number';
+  }
+  return null;
+};
 
 export class FeederPodcastModel extends BaseModel {
   // read-only
@@ -57,7 +63,9 @@ export class FeederPodcastModel extends BaseModel {
     newFeedUrl: [URL('Not a valid URL')],
     publicFeedUrl: [URL('Not a valid URL')],
     enclosurePrefix: [URL('Not a valid URL')],
-    summary: [LENGTH(0, 4000)]
+    summary: [LENGTH(0, 4000)],
+    displayEpisodesCount: [POSITIVE_INT_OR_BLANK],
+    displayFullEpisodesCount: [POSITIVE_INT_OR_BLANK]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
@@ -129,8 +137,8 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.summary = this.doc['summary'];
     this.serialOrder = this.doc['serialOrder'] || false;
-    this.displayEpisodesCount = this.doc['displayEpisodesCount'] || '';
-    this.displayFullEpisodesCount = this.doc['displayFullEpisodesCount'] || '';
+    this.displayEpisodesCount = this.doc['displayEpisodesCount'] ? this.doc['displayEpisodesCount'].toString() : '';
+    this.displayFullEpisodesCount = this.doc['displayFullEpisodesCount'] ? this.doc['displayFullEpisodesCount'].toString() : '';
   }
 
   encode(): {} {
@@ -170,8 +178,8 @@ export class FeederPodcastModel extends BaseModel {
 
     data.summary = this.summary || null;
     data.serialOrder = this.serialOrder || null;
-    data.displayEpisodesCount = this.displayEpisodesCount || null;
-    data.displayFullEpisodesCount = this.displayFullEpisodesCount || null;
+    data.displayEpisodesCount = parseInt(this.displayEpisodesCount, 10) || null;
+    data.displayFullEpisodesCount = parseInt(this.displayFullEpisodesCount, 10) || null;
 
     return data;
   }
