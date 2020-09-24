@@ -58,22 +58,22 @@ describe('StatusControlComponent', () => {
     expectDisabled(el, 'Save & Publish', true);
   });
 
-  cit('strictly toggles to published (after audio processing)', (fix, el, comp) => {
+  cit('strictly sets to published (after audio processing)', (fix, el, comp) => {
     comp.nextStatus = 'published';
     mockStory({ publishedAt: null, invalid: () => 'bad', setPublished: () => null }, comp, fix);
     spyOn(comp.story, 'setPublished').and.returnValue(new Subject());
 
-    comp.togglePublish('should not be able to publish this');
+    comp.setPublished('should not be able to publish this');
     expect(comp.story.setPublished).not.toHaveBeenCalled();
     expect(toastErrorMsg).toEqual('Unable to publish - check validation errors');
   });
 
-  cit('unstrictly toggles to unpublished (after audio processing)', (fix, el, comp) => {
+  cit('unstrictly sets to unpublished (after audio processing)', (fix, el, comp) => {
     comp.nextStatus = 'unpublished';
     mockStory({ publishedAt: new Date(), invalid: () => 'bad', setPublished: () => null }, comp, fix);
     spyOn(comp.story, 'setPublished').and.returnValue(new Subject());
 
-    comp.togglePublish('should be able to unpublish this');
+    comp.setUnpublished('should be able to unpublish this');
     expect(comp.story.setPublished).toHaveBeenCalledWith(false);
     expect(toastErrorMsg).toEqual(null);
   });
