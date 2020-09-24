@@ -1,20 +1,42 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
-
+import { throwError as observableThrowError, Observable } from 'rxjs';
 import { HalDoc } from '../../core';
-import { BaseModel, REQUIRED, URL, LENGTH } from 'ngx-prx-styleguide';
+import { BaseModel, BaseInvalid, REQUIRED, URL, LENGTH } from 'ngx-prx-styleguide';
+
+const POSITIVE_INT_OR_BLANK: BaseInvalid = (_key: string, value: any): string => {
+  if (value && !value.match(/^[1-9][0-9]*$/)) {
+    return 'Enter a positive number';
+  }
+  return null;
+};
 
 export class FeederPodcastModel extends BaseModel {
-
   // read-only
   id: number;
   publishedUrl: string;
 
   // writeable
-  SETABLE = ['category', 'subCategory', 'explicit', 'link', 'newFeedUrl', 'publicFeedUrl',
-             'enclosurePrefix', 'copyright', 'complete', 'language', 'summary', 'authorName',
-             'authorEmail', 'ownerName', 'ownerEmail', 'managingEditorName',
-             'managingEditorEmail', 'serialOrder'];
+  SETABLE = [
+    'category',
+    'subCategory',
+    'explicit',
+    'link',
+    'newFeedUrl',
+    'publicFeedUrl',
+    'enclosurePrefix',
+    'copyright',
+    'complete',
+    'language',
+    'summary',
+    'authorName',
+    'authorEmail',
+    'ownerName',
+    'ownerEmail',
+    'managingEditorName',
+    'managingEditorEmail',
+    'serialOrder',
+    'displayEpisodesCount',
+    'displayFullEpisodesCount'
+  ];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
   subCategory = '';
@@ -31,6 +53,8 @@ export class FeederPodcastModel extends BaseModel {
   summary = '';
   hasPublicFeed = false;
   serialOrder = false;
+  displayEpisodesCount = '';
+  displayFullEpisodesCount = '';
 
   VALIDATORS = {
     category: [REQUIRED()],
@@ -39,7 +63,9 @@ export class FeederPodcastModel extends BaseModel {
     newFeedUrl: [URL('Not a valid URL')],
     publicFeedUrl: [URL('Not a valid URL')],
     enclosurePrefix: [URL('Not a valid URL')],
-    summary: [LENGTH(0, 4000)]
+    summary: [LENGTH(0, 4000)],
+    displayEpisodesCount: [POSITIVE_INT_OR_BLANK],
+    displayFullEpisodesCount: [POSITIVE_INT_OR_BLANK]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
@@ -111,10 +137,12 @@ export class FeederPodcastModel extends BaseModel {
     }
     this.summary = this.doc['summary'];
     this.serialOrder = this.doc['serialOrder'] || false;
+    this.displayEpisodesCount = this.doc['displayEpisodesCount'] ? this.doc['displayEpisodesCount'].toString() : '';
+    this.displayFullEpisodesCount = this.doc['displayFullEpisodesCount'] ? this.doc['displayFullEpisodesCount'].toString() : '';
   }
 
   encode(): {} {
-    let data = <any> {};
+    let data = <any>{};
 
     // unset with nulls instead of blank strings
     data.complete = this.complete;
@@ -135,7 +163,7 @@ export class FeederPodcastModel extends BaseModel {
     // we can always send a categories array
     data.itunesCategories = [];
     if (this.category) {
-      data.itunesCategories = [{name: this.category, subcategories: []}];
+      data.itunesCategories = [{ name: this.category, subcategories: [] }];
       if (this.subCategory) {
         data.itunesCategories[0].subcategories.push(this.subCategory);
       }
@@ -150,6 +178,8 @@ export class FeederPodcastModel extends BaseModel {
 
     data.summary = this.summary || null;
     data.serialOrder = this.serialOrder || null;
+    data.displayEpisodesCount = parseInt(this.displayEpisodesCount, 10) || null;
+    data.displayFullEpisodesCount = parseInt(this.displayFullEpisodesCount, 10) || null;
 
     return data;
   }

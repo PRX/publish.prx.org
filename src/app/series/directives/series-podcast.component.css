@@ -2,6 +2,7 @@
   display: inline-block;
   width: 250px;
   margin-right: 40px;
+  vertical-align: top;
 }
 .prx-feed-url input {
   padding: 10px 8px;
@@ -16,7 +17,8 @@ input.changed {
 .feed-url button {
   background-color: #ff9600;
 }
-.feed-url button:hover, .feed-url button:focus {
+.feed-url button:hover,
+.feed-url button:focus {
   background-color: #ec8200;
 }
 .feed-url_checkbox {
