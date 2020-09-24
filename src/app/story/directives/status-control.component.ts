@@ -242,12 +242,12 @@ export class StatusControlComponent implements DoCheck {
     this.story.save().subscribe(() => {
       // a story should not publish while audio is processing
       if (this.story.versions.every((version) => version.files.every((file) => !file.isProcessing))) {
-        this.togglePublish(toast);
+        this.setPublished(toast);
       } else {
         const poll = interval(2000)
           .pipe(skipWhile(() => this.story.versions.some((version) => version.files.some((file) => file.isProcessing))))
           .subscribe(() => {
-            this.togglePublish(toast);
+            this.setPublished(toast);
             if (wasNew) {
               this.router.navigate(['/story', this.story.id]);
             }
@@ -259,12 +259,12 @@ export class StatusControlComponent implements DoCheck {
 
   saveAndUnschedule() {
     this.story.save().subscribe(() => {
-      this.togglePublish('unscheduled');
+      this.setUnpublished('unscheduled');
     });
   }
 
   unschedule() {
-    this.togglePublish('unscheduled');
+    this.setUnpublished('unscheduled');
   }
 
   discard() {
@@ -282,27 +282,38 @@ export class StatusControlComponent implements DoCheck {
     // confirm unpublish
     this.modal.confirm('Are you sure?', 'You do not need to unpublish the episode to update the content.', (confirm: boolean) => {
       if (confirm) {
-        this.togglePublish('unpublished');
+        this.setUnpublished('unpublished');
         this.status.emit('draft'); // updates the Status dropdown back to draft
       }
     });
   }
 
-  togglePublish(toast: string) {
+  setPublished(toast: string) {
+    if (this.story.publishedAt) {
+      return;
+    }
+
     // prevent publishing invalid (usually audio-files mismatching after processing)
-    if (this.story.invalid() && !this.story.publishedAt) {
+    if (this.story.invalid()) {
       return this.toastr.error(`Unable to publish - check validation errors`);
     }
 
     this.isPublishing = true;
-    this.story.setPublished(!this.story.publishedAt).subscribe(() => {
-      this.angulartics2.eventTrack.next({
-        action: this.story.publishedAt ? 'publish' : 'unpublish',
-        properties: {
-          category: 'episode',
-          label: 'episode/' + this.story.doc.id
-        }
-      });
+    this.story.setPublished(true).subscribe(() => {
+      this.eventTrack('publish');
+      this.toastr.success(`Episode ${toast}`);
+      this.isPublishing = false;
+    });
+  }
+
+  setUnpublished(toast: string) {
+    if (!this.story.publishedAt) {
+      return;
+    }
+
+    this.isPublishing = true;
+    this.story.setPublished(false).subscribe(() => {
+      this.eventTrack('unpublish');
       this.toastr.success(`Episode ${toast}`);
       this.isPublishing = false;
     });
@@ -381,5 +392,15 @@ export class StatusControlComponent implements DoCheck {
     } else {
       return null;
     }
+  }
+
+  private eventTrack(action) {
+    this.angulartics2.eventTrack.next({
+      action,
+      properties: {
+        category: 'episode',
+        label: 'episode/' + this.story.doc.id
+      }
+    });
   }
 }
