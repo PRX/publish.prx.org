@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared';
 import { TabModule, SelectModule } from 'ngx-prx-styleguide';
 import { seriesRouting, seriesProviders, seriesComponents } from './series.routing';
-import { SeriesImportStatusCardModule } from '../series-import-status-card';
 import { SeriesImportService } from './series-import.service';
 
 @NgModule({
@@ -16,8 +15,7 @@ import { SeriesImportService } from './series-import.service';
     SharedModule,
     TabModule,
     SelectModule,
-    seriesRouting,
-    SeriesImportStatusCardModule
+    seriesRouting
   ],
   providers: [
     ...seriesProviders,

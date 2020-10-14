@@ -9,6 +9,7 @@ import { SeriesPlanComponent } from './directives/series-plan.component';
 import { SeriesPodcastComponent } from './directives/series-podcast.component';
 import { SeriesFeedComponent } from './directives/series-feed.component';
 import { SeriesImportStatusComponent } from './directives/series-import-status.component';
+import { SeriesImportStatusCardComponent } from '../series-import-status-card/series-import-status-card.component';
 import { FileTemplateComponent } from './directives/file-template.component';
 import * as productionCalendar from './production-calendar/';
 
@@ -52,6 +53,7 @@ export const seriesComponents: any[] = [
   SeriesPodcastComponent,
   SeriesFeedComponent,
   SeriesImportStatusComponent,
+  SeriesImportStatusCardComponent,
   FileTemplateComponent,
   productionCalendar.ProductionCalendarComponent,
   productionCalendar.ProductionCalendarSeriesComponent,
