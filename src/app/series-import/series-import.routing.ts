@@ -4,7 +4,6 @@ import { AuthGuard, DeactivateGuard } from 'ngx-prx-styleguide';
 
 import { SeriesImportComponent } from './series-import.component';
 
-
 export const seriesImportRoutes: Routes = [
   {
     path: 'series-import',
@@ -21,4 +20,4 @@ export const seriesImportComponents: any[] = [
 
 export const seriesImportProviders: any[] = [];
 
-export const seriesImportRouting: ModuleWithProviders = RouterModule.forChild(seriesImportRoutes);
+export const seriesImportRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(seriesImportRoutes);

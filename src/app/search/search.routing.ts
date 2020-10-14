@@ -30,4 +30,4 @@ export const searchComponents: any[] = [
 
 export const searchProviders: any[] = [];
 
-export const searchRouting: ModuleWithProviders = RouterModule.forChild(searchRoutes);
+export const searchRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(searchRoutes);
