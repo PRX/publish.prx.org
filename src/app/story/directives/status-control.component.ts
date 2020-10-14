@@ -60,7 +60,7 @@ export class StatusControlComponent implements DoCheck {
   @Input() nextStatus: StoryStatus;
   @Input() currentStatus: StoryStatus;
   @Output() status = new EventEmitter<StoryStatus>();
-  @ViewChild('dropdownButton', { static: false }) dropdownButton: ElementRef;
+  @ViewChild('dropdownButton') dropdownButton: ElementRef;
 
   isChanged: boolean;
   hasPublishDate: boolean;

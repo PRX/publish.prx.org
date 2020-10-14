@@ -29,7 +29,7 @@ export class SeriesPodcastComponent implements OnDestroy, DoCheck {
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
   languageOptions: string[][];
-  @ViewChild('readonlyEditor', { static: false }) wysiwyg: WysiwygComponent;
+  @ViewChild('readonlyEditor') wysiwyg: WysiwygComponent;
 
   constructor(tab: TabService) {
     this.languageOptions = this.getLanguageOptions();

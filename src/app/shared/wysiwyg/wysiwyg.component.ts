@@ -56,7 +56,7 @@ export class WysiwygComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('contentEditable', { static: true }) el: ElementRef;
   editor: ProseMirrorMarkdownEditor;
 
-  @ViewChild('url', { static: false }) url: NgModel;
+  @ViewChild('url') url: NgModel;
   linkURL: string;
   linkTitle: string;
   hasSelection = false;

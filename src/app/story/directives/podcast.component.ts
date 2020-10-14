@@ -23,7 +23,7 @@ export class PodcastComponent implements OnDestroy {
   podcastExplicit: string;
   podcastAuthorName: string;
   podcastAuthorEmail: string;
-  @ViewChild('readonlyEditor', { static: false }) wysiwyg: WysiwygComponent;
+  @ViewChild('readonlyEditor') wysiwyg: WysiwygComponent;
 
   constructor(tab: TabService, private cms: CmsService) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => this.init(s));
