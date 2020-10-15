@@ -11,9 +11,9 @@ import { StoryStatusComponent } from './directives/status.component';
 import { StatusControlComponent } from './directives/status-control.component';
 
 const storyChildRoutes = [
-  { path: '',        component: BasicComponent },
+  { path: '', component: BasicComponent },
   { path: 'podcast', component: PodcastComponent },
-  { path: 'player',  component: PlayerComponent },
+  { path: 'player', component: PlayerComponent }
 ];
 
 export const storyRoutes: Routes = [
@@ -52,4 +52,4 @@ export const storyComponents: any[] = [
 
 export const storyProviders: any[] = [];
 
-export const storyRouting: ModuleWithProviders = RouterModule.forChild(storyRoutes);
+export const storyRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(storyRoutes);

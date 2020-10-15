@@ -9,16 +9,17 @@ import { SeriesPlanComponent } from './directives/series-plan.component';
 import { SeriesPodcastComponent } from './directives/series-podcast.component';
 import { SeriesFeedComponent } from './directives/series-feed.component';
 import { SeriesImportStatusComponent } from './directives/series-import-status.component';
+import { SeriesImportStatusCardComponent } from '../series-import-status-card/series-import-status-card.component';
 import { FileTemplateComponent } from './directives/file-template.component';
 import * as productionCalendar from './production-calendar/';
 
 const seriesChildRoutes = [
-  { path: '',          component: SeriesBasicComponent },
+  { path: '', component: SeriesBasicComponent },
   { path: 'templates', component: SeriesTemplatesComponent },
-  { path: 'plan',      component: SeriesPlanComponent },
-  { path: 'podcast',   component: SeriesPodcastComponent },
-  { path: 'list',   component: SeriesFeedComponent },
-  { path: 'import-status',   component: SeriesImportStatusComponent }
+  { path: 'plan', component: SeriesPlanComponent },
+  { path: 'podcast', component: SeriesPodcastComponent },
+  { path: 'list', component: SeriesFeedComponent },
+  { path: 'import-status', component: SeriesImportStatusComponent }
 ];
 
 export const seriesRoutes: Routes = [
@@ -52,6 +53,7 @@ export const seriesComponents: any[] = [
   SeriesPodcastComponent,
   SeriesFeedComponent,
   SeriesImportStatusComponent,
+  SeriesImportStatusCardComponent,
   FileTemplateComponent,
   productionCalendar.ProductionCalendarComponent,
   productionCalendar.ProductionCalendarSeriesComponent,
@@ -60,4 +62,4 @@ export const seriesComponents: any[] = [
 
 export const seriesProviders: any[] = [];
 
-export const seriesRouting: ModuleWithProviders = RouterModule.forChild(seriesRoutes);
+export const seriesRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(seriesRoutes);
