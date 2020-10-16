@@ -16,6 +16,16 @@ const NO_UNPUBLISHING_VIA_RELEASED: BaseInvalid = (_key, val: Date, _strict, mod
   return null;
 };
 
+const MIN = (min: number): BaseInvalid => {
+  return (key: string, value: number) => {
+    if (value !== undefined && value !== null && value < min) {
+      return `${key} must be greater than ${min}`;
+    } else {
+      return null;
+    }
+  };
+};
+
 export class StoryModel extends BaseModel implements HasUpload {
 
   public id: number;
@@ -47,7 +57,9 @@ export class StoryModel extends BaseModel implements HasUpload {
     description:      [LENGTH(0, 4000)],
     productionNotes:  [LENGTH(0, 255)],
     releasedAt:       [NO_UNPUBLISHING_VIA_RELEASED],
-    versions:         [RELATIONS('You must include at least 1 version of your audio')]
+    versions:         [RELATIONS('You must include at least 1 version of your audio')],
+    seasonNumber:     [MIN(1)],
+    episodeNumber:    [MIN(1)]
   };
 
   // HasUpload mixin
