@@ -49,7 +49,7 @@ export class SearchComponent implements OnInit {
 
       this.allSeriesIds = [-1];
       this.allSeries = {};
-      this.auth.followItems('prx:series', {filters: 'v4', zoom: false}).subscribe((series) => {
+      this.auth.followItems('prx:series', {filters: 'v4', zoom: false, per: 999}).subscribe((series) => {
         this.allSeriesIds = [-1].concat(series.map(doc => doc.id));
         this.allSeries = series.reduce((map, doc) => { map[doc.id] = doc; return map; }, {});
         this.subscribeRouteParams();
