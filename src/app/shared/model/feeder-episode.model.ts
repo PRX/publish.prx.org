@@ -1,11 +1,9 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 
 import { HalDoc } from '../../core';
 import { BaseModel, REQUIRED, UNLESS_NEW, URL, LENGTH, IN } from 'ngx-prx-styleguide';
 
 export class FeederEpisodeModel extends BaseModel {
-
   // read-only
   id: string;
   publishedUrl: string;
@@ -60,12 +58,16 @@ export class FeederEpisodeModel extends BaseModel {
   }
 
   encode(): {} {
-    let data = <any> {};
+    let data = <any>{};
     data.guid = this.guid || null;
     if (this.authorName || this.authorEmail) {
       data.author = {};
-      if (this.authorName) { data.author.name = this.authorName; }
-      if (this.authorEmail) { data.author.email = this.authorEmail; }
+      if (this.authorName) {
+        data.author.name = this.authorName;
+      }
+      if (this.authorEmail) {
+        data.author.email = this.authorEmail;
+      }
     } else {
       data.author = null;
     }
@@ -84,5 +86,4 @@ export class FeederEpisodeModel extends BaseModel {
       newModel.set(fld, this[fld]);
     }
   }
-
 }
