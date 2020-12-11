@@ -1,11 +1,9 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 
 import { HalDoc } from '../../core';
 import { BaseModel, REQUIRED, UNLESS_NEW, URL, LENGTH, IN } from 'ngx-prx-styleguide';
 
 export class FeederEpisodeModel extends BaseModel {
-
   // read-only
   id: string;
   publishedUrl: string;
@@ -18,14 +16,14 @@ export class FeederEpisodeModel extends BaseModel {
   authorEmail = '';
   episodeUrl = '';
   enclosureUrl = '';
-  itunesType = '';
+  itunesType = 'full';
   summary = '';
 
   VALIDATORS = {
     guid: [UNLESS_NEW(REQUIRED())],
     episodeUrl: [URL('Not a valid URL')],
     summary: [LENGTH(0, 4000)],
-    itunesType: [IN(['full', 'trailer', 'bonus', '', null])]
+    itunesType: [IN(['full', 'trailer', 'bonus'])]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
@@ -56,22 +54,26 @@ export class FeederEpisodeModel extends BaseModel {
     this.authorEmail = author['email'] || '';
     this.summary = this.doc['summary'] || '';
     this.enclosureUrl = this.doc.expand('enclosure') || '';
-    this.itunesType = this.doc['itunesType'] || '';
+    this.itunesType = this.doc['itunesType'] || 'full';
   }
 
   encode(): {} {
-    let data = <any> {};
+    let data = <any>{};
     data.guid = this.guid || null;
     if (this.authorName || this.authorEmail) {
       data.author = {};
-      if (this.authorName) { data.author.name = this.authorName; }
-      if (this.authorEmail) { data.author.email = this.authorEmail; }
+      if (this.authorName) {
+        data.author.name = this.authorName;
+      }
+      if (this.authorEmail) {
+        data.author.email = this.authorEmail;
+      }
     } else {
       data.author = null;
     }
     data.url = this.episodeUrl || null;
     data.summary = this.summary || null;
-    data.itunesType = this.itunesType || null;
+    data.itunesType = this.itunesType || 'full';
     return data;
   }
 
@@ -84,5 +86,4 @@ export class FeederEpisodeModel extends BaseModel {
       newModel.set(fld, this[fld]);
     }
   }
-
 }
