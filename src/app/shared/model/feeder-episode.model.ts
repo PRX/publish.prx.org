@@ -16,14 +16,14 @@ export class FeederEpisodeModel extends BaseModel {
   authorEmail = '';
   episodeUrl = '';
   enclosureUrl = '';
-  itunesType = '';
+  itunesType = 'full';
   summary = '';
 
   VALIDATORS = {
     guid: [UNLESS_NEW(REQUIRED())],
     episodeUrl: [URL('Not a valid URL')],
     summary: [LENGTH(0, 4000)],
-    itunesType: [IN(['full', 'trailer', 'bonus', '', null])]
+    itunesType: [IN(['full', 'trailer', 'bonus'])]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, episode?: HalDoc, loadRelated = true) {
@@ -54,7 +54,7 @@ export class FeederEpisodeModel extends BaseModel {
     this.authorEmail = author['email'] || '';
     this.summary = this.doc['summary'] || '';
     this.enclosureUrl = this.doc.expand('enclosure') || '';
-    this.itunesType = this.doc['itunesType'] || '';
+    this.itunesType = this.doc['itunesType'] || 'full';
   }
 
   encode(): {} {
@@ -73,7 +73,7 @@ export class FeederEpisodeModel extends BaseModel {
     }
     data.url = this.episodeUrl || null;
     data.summary = this.summary || null;
-    data.itunesType = this.itunesType || null;
+    data.itunesType = this.itunesType || 'full';
     return data;
   }
 
