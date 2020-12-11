@@ -1,26 +1,32 @@
 version: 0.2
 env:
   variables:
-    PRX_ECR_REGION: "us-east-1"
-    PRX_ECR_REPOSITORY: "publish.prx.org"
-    PRX_ECR_CONFIG_PARAMETERS: "PublishEcrImageTag"
+    PRX_ECR_REGION: 'us-east-1'
+    PRX_ECR_REPOSITORY: 'publish.prx.org'
+    PRX_ECR_CONFIG_PARAMETERS: 'PublishEcrImageTag'
   parameter-store:
-    CODECOV_TOKEN: "/prx/test/publish.prx.org/CODECOV_TOKEN"
+    CODECOV_TOKEN: '/prx/test/publish.prx.org/CODECOV_TOKEN'
+    DOCKERHUB_USERNAME: '/prx/DOCKERHUB_USERNAME'
+    DOCKERHUB_PASSWORD: '/prx/DOCKERHUB_PASSWORD'
 phases:
   install:
     runtime-versions:
       docker: 18
+  pre_build:
+    commands:
+      - echo Logging in to Docker Hub...
+      - echo $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin
   build:
     commands:
-      - "cd $(ls -d */|head -n 1)"
-      - "echo CODECOV_TOKEN=$CODECOV_TOKEN > .env"
-      - "echo CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID >> .env"
-      - "echo PRX_REPO=$PRX_REPO >> .env"
-      - "echo PRX_COMMIT=$PRX_COMMIT >> .env"
-      - "echo PRX_BRANCH=$PRX_BRANCH >> .env"
-      - "echo PRX_GITHUB_PR=$PRX_GITHUB_PR >> .env"
-      - "docker-compose build"
-      - "docker-compose run publish ci"
+      - 'cd $(ls -d */|head -n 1)'
+      - 'echo CODECOV_TOKEN=$CODECOV_TOKEN > .env'
+      - 'echo CODEBUILD_BUILD_ID=$CODEBUILD_BUILD_ID >> .env'
+      - 'echo PRX_REPO=$PRX_REPO >> .env'
+      - 'echo PRX_COMMIT=$PRX_COMMIT >> .env'
+      - 'echo PRX_BRANCH=$PRX_BRANCH >> .env'
+      - 'echo PRX_GITHUB_PR=$PRX_GITHUB_PR >> .env'
+      - 'docker-compose build'
+      - 'docker-compose run publish ci'
   post_build:
     commands:
       - 'curl -sO "https://raw.githubusercontent.com/PRX/Infrastructure/master/ci/utility/post_build.sh" && chmod +x post_build.sh && bash ./post_build.sh'
