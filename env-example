@@ -19,11 +19,11 @@ AUTH_HOST=id.staging.prx.tech
 AUTH_CLIENT_ID=35zRqonwphKY05Uu2RA1YquwqyonSh3V6vAtnpB9
 
 # aws uploading
-BUCKET_NAME=prx-up
-BUCKET_FOLDER=dev
-BUCKET_ACCELERATION=true
-SIGN_URL=your-signing-url
-AWS_KEY=your-aws-key
+UPLOAD_S3_ENDPOINT_URL=https://publish-uploads-bucket.s3-accelerate.dualstack.amazonaws.com
+UPLOAD_BUCKET_NAME=publish-uploads-bucket
+UPLOAD_BUCKET_FOLDER=dev
+UPLOAD_SIGNING_SERVICE_URL=your-signing-url
+UPLOAD_SIGNING_SERVICE_KEY_ID=aws-key-used-by-signing-service
 
 # embeddable player
 PLAY_HOST=play.staging.prx.tech
