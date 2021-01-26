@@ -59,11 +59,11 @@ export class ImageUploadComponent implements DoCheck {
 
   constructor(private uploadService: UploadService) {
     uploadService.createWithConfig({
-      bucketName: Env.BUCKET_NAME,
-      bucketAccel: Env.BUCKET_ACCELERATION,
-      bucketFolder: Env.BUCKET_FOLDER,
-      signUrl: Env.SIGN_URL,
-      awsKey: Env.AWS_KEY
+      awsUrl: `https://${Env.UPLOAD_S3_ENDPOINT_HOST}`,
+      bucketName: Env.UPLOAD_BUCKET_NAME,
+      bucketFolder: Env.UPLOAD_BUCKET_FOLDER,
+      signUrl: Env.UPLOAD_SIGNING_SERVICE_URL,
+      awsKey: Env.UPLOAD_SIGNING_SERVICE_KEY_ID
     });
   }
 

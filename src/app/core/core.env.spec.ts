@@ -28,23 +28,23 @@ describe('Env', () => {
   });
 
   it('gets booleans', () => {
-    window['ENV']['BUCKET_ACCELERATION'] = 'true';
-    expect(Env.BUCKET_ACCELERATION).toEqual(true);
+    window['ENV']['CMS_USE_LOCALSTORAGE'] = 'true';
+    expect(Env.CMS_USE_LOCALSTORAGE).toEqual(true);
 
-    window['ENV']['BUCKET_ACCELERATION'] = true;
-    expect(Env.BUCKET_ACCELERATION).toEqual(true);
+    window['ENV']['CMS_USE_LOCALSTORAGE'] = true;
+    expect(Env.CMS_USE_LOCALSTORAGE).toEqual(true);
 
-    window['ENV']['BUCKET_ACCELERATION'] = '1';
-    expect(Env.BUCKET_ACCELERATION).toEqual(true);
+    window['ENV']['CMS_USE_LOCALSTORAGE'] = '1';
+    expect(Env.CMS_USE_LOCALSTORAGE).toEqual(true);
 
-    window['ENV']['BUCKET_ACCELERATION'] = 1;
-    expect(Env.BUCKET_ACCELERATION).toEqual(true);
+    window['ENV']['CMS_USE_LOCALSTORAGE'] = 1;
+    expect(Env.CMS_USE_LOCALSTORAGE).toEqual(true);
 
-    window['ENV']['BUCKET_ACCELERATION'] = 'false';
-    expect(Env.BUCKET_ACCELERATION).toEqual(false);
+    window['ENV']['CMS_USE_LOCALSTORAGE'] = 'false';
+    expect(Env.CMS_USE_LOCALSTORAGE).toEqual(false);
 
-    window['ENV']['BUCKET_ACCELERATION'] = '';
-    expect(Env.BUCKET_ACCELERATION).toEqual(false);
+    window['ENV']['CMS_USE_LOCALSTORAGE'] = '';
+    expect(Env.CMS_USE_LOCALSTORAGE).toEqual(false);
   });
 
   it('gets numbers', () => {
