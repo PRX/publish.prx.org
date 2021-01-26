@@ -75,7 +75,7 @@ export class ImageFileComponent implements OnInit, OnDestroy {
 
   constructor(private uploadService: UploadService) {
     uploadService.createWithConfig({
-      awsUrl: Env.UPLOAD_S3_ENDPOINT_URL,
+      awsUrl: `https://${Env.UPLOAD_S3_ENDPOINT_HOST}`,
       bucketName: Env.UPLOAD_BUCKET_NAME,
       bucketFolder: Env.UPLOAD_BUCKET_FOLDER,
       signUrl: Env.UPLOAD_SIGNING_SERVICE_URL,

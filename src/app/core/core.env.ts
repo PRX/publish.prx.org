@@ -57,7 +57,7 @@ export class Env {
   public static get AUTH_CLIENT_ID():                  string { return getVar('AUTH_CLIENT_ID'); }
   public static get UPLOAD_BUCKET_NAME():              string { return getVar('UPLOAD_BUCKET_NAME'); }
   public static get UPLOAD_BUCKET_FOLDER():            string { return getVar('UPLOAD_BUCKET_FOLDER'); }
-  public static get UPLOAD_S3_ENDPOINT_URL():          string { return getVar('UPLOAD_S3_ENDPOINT_URL'); }
+  public static get UPLOAD_S3_ENDPOINT_HOST():         string { return getVar('UPLOAD_S3_ENDPOINT_HOST'); }
   public static get UPLOAD_SIGNING_SERVICE_URL():      string { return getVar('UPLOAD_SIGNING_SERVICE_URL'); }
   public static get UPLOAD_SIGNING_SERVICE_KEY_ID():   string { return getVar('UPLOAD_SIGNING_SERVICE_KEY_ID'); }
   public static get PLAY_HOST():                       string { return getVar('PLAY_HOST'); }
