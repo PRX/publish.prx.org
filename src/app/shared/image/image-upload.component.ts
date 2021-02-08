@@ -63,7 +63,8 @@ export class ImageUploadComponent implements DoCheck {
       bucketName: Env.UPLOAD_BUCKET_NAME,
       bucketFolder: Env.UPLOAD_BUCKET_FOLDER,
       signUrl: Env.UPLOAD_SIGNING_SERVICE_URL,
-      awsKey: Env.UPLOAD_SIGNING_SERVICE_KEY_ID
+      awsKey: Env.UPLOAD_SIGNING_SERVICE_KEY_ID,
+      publicAccessHost: Env.UPLOAD_PUBLIC_ACCESS_HOST,
     });
   }
 
