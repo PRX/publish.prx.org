@@ -24,6 +24,7 @@ UPLOAD_BUCKET_NAME=publish-uploads-bucket
 UPLOAD_BUCKET_FOLDER=dev
 UPLOAD_SIGNING_SERVICE_URL=your-signing-url
 UPLOAD_SIGNING_SERVICE_KEY_ID=aws-key-used-by-signing-service
+UPLOAD_PUBLIC_ACCESS_HOST=d1234567890.cloudfront.net
 
 # embeddable player
 PLAY_HOST=play.staging.prx.tech
