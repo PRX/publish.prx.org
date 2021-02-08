@@ -11,7 +11,7 @@ import { AudioVersionModel } from 'ngx-prx-styleguide';
   templateUrl: 'podcast.component.html'
 })
 export class PodcastComponent implements OnDestroy {
-  explicitOpts = ['Explicit', 'Clean'];
+  explicitOpts = [['Explicit', 'explicit'], ['Clean', 'clean']];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   episodeTypeOptions = ['full', 'trailer', 'bonus'];
 

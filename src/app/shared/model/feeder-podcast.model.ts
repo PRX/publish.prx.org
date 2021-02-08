@@ -120,10 +120,7 @@ export class FeederPodcastModel extends BaseModel {
       this.subCategory = '';
     }
 
-    this.explicit = this.doc['explicit'] || '';
-    if (this.explicit) {
-      this.explicit = this.explicit.charAt(0).toUpperCase() + this.explicit.slice(1);
-    }
+    this.explicit = this.doc['explicit'] || null;
 
     this.language = this.doc['language'] || '';
     if (this.language) {
@@ -172,10 +169,6 @@ export class FeederPodcastModel extends BaseModel {
     }
 
     data.explicit = this.explicit || null;
-    if (data.explicit) {
-      data.explicit = data.explicit.toLowerCase();
-    }
-
     data.summary = this.summary || null;
     data.serialOrder = this.serialOrder || null;
     data.displayEpisodesCount = parseInt(this.displayEpisodesCount, 10) || null;
