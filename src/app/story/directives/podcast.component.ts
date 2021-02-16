@@ -11,7 +11,7 @@ import { AudioVersionModel } from 'ngx-prx-styleguide';
   templateUrl: 'podcast.component.html'
 })
 export class PodcastComponent implements OnDestroy {
-  explicitOpts = [['Explicit', 'explicit'], ['Clean', 'clean']];
+  explicitOpts = [['Explicit', 'true'], ['Clean', 'false']];
   itunesRequirementsDoc = 'https://help.apple.com/itc/podcasts_connect/#/itc1723472cb';
   episodeTypeOptions = ['full', 'trailer', 'bonus'];
 
@@ -54,7 +54,11 @@ export class PodcastComponent implements OnDestroy {
     story.getSeriesDistribution('podcast').subscribe((ddoc) => {
       let dist = new DistributionModel(null, ddoc);
       dist.loadRelated('podcast').subscribe(() => {
-        this.podcastExplicit = dist.podcast ? dist.podcast.explicit : null;
+        if (dist.podcast) {
+          this.podcastExplicit = dist.podcast.explicit === 'true' ? 'Explicit' : 'Clean';
+        } else {
+          this.podcastExplicit = null;
+        }
         this.podcastAuthorName = dist.podcast ? dist.podcast.authorName : null;
         this.podcastAuthorEmail = dist.podcast ? dist.podcast.authorEmail : null;
       });
