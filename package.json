@@ -44,7 +44,7 @@
     "evaporate": "^2.1.4",
     "js-sha256": "^0.9.0",
     "langmap": "0.0.14",
-    "ngx-prx-styleguide": "5.0.3",
+    "ngx-prx-styleguide": "5.1.0",
     "prosemirror-commands": "^1.1.4",
     "prosemirror-inputrules": "^1.1.2",
     "prosemirror-keymap": "^1.1.4",

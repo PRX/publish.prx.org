@@ -6972,10 +6972,10 @@ ng2-dragula@^2.1.1:
     "@types/dragula" "^2.1.34"
     dragula "^3.7.2"
 
-ngx-prx-styleguide@5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-5.0.3.tgz#5b0ac5d1bf88137c527b453ccd2a384e58a53bb3"
-  integrity sha512-A/zD60nIB9SKMP5Jq+faMkSg72qvOZx6aCggZ3qO8bSqr/0LrhXyxBVOhe0LXCNSIId1vAyNzbvxn2NsvmskHw==
+ngx-prx-styleguide@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/ngx-prx-styleguide/-/ngx-prx-styleguide-5.1.0.tgz#a9dde66cabb302df7dc9fff66b65ce9edd034534"
+  integrity sha512-OZMTzk+QGDvRPyLzPzIzwOvMhU84aRiYc0e9agkxHaAJ007+WmSFU8IqLpMCgawqzRt6kyhIp18eBEXza9rMtA==
   dependencies:
     "@ng-select/ng-select" "^3.7.3"
     c3 "~0.7.1"
