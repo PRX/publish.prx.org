@@ -112,7 +112,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
   ) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => {
       this.story = s;
-      this.series = new SeriesModel(s.parent, s.parent)
+      this.series = new SeriesModel(null, s.parent)
       this.loadVersionTemplates();
 
       concat(this.loadDistribution(),
