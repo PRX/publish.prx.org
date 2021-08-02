@@ -1,5 +1,5 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
-import { Subscription, concat } from 'rxjs';
+import { Subscription, concat, of } from 'rxjs';
 import { StoryModel, SeriesModel, DistributionModel, FeederPodcastModel} from '../../shared';
 import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
 import { AudioVersionModel } from 'ngx-prx-styleguide';
@@ -96,7 +96,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
   series: SeriesModel;
   distribution: DistributionModel;
   podcast: FeederPodcastModel;
-  draftCount: number;
+  hasDrafts: boolean;
   tabSub: Subscription;
   versionTemplates: { [id: number]: HalDoc; };
   versionTemplatesSelected: number[];
@@ -115,13 +115,20 @@ export class BasicComponent implements OnDestroy, DoCheck {
       this.series = new SeriesModel(null, s.parent)
       this.loadVersionTemplates();
 
-      concat(this.loadDistribution(),
-             this.loadUnpublished()).subscribe({complete: () => {
-               if(!this.podcastComplete && this.draftCount === 0){
-                 this.alertForDrafts();
-               }
-             }})
+      concat(
+        this.loadDistribution(),
+        this.loadPodcast(),
+        this.loadUnpublished()
+      ).subscribe({complete: () => {
+          if(this.story.isNew && !this.podcast.complete && this.missingDrafts()) {
+            this.alertForDrafts();
+          }
+        }})
     });
+  }
+
+  missingDrafts() {
+    return (this.hasDrafts !== null && !this.hasDrafts);
   }
 
   alertForDrafts() {
@@ -140,35 +147,43 @@ export class BasicComponent implements OnDestroy, DoCheck {
 
     obs.subscribe(() => {
       this.distribution = this.series.distributions.find((d) => d.kind === 'podcast');
-      if (this.distribution) {
-        this.distribution.loadRelated('podcast').subscribe(() => {
-          this.podcast = this.distribution.podcast;
-        });
-      } else {
-        this.podcast = null;
-      }
+    });
+
+    return obs;
+  }
+
+  loadPodcast() {
+    if (!this.distribution) {
+      this.podcast = null;
+      return of({})
+    }
+
+    let obs = this.distribution.loadRelated('podcast');
+    obs.subscribe(() => {
+      this.podcast = this.distribution.podcast;
     });
 
     return obs;
   }
 
   loadUnpublished() {
-    this.draftCount = -1;
+    this.hasDrafts = null;
 
-    let obs = this.series.doc.followItems('prx:stories', {page: 1, per: 1, filters: 'noseries,v4,state=unpublished', sorts: 'released_at: desc', zoom: false});
+    let obs = this.series.doc.followItems('prx:stories', {page: 1, per: 1, filters: 'state=unpublished', sorts: 'released_at:desc', zoom: false});
     obs.subscribe((stories: HalDoc[]) => {
-      if(stories[0]){
-        this.draftCount = stories[0]._total;
+      const story = stories[0];
+      if(story && Date.parse(story.releasedAt) > Date.now()){
+        this.hasDrafts = true;
       }
       else{
-        this.draftCount = 0;
+        this.hasDrafts = false;
       }
     });
     return obs;
   }
 
   unpublishedCountReady() {
-    return this.draftCount >= 0;
+    return this.hasDrafts !== null;
   }
 
   get podcastComplete() {
