@@ -112,7 +112,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
   ) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => {
       this.story = s;
-      this.series = new SeriesModel(null, s.parent)
+      this.series = new SeriesModel(null, s.parent);
       this.loadVersionTemplates();
 
       concat(
@@ -120,10 +120,10 @@ export class BasicComponent implements OnDestroy, DoCheck {
         this.loadPodcast(),
         this.loadUnpublished()
       ).subscribe({complete: () => {
-          if(this.story.isNew && !this.podcast.complete && this.missingDrafts()) {
+          if (this.story.isNew && !this.podcast.complete && this.missingDrafts()) {
             this.alertForDrafts();
           }
-        }})
+        }});
     });
   }
 
@@ -155,7 +155,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
   loadPodcast() {
     if (!this.distribution) {
       this.podcast = null;
-      return of({})
+      return of({});
     }
 
     let obs = this.distribution.loadRelated('podcast');
@@ -169,14 +169,22 @@ export class BasicComponent implements OnDestroy, DoCheck {
   loadUnpublished() {
     this.hasDrafts = null;
 
-    let obs = this.series.doc.followItems('prx:stories', {page: 1, per: 1, filters: 'state=unpublished', sorts: 'released_at:desc', zoom: false});
+    const halParams = {
+      page: 1,
+      per: 1,
+      filters: 'state=unpublished',
+      sorts: 'released_at:desc',
+      zoom: false
+    };
+
+    let obs = this.series.doc.followItems('prx:stories', halParams);
+
     obs.subscribe((stories: HalDoc[]) => {
       const story = stories[0] ? new StoryModel(this.story.parent, stories[0]) : null;
 
-      if(story && story.releasedAt > new Date){
+      if (story && story.releasedAt > new Date) {
         this.hasDrafts = true;
-      }
-      else{
+      } else {
         this.hasDrafts = false;
       }
     });
@@ -188,10 +196,10 @@ export class BasicComponent implements OnDestroy, DoCheck {
   }
 
   get podcastComplete() {
-    if(!this.distribution){
+    if (!this.distribution) {
       return false;
     }
-    return true
+    return true;
   }
 
   ngDoCheck() {
