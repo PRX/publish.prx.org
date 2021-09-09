@@ -172,8 +172,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
     const halParams = {
       page: 1,
       per: 1,
-      filters: 'state=unpublished',
-      sorts: 'released_at:desc',
+      filters: `after=${new Date().toISOString()}`,
       zoom: false
     };
 
