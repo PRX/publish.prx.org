@@ -179,9 +179,7 @@ export class BasicComponent implements OnDestroy, DoCheck {
     let obs = this.series.doc.followItems('prx:stories', halParams);
 
     obs.subscribe((stories: HalDoc[]) => {
-      const story = stories[0] || null;
-
-      if (story && new Date(stories[0].releasedAt) > new Date) {
+      if (stories.length > 0) {
         this.hasDrafts = true;
       } else {
         this.hasDrafts = false;
