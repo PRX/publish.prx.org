@@ -1,6 +1,6 @@
 import { Component, OnDestroy, DoCheck } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { StoryModel } from '../../shared';
+import { Subscription, concat, of } from 'rxjs';
+import { StoryModel, SeriesModel, DistributionModel, FeederPodcastModel} from '../../shared';
 import { HalDoc, ModalService, TabService } from 'ngx-prx-styleguide';
 import { AudioVersionModel } from 'ngx-prx-styleguide';
 
@@ -93,6 +93,10 @@ import { AudioVersionModel } from 'ngx-prx-styleguide';
 export class BasicComponent implements OnDestroy, DoCheck {
 
   story: StoryModel;
+  series: SeriesModel;
+  distribution: DistributionModel;
+  podcast: FeederPodcastModel;
+  hasDrafts: boolean;
   tabSub: Subscription;
   versionTemplates: { [id: number]: HalDoc; };
   versionTemplatesSelected: number[];
@@ -108,8 +112,91 @@ export class BasicComponent implements OnDestroy, DoCheck {
   ) {
     this.tabSub = tab.model.subscribe((s: StoryModel) => {
       this.story = s;
+      this.series = new SeriesModel(null, s.parent);
       this.loadVersionTemplates();
+
+      concat(
+        this.loadDistribution(),
+        this.loadPodcast(),
+        this.loadUnpublished()
+      ).subscribe({complete: () => {
+          if (this.story.isNew && !this.podcast.complete && this.missingDrafts()) {
+            this.alertForDrafts();
+          }
+        }});
     });
+  }
+
+  missingDrafts() {
+    return (this.hasDrafts !== null && !this.hasDrafts);
+  }
+
+  alertForDrafts() {
+    const msg = `The more drafts you add, the better we can support your podcast.
+     Please add
+     <a href="/series/${this.series.id}/plan">
+       all of your known upcoming episodes
+     </a>
+     to the Production Calendar.`;
+
+    this.modal.alert('Missing Episode Drafts', msg,  () => {  });
+  }
+
+  loadDistribution() {
+    let obs = this.series.loadRelated('distributions');
+
+    obs.subscribe(() => {
+      this.distribution = this.series.distributions.find((d) => d.kind === 'podcast');
+    });
+
+    return obs;
+  }
+
+  loadPodcast() {
+    if (!this.distribution) {
+      this.podcast = null;
+      return of({});
+    }
+
+    let obs = this.distribution.loadRelated('podcast');
+    obs.subscribe(() => {
+      this.podcast = this.distribution.podcast;
+    });
+
+    return obs;
+  }
+
+  loadUnpublished() {
+    this.hasDrafts = null;
+
+    const halParams = {
+      page: 1,
+      per: 1,
+      filters: `after=${new Date().toISOString()}`,
+      zoom: false
+    };
+
+    let obs = this.series.doc.followItems('prx:stories', halParams);
+
+    obs.subscribe((stories: HalDoc[]) => {
+      if (stories.length > 0) {
+        this.hasDrafts = true;
+      } else {
+        this.hasDrafts = false;
+      }
+    });
+    return obs;
+  }
+
+  unpublishedCountReady() {
+    return this.hasDrafts !== null;
+  }
+
+  get podcastComplete() {
+    if (!this.distribution) {
+      return false;
+    }
+    return true;
   }
 
   ngDoCheck() {
