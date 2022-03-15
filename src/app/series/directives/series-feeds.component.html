@@ -1,0 +1,74 @@
+<div *ngIf="!loading">
+  <prx-fancy-field label="Feeds">
+    <div class="fancy-hint">
+      Create and configure RSS feeds to meet your distribution needs. Add new feeds as you need. A public feed is created by default.
+    </div>
+  </prx-fancy-field>
+
+  <div class="feeds">
+    <ng-container *ngFor="let f of podcast.feeds; index as i">
+      <div *ngIf="!f.isDestroy" class="feed">
+        <header>
+          <strong *ngIf="f.isDefault">Default Feed</strong>
+          <strong *ngIf="!f.isDefault">{{ f.title || '(New Feed)' }}</strong>
+          <div class="feed-url">
+            {{ f.privateFeedUrl }}
+            <a [href]="f.privateFeedUrl" target="_blank" rel="noopener" class="external"></a>
+          </div>
+          <button *ngIf="expanded[i]" type="button" class="collapse" aria-label="Collapse" (click)="collapse(i)"></button>
+          <button *ngIf="!expanded[i]" type="button" class="expand" aria-label="Expand" (click)="expand(i)"></button>
+        </header>
+        <section *ngIf="expanded[i]">
+          <prx-fancy-field *ngIf="!f.isDefault" required textinput [model]="f" name="title" id="title{{ i }}" label="Feed Label">
+            <div class="fancy-hint">A label for this feed, such as "Limited Items" or "Apple Subscription"</div>
+          </prx-fancy-field>
+
+          <prx-fancy-field
+            *ngIf="!f.isDefault"
+            required
+            textinput
+            [model]="f"
+            name="slug"
+            id="slug{{ i }}"
+            label="Feed Slug"
+            advancedConfirm="Woh there! Changing your private feed url could break things for your subscribers - are you sure?"
+          >
+            <div class="fancy-hint">An alphanumeric slug used to identify your feed. Also used in the private feed RSS url.</div>
+          </prx-fancy-field>
+
+          <prx-fancy-field
+            required
+            textinput
+            [model]="f"
+            name="fileName"
+            id="fileName{{ i }}"
+            label="File Name"
+            advancedConfirm="Woh there! Changing your private feed url could break things for your subscribers - are you sure?"
+          >
+            <div class="fancy-hint">The file name used for your private RSS feed.</div>
+          </prx-fancy-field>
+
+          <prx-fancy-field
+            *ngIf="!f.isDefault"
+            checkbox
+            [model]="f"
+            name="private"
+            id="private{{ i }}"
+            label="Feed Visibility"
+            prompt="Private (Unlisted)"
+          >
+            <div class="fancy-hint">
+              Your feed can be public or private. Leave unchecked to keep it a Public Feed. If you check this box this feed becomes Private
+              and you'll need to generate an authorization token. Be careful who you share your private link with -
+              <strong>anyone who has access to the link will be able to use it</strong>.
+            </div>
+          </prx-fancy-field>
+        </section>
+      </div>
+    </ng-container>
+  </div>
+
+  <section>
+    <button class="add-feed" (click)="addFeed()"><i class="icon-plus white" aria-hidden="true"></i> Add feed</button>
+  </section>
+</div>
