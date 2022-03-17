@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable,  Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { CmsService } from '../core';
 import { ModalService, TabService, ToastrService } from 'ngx-prx-styleguide';
@@ -16,9 +16,7 @@ import { map, takeUntil } from 'rxjs/operators';
   styleUrls: ['series.component.css'],
   templateUrl: 'series.component.html'
 })
-
 export class SeriesComponent implements OnInit, OnDestroy {
-
   private _onDestroy = new Subject();
 
   id: number;
@@ -40,11 +38,11 @@ export class SeriesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.route.params.forEach(params => {
-     this.id = +params['id'];
-     this.base = '/series/' + (this.id || 'new');
-     this.loadSeries();
-   });
+    this.route.params.forEach((params) => {
+      this.id = +params['id'];
+      this.base = '/series/' + (this.id || 'new');
+      this.loadSeries();
+    });
   }
 
   ngOnDestroy() {
@@ -53,24 +51,24 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   loadSeries() {
     if (this.id) {
-      this.cms.auth.follow('prx:series', {id: this.id}).subscribe(
-        s => {
-          s.follow('prx:account').subscribe(a => {
+      this.cms.auth.follow('prx:series', { id: this.id }).subscribe(
+        (s) => {
+          s.follow('prx:account').subscribe((a) => {
             this.setSeries(a, s);
           });
         },
-        err => {
+        (err) => {
           if (err.status === 404 && err.name === 'HalHttpError') {
             this.toastr.error('No series found. Redirecting to new series page');
             console.error(`Series with id ${this.id} not found`);
             setTimeout(() => this.router.navigate(['/series', 'new']), 3000);
           } else {
-            throw(err);
+            throw err;
           }
         }
       );
     } else {
-      this.cms.defaultAccount.subscribe(a => this.setSeries(a, null));
+      this.cms.defaultAccount.subscribe((a) => this.setSeries(a, null));
     }
   }
 
@@ -106,7 +104,9 @@ export class SeriesComponent implements OnInit, OnDestroy {
         'Cannot Edit Series',
         `This series was created in the older PRX.org app, and must be
         edited there. <a target="_blank" href="${oldLink}">Click here</a> to view it.`,
-        () => { window.history.back(); }
+        () => {
+          window.history.back();
+        }
       );
     }
   }
@@ -123,31 +123,28 @@ export class SeriesComponent implements OnInit, OnDestroy {
       return this.series.seriesImports;
     }
 
-    this.series.seriesImports = this.importLoader.fetchImportsForSeries(this.series)
-      .pipe(
-        map((seriesImports) => {
-          return seriesImports.map((si) => {
-            return this.importLoader.pollForChanges(si);
-          });
-        })
-      );
+    this.series.seriesImports = this.importLoader.fetchImportsForSeries(this.series).pipe(
+      map((seriesImports) => {
+        return seriesImports.map((si) => {
+          return this.importLoader.pollForChanges(si);
+        });
+      })
+    );
 
     // start up your pollers!
-    this.series.seriesImports.pipe(
-      takeUntil(this._onDestroy))
-      .subscribe((seriesImports) => {
-        seriesImports.map((siObservable) => {
-          siObservable
-            .pipe(
-              takeUntil(this._onDestroy),
-              // TODO sample the series resource less frequently
-              // auditTime(5000)
-            )
-            .subscribe((si) => {
-              this.seriesImportStateChanged(si);
-            });
-        });
+    this.series.seriesImports.pipe(takeUntil(this._onDestroy)).subscribe((seriesImports) => {
+      seriesImports.map((siObservable) => {
+        siObservable
+          .pipe(
+            takeUntil(this._onDestroy)
+            // TODO sample the series resource less frequently
+            // auditTime(5000)
+          )
+          .subscribe((si) => {
+            this.seriesImportStateChanged(si);
+          });
       });
+    });
 
     return this.series.seriesImports;
   }
@@ -160,7 +157,6 @@ export class SeriesComponent implements OnInit, OnDestroy {
     this.loadSeries();
 
     return si;
-
   }
 
   validationStrategy() {
@@ -233,5 +229,4 @@ export class SeriesComponent implements OnInit, OnDestroy {
       return true;
     }
   }
-
 }

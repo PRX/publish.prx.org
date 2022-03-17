@@ -4,43 +4,39 @@
   </a>
   <prx-status-bar-text bold uppercase>{{ !id ? 'Create' : 'Edit' }} Series</prx-status-bar-text>
   <ng-container *ngIf="series">
-    <prx-status-bar-text italic stretch>{{series.title || '(Untitled)'}}</prx-status-bar-text>
+    <prx-status-bar-text italic stretch>{{ series.title || '(Untitled)' }}</prx-status-bar-text>
 
     <ng-container class="status_bar-actions" *ngIf="series.isNew">
-      <prx-button [model]="series" plain=1 working=0 disabled=0 (click)="discard()">Discard</prx-button>
-      <prx-button [model]="series" visible=1 green=1 (click)="save()">Create</prx-button>
+      <prx-button [model]="series" plain="1" working="0" disabled="0" (click)="discard()">Discard</prx-button>
+      <prx-button [model]="series" visible="1" green="1" (click)="save()">Create</prx-button>
     </ng-container>
 
     <ng-container class="status_bar-actions" *ngIf="!series.isNew">
-      <prx-status-bar-text class="hero-info">Last modified {{series.updatedAt | timeago}}</prx-status-bar-text>
-      <prx-button [model]="series" plain=1 working=0 disabled=0 (click)="discard()">Discard</prx-button>
-      <prx-button [model]="series" (click)="save()">Save
+      <prx-status-bar-text class="hero-info">Last modified {{ series.updatedAt | timeago }}</prx-status-bar-text>
+      <prx-button [model]="series" plain="1" working="0" disabled="0" (click)="discard()">Discard</prx-button>
+      <prx-button [model]="series" (click)="save()"
+        >Save
         <div *ngIf="series.invalid()" class="invalid-tip">
           <h4>Invalid changes</h4>
           <p>Correct them before saving</p>
         </div>
       </prx-button>
-      <prx-button working=0 disabled=1 [visible]="!series.changed()">Saved</prx-button>
+      <prx-button working="0" disabled="1" [visible]="!series.changed()">Saved</prx-button>
     </ng-container>
   </ng-container>
 </prx-status-bar>
 
 <prx-tabs [model]="series">
   <nav>
-    <a routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" [routerLink]="base">Basic Info</a>
+    <a routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" [routerLink]="base">Basic Info</a>
     <a routerLinkActive="active" [routerLink]="[base, 'templates']">Audio Templates</a>
     <a routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Info</a>
-    <a *ngIf="fromImport"
-      routerLinkActive="active"
-      [routerLink]="[base, 'import-status']"
-      >
-      Import Status
-    </a>
+    <a *ngIf="fromImport" routerLinkActive="active" [routerLink]="[base, 'import-status']"> Import Status </a>
     <a *ngIf="series && !series?.isNew" routerLinkActive="active" [routerLink]="[base, 'plan']">Plan Episodes</a>
   </nav>
 
   <div class="links" *ngIf="series && !series?.isNew">
-    <a routerLinkActive="active" [routerLink]="[base, 'list']">{{storyCount}} {{storyNoun}} in Series</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'list']">{{ storyCount }} {{ storyNoun }} in Series</a>
   </div>
   <div class="extras">
     <button *ngIf="id && storyCount == 0" class="delete" (click)="confirmDelete($event)">Delete</button>
