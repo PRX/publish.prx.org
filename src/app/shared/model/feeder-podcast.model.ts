@@ -22,9 +22,9 @@ export class FeederPodcastModel extends BaseModel {
     'subCategory',
     'explicit',
     'link',
-    'newFeedUrl',
-    'publicFeedUrl',
-    'enclosurePrefix',
+    'newFeedUrl', // TODO: moved to feed
+    'publicFeedUrl', // TODO: moved to feed
+    'enclosurePrefix', // TODO: moved to feed
     'copyright',
     'complete',
     'language',
@@ -36,8 +36,8 @@ export class FeederPodcastModel extends BaseModel {
     'managingEditorName',
     'managingEditorEmail',
     'serialOrder',
-    'displayEpisodesCount',
-    'displayFullEpisodesCount'
+    'displayEpisodesCount', // TODO: moved to feed
+    'displayFullEpisodesCount' // TODO: moved to feed
   ];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';

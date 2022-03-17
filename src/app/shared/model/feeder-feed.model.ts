@@ -61,6 +61,9 @@ export class FeederFeedModel extends BaseModel {
   paidAds = true;
   sonicAds = true;
 
+  // TODO COPY: url, new_feed_url, enclosure_prefix, display_episodes_count, display_full_episodes_count
+  // TODO NEW: episode_offset_seconds, include_tags, audio_format
+
   VALIDATORS = {
     title: [UNLESS_DEFAULT(REQUIRED())],
     slug: [UNLESS_DEFAULT(REQUIRED()), UNLESS_DEFAULT(FEED_SLUG)],
