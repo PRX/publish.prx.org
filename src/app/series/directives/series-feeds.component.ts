@@ -52,4 +52,8 @@ export class SeriesFeedsComponent implements OnDestroy {
     this.podcast.feeds.push(feed);
     this.expanded.push(true);
   }
+
+  removeFeed(index: number) {
+    this.podcast.feeds[index].isDestroy = true;
+  }
 }

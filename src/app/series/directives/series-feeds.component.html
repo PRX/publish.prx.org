@@ -13,7 +13,7 @@
           <strong *ngIf="!f.isDefault">{{ f.title || '(New Feed)' }}</strong>
           <div *ngIf="!f.isNew" class="feed-url">
             {{ f.privateFeedUrl() }}
-            <a [href]="f.privateFeedUrl()" target="_blank" rel="noopener" class="external-link"></a>
+            <a [href]="f.privateFeedUrl()" target="_blank" rel="noopener" class="external-icon"></a>
           </div>
           <button *ngIf="expanded[i]" type="button" class="collapse" aria-label="Collapse" (click)="collapse(i)"></button>
           <button *ngIf="!expanded[i]" type="button" class="expand" aria-label="Expand" (click)="expand(i)"></button>
@@ -87,8 +87,8 @@
                 [class.changed]="f.tokenChanged(j)"
                 [class.invalid]="f.tokenInvalid(j)"
               />
-              <a [href]="f.privateFeedUrl(t.token)" target="_blank" rel="noopener" class="external-link"></a>
-              <button type="button" aria-label="Remove" class="btn-icon icon-cancel grey-dove" (click)="f.removeToken(j)"></button>
+              <a [href]="f.privateFeedUrl(t.token)" target="_blank" rel="noopener" class="external-icon"></a>
+              <button type="button" aria-label="Remove" class="btn-link remove-icon" (click)="f.removeToken(j)"></button>
             </div>
 
             <button type="button" class="btn-link" (click)="f.addToken()">Add token</button>
@@ -103,12 +103,16 @@
               <prx-fancy-field checkbox [model]="f" name="sonicAds" id="sonicAds{{ i }}" prompt="Sonic IDs"> </prx-fancy-field>
             </div>
           </prx-fancy-field>
+
+          <button *ngIf="!f.isDefault" class="delete remove-feed" (click)="removeFeed(i)">
+            <i class="remove-icon" aria-hidden="true"></i> Remove feed
+          </button>
         </section>
       </div>
     </ng-container>
   </div>
 
   <section>
-    <button class="add-feed" (click)="addFeed()"><i class="icon-plus white" aria-hidden="true"></i> Add feed</button>
+    <button class="add-feed" (click)="addFeed()"><i class="add-icon" aria-hidden="true"></i> Add feed</button>
   </section>
 </div>

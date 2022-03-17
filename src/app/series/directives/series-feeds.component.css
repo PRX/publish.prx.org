@@ -14,8 +14,8 @@
 .add-feed {
   margin-top: 30px;
 }
-.add-feed i {
-  vertical-align: bottom;
+.remove-feed {
+  margin-bottom: 15px;
 }
 
 /* header for each feed */
@@ -69,8 +69,8 @@
   transform: rotate(-45deg);
 }
 
-/* external link icon */
-.feed .external-link {
+/* icons */
+.external-icon {
   display: inline-block;
   transform: scale(1);
   width: 12px;
@@ -79,27 +79,57 @@
   margin-left: 6px;
   margin-top: 1px;
 }
-.feed .external-link::after,
-.feed .external-link::before {
+.external-icon::after,
+.external-icon::before {
   content: '';
   display: block;
   box-sizing: border-box;
   position: absolute;
   right: -4px;
 }
-.feed .external-link::before {
+.external-icon::before {
   background: currentColor;
   transform: rotate(-45deg);
   width: 12px;
   height: 2px;
   top: 1px;
 }
-.feed .external-link::after {
+.external-icon::after {
   width: 8px;
   height: 8px;
   border-right: 2px solid;
   border-top: 2px solid;
   top: -4px;
+}
+.add-icon,
+.remove-icon {
+  display: inline-block;
+  transform: scale(1);
+  width: 12px;
+  height: 12px;
+  margin-right: 2px;
+}
+.add-icon::before,
+.add-icon::after,
+.remove-icon::before,
+.remove-icon::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  top: 6px;
+  left: 0;
+}
+.add-icon::after {
+  transform: rotate(90deg);
+}
+.remove-icon::before {
+  transform: rotate(45deg);
+}
+.remove-icon::after {
+  transform: rotate(-45deg);
 }
 
 /* main forms */
@@ -124,13 +154,12 @@
 .feed section .auth-token input.invalid {
   outline: 5px auto #e32;
 }
-.feed section .auth-token .external-link {
+.feed section .auth-token .external-icon {
   margin: 15px 0;
 }
-.feed section .auth-token button {
+.feed section .auth-token .remove-icon {
   flex: 0 0 20px;
-  margin-left: 0;
-  margin-right: 0;
+  margin: 13px 0;
 }
 .feed section .ad-zones {
   display: flex;
