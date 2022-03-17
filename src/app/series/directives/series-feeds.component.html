@@ -11,9 +11,9 @@
         <header>
           <strong *ngIf="f.isDefault">Default Feed</strong>
           <strong *ngIf="!f.isDefault">{{ f.title || '(New Feed)' }}</strong>
-          <div class="feed-url">
-            {{ f.privateFeedUrl }}
-            <a [href]="f.privateFeedUrl" target="_blank" rel="noopener" class="external"></a>
+          <div *ngIf="!f.isNew" class="feed-url">
+            {{ f.privateFeedUrl() }}
+            <a [href]="f.privateFeedUrl()" target="_blank" rel="noopener" class="external-link"></a>
           </div>
           <button *ngIf="expanded[i]" type="button" class="collapse" aria-label="Collapse" (click)="collapse(i)"></button>
           <button *ngIf="!expanded[i]" type="button" class="expand" aria-label="Expand" (click)="expand(i)"></button>
@@ -61,6 +61,46 @@
               Your feed can be public or private. Leave unchecked to keep it a Public Feed. If you check this box this feed becomes Private
               and you'll need to generate an authorization token. Be careful who you share your private link with -
               <strong>anyone who has access to the link will be able to use it</strong>.
+            </div>
+          </prx-fancy-field>
+
+          <prx-fancy-field *ngIf="f.private" label="Auth Tokens">
+            <div class="fancy-hint">
+              Auth tokens help ensure your feed stays private. They must be appended to the feed URL for the audio to work. Remove them to
+              revoke access to your feed.
+            </div>
+
+            <div *ngFor="let t of f.tokens; index as j" class="auth-token">
+              <input
+                type="text"
+                placeholder="Label"
+                [(ngModel)]="t.label"
+                (ngModelChange)="f.setTokens()"
+                [class.changed]="f.labelChanged(j)"
+                [class.invalid]="f.labelInvalid(j)"
+              />
+              <input
+                type="text"
+                placeholder="Token"
+                [(ngModel)]="t.token"
+                (ngModelChange)="f.setTokens()"
+                [class.changed]="f.tokenChanged(j)"
+                [class.invalid]="f.tokenInvalid(j)"
+              />
+              <a [href]="f.privateFeedUrl(t.token)" target="_blank" rel="noopener" class="external-link"></a>
+              <button type="button" aria-label="Remove" class="btn-icon icon-cancel grey-dove" (click)="f.removeToken(j)"></button>
+            </div>
+
+            <button type="button" class="btn-link" (click)="f.addToken()">Add token</button>
+          </prx-fancy-field>
+
+          <prx-fancy-field *ngIf="!f.isDefault" label="Ad Zones to include">
+            <div class="fancy-hint">Control the types of ads that should be stitched into episodes in this feed.</div>
+            <div class="ad-zones">
+              <prx-fancy-field checkbox [model]="f" name="billboardAds" id="billboardAds{{ i }}" prompt="Billboards"> </prx-fancy-field>
+              <prx-fancy-field checkbox [model]="f" name="houseAds" id="houseAds{{ i }}" prompt="House Ads"> </prx-fancy-field>
+              <prx-fancy-field checkbox [model]="f" name="paidAds" id="paidAds{{ i }}" prompt="Paid Ads"> </prx-fancy-field>
+              <prx-fancy-field checkbox [model]="f" name="sonicAds" id="sonicAds{{ i }}" prompt="Sonic IDs"> </prx-fancy-field>
             </div>
           </prx-fancy-field>
         </section>

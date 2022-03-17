@@ -2,6 +2,13 @@ import { Observable } from 'rxjs';
 import { HalDoc } from '../../core';
 import { BaseModel, BaseInvalid, REQUIRED } from 'ngx-prx-styleguide';
 
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+const random = (n) =>
+  new Array(n)
+    .fill(null)
+    .map(() => chars.charAt(Math.random() * chars.length))
+    .join('');
+
 export const UNLESS_DEFAULT = (validator: BaseInvalid) => {
   return (key: string, value: any, strict?: boolean, model?: any) => {
     if (model && model.isDefault) {
@@ -30,19 +37,35 @@ const FEED_FILE_NAME: BaseInvalid = (key: string, value: any): string => {
   }
 };
 
+const TOKENS_JSON: BaseInvalid = (key: string, value: any): string => {
+  const tokens = JSON.parse(value);
+  if (tokens.every((t) => t.label) && tokens.every((t) => t.token)) {
+    return null;
+  } else {
+    return 'Tokens cannot have blank fields';
+  }
+};
+
 export class FeederFeedModel extends BaseModel {
   id: number;
+  tokens = [];
+
+  SETABLE = ['title', 'slug', 'fileName', 'private', 'tokensJson', 'billboardAds', 'houseAds', 'paidAds', 'sonicAds'];
   title = '';
   slug = '';
   fileName = 'feed-rss.xml';
   private = false;
-
-  SETABLE = ['title', 'slug', 'fileName', 'private'];
+  tokensJson = '[]';
+  billboardAds = true;
+  houseAds = true;
+  paidAds = true;
+  sonicAds = true;
 
   VALIDATORS = {
     title: [UNLESS_DEFAULT(REQUIRED())],
     slug: [UNLESS_DEFAULT(REQUIRED()), UNLESS_DEFAULT(FEED_SLUG)],
-    fileName: [REQUIRED(), FEED_FILE_NAME]
+    fileName: [REQUIRED(), FEED_FILE_NAME],
+    tokensJson: [TOKENS_JSON]
   };
 
   constructor(podcast: HalDoc, feed?: HalDoc, loadRelated = true) {
@@ -52,15 +75,6 @@ export class FeederFeedModel extends BaseModel {
 
   get isDefault(): boolean {
     return this.id && !this.slug;
-  }
-
-  get privateFeedUrl(): string {
-    const base = this.parent['publishedUrl'].split('/', 4).join('/');
-    if (this.isDefault) {
-      return `${base}/${this.fileName}`;
-    } else {
-      return `${base}/${this.slug}/${this.fileName}`;
-    }
   }
 
   key() {
@@ -81,6 +95,15 @@ export class FeederFeedModel extends BaseModel {
     this.slug = this.doc['slug'];
     this.fileName = this.doc['fileName'];
     this.private = this.doc['private'] || false;
+    this.tokensJson = JSON.stringify(this.doc['tokens'] || []);
+    this.tokens = JSON.parse(this.tokensJson);
+
+    // null includeZones means include them all
+    const include = this.doc['includeZones'] || ['billboard', 'house', 'ad', 'sonic_id'];
+    this.billboardAds = include.includes('billboard');
+    this.houseAds = include.includes('house');
+    this.paidAds = include.includes('ad');
+    this.sonicAds = include.includes('sonic_id');
   }
 
   encode(): {} {
@@ -90,10 +113,75 @@ export class FeederFeedModel extends BaseModel {
     data.slug = this.slug;
     data.fileName = this.fileName;
     data.private = this.private;
+    data.tokens = JSON.parse(this.tokensJson);
+
+    // set to null if including all zones
+    if (this.billboardAds && this.houseAds && this.paidAds && this.sonicAds) {
+      data.includeZones = null;
+    } else {
+      data.includeZones = [
+        this.billboardAds && 'billboard',
+        this.houseAds && 'house',
+        this.paidAds && 'ad',
+        this.sonicAds && 'sonic_id'
+      ].filter((z) => z);
+    }
+
     return data;
   }
 
   saveNew(data: {}): Observable<HalDoc> {
     return this.parent.create('prx:feeds', {}, data);
+  }
+
+  privateFeedUrl(auth?: string): string {
+    if (this.doc) {
+      const url = this.doc.expand('prx:private-feed', { auth });
+
+      // sub in the current slug/filename
+      let parts = url.split('/');
+      if (!this.isDefault) {
+        parts[parts.length - 2] = this.slug;
+      }
+      if (parts[parts.length - 1].includes('?')) {
+        parts[parts.length - 1] = this.fileName + '?' + parts[parts.length - 1].split('?').pop();
+      } else {
+        parts[parts.length - 1] = this.fileName;
+      }
+
+      return parts.join('/');
+    }
+  }
+
+  addToken() {
+    this.tokens.push({ label: '', token: random(20) });
+    this.setTokens();
+  }
+
+  removeToken(index: number) {
+    this.tokens.splice(index, 1);
+    this.setTokens();
+  }
+
+  setTokens() {
+    this.set('tokensJson', JSON.stringify(this.tokens));
+  }
+
+  labelChanged(index: number): boolean {
+    const originalToken = JSON.parse(this.original['tokensJson'])[index];
+    return !originalToken || originalToken.label !== this.tokens[index].label;
+  }
+
+  labelInvalid(index: number): boolean {
+    return !this.tokens[index].label;
+  }
+
+  tokenChanged(index: number): boolean {
+    const originalToken = JSON.parse(this.original['tokensJson'])[index];
+    return !originalToken || originalToken.token !== this.tokens[index].token;
+  }
+
+  tokenInvalid(index: number): boolean {
+    return !this.tokens[index].token;
   }
 }

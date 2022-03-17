@@ -11,6 +11,14 @@
 .feed:first-child {
   margin-top: 0;
 }
+.add-feed {
+  margin-top: 30px;
+}
+.add-feed i {
+  vertical-align: bottom;
+}
+
+/* header for each feed */
 .feed header {
   background-color: #b8b8b8;
   padding: 16px 14px;
@@ -26,41 +34,11 @@
   flex: 1;
 }
 .feed header .feed-url {
+  /*TODO: how to limit this width?*/
   /*white-space: nowrap;*/
   /*overflow: hidden;*/
   /*text-overflow: ellipsis;*/
   /*min-width: 0;*/
-}
-.feed header .feed-url a {
-  display: inline-block;
-  transform: scale(1);
-  width: 12px;
-  height: 12px;
-  box-shadow: -2px 2px 0 0, -4px -4px 0 -2px, 4px 4px 0 -2px;
-  margin-left: 6px;
-  margin-top: 1px;
-}
-.feed header .feed-url .external::after,
-.feed header .feed-url .external::before {
-  content: '';
-  display: block;
-  box-sizing: border-box;
-  position: absolute;
-  right: -4px;
-}
-.feed header .feed-url .external::before {
-  background: currentColor;
-  transform: rotate(-45deg);
-  width: 12px;
-  height: 2px;
-  top: 1px;
-}
-.feed header .feed-url .external::after {
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid;
-  border-top: 2px solid;
-  top: -4px;
 }
 .feed header button {
   width: 24px;
@@ -90,6 +68,41 @@
   border-right: 2px solid;
   transform: rotate(-45deg);
 }
+
+/* external link icon */
+.feed .external-link {
+  display: inline-block;
+  transform: scale(1);
+  width: 12px;
+  height: 12px;
+  box-shadow: -2px 2px 0 0, -4px -4px 0 -2px, 4px 4px 0 -2px;
+  margin-left: 6px;
+  margin-top: 1px;
+}
+.feed .external-link::after,
+.feed .external-link::before {
+  content: '';
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  right: -4px;
+}
+.feed .external-link::before {
+  background: currentColor;
+  transform: rotate(-45deg);
+  width: 12px;
+  height: 2px;
+  top: 1px;
+}
+.feed .external-link::after {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid;
+  border-top: 2px solid;
+  top: -4px;
+}
+
+/* main forms */
 .feed section {
   background: #fff;
   border-bottom: 1px solid #ddd;
@@ -97,9 +110,32 @@
   margin-top: -1px;
   padding: 18px 22px 0;
 }
-.add-feed {
-  margin-top: 30px;
+.feed section .auth-token {
+  display: flex;
+  gap: 15px;
+  margin: 15px 0;
 }
-.add-feed i {
-  vertical-align: bottom;
+.feed section .auth-token input::placeholder {
+  opacity: 0.5;
+}
+.feed section .auth-token input.changed {
+  outline: 5px auto #f09b4c;
+}
+.feed section .auth-token input.invalid {
+  outline: 5px auto #e32;
+}
+.feed section .auth-token .external-link {
+  margin: 15px 0;
+}
+.feed section .auth-token button {
+  flex: 0 0 20px;
+  margin-left: 0;
+  margin-right: 0;
+}
+.feed section .ad-zones {
+  display: flex;
+  gap: 15px;
+}
+.feed section .ad-zones prx-fancy-field {
+  width: auto;
 }

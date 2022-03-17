@@ -1,8 +1,6 @@
 import { TabService } from 'ngx-prx-styleguide';
 import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-// import { map } from 'rxjs/operators';
-// import { TabService, SimpleDate, HalDoc } from 'ngx-prx-styleguide';
 import { SeriesModel, FeederPodcastModel, FeederFeedModel } from '../../shared';
 
 @Component({
@@ -32,7 +30,7 @@ export class SeriesFeedsComponent implements OnDestroy {
           this.podcast = distribution.podcast;
           this.podcast.loadRelated('feeds').subscribe(() => {
             this.loading = false;
-            this.expanded = this.podcast.feeds.map((feed, index) => index === 0);
+            this.expanded = this.podcast.feeds.map(() => true);
           });
         });
       } else {
