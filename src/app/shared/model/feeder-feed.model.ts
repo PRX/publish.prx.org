@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { HalDoc } from '../../core';
-import { BaseModel, BaseInvalid, REQUIRED } from 'ngx-prx-styleguide';
+import { BaseModel, BaseInvalid, REQUIRED, URL } from 'ngx-prx-styleguide';
 
 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 const random = (n) =>
@@ -46,29 +46,61 @@ const TOKENS_JSON: BaseInvalid = (key: string, value: any): string => {
   }
 };
 
+const POSITIVE_INT_OR_BLANK: BaseInvalid = (_key: string, value: any): string => {
+  if (value && !value.match(/^[1-9][0-9]*$/)) {
+    return 'Enter a positive number';
+  }
+  return null;
+};
+
 export class FeederFeedModel extends BaseModel {
   id: number;
   tokens = [];
 
-  SETABLE = ['title', 'slug', 'fileName', 'private', 'tokensJson', 'billboardAds', 'houseAds', 'paidAds', 'sonicAds'];
+  SETABLE = [
+    'title',
+    'slug',
+    'fileName',
+    'private',
+    'tokensJson',
+    'url',
+    'newFeedUrl',
+    'enclosurePrefix',
+    'displayEpisodesCount',
+    'displayFullEpisodesCount',
+    'billboardAds',
+    'houseAds',
+    'paidAds',
+    'sonicAds'
+  ];
   title = '';
   slug = '';
   fileName = 'feed-rss.xml';
   private = false;
   tokensJson = '[]';
+  url = '';
+  newFeedUrl = '';
+  enclosurePrefix = '';
+  displayEpisodesCount = '';
+  displayFullEpisodesCount = '';
   billboardAds = true;
   houseAds = true;
   paidAds = true;
   sonicAds = true;
-
-  // TODO COPY: url, new_feed_url, enclosure_prefix, display_episodes_count, display_full_episodes_count
-  // TODO NEW: episode_offset_seconds, include_tags, audio_format
+  // episodeOffsetSeconds = '';
+  // includeTags = '';
+  // audioFormat = '';
 
   VALIDATORS = {
     title: [UNLESS_DEFAULT(REQUIRED())],
     slug: [UNLESS_DEFAULT(REQUIRED()), UNLESS_DEFAULT(FEED_SLUG)],
     fileName: [REQUIRED(), FEED_FILE_NAME],
-    tokensJson: [TOKENS_JSON]
+    tokensJson: [TOKENS_JSON],
+    url: [URL('Not a valid URL')],
+    newFeedUrl: [URL('Not a valid URL')],
+    enclosurePrefix: [URL('Not a valid URL')],
+    displayEpisodesCount: [POSITIVE_INT_OR_BLANK],
+    displayFullEpisodesCount: [POSITIVE_INT_OR_BLANK]
   };
 
   constructor(podcast: HalDoc, feed?: HalDoc, loadRelated = true) {
@@ -100,6 +132,11 @@ export class FeederFeedModel extends BaseModel {
     this.private = this.doc['private'] || false;
     this.tokensJson = JSON.stringify(this.doc['tokens'] || []);
     this.tokens = JSON.parse(this.tokensJson);
+    this.url = this.doc['url'] || '';
+    this.newFeedUrl = this.doc['newFeedUrl'] || '';
+    this.enclosurePrefix = this.doc['enclosurePrefix'] || '';
+    this.displayEpisodesCount = this.doc['displayEpisodesCount'] ? this.doc['displayEpisodesCount'].toString() : '';
+    this.displayFullEpisodesCount = this.doc['displayFullEpisodesCount'] ? this.doc['displayFullEpisodesCount'].toString() : '';
 
     // null includeZones means include them all
     const include = this.doc['includeZones'] || ['billboard', 'house', 'ad', 'sonic_id'];
@@ -117,6 +154,11 @@ export class FeederFeedModel extends BaseModel {
     data.fileName = this.fileName;
     data.private = this.private;
     data.tokens = JSON.parse(this.tokensJson);
+    data.url = this.url || null;
+    data.newFeedUrl = this.newFeedUrl || null;
+    data.enclosurePrefix = this.enclosurePrefix || null;
+    data.displayEpisodesCount = parseInt(this.displayEpisodesCount, 10) || null;
+    data.displayFullEpisodesCount = parseInt(this.displayFullEpisodesCount, 10) || null;
 
     // set to null if including all zones
     if (this.billboardAds && this.houseAds && this.paidAds && this.sonicAds) {
@@ -154,6 +196,10 @@ export class FeederFeedModel extends BaseModel {
 
       return parts.join('/');
     }
+  }
+
+  publishedFeedUrl(): string {
+    return this.url || this.privateFeedUrl();
   }
 
   addToken() {
