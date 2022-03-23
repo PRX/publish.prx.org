@@ -103,13 +103,15 @@ export class FeederFeedModel extends BaseModel {
     displayFullEpisodesCount: [POSITIVE_INT_OR_BLANK]
   };
 
+  URLS = ['url', 'newFeedUrl', 'enclosurePrefix'];
+
   constructor(podcast: HalDoc, feed?: HalDoc, loadRelated = true) {
     super();
     this.init(podcast, feed, loadRelated);
   }
 
   get isDefault(): boolean {
-    return this.id && !this.slug;
+    return !!this.id && !this.slug;
   }
 
   key() {
@@ -125,10 +127,10 @@ export class FeederFeedModel extends BaseModel {
   }
 
   decode() {
-    this.id = this.doc['id'];
-    this.title = this.doc['title'];
-    this.slug = this.doc['slug'];
-    this.fileName = this.doc['fileName'];
+    this.id = this.doc['id'] || null;
+    this.title = this.doc['title'] || '';
+    this.slug = this.doc['slug'] || '';
+    this.fileName = this.doc['fileName'] || 'feed-rss.xml';
     this.private = this.doc['private'] || false;
     this.tokensJson = JSON.stringify(this.doc['tokens'] || []);
     this.tokens = JSON.parse(this.tokensJson);
@@ -195,6 +197,8 @@ export class FeederFeedModel extends BaseModel {
       }
 
       return parts.join('/');
+    } else {
+      return null;
     }
   }
 
