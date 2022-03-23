@@ -9,8 +9,7 @@ describe('SeriesFeedsComponent', () => {
   provide(TabService);
 
   cit('shows an error message if you have no podcast distribution', (fix, el, comp) => {
-    const podcastUrl = 'http://some.where/your/podcast/1234';
-    const series = cms().mock('prx:series', {});
+    const series = cms().mock('prx:series', { id: 'some-id' });
 
     comp.load(new SeriesModel(null, series, false));
     fix.detectChanges();
