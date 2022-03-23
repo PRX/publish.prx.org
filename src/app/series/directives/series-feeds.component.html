@@ -7,7 +7,11 @@
     </div>
   </prx-fancy-field>
 
-  <div class="feeds">
+  <div class="feeds" *ngIf="!podcast || !podcast.feeds.length">
+    <h2>No feeds found! Please contact support</h2>
+  </div>
+
+  <div class="feeds" *ngIf="podcast">
     <ng-container *ngFor="let f of podcast.feeds; index as i">
       <div *ngIf="!f.isDestroy" class="feed">
         <header>
