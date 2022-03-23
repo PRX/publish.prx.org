@@ -90,7 +90,7 @@ export class FeederPodcastModel extends BaseModel {
   related() {
     let feeds = observableOf([]);
 
-    if (this.doc) {
+    if (this.doc && this.doc.has('prx:feeds')) {
       feeds = this.doc.followItems('prx:feeds', { per: 999 }).pipe(
         map((docs) => {
           return docs.map((d) => new FeederFeedModel(this.doc, d)).sort((a, b) => (a.id > b.id ? 1 : -1));

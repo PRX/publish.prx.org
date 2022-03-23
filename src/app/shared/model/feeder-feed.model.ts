@@ -140,10 +140,10 @@ export class FeederFeedModel extends BaseModel {
 
     // null includeZones means include them all
     const include = this.doc['includeZones'] || ['billboard', 'house', 'ad', 'sonic_id'];
-    this.billboardAds = include.includes('billboard');
-    this.houseAds = include.includes('house');
-    this.paidAds = include.includes('ad');
-    this.sonicAds = include.includes('sonic_id');
+    this.billboardAds = include.indexOf('billboard') > -1;
+    this.houseAds = include.indexOf('house') > -1;
+    this.paidAds = include.indexOf('ad') > -1;
+    this.sonicAds = include.indexOf('sonic_id') > -1;
   }
 
   encode(): {} {
@@ -180,7 +180,7 @@ export class FeederFeedModel extends BaseModel {
   }
 
   privateFeedUrl(auth?: string): string {
-    if (this.doc) {
+    if (this.doc && this.doc.has('prx:private-feed')) {
       const url = this.doc.expand('prx:private-feed', { auth });
 
       // sub in the current slug/filename
@@ -188,7 +188,7 @@ export class FeederFeedModel extends BaseModel {
       if (!this.isDefault) {
         parts[parts.length - 2] = this.slug;
       }
-      if (parts[parts.length - 1].includes('?')) {
+      if (parts[parts.length - 1].indexOf('?') > -1) {
         parts[parts.length - 1] = this.fileName + '?' + parts[parts.length - 1].split('?').pop();
       } else {
         parts[parts.length - 1] = this.fileName;
