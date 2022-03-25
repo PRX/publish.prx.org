@@ -1,5 +1,6 @@
 export * from './distribution.model';
 export * from './feeder-episode.model';
+export * from './feeder-feed.model';
 export * from './feeder-podcast.model';
 export * from './image.model';
 export * from './itunes.categories';

@@ -112,4 +112,20 @@ describe('FeederPodcastModel', () => {
     expect(podcast.invalid('displayEpisodesCount')).toBeFalsy();
     expect(podcast.invalid('displayFullEpisodesCount')).toBeFalsy();
   });
+
+  it('loads the feeder feeds in sorted order', () => {
+    const doc = dist.mock('some-feeder', { id: 'pod1' });
+    doc.mockItems('prx:feeds', [
+      { id: 3, title: 'feed three' },
+      { id: 1, title: 'feed one' },
+      { id: 2, title: 'feed two' }
+    ]);
+
+    const podcast = new FeederPodcastModel(series, dist, doc, false);
+    podcast.loadRelated('feeds');
+    expect(podcast.feeds.length).toEqual(3);
+    expect(podcast.feeds[0].title).toEqual('feed one');
+    expect(podcast.feeds[1].title).toEqual('feed two');
+    expect(podcast.feeds[2].title).toEqual('feed three');
+  });
 });

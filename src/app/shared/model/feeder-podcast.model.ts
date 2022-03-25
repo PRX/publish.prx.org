@@ -1,6 +1,8 @@
-import { throwError as observableThrowError, Observable } from 'rxjs';
+import { throwError as observableThrowError, of as observableOf, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HalDoc } from '../../core';
 import { BaseModel, BaseInvalid, REQUIRED, URL, LENGTH } from 'ngx-prx-styleguide';
+import { FeederFeedModel } from './feeder-feed.model';
 
 const POSITIVE_INT_OR_BLANK: BaseInvalid = (_key: string, value: any): string => {
   if (value && !value.match(/^[1-9][0-9]*$/)) {
@@ -20,9 +22,9 @@ export class FeederPodcastModel extends BaseModel {
     'subCategory',
     'explicit',
     'link',
-    'newFeedUrl',
-    'publicFeedUrl',
-    'enclosurePrefix',
+    'newFeedUrl', // TODO: moved to feed
+    'publicFeedUrl', // TODO: moved to feed
+    'enclosurePrefix', // TODO: moved to feed
     'copyright',
     'complete',
     'language',
@@ -34,8 +36,8 @@ export class FeederPodcastModel extends BaseModel {
     'managingEditorName',
     'managingEditorEmail',
     'serialOrder',
-    'displayEpisodesCount',
-    'displayFullEpisodesCount'
+    'displayEpisodesCount', // TODO: moved to feed
+    'displayFullEpisodesCount' // TODO: moved to feed
   ];
   URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
   category = '';
@@ -55,6 +57,8 @@ export class FeederPodcastModel extends BaseModel {
   serialOrder = false;
   displayEpisodesCount = '';
   displayFullEpisodesCount = '';
+
+  feeds: FeederFeedModel[];
 
   VALIDATORS = {
     category: [REQUIRED()],
@@ -84,7 +88,17 @@ export class FeederPodcastModel extends BaseModel {
   }
 
   related() {
-    return {};
+    let feeds = observableOf([]);
+
+    if (this.doc && this.doc.has('prx:feeds')) {
+      feeds = this.doc.followItems('prx:feeds', { per: 999 }).pipe(
+        map((docs) => {
+          return docs.map((d) => new FeederFeedModel(this.doc, d)).sort((a, b) => (a.id > b.id ? 1 : -1));
+        })
+      );
+    }
+
+    return { feeds };
   }
 
   decode() {

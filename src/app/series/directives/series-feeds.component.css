@@ -1,0 +1,170 @@
+/**
+ * Series version/file templates
+ */
+.feeds {
+  width: 100%;
+}
+.feed {
+  width: 100%;
+  margin-top: 2px;
+}
+.feed:first-child {
+  margin-top: 0;
+}
+.add-feed {
+  margin-top: 30px;
+}
+.remove-feed {
+  margin-bottom: 15px;
+}
+
+/* header for each feed */
+.feed header {
+  background-color: #b8b8b8;
+  padding: 16px 14px;
+  display: flex;
+  position: relative;
+}
+.feed header strong {
+  white-space: nowrap;
+  color: #222;
+  font-size: 17px;
+  font-weight: 600;
+  margin-right: 14px;
+  flex: 1;
+}
+.feed header .feed-url {
+  /*TODO: how to limit this width?*/
+  /*white-space: nowrap;*/
+  /*overflow: hidden;*/
+  /*text-overflow: ellipsis;*/
+  /*min-width: 0;*/
+}
+.feed header button {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  margin-left: 10px;
+  transform: scale(1);
+  border: 2px solid transparent;
+  background-color: transparent;
+  color: #222;
+}
+.feed header button::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  left: 6px;
+  bottom: 6px;
+}
+.feed header button.expand::after {
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+  transform: rotate(45deg);
+}
+.feed header button.collapse::after {
+  border-top: 2px solid;
+  border-right: 2px solid;
+  transform: rotate(-45deg);
+}
+
+/* icons */
+.external-icon {
+  display: inline-block;
+  transform: scale(1);
+  width: 12px;
+  height: 12px;
+  box-shadow: -2px 2px 0 0, -4px -4px 0 -2px, 4px 4px 0 -2px;
+  margin-left: 6px;
+  margin-top: 1px;
+}
+.external-icon::after,
+.external-icon::before {
+  content: '';
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  right: -4px;
+}
+.external-icon::before {
+  background: currentColor;
+  transform: rotate(-45deg);
+  width: 12px;
+  height: 2px;
+  top: 1px;
+}
+.external-icon::after {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid;
+  border-top: 2px solid;
+  top: -4px;
+}
+.add-icon,
+.remove-icon {
+  display: inline-block;
+  transform: scale(1);
+  width: 12px;
+  height: 12px;
+  margin-right: 2px;
+}
+.add-icon::before,
+.add-icon::after,
+.remove-icon::before,
+.remove-icon::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  top: 6px;
+  left: 0;
+}
+.add-icon::after {
+  transform: rotate(90deg);
+}
+.remove-icon::before {
+  transform: rotate(45deg);
+}
+.remove-icon::after {
+  transform: rotate(-45deg);
+}
+
+/* main forms */
+.feed section {
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+  margin-top: -1px;
+  padding: 18px 22px 0;
+}
+.feed section .auth-token {
+  display: flex;
+  gap: 15px;
+  margin: 15px 0;
+}
+.feed section .auth-token input::placeholder {
+  opacity: 0.5;
+}
+.feed section .auth-token input.changed {
+  outline: 5px auto #f09b4c;
+}
+.feed section .auth-token input.invalid {
+  outline: 5px auto #e32;
+}
+.feed section .auth-token .external-icon {
+  margin: 15px 0;
+}
+.feed section .auth-token .remove-icon {
+  flex: 0 0 20px;
+  margin: 13px 0;
+}
+.feed section .ad-zones {
+  display: flex;
+  gap: 15px;
+}
+.feed section .ad-zones prx-fancy-field {
+  width: auto;
+}

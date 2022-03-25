@@ -157,6 +157,7 @@ describe('SeriesComponent', () => {
 
   cit('does not show plan episode for new series', (fix, el, comp) => {
     activatedRoute.testParams = {};
+    auth.mock('prx:default-account', { id: 88 });
     fix.detectChanges();
     expect(el).not.toContainText('Plan Episodes');
   });

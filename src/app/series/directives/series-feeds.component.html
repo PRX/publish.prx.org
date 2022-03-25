@@ -1,0 +1,171 @@
+<div *ngIf="!loading">
+  <prx-fancy-field label="Feeds">
+    <div class="fancy-hint">
+      Create and configure RSS feeds to meet your distribution needs. A public feed is created by default. We encourage podcasters to use a
+      proxy like feedburner (potentially with a custom domain) for sharing your default feed. For private feeds, you must use our
+      authorization proxy service to secure access.
+    </div>
+  </prx-fancy-field>
+
+  <div class="feeds" *ngIf="!podcast || !podcast.feeds.length">
+    <h2>No feeds found! Please contact support</h2>
+  </div>
+
+  <div class="feeds" *ngIf="podcast">
+    <ng-container *ngFor="let f of podcast.feeds; index as i">
+      <div *ngIf="!f.isDestroy" class="feed">
+        <header>
+          <strong *ngIf="f.isDefault">Default Feed</strong>
+          <strong *ngIf="!f.isDefault">{{ f.title || '(New Feed)' }}</strong>
+          <div *ngIf="!f.isNew" class="feed-url">
+            {{ f.publishedFeedUrl() }}
+            <a [href]="f.publishedFeedUrl()" target="_blank" rel="noopener" class="external-icon"></a>
+          </div>
+          <button *ngIf="expanded[i]" type="button" class="collapse" aria-label="Collapse" (click)="collapse(i)"></button>
+          <button *ngIf="!expanded[i]" type="button" class="expand" aria-label="Expand" (click)="expand(i)"></button>
+        </header>
+        <section *ngIf="expanded[i]">
+          <prx-fancy-field *ngIf="!f.isDefault" required textinput [model]="f" name="title" id="title{{ i }}" label="Feed Label">
+            <div class="fancy-hint">A label for this feed, such as "Limited Items" or "Apple Subscription"</div>
+          </prx-fancy-field>
+
+          <prx-fancy-field
+            *ngIf="!f.isDefault"
+            required
+            textinput
+            [model]="f"
+            name="slug"
+            id="slug{{ i }}"
+            label="Feed Slug"
+            advancedConfirm="Woh there! Changing your private feed url could break things for your subscribers - are you sure?"
+          >
+            <div class="fancy-hint">An alphanumeric slug used to identify your feed. Also used in the private feed RSS url.</div>
+          </prx-fancy-field>
+
+          <prx-fancy-field
+            required
+            textinput
+            [model]="f"
+            name="fileName"
+            id="fileName{{ i }}"
+            label="File Name"
+            advancedConfirm="Woh there! Changing your private feed url could break things for your subscribers - are you sure?"
+          >
+            <div class="fancy-hint">The file name used for your private RSS feed.</div>
+          </prx-fancy-field>
+
+          <prx-fancy-field
+            *ngIf="!f.isDefault"
+            checkbox
+            [model]="f"
+            name="private"
+            id="private{{ i }}"
+            label="Feed Visibility"
+            prompt="Private (Unlisted)"
+          >
+            <div class="fancy-hint">
+              Your feed can be public or private. Leave unchecked to keep it a Public Feed. If you check this box this feed becomes Private
+              and you'll need to generate an authorization token. Be careful who you share your private link with -
+              <strong>anyone who has access to the link will be able to use it</strong>.
+            </div>
+          </prx-fancy-field>
+
+          <prx-fancy-field *ngIf="f.private" label="Auth Tokens">
+            <div class="fancy-hint">
+              Auth tokens help ensure your feed stays private. They must be appended to the feed URL for the audio to work. Remove them to
+              revoke access to your feed.
+            </div>
+
+            <div *ngFor="let t of f.tokens; index as j" class="auth-token">
+              <input
+                type="text"
+                placeholder="Label"
+                [(ngModel)]="t.label"
+                (ngModelChange)="f.setTokens()"
+                [class.changed]="f.labelChanged(j)"
+                [class.invalid]="f.labelInvalid(j)"
+              />
+              <input
+                type="text"
+                placeholder="Token"
+                [(ngModel)]="t.token"
+                (ngModelChange)="f.setTokens()"
+                [class.changed]="f.tokenChanged(j)"
+                [class.invalid]="f.tokenInvalid(j)"
+              />
+              <a [href]="f.privateFeedUrl(t.token)" target="_blank" rel="noopener" class="external-icon"></a>
+              <button type="button" aria-label="Remove" class="btn-link remove-icon" (click)="f.removeToken(j)"></button>
+            </div>
+
+            <button type="button" class="btn-link" (click)="f.addToken()">Add token</button>
+          </prx-fancy-field>
+
+          <prx-fancy-field *ngIf="!f.private" label="Public Feed URL" textinput [model]="f" name="url" [advancedConfirm]="urlConfirm(f)">
+            <div class="fancy-hint">
+              If you already have a public URL for your podcast feed (e.g.,
+              <a [href]="feedburnerHelpUrl" target="_blank" rel="noopener">feedburner</a>), enter it here. It should point to your
+              <a [href]="f.privateFeedUrl()" target="_blank" rel="noopener">private feed URL.</a>
+            </div>
+          </prx-fancy-field>
+
+          <prx-fancy-field
+            *ngIf="!f.private"
+            label="New Feed Url"
+            textinput
+            [model]="f"
+            name="newFeedUrl"
+            [advancedConfirm]="newFeedUrlConfirm(f)"
+          >
+            <div class="fancy-hint">
+              If your podcast feed is moving, use this field to point to the new URL where your podcast is located. The current feed should
+              be maintained until all of your subscribers have migrated.
+            </div>
+          </prx-fancy-field>
+
+          <prx-fancy-field label="Enclosure Prefix Url" textinput [model]="f" name="enclosurePrefix">
+            <div class="fancy-hint">
+              If you have an enclosure prefix URL to set a redirect on audio requests for your podcast feed (e.g., podtrac or blubrry),
+              enter it here.
+            </div>
+          </prx-fancy-field>
+
+          <prx-fancy-field label="Feed Episode Limit" textinput [model]="f" name="displayEpisodesCount">
+            <div class="fancy-hint">
+              You can optionally limit the number of episodes that will be publicly available in your feed. Your oldest episodes will
+              disappear as you publish newer ones. Leave this field blank to include all.
+            </div>
+          </prx-fancy-field>
+
+          <prx-fancy-field label="Feed Metadata Limit" textinput [model]="f" name="displayFullEpisodesCount">
+            <div class="fancy-hint">
+              You can optionally
+              <a target="_blank" rel="noopener" title="Limiting Episode Metadata" [href]="metadataLimitUrl"
+                >reduce the size of your RSS feed</a
+              >
+              by trimming metadata from your oldest feed episodes. This many of your newest episodes will include <i>all</i> metadata, and
+              older episodes will omit certain RSS fields. Leave this field blank to include all metadata on every episode.
+            </div>
+          </prx-fancy-field>
+
+          <prx-fancy-field *ngIf="!f.isDefault" label="Ad Zones to include">
+            <div class="fancy-hint">Control the types of ads that should be stitched into episodes in this feed.</div>
+            <div class="ad-zones">
+              <prx-fancy-field checkbox [model]="f" name="billboardAds" id="billboardAds{{ i }}" prompt="Billboards"> </prx-fancy-field>
+              <prx-fancy-field checkbox [model]="f" name="houseAds" id="houseAds{{ i }}" prompt="House Ads"> </prx-fancy-field>
+              <prx-fancy-field checkbox [model]="f" name="paidAds" id="paidAds{{ i }}" prompt="Paid Ads"> </prx-fancy-field>
+              <prx-fancy-field checkbox [model]="f" name="sonicAds" id="sonicAds{{ i }}" prompt="Sonic IDs"> </prx-fancy-field>
+            </div>
+          </prx-fancy-field>
+
+          <button *ngIf="!f.isDefault" class="delete remove-feed" (click)="removeFeed(i)">
+            <i class="remove-icon" aria-hidden="true"></i> Remove feed
+          </button>
+        </section>
+      </div>
+    </ng-container>
+  </div>
+
+  <section>
+    <button class="add-feed" (click)="addFeed()"><i class="add-icon" aria-hidden="true"></i> Add feed</button>
+  </section>
+</div>
