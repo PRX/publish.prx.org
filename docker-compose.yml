@@ -1,14 +1,15 @@
-publish:
-  build: .
-  volumes:
-    - ./bin:/app/bin
-    - ./e2e:/app/e2e
-    - ./src:/app/src
-  env_file:
-    - .env
-  ports:
-    - "4200:4200"
-  command: start
-  environment:
-    VIRTUAL_HOST: publish.prx.docker
-    HOST: http://publish.prx.docker
+services:
+  publish:
+    build: .
+    volumes:
+      - ./bin:/app/bin
+      - ./e2e:/app/e2e
+      - ./src:/app/src
+    env_file:
+      - .env
+    ports:
+      - "4200:4200"
+    command: start
+    environment:
+      VIRTUAL_HOST: publish.prx.docker
+      HOST: http://publish.prx.docker
