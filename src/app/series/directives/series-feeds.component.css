@@ -168,3 +168,10 @@
 .feed section .ad-zones prx-fancy-field {
   width: auto;
 }
+.feed section .audio-format {
+  display: flex;
+  gap: 15px;
+}
+.feed section .audio-format prx-fancy-field {
+  width: auto;
+}

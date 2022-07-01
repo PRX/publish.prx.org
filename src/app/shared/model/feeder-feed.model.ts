@@ -19,6 +19,36 @@ export const UNLESS_DEFAULT = (validator: BaseInvalid) => {
   };
 };
 
+export const IF_AUDIO = (validator: BaseInvalid) => {
+  return (key: string, value: any, strict?: boolean, model?: any) => {
+    if (model && model.audioType) {
+      return validator(key, value, strict, model);
+    } else {
+      return null;
+    }
+  };
+};
+
+export const IF_MP3 = (validator: BaseInvalid) => {
+  return (key: string, value: any, strict?: boolean, model?: any) => {
+    if (model && model.audioType === 'mp3') {
+      return validator(key, value, strict, model);
+    } else {
+      return null;
+    }
+  };
+};
+
+export const UNLESS_MP3 = (validator: BaseInvalid) => {
+  return (key: string, value: any, strict?: boolean, model?: any) => {
+    if (model && model.audioType && model.audioType !== 'mp3') {
+      return validator(key, value, strict, model);
+    } else {
+      return null;
+    }
+  };
+};
+
 const FEED_SLUG: BaseInvalid = (key: string, value: any): string => {
   if (value === 'images' || value.match(/^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/)) {
     return 'Slug is reserved';
@@ -71,7 +101,12 @@ export class FeederFeedModel extends BaseModel {
     'billboardAds',
     'houseAds',
     'paidAds',
-    'sonicAds'
+    'sonicAds',
+    'audioType',
+    'audioBitrate',
+    'audioBitdepth',
+    'audioChannel',
+    'audioSample'
   ];
   title = '';
   slug = '';
@@ -89,7 +124,11 @@ export class FeederFeedModel extends BaseModel {
   sonicAds = true;
   // episodeOffsetSeconds = '';
   // includeTags = '';
-  // audioFormat = '';
+  audioType = '';
+  audioBitrate = '';
+  audioBitdepth = '';
+  audioChannel = '';
+  audioSample = '';
 
   VALIDATORS = {
     title: [UNLESS_DEFAULT(REQUIRED())],
@@ -100,7 +139,11 @@ export class FeederFeedModel extends BaseModel {
     newFeedUrl: [URL('Not a valid URL')],
     enclosurePrefix: [URL('Not a valid URL')],
     displayEpisodesCount: [POSITIVE_INT_OR_BLANK],
-    displayFullEpisodesCount: [POSITIVE_INT_OR_BLANK]
+    displayFullEpisodesCount: [POSITIVE_INT_OR_BLANK],
+    audioBitrate: [IF_MP3(REQUIRED())],
+    audioBitdepth: [UNLESS_MP3(REQUIRED())],
+    audioChannel: [IF_AUDIO(REQUIRED())],
+    audioSample: [IF_AUDIO(REQUIRED())]
   };
 
   URLS = ['url', 'newFeedUrl', 'enclosurePrefix'];
@@ -146,14 +189,26 @@ export class FeederFeedModel extends BaseModel {
     this.houseAds = include.indexOf('house') > -1;
     this.paidAds = include.indexOf('ad') > -1;
     this.sonicAds = include.indexOf('sonic_id') > -1;
+
+    const format = this.doc['audioFormat'] || {};
+    this.audioType = format.f;
+    if (this.audioType === 'mp3') {
+      this.audioBitrate = format.b;
+      this.audioBitdepth = null;
+    } else {
+      this.audioBitrate = null;
+      this.audioBitdepth = format.b;
+    }
+    this.audioChannel = format.c;
+    this.audioSample = format.s;
   }
 
   encode(): {} {
     let data = <any>{};
     data.id = this.id;
     data.title = this.title;
-    data.slug = this.slug;
-    data.fileName = this.fileName;
+    data.slug = this.slug || null;
+    data.fileName = this.fileName || null;
     data.private = this.private;
     data.tokens = JSON.parse(this.tokensJson);
     data.url = this.url || null;
@@ -172,6 +227,17 @@ export class FeederFeedModel extends BaseModel {
         this.paidAds && 'ad',
         this.sonicAds && 'sonic_id'
       ].filter((z) => z);
+    }
+
+    if (this.audioType) {
+      data.audioFormat = {
+        f: this.audioType,
+        b: this.audioType === 'mp3' ? this.audioBitrate : this.audioBitdepth,
+        c: this.audioChannel,
+        s: this.audioSample
+      };
+    } else {
+      data.audioFormat = null;
     }
 
     return data;

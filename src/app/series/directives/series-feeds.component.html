@@ -157,6 +157,38 @@
             </div>
           </prx-fancy-field>
 
+          <prx-fancy-field label="Audio Format">
+            <div class="fancy-hint">
+              Optionally set an explicit audio format for your episodes. If you leave this blank, we will automatically use the same format
+              as the first audio segment you upload for each episode.
+            </div>
+            <div class="audio-format">
+              <prx-fancy-field [model]="f" name="audioType" [select]="audioTypeOptions"></prx-fancy-field>
+              <prx-fancy-field
+                required
+                [model]="f"
+                name="audioBitrate"
+                [select]="audioBitrateOptions"
+                *ngIf="f.audioType === 'mp3'"
+              ></prx-fancy-field>
+              <prx-fancy-field
+                required
+                [model]="f"
+                name="audioBitdepth"
+                [select]="audioBitdepthOptions"
+                *ngIf="f.audioType && f.audioType !== 'mp3'"
+              ></prx-fancy-field>
+              <prx-fancy-field
+                required
+                [model]="f"
+                name="audioChannel"
+                [select]="audioChannelOptions"
+                *ngIf="f.audioType"
+              ></prx-fancy-field>
+              <prx-fancy-field required [model]="f" name="audioSample" [select]="audioSampleOptions" *ngIf="f.audioType"></prx-fancy-field>
+            </div>
+          </prx-fancy-field>
+
           <button *ngIf="!f.isDefault" class="delete remove-feed" (click)="removeFeed(i)">
             <i class="remove-icon" aria-hidden="true"></i> Remove feed
           </button>
