@@ -3,11 +3,6 @@ FROM mhart/alpine-node:16.4.2
 LABEL maintainer="PRX <sysadmin@prx.org>"
 LABEL org.prx.app="yes"
 
-# install git, aws-cli
-RUN apk --no-cache add git ca-certificates \
-  python py-pip py-setuptools groff less && \
-  pip --no-cache-dir install awscli
-
 ENV APP_HOME /app
 ENV PHANTOM true
 RUN mkdir -p $APP_HOME
