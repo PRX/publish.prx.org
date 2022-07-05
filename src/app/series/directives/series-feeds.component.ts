@@ -13,6 +13,14 @@ export class SeriesFeedsComponent implements OnDestroy {
   loading = true;
   expanded = [];
   includeTagOptions: string[][];
+  episodeOffsetOptions = [
+    ['5 minutes', 300],
+    ['15 minutes', 900],
+    ['1 hour', 3600],
+    ['6 hours', 21600],
+    ['12 hours', 43200],
+    ['24 hours', 86400]
+  ];
   audioTypeOptions = [
     ['MP3', 'mp3'],
     ['WAV', 'wav'],

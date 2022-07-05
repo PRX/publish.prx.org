@@ -102,6 +102,7 @@ export class FeederFeedModel extends BaseModel {
     'houseAds',
     'paidAds',
     'sonicAds',
+    'episodeOffsetSeconds',
     'includeTags',
     'audioType',
     'audioBitrate',
@@ -123,7 +124,7 @@ export class FeederFeedModel extends BaseModel {
   houseAds = true;
   paidAds = true;
   sonicAds = true;
-  // episodeOffsetSeconds = '';
+  episodeOffsetSeconds = '';
   includeTags = '';
   audioType = '';
   audioBitrate = '';
@@ -191,6 +192,7 @@ export class FeederFeedModel extends BaseModel {
     this.paidAds = include.indexOf('ad') > -1;
     this.sonicAds = include.indexOf('sonic_id') > -1;
 
+    this.episodeOffsetSeconds = this.doc['episodeOffsetSeconds'] || '';
     this.includeTags = this.doc['includeTags'] || [];
 
     const format = this.doc['audioFormat'] || {};
@@ -232,6 +234,7 @@ export class FeederFeedModel extends BaseModel {
       ].filter((z) => z);
     }
 
+    data.episodeOffsetSeconds = this.episodeOffsetSeconds || null;
     data.includeTags = this.includeTags && this.includeTags.length ? this.includeTags : null;
 
     if (this.audioType) {

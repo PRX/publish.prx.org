@@ -157,13 +157,11 @@
             </div>
           </prx-fancy-field>
 
-          <prx-fancy-field
-            *ngIf="!f.isDefault"
-            label="Feed Episode Categories"
-            [model]="f"
-            name="includeTags"
-            [multiselect]="includeTagOptions"
-          >
+          <prx-fancy-field label="Episode Publish Delay" [model]="f" name="episodeOffsetSeconds" [select]="episodeOffsetOptions">
+            <div class="fancy-hint">Instead of episodes immediately showing up in this feed when published, delay their appearance.</div>
+          </prx-fancy-field>
+
+          <prx-fancy-field *ngIf="!f.isDefault" label="Episode Categories" [model]="f" name="includeTags" [multiselect]="includeTagOptions">
             <div class="fancy-hint">Limit episodes that appear in this feed based on their Categories.</div>
           </prx-fancy-field>
 
