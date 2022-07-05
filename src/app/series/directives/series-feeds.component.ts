@@ -12,6 +12,7 @@ export class SeriesFeedsComponent implements OnDestroy {
   podcast: FeederPodcastModel;
   loading = true;
   expanded = [];
+  includeTagOptions: string[][];
   audioTypeOptions = [
     ['MP3', 'mp3'],
     ['WAV', 'wav'],
@@ -74,6 +75,9 @@ export class SeriesFeedsComponent implements OnDestroy {
       } else {
         this.loading = false;
       }
+    });
+    series.doc.follow('prx:tags').subscribe((tags) => {
+      this.includeTagOptions = (tags['tags'] || []).map((t) => [t, t]);
     });
   }
 

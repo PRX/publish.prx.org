@@ -157,6 +157,16 @@
             </div>
           </prx-fancy-field>
 
+          <prx-fancy-field
+            *ngIf="!f.isDefault"
+            label="Feed Episode Categories"
+            [model]="f"
+            name="includeTags"
+            [multiselect]="includeTagOptions"
+          >
+            <div class="fancy-hint">Limit episodes that appear in this feed based on their Categories.</div>
+          </prx-fancy-field>
+
           <prx-fancy-field label="Audio Format">
             <div class="fancy-hint">
               Optionally set an explicit audio format for your episodes. If you leave this blank, we will automatically use the same format
