@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:10.15.3
+FROM mhart/alpine-node:16.4.2
 
 LABEL maintainer="PRX <sysadmin@prx.org>"
 LABEL org.prx.app="yes"
