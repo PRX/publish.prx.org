@@ -15,7 +15,10 @@ describe('FeederFeedModel', () => {
     enclosurePrefix: 'http://my.prefixer/',
     displayEpisodesCount: 100,
     displayFullEpisodesCount: 10,
-    includeZones: ['house', 'sonic_id']
+    includeZones: ['house', 'sonic_id'],
+    episodeOffsetSeconds: 3600,
+    includeTags: ['hello', 'world'],
+    audioFormat: { f: 'mp3', b: 128, c: 2, s: 44100 }
   };
   const doc = podcast.mock('prx-feed', data);
 
@@ -46,15 +49,23 @@ describe('FeederFeedModel', () => {
   });
 
   it('round trips data', () => {
-    ['id', 'title', 'slug', 'fileName', 'private', 'tokens', 'url', 'newFeedUrl', 'enclosurePrefix'].forEach((key) => {
-      expect(feed[key]).toEqual(data[key]);
-    });
+    ['id', 'title', 'slug', 'fileName', 'private', 'tokens', 'url', 'newFeedUrl', 'enclosurePrefix', 'episodeOffsetSeconds'].forEach(
+      (key) => {
+        expect(feed[key]).toEqual(data[key]);
+      }
+    );
     expect(feed.displayEpisodesCount).toEqual('100');
     expect(feed.displayFullEpisodesCount).toEqual('10');
     expect(feed.billboardAds).toEqual(false);
     expect(feed.houseAds).toEqual(true);
     expect(feed.paidAds).toEqual(false);
     expect(feed.sonicAds).toEqual(true);
+    expect(feed.includeTags).toEqual(['hello', 'world']);
+    expect(feed.audioType).toEqual('mp3');
+    expect(feed.audioBitrate).toEqual(128);
+    expect(feed.audioBitdepth).toEqual(null);
+    expect(feed.audioChannel).toEqual(2);
+    expect(feed.audioSample).toEqual(44100);
 
     // exact same data should get returned
     expect(feed.encode()).toEqual(data);
@@ -70,6 +81,34 @@ describe('FeederFeedModel', () => {
     // if all are included, encodes to null
     feed.houseAds = true;
     expect(feed.encode()['includeZones']).toBeNull();
+  });
+
+  it('encodes included tags', () => {
+    feed.includeTags = ['anything'];
+    expect(feed.encode()['includeTags']).toEqual(['anything']);
+
+    feed.includeTags = [];
+    expect(feed.encode()['includeTags']).toBeNull();
+  });
+
+  it('encodes audio formats', () => {
+    feed.audioType = 'mp3';
+    feed.audioBitrate = '1';
+    feed.audioBitdepth = '2';
+    feed.audioChannel = '3';
+    feed.audioSample = '4';
+    expect(feed.encode()['audioFormat']).toEqual({ f: 'mp3', b: '1', c: '3', s: '4' });
+
+    // non-mp3s include bit depth instead of rate
+    feed.audioType = 'flac';
+    feed.audioBitrate = '1';
+    feed.audioBitdepth = '2';
+    feed.audioChannel = '3';
+    feed.audioSample = '4';
+    expect(feed.encode()['audioFormat']).toEqual({ f: 'flac', b: '2', c: '3', s: '4' });
+
+    feed.audioType = '';
+    expect(feed.encode()['audioFormat']).toBeNull();
   });
 
   it('validates titles', () => {
@@ -202,5 +241,33 @@ describe('FeederFeedModel', () => {
     expect(feed.labelInvalid(0)).toEqual(true);
     expect(feed.tokenChanged(0)).toEqual(true);
     expect(feed.tokenInvalid(0)).toEqual(true);
+  });
+
+  it('validates audio formats', () => {
+    expect(feed.invalid('audioBitrate')).toBeNull();
+    expect(feed.invalid('audioBitdepth')).toBeNull();
+    expect(feed.invalid('audioChannel')).toBeNull();
+    expect(feed.invalid('audioSample')).toBeNull();
+
+    feed.audioBitrate = '';
+    feed.audioBitdepth = '';
+    feed.audioChannel = '';
+    feed.audioSample = '';
+    expect(feed.invalid('audioBitrate')).toMatch('is a required field');
+    expect(feed.invalid('audioBitdepth')).toBeNull();
+    expect(feed.invalid('audioChannel')).toMatch('is a required field');
+    expect(feed.invalid('audioSample')).toMatch('is a required field');
+
+    feed.audioType = 'wav';
+    expect(feed.invalid('audioBitrate')).toBeNull();
+    expect(feed.invalid('audioBitdepth')).toMatch('is a required field');
+    expect(feed.invalid('audioChannel')).toMatch('is a required field');
+    expect(feed.invalid('audioSample')).toMatch('is a required field');
+
+    feed.audioType = '';
+    expect(feed.invalid('audioBitrate')).toBeNull();
+    expect(feed.invalid('audioBitdepth')).toBeNull();
+    expect(feed.invalid('audioChannel')).toBeNull();
+    expect(feed.invalid('audioSample')).toBeNull();
   });
 });

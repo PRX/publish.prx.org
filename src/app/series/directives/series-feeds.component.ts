@@ -84,9 +84,11 @@ export class SeriesFeedsComponent implements OnDestroy {
         this.loading = false;
       }
     });
-    series.doc.follow('prx:tags').subscribe((tags) => {
-      this.includeTagOptions = (tags['tags'] || []).map((t) => [t, t]);
-    });
+    if (series.doc.has('prx:tags')) {
+      series.doc.follow('prx:tags').subscribe((tags) => {
+        this.includeTagOptions = (tags['tags'] || []).map((t) => [t, t]);
+      });
+    }
   }
 
   expand(index: number) {

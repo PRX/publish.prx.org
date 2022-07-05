@@ -125,7 +125,7 @@ export class FeederFeedModel extends BaseModel {
   paidAds = true;
   sonicAds = true;
   episodeOffsetSeconds = '';
-  includeTags = '';
+  includeTags = [];
   audioType = '';
   audioBitrate = '';
   audioBitdepth = '';
