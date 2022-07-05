@@ -158,7 +158,7 @@
           </prx-fancy-field>
 
           <prx-fancy-field label="Episode Publish Delay" [model]="f" name="episodeOffsetSeconds" [select]="episodeOffsetOptions">
-            <div class="fancy-hint">Instead of episodes immediately showing up in this feed when published, delay their appearance.</div>
+            <div class="fancy-hint">Instead of episodes immediately showing up in this feed when published, delay their appearance. AKA Windowing.</div>
           </prx-fancy-field>
 
           <prx-fancy-field *ngIf="!f.isDefault" label="Episode Categories" [model]="f" name="includeTags" [multiselect]="includeTagOptions">
