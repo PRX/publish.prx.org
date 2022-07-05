@@ -273,8 +273,15 @@ export class FeederFeedModel extends BaseModel {
     }
   }
 
-  publishedFeedUrl(): string {
-    return this.url || this.privateFeedUrl();
+  publishedFeedUrl(includeToken = false): string {
+    if (this.url) {
+      return this.url;
+    } else if (includeToken && this.tokens && this.tokens.length) {
+      const lastToken = this.tokens[this.tokens.length - 1];
+      return this.privateFeedUrl(lastToken.token);
+    } else {
+      return this.privateFeedUrl();
+    }
   }
 
   addToken() {

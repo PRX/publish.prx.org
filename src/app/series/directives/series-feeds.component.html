@@ -19,7 +19,7 @@
           <strong *ngIf="!f.isDefault">{{ f.title || '(New Feed)' }}</strong>
           <div *ngIf="!f.isNew" class="feed-url">
             {{ f.publishedFeedUrl() }}
-            <a [href]="f.publishedFeedUrl()" target="_blank" rel="noopener" class="external-icon"></a>
+            <a [href]="f.publishedFeedUrl(true)" target="_blank" rel="noopener" class="external-icon"></a>
           </div>
           <button *ngIf="expanded[i]" type="button" class="collapse" aria-label="Collapse" (click)="collapse(i)"></button>
           <button *ngIf="!expanded[i]" type="button" class="expand" aria-label="Expand" (click)="expand(i)"></button>
