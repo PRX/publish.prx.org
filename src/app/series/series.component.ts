@@ -229,9 +229,4 @@ export class SeriesComponent implements OnInit, OnDestroy {
       return true;
     }
   }
-
-  // TODO: remove
-  tempOnFeeds(): boolean {
-    return window.location.href.endsWith('/feeds');
-  }
 }
