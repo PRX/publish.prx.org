@@ -19,7 +19,7 @@
           <strong *ngIf="!f.isDefault">{{ f.title || '(New Feed)' }}</strong>
           <div *ngIf="!f.isNew" class="feed-url">
             {{ f.publishedFeedUrl() }}
-            <a [href]="f.publishedFeedUrl()" target="_blank" rel="noopener" class="external-icon"></a>
+            <a [href]="f.publishedFeedUrl(true)" target="_blank" rel="noopener" class="external-icon"></a>
           </div>
           <button *ngIf="expanded[i]" type="button" class="collapse" aria-label="Collapse" (click)="collapse(i)"></button>
           <button *ngIf="!expanded[i]" type="button" class="expand" aria-label="Expand" (click)="expand(i)"></button>
@@ -154,6 +154,46 @@
               <prx-fancy-field checkbox [model]="f" name="houseAds" id="houseAds{{ i }}" prompt="House Ads"> </prx-fancy-field>
               <prx-fancy-field checkbox [model]="f" name="paidAds" id="paidAds{{ i }}" prompt="Paid Ads"> </prx-fancy-field>
               <prx-fancy-field checkbox [model]="f" name="sonicAds" id="sonicAds{{ i }}" prompt="Sonic IDs"> </prx-fancy-field>
+            </div>
+          </prx-fancy-field>
+
+          <prx-fancy-field label="Episode Publish Delay" [model]="f" name="episodeOffsetSeconds" [select]="episodeOffsetOptions">
+            <div class="fancy-hint">Instead of episodes immediately showing up in this feed when published, delay their appearance. AKA Windowing.</div>
+          </prx-fancy-field>
+
+          <prx-fancy-field *ngIf="!f.isDefault" label="Episode Categories" [model]="f" name="includeTags" [multiselect]="includeTagOptions">
+            <div class="fancy-hint">Limit episodes that appear in this feed based on their Categories.</div>
+          </prx-fancy-field>
+
+          <prx-fancy-field label="Audio Format">
+            <div class="fancy-hint">
+              Optionally set an explicit audio format for your episodes. If you leave this blank, we will automatically use the same format
+              as the first audio segment you upload for each episode.
+            </div>
+            <div class="audio-format">
+              <prx-fancy-field [model]="f" name="audioType" [select]="audioTypeOptions"></prx-fancy-field>
+              <prx-fancy-field
+                required
+                [model]="f"
+                name="audioBitrate"
+                [select]="audioBitrateOptions"
+                *ngIf="f.audioType === 'mp3'"
+              ></prx-fancy-field>
+              <prx-fancy-field
+                required
+                [model]="f"
+                name="audioBitdepth"
+                [select]="audioBitdepthOptions"
+                *ngIf="f.audioType && f.audioType !== 'mp3'"
+              ></prx-fancy-field>
+              <prx-fancy-field
+                required
+                [model]="f"
+                name="audioChannel"
+                [select]="audioChannelOptions"
+                *ngIf="f.audioType"
+              ></prx-fancy-field>
+              <prx-fancy-field required [model]="f" name="audioSample" [select]="audioSampleOptions" *ngIf="f.audioType"></prx-fancy-field>
             </div>
           </prx-fancy-field>
 
