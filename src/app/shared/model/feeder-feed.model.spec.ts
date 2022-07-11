@@ -84,8 +84,8 @@ describe('FeederFeedModel', () => {
   });
 
   it('encodes included tags', () => {
-    feed.includeTags = ['anything'];
-    expect(feed.encode()['includeTags']).toEqual(['anything']);
+    feed.includeTags = ['some-tag'];
+    expect(feed.encode()['includeTags']).toEqual(['some-tag']);
 
     feed.includeTags = [];
     expect(feed.encode()['includeTags']).toBeNull();
