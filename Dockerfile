@@ -1,13 +1,8 @@
-FROM mhart/alpine-node:10.15.3
+FROM mhart/alpine-node:14.15.5
 
 LABEL maintainer="PRX <sysadmin@prx.org>"
 LABEL org.prx.app="yes"
 LABEL org.prx.spire.publish.ecr="WEB_SERVER"
-
-# install git, aws-cli
-RUN apk --no-cache add git ca-certificates \
-  python py-pip py-setuptools groff less && \
-  pip --no-cache-dir install awscli
 
 ENV APP_HOME /app
 ENV PHANTOM true
