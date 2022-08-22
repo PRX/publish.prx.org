@@ -36,9 +36,18 @@
             <prx-fancy-field *ngIf="f.subtitle" textinput [model]="f" name="subtitle" id="subtitle{{ i }}" label="Teaser" small>
             </prx-fancy-field>
 
+            <prx-fancy-field *ngIf="f.description" label="Description" small>
+              <publish-wysiwyg [model]="f" name="description" [content]="f.description" [changed]="f.changed('description')"></publish-wysiwyg>
+            </prx-fancy-field>
+
             <p *ngIf="!f.subtitle">
               <input type="checkbox" (click)="f.set('subtitle', ' ')" id="alternateSubtitle{{ i }}">
               <label for="alternateSubtitle{{ i }}">Enter an alternate teaser</label>
+            </p>
+
+            <p *ngIf="!f.description">
+              <input type="checkbox" (click)="f.set('description', ' ')" id="alternateDescription{{ i }}">
+              <label for="alternateDescription{{ i }}">Enter an alternate description</label>
             </p>
           </prx-fancy-field>
 
