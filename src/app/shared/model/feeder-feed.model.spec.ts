@@ -6,6 +6,9 @@ describe('FeederFeedModel', () => {
   const data = {
     id: 1234,
     title: 'my-title',
+    subtitle: 'my-subtitle',
+    description: 'my-description',
+    summary: 'my-summary',
     slug: 'my-slug',
     fileName: 'my-file.xml',
     private: true,
@@ -49,7 +52,7 @@ describe('FeederFeedModel', () => {
   });
 
   it('round trips data', () => {
-    ['id', 'title', 'slug', 'fileName', 'private', 'tokens', 'url', 'newFeedUrl', 'enclosurePrefix', 'episodeOffsetSeconds'].forEach(
+    ['id', 'title', 'subtitle', 'description', 'summary', 'slug', 'fileName', 'private', 'tokens', 'url', 'newFeedUrl', 'enclosurePrefix', 'episodeOffsetSeconds'].forEach(
       (key) => {
         expect(feed[key]).toEqual(data[key]);
       }
