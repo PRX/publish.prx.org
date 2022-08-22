@@ -40,6 +40,10 @@
               <publish-wysiwyg [model]="f" name="description" [content]="f.description" [changed]="f.changed('description')"></publish-wysiwyg>
             </prx-fancy-field>
 
+            <prx-fancy-field *ngIf="f.summary" label="Summary">
+              <publish-wysiwyg [model]="f" name="summary" [content]="f.summary" inputFormat="HTML" outputFormat="HTML" [changed]="f.changed('summary')"></publish-wysiwyg>
+            </prx-fancy-field>
+
             <p *ngIf="!f.subtitle">
               <input type="checkbox" (click)="f.set('subtitle', ' ')" id="alternateSubtitle{{ i }}">
               <label for="alternateSubtitle{{ i }}">Enter an alternate teaser</label>
@@ -48,6 +52,11 @@
             <p *ngIf="!f.description">
               <input type="checkbox" (click)="f.set('description', ' ')" id="alternateDescription{{ i }}">
               <label for="alternateDescription{{ i }}">Enter an alternate description</label>
+            </p>
+
+            <p *ngIf="!f.summary">
+              <input type="checkbox" (click)="f.set('summary', ' ')" id="alternateSummary{{ i }}">
+              <label for="alternateSummary{{ i }}">Enter an alternate summary</label>
             </p>
           </prx-fancy-field>
 
