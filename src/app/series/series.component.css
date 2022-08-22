@@ -20,3 +20,8 @@
 #import-button {
   margin-top: 30px;
 }
+
+/* clicking on invalid-tip should not save */
+.invalid-tip {
+  pointer-events: none;
+}
