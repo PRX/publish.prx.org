@@ -89,6 +89,9 @@ export class FeederFeedModel extends BaseModel {
 
   SETABLE = [
     'title',
+    'subtitle',
+    'description',
+    'summary',
     'slug',
     'fileName',
     'private',
@@ -111,6 +114,9 @@ export class FeederFeedModel extends BaseModel {
     'audioSample'
   ];
   title = '';
+  subtitle = '';
+  description = '';
+  summary = '';
   slug = '';
   fileName = 'feed-rss.xml';
   private = false;
@@ -174,6 +180,9 @@ export class FeederFeedModel extends BaseModel {
   decode() {
     this.id = this.doc['id'] || null;
     this.title = this.doc['title'] || '';
+    this.subtitle = this.doc['subtitle'] || '';
+    this.description = this.doc['description'] || '';
+    this.summary = this.doc['summary'] || '';
     this.slug = this.doc['slug'] || '';
     this.fileName = this.doc['fileName'] || 'feed-rss.xml';
     this.private = this.doc['private'] || false;
@@ -212,6 +221,9 @@ export class FeederFeedModel extends BaseModel {
     let data = <any>{};
     data.id = this.id;
     data.title = this.title;
+    data.subtitle = this.subtitle || null;
+    data.description = this.description || null;
+    data.summary = this.summary || null;
     data.slug = this.slug || null;
     data.fileName = this.fileName || null;
     data.private = this.private;

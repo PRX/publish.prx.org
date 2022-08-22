@@ -140,6 +140,9 @@
   margin-top: -1px;
   padding: 18px 22px 0;
 }
+.feed input[type=checkbox] {
+  margin-right: 4px;
+}
 .feed section .auth-token {
   display: flex;
   gap: 15px;
