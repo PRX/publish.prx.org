@@ -97,5 +97,4 @@ open http://publish.prx.docker
 # run tests in PhantomJS
 docker-compose run publish test
 docker-compose run publish testonce
-
 ```
