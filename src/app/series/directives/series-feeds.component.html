@@ -7,8 +7,11 @@
     </div>
   </prx-fancy-field>
 
-  <div class="feeds" *ngIf="!podcast || !podcast.feeds.length">
-    <h2>No feeds found! Please contact support</h2>
+  <div class="feeds" *ngIf="!podcast">
+    <h2>No podcast found - set it up on the Podcast Info tab first.</h2>
+  </div>
+  <div class="feeds" *ngIf="podcast && !podcast.feeds.length">
+    <h2>No feeds found! Please contact support.</h2>
   </div>
 
   <div class="feeds" *ngIf="podcast">
@@ -238,7 +241,7 @@
     </ng-container>
   </div>
 
-  <section>
+  <section *ngIf="podcast">
     <button class="add-feed" (click)="addFeed()"><i class="add-icon" aria-hidden="true"></i> Add feed</button>
   </section>
 </div>
