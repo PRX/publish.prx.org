@@ -1,7 +1,7 @@
 import { cms } from '../../../testing';
 import { FeederFeedModel } from './feeder-feed.model';
 
-describe('FeederFeedModel', () => {
+fdescribe('FeederFeedModel', () => {
   const podcast = cms().mock('prx:podcast', { id: 1, title: 'my podcast' });
   const data = {
     id: 1234,
@@ -21,7 +21,9 @@ describe('FeederFeedModel', () => {
     includeZones: ['house', 'sonic_id'],
     episodeOffsetSeconds: 3600,
     includeTags: ['hello', 'world'],
-    audioFormat: { f: 'mp3', b: 128, c: 2, s: 44100 }
+    audioFormat: { f: 'mp3', b: 128, c: 2, s: 44100 },
+    includeDonationUrl: true,
+    includePodcastValue: true
   };
   const doc = podcast.mock('prx-feed', data);
 
@@ -52,11 +54,23 @@ describe('FeederFeedModel', () => {
   });
 
   it('round trips data', () => {
-    ['id', 'title', 'subtitle', 'description', 'summary', 'slug', 'fileName', 'private', 'tokens', 'url', 'newFeedUrl', 'enclosurePrefix', 'episodeOffsetSeconds'].forEach(
-      (key) => {
-        expect(feed[key]).toEqual(data[key]);
-      }
-    );
+    [
+      'id',
+      'title',
+      'subtitle',
+      'description',
+      'summary',
+      'slug',
+      'fileName',
+      'private',
+      'tokens',
+      'url',
+      'newFeedUrl',
+      'enclosurePrefix',
+      'episodeOffsetSeconds'
+    ].forEach((key) => {
+      expect(feed[key]).toEqual(data[key]);
+    });
     expect(feed.displayEpisodesCount).toEqual('100');
     expect(feed.displayFullEpisodesCount).toEqual('10');
     expect(feed.billboardAds).toEqual(false);

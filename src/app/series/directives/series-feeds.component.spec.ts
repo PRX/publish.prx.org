@@ -3,7 +3,7 @@ import { SeriesFeedsComponent } from './series-feeds.component';
 import { SeriesModel, FeederFeedModel } from 'app/shared';
 import { TabService } from 'ngx-prx-styleguide';
 
-describe('SeriesFeedsComponent', () => {
+fdescribe('SeriesFeedsComponent', () => {
   create(SeriesFeedsComponent);
 
   provide(TabService);
@@ -14,7 +14,7 @@ describe('SeriesFeedsComponent', () => {
     comp.load(new SeriesModel(null, series, false));
     fix.detectChanges();
 
-    expect(el).toContainText('No feeds found');
+    expect(el).toContainText('No podcast found');
   });
 
   cit('displays feeds', (fix, el, comp) => {
