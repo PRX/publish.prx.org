@@ -111,7 +111,9 @@ export class FeederFeedModel extends BaseModel {
     'audioBitrate',
     'audioBitdepth',
     'audioChannel',
-    'audioSample'
+    'audioSample',
+    'includeDonationUrl',
+    'includePodcastValue'
   ];
   title = '';
   subtitle = '';
@@ -137,6 +139,8 @@ export class FeederFeedModel extends BaseModel {
   audioBitdepth = '';
   audioChannel = '';
   audioSample = '';
+  includeDonationUrl = true;
+  includePodcastValue = true;
 
   VALIDATORS = {
     title: [UNLESS_DEFAULT(REQUIRED())],
@@ -215,6 +219,9 @@ export class FeederFeedModel extends BaseModel {
     }
     this.audioChannel = format.c;
     this.audioSample = format.s;
+
+    this.includeDonationUrl = !!this.doc['includeDonationUrl'];
+    this.includePodcastValue = !!this.doc['includePodcastValue'];
   }
 
   encode(): {} {
@@ -259,6 +266,9 @@ export class FeederFeedModel extends BaseModel {
     } else {
       data.audioFormat = null;
     }
+
+    data.includeDonationUrl = !!this.includeDonationUrl;
+    data.includePodcastValue = !!this.includePodcastValue;
 
     return data;
   }
