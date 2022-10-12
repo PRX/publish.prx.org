@@ -32,6 +32,7 @@
     <a routerLinkActive="active" [routerLink]="[base, 'templates']">Audio Templates</a>
     <a routerLinkActive="active" [routerLink]="[base, 'podcast']">Podcast Info</a>
     <a routerLinkActive="active" [routerLink]="[base, 'feeds']">RSS Feeds</a>
+    <a routerLinkActive="active" [routerLink]="[base, 'engagement']">Engagement Settings</a>
     <a *ngIf="fromImport" routerLinkActive="active" [routerLink]="[base, 'import-status']"> Import Status </a>
     <a *ngIf="series && !series?.isNew" routerLinkActive="active" [routerLink]="[base, 'plan']">Plan Episodes</a>
   </nav>
