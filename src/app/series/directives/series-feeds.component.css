@@ -171,6 +171,9 @@
 .feed section .ad-zones prx-fancy-field {
   width: auto;
 }
+.feed section .ad-zones >>> .field {
+  margin-bottom: 0;
+}
 .feed section .audio-format {
   display: flex;
   gap: 15px;
@@ -178,6 +181,6 @@
 .feed section .audio-format prx-fancy-field {
   width: auto;
 }
-.feed .engagement-settings >>> .field {
+.feed section .engagement-settings >>> .field {
   margin-bottom: 0px;
 }

@@ -204,6 +204,22 @@
             </div>
           </prx-fancy-field>
 
+          <prx-fancy-field label="Engagement Settings">
+            <div class="engagement-settings">
+              <prx-fancy-field checkbox [model]="f" name="includeDonationUrl" id="includeDonationUrl{{ i }}" prompt="Include Donation Form">
+              </prx-fancy-field>
+
+              <prx-fancy-field
+                checkbox
+                [model]="f"
+                name="includePodcastValue"
+                id="includePodcastValue{{ i }}"
+                prompt="Include Micropayments Wallet"
+              >
+              </prx-fancy-field>
+            </div>
+          </prx-fancy-field>
+
           <prx-fancy-field label="Episode Publish Delay" [model]="f" name="episodeOffsetSeconds" [select]="episodeOffsetOptions">
             <div class="fancy-hint">
               Instead of episodes immediately showing up in this feed when published, delay their appearance. AKA Windowing.
@@ -243,22 +259,6 @@
                 *ngIf="f.audioType"
               ></prx-fancy-field>
               <prx-fancy-field required [model]="f" name="audioSample" [select]="audioSampleOptions" *ngIf="f.audioType"></prx-fancy-field>
-            </div>
-          </prx-fancy-field>
-
-          <prx-fancy-field label="Engagement Settings">
-            <div class="engagement-settings">
-              <prx-fancy-field checkbox [model]="f" name="includeDonationUrl" id="includeDonationUrl{{ i }}" prompt="Include Donation Form">
-              </prx-fancy-field>
-
-              <prx-fancy-field
-                checkbox
-                [model]="f"
-                name="includePodcastValue"
-                id="includePodcastValue{{ i }}"
-                prompt="Include Micropayments Wallet"
-              >
-              </prx-fancy-field>
             </div>
           </prx-fancy-field>
 
