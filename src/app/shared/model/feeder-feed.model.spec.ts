@@ -1,7 +1,7 @@
 import { cms } from '../../../testing';
 import { FeederFeedModel } from './feeder-feed.model';
 
-fdescribe('FeederFeedModel', () => {
+describe('FeederFeedModel', () => {
   const podcast = cms().mock('prx:podcast', { id: 1, title: 'my podcast' });
   const data = {
     id: 1234,

@@ -3,7 +3,7 @@ import { SeriesFeedsComponent } from './series-feeds.component';
 import { SeriesModel, FeederFeedModel } from 'app/shared';
 import { TabService } from 'ngx-prx-styleguide';
 
-fdescribe('SeriesFeedsComponent', () => {
+describe('SeriesFeedsComponent', () => {
   create(SeriesFeedsComponent);
 
   provide(TabService);
