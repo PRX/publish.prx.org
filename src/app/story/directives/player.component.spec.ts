@@ -108,7 +108,7 @@ describe('PlayerComponent', () => {
     expect(el).toContainText('no audio or image');
   });
 
-  cit('sets iframe dimensions to 650 x 200', (fix, el, comp) => {
+  cit('sets iframe attributes', (fix, el, comp) => {
     comp.feedUrl = 'http://some-where/episode';
     comp.episodeGuid = 'the-guid';
     series.mockItems('prx:distributions', [{ kind: 'podcast' }]);
@@ -116,6 +116,7 @@ describe('PlayerComponent', () => {
     fix.detectChanges();
     expect(comp.copyIframe.search(/width="650"/)).not.toEqual(-1);
     expect(comp.copyIframe.search(/height="200"/)).not.toEqual(-1);
+    expect(comp.copyIframe.search(/allow="monetization"/)).not.toEqual(-1);
   });
 
   cit('shows the episode mp3 url for podcast distributions', (fix, el, comp) => {
