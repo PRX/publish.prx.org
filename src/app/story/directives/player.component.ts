@@ -183,7 +183,7 @@ export class PlayerComponent implements OnDestroy, DoCheck {
   }
 
   private getIframeHtml(url: string, width: number, height: number) {
-    return `<iframe frameborder="0" height="${height}" width="${width}" src="${url}"></iframe>`;
+    return `<iframe allow="monetization" frameborder="0" height="${height}" width="${width}" src="${url}"></iframe>`;
   }
 
   private encode(str: string) {
