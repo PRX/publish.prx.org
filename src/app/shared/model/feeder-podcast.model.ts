@@ -37,9 +37,11 @@ export class FeederPodcastModel extends BaseModel {
     'managingEditorEmail',
     'serialOrder',
     'displayEpisodesCount', // TODO: moved to feed
-    'displayFullEpisodesCount' // TODO: moved to feed
+    'displayFullEpisodesCount', // TODO: moved to feed
+    'paymentPointer',
+    'donationUrl'
   ];
-  URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix'];
+  URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'paymentPointer', 'donationUrl'];
   category = '';
   subCategory = '';
   explicit = '';
@@ -57,6 +59,8 @@ export class FeederPodcastModel extends BaseModel {
   serialOrder = false;
   displayEpisodesCount = '';
   displayFullEpisodesCount = '';
+  paymentPointer = '';
+  donationUrl = '';
 
   feeds: FeederFeedModel[];
 
@@ -69,7 +73,9 @@ export class FeederPodcastModel extends BaseModel {
     enclosurePrefix: [URL('Not a valid URL')],
     summary: [LENGTH(0, 4000)],
     displayEpisodesCount: [POSITIVE_INT_OR_BLANK],
-    displayFullEpisodesCount: [POSITIVE_INT_OR_BLANK]
+    displayFullEpisodesCount: [POSITIVE_INT_OR_BLANK],
+    paymentPointer: [URL('Not a valid URL')],
+    donationUrl: [URL('Not a valid URL')]
   };
 
   constructor(private series: HalDoc, distrib: HalDoc, podcast?: HalDoc, loadRelated = true) {
@@ -150,6 +156,8 @@ export class FeederPodcastModel extends BaseModel {
     this.serialOrder = this.doc['serialOrder'] || false;
     this.displayEpisodesCount = this.doc['displayEpisodesCount'] ? this.doc['displayEpisodesCount'].toString() : '';
     this.displayFullEpisodesCount = this.doc['displayFullEpisodesCount'] ? this.doc['displayFullEpisodesCount'].toString() : '';
+    this.paymentPointer = this.doc['paymentPointer'] || '';
+    this.donationUrl = this.doc['donationUrl'] || '';
   }
 
   encode(): {} {
@@ -187,6 +195,8 @@ export class FeederPodcastModel extends BaseModel {
     data.serialOrder = this.serialOrder || null;
     data.displayEpisodesCount = parseInt(this.displayEpisodesCount, 10) || null;
     data.displayFullEpisodesCount = parseInt(this.displayFullEpisodesCount, 10) || null;
+    data.paymentPointer = this.paymentPointer || null;
+    data.donationUrl = this.donationUrl || null;
 
     return data;
   }

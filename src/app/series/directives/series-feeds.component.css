@@ -1,5 +1,5 @@
 /**
- * Series version/file templates
+ * Series feeds
  */
 .feeds {
   width: 100%;
@@ -140,7 +140,7 @@
   margin-top: -1px;
   padding: 18px 22px 0;
 }
-.feed input[type=checkbox] {
+.feed input[type='checkbox'] {
   margin-right: 4px;
 }
 .feed section .auth-token {
@@ -171,10 +171,16 @@
 .feed section .ad-zones prx-fancy-field {
   width: auto;
 }
+.feed section .ad-zones >>> .field {
+  margin-bottom: 0;
+}
 .feed section .audio-format {
   display: flex;
   gap: 15px;
 }
 .feed section .audio-format prx-fancy-field {
   width: auto;
+}
+.feed section .engagement-settings >>> .field {
+  margin-bottom: 0px;
 }

@@ -9,6 +9,7 @@ import { SeriesPlanComponent } from './directives/series-plan.component';
 import { SeriesPodcastComponent } from './directives/series-podcast.component';
 import { SeriesFeedsComponent } from './directives/series-feeds.component';
 import { SeriesFeedComponent } from './directives/series-feed.component';
+import { SeriesEngagementComponent } from './directives/series-engagement.component';
 import { SeriesImportStatusComponent } from './directives/series-import-status.component';
 import { SeriesImportStatusCardComponent } from '../series-import-status-card/series-import-status-card.component';
 import { FileTemplateComponent } from './directives/file-template.component';
@@ -21,6 +22,7 @@ const seriesChildRoutes = [
   { path: 'podcast', component: SeriesPodcastComponent },
   { path: 'feeds', component: SeriesFeedsComponent },
   { path: 'list', component: SeriesFeedComponent },
+  { path: 'engagement', component: SeriesEngagementComponent },
   { path: 'import-status', component: SeriesImportStatusComponent }
 ];
 
@@ -55,6 +57,7 @@ export const seriesComponents: any[] = [
   SeriesPodcastComponent,
   SeriesFeedsComponent,
   SeriesFeedComponent,
+  SeriesEngagementComponent,
   SeriesImportStatusComponent,
   SeriesImportStatusCardComponent,
   FileTemplateComponent,

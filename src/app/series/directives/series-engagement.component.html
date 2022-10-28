@@ -1,0 +1,33 @@
+<div *ngIf="!loading">
+  <prx-fancy-field label="Engagement Settings">
+    <div class="fancy-hint">Let your listeners know how they can interact with you further.</div>
+  </prx-fancy-field>
+
+  <div class="engagement" *ngIf="!podcast">
+    <h2>No podcast found - set it up on the Podcast Info tab first.</h2>
+  </div>
+
+  <div class="engagement" *ngIf="podcast">
+    <prx-fancy-field textinput [model]="podcast" name="donationUrl" label="Donation Form">
+      <div class="fancy-hint">
+        Let your listeners know where they can support your work by entering in an address to your donation form.
+      </div>
+    </prx-fancy-field>
+
+    <prx-fancy-field textinput [model]="podcast" name="paymentPointer" label="Micropayments Wallet">
+      <div class="fancy-hint">
+        The PRX Embeddable player support micropayments. We've created a guide to walk you through the process of collecting payments as
+        folks listen.
+        <strong
+          ><a
+            target="_blank"
+            rel="noopener"
+            title="Setting Up Micropayments Wallet"
+            href="https://help.prx.org/hc/en-us/articles/9901810244251"
+            >Learn more about micropayments.</a
+          ></strong
+        >
+      </div>
+    </prx-fancy-field>
+  </div>
+</div>

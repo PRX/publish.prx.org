@@ -14,7 +14,7 @@ describe('SeriesFeedsComponent', () => {
     comp.load(new SeriesModel(null, series, false));
     fix.detectChanges();
 
-    expect(el).toContainText('No feeds found');
+    expect(el).toContainText('No podcast found');
   });
 
   cit('displays feeds', (fix, el, comp) => {

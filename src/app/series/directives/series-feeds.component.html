@@ -7,8 +7,11 @@
     </div>
   </prx-fancy-field>
 
-  <div class="feeds" *ngIf="!podcast || !podcast.feeds.length">
-    <h2>No feeds found! Please contact support</h2>
+  <div class="feeds" *ngIf="!podcast">
+    <h2>No podcast found - set it up on the Podcast Info tab first.</h2>
+  </div>
+  <div class="feeds" *ngIf="podcast && !podcast.feeds.length">
+    <h2>No feeds found! Please contact support.</h2>
   </div>
 
   <div class="feeds" *ngIf="podcast">
@@ -30,36 +33,47 @@
               Override series metadata for this feed. You must provide an alternate title, but the other fields are optional.
             </div>
 
-            <prx-fancy-field required textinput [model]="f" name="title" id="title{{ i }}" label="Title" small>
-            </prx-fancy-field>
+            <prx-fancy-field required textinput [model]="f" name="title" id="title{{ i }}" label="Title" small> </prx-fancy-field>
 
             <prx-fancy-field *ngIf="f.subtitle" textinput [model]="f" name="subtitle" id="subtitle{{ i }}" label="Teaser" small>
             </prx-fancy-field>
 
             <prx-fancy-field *ngIf="f.description" label="Description" small>
-              <publish-wysiwyg [model]="f" name="description" [content]="f.description" [changed]="f.changed('description')"></publish-wysiwyg>
+              <publish-wysiwyg
+                [model]="f"
+                name="description"
+                [content]="f.description"
+                [changed]="f.changed('description')"
+              ></publish-wysiwyg>
             </prx-fancy-field>
 
             <prx-fancy-field *ngIf="f.summary" label="Summary">
-              <publish-wysiwyg [model]="f" name="summary" [content]="f.summary" inputFormat="HTML" outputFormat="HTML" [changed]="f.changed('summary')"></publish-wysiwyg>
+              <publish-wysiwyg
+                [model]="f"
+                name="summary"
+                [content]="f.summary"
+                inputFormat="HTML"
+                outputFormat="HTML"
+                [changed]="f.changed('summary')"
+              ></publish-wysiwyg>
             </prx-fancy-field>
 
             <p *ngIf="!f.subtitle">
-              <input type="checkbox" (click)="f.set('subtitle', ' ')" id="alternateSubtitle{{ i }}">
+              <input type="checkbox" (click)="f.set('subtitle', ' ')" id="alternateSubtitle{{ i }}" />
               <label for="alternateSubtitle{{ i }}">Enter an alternate teaser</label>
             </p>
 
             <p *ngIf="!f.description">
-              <input type="checkbox" (click)="f.set('description', ' ')" id="alternateDescription{{ i }}">
+              <input type="checkbox" (click)="f.set('description', ' ')" id="alternateDescription{{ i }}" />
               <label for="alternateDescription{{ i }}">Enter an alternate description</label>
             </p>
 
             <p *ngIf="!f.summary">
-              <input type="checkbox" (click)="f.set('summary', ' ')" id="alternateSummary{{ i }}">
+              <input type="checkbox" (click)="f.set('summary', ' ')" id="alternateSummary{{ i }}" />
               <label for="alternateSummary{{ i }}">Enter an alternate summary</label>
             </p>
 
-            <hr>
+            <hr />
           </prx-fancy-field>
 
           <prx-fancy-field
@@ -190,8 +204,26 @@
             </div>
           </prx-fancy-field>
 
+          <prx-fancy-field label="Engagement Settings">
+            <div class="engagement-settings">
+              <prx-fancy-field checkbox [model]="f" name="includeDonationUrl" id="includeDonationUrl{{ i }}" prompt="Include Donation Form">
+              </prx-fancy-field>
+
+              <prx-fancy-field
+                checkbox
+                [model]="f"
+                name="includePodcastValue"
+                id="includePodcastValue{{ i }}"
+                prompt="Include Micropayments Wallet"
+              >
+              </prx-fancy-field>
+            </div>
+          </prx-fancy-field>
+
           <prx-fancy-field label="Episode Publish Delay" [model]="f" name="episodeOffsetSeconds" [select]="episodeOffsetOptions">
-            <div class="fancy-hint">Instead of episodes immediately showing up in this feed when published, delay their appearance. AKA Windowing.</div>
+            <div class="fancy-hint">
+              Instead of episodes immediately showing up in this feed when published, delay their appearance. AKA Windowing.
+            </div>
           </prx-fancy-field>
 
           <prx-fancy-field *ngIf="!f.isDefault" label="Episode Categories" [model]="f" name="includeTags" [multiselect]="includeTagOptions">
@@ -238,7 +270,7 @@
     </ng-container>
   </div>
 
-  <section>
+  <section *ngIf="podcast">
     <button class="add-feed" (click)="addFeed()"><i class="add-icon" aria-hidden="true"></i> Add feed</button>
   </section>
 </div>
