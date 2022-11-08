@@ -11,6 +11,13 @@ const POSITIVE_INT_OR_BLANK: BaseInvalid = (_key: string, value: any): string =>
   return null;
 };
 
+const PAYMENT_POINTER: BaseInvalid = (key: string, value: any): string => {
+  if (value && !value.match(/^\$[A-Za-z0-9-.]+\/?[^\s]*$/)) {
+    return 'Payment pointers must have the format: $prx.wallet.example/abcd1234';
+  }
+  return null;
+};
+
 export class FeederPodcastModel extends BaseModel {
   // read-only
   id: number;
@@ -41,7 +48,7 @@ export class FeederPodcastModel extends BaseModel {
     'paymentPointer',
     'donationUrl'
   ];
-  URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'paymentPointer', 'donationUrl'];
+  URLS = ['link', 'newFeedUrl', 'publicFeedUrl', 'enclosurePrefix', 'donationUrl'];
   category = '';
   subCategory = '';
   explicit = '';
@@ -74,7 +81,7 @@ export class FeederPodcastModel extends BaseModel {
     summary: [LENGTH(0, 4000)],
     displayEpisodesCount: [POSITIVE_INT_OR_BLANK],
     displayFullEpisodesCount: [POSITIVE_INT_OR_BLANK],
-    paymentPointer: [URL('Not a valid URL')],
+    paymentPointer: [PAYMENT_POINTER],
     donationUrl: [URL('Not a valid URL')]
   };
 
