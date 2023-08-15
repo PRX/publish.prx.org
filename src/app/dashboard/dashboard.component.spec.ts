@@ -1,8 +1,14 @@
 import { cit, create, cms, By } from '../../testing';
 import { DashboardComponent } from './dashboard.component';
+import { ModalService } from 'ngx-prx-styleguide';
 
 describe('DashboardComponent', () => {
   create(DashboardComponent);
+
+  provide(ModalService, {
+    alert: (a) => nil,
+    confirm: (p) => nil
+  });
 
   let auth;
   beforeEach(() => {
