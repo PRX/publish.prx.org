@@ -56,9 +56,6 @@ export class DistributionModel extends BaseModel {
         if (account && account['name']) {
           podmodel.set('authorName', account['name'], true);
         }
-        if (!podmodel.link) {
-          podmodel.set('link', this.parent.expand('alternate'), true);
-        }
         return podmodel;
       }));
     }
