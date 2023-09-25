@@ -74,7 +74,7 @@ export class FeederPodcastModel extends BaseModel {
   VALIDATORS = {
     category: [REQUIRED()],
     explicit: [REQUIRED()],
-    link: [REQUIRED(), URL('Not a valid URL')],
+    link: [URL('Not a valid URL')],
     newFeedUrl: [URL('Not a valid URL')],
     publicFeedUrl: [URL('Not a valid URL')],
     enclosurePrefix: [URL('Not a valid URL')],
