@@ -64,8 +64,17 @@ describe('SeriesComponent', () => {
   cit('defaults new series to the default account', (fix, el, comp) => {
     activatedRoute.testParams = {};
     auth.mock('prx:default-account', { id: 88 });
+    auth.mockItems('prx:accounts', [{ id: 88 }]);
     fix.detectChanges();
     expect(comp.series.parent.id).toEqual(88);
+  });
+
+  cit('defaults new series to an authorized account', (fix, el, comp) => {
+    activatedRoute.testParams = {};
+    auth.mock('prx:default-account', { id: 88 });
+    auth.mockItems('prx:accounts', [{ id: 99 }]);
+    fix.detectChanges();
+    expect(comp.series.parent.id).toEqual(99);
   });
 
   cit('refuses to edit v3 series', (fix, el, comp) => {
@@ -79,6 +88,7 @@ describe('SeriesComponent', () => {
   cit('navigates to new series after save', (fix, el, comp) => {
     activatedRoute.testParams = {};
     auth.mock('prx:default-account', { id: 88 });
+    auth.mockItems('prx:accounts', [{ id: 88 }]);
     fix.detectChanges();
 
     const btn = el.queryAll(By.css('prx-button')).find((e) => {

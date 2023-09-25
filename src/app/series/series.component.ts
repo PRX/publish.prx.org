@@ -8,7 +8,7 @@ import { SeriesImportService } from './series-import.service';
 import { SeriesModel } from '../shared';
 import { NEW_SERIES_VALIDATIONS } from '../shared/model/series.model';
 
-import { map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil, withLatestFrom } from 'rxjs/operators';
 
 @Component({
   providers: [TabService],
@@ -68,7 +68,13 @@ export class SeriesComponent implements OnInit, OnDestroy {
         }
       );
     } else {
-      this.cms.defaultAccount.subscribe((a) => this.setSeries(a, null));
+      this.cms.defaultAccount.pipe(withLatestFrom(this.cms.accounts)).subscribe(([defaultAccount, accounts]) => {
+        if (accounts.find((a) => a.id == defaultAccount?.id)) {
+          this.setSeries(defaultAccount, null);
+        } else {
+          this.setSeries(accounts[0], null);
+        }
+      });
     }
   }
 
