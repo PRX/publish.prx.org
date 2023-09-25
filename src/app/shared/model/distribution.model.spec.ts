@@ -35,11 +35,10 @@ describe('DistributionModel', () => {
     expect(dist.podcast.authorName).toEqual(account['name']);
   });
 
-  it('defaults author and link for new podcasts', () => {
+  it('defaults author for new podcasts', () => {
     let dist = new DistributionModel(series, null, true);
     expect(dist.podcast).not.toBeNull();
     expect(dist.podcast.authorName).toEqual(account['name']);
-    expect(dist.podcast.link).toEqual(alternate['href']);
   });
 
   it('loads the feeder podcast on-demand only', () => {
