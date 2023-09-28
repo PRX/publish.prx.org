@@ -34,14 +34,12 @@ const MIN = (min: number): BaseInvalid => {
   };
 };
 
-const MAXBYTES = (maxBytes: number): BaseInvalid => {
-  return (key: string, value: any) => {
-    if (typeof TextEncoder !== 'undefined' && new TextEncoder().encode(value || '').length > maxBytes) {
-      return `${key} is too long`;
-    } else {
-      return null;
-    }
-  };
+const DESCRIPTION_BYTES: BaseInvalid = (_key: string, _value: any, strict, model) => {
+  if (strict && model.descriptionBytes > 4000) {
+    return 'description is too long';
+  } else {
+    return null;
+  }
 };
 
 export class StoryModel extends BaseModel implements HasUpload {
@@ -81,7 +79,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     title: [REQUIRED(true), LENGTH(1, 255)],
     cleanTitle: [LENGTH(0, 255)],
     shortDescription: [REQUIRED()],
-    description: [LENGTH(0, 4000), MAXBYTES(4000)],
+    description: [LENGTH(0, 4000), DESCRIPTION_BYTES],
     productionNotes: [LENGTH(0, 255)],
     releasedAt: [NO_UNPUBLISHING_VIA_RELEASED],
     versions: [RELATIONS('You must include at least 1 version of your audio')],
@@ -204,6 +202,14 @@ export class StoryModel extends BaseModel implements HasUpload {
     this.updatedAt = new Date(this.doc['updatedAt']);
     this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
     this.releasedAt = this.doc['releasedAt'] ? new Date(this.doc['releasedAt']) : null;
+
+    // count bytes of the html description
+    this.descriptionBytes = this.doc['descriptionMd'] || '';
+    if (typeof TextEncoder === 'undefined') {
+      this.descriptionBytes = (this.doc['description'] || '').length;
+    } else {
+      this.descriptionBytes = new TextEncoder().encode(this.doc['description'] || '').length;
+    }
   }
 
   encode(): {} {
