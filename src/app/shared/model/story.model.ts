@@ -36,7 +36,7 @@ const MIN = (min: number): BaseInvalid => {
 
 const MAXBYTES = (maxBytes: number): BaseInvalid => {
   return (key: string, value: any) => {
-    if (new TextEncoder().encode(value || '').length > maxBytes) {
+    if (typeof TextEncoder !== 'undefined' && new TextEncoder().encode(value || '').length > maxBytes) {
       return `${key} is too long`;
     } else {
       return null;
