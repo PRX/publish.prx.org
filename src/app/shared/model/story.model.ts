@@ -205,7 +205,6 @@ export class StoryModel extends BaseModel implements HasUpload {
     this.releasedAt = this.doc['releasedAt'] ? new Date(this.doc['releasedAt']) : null;
 
     // count bytes of the html description
-    this.descriptionBytes = this.doc['descriptionMd'] || '';
     if (typeof TextEncoder === 'undefined') {
       this.descriptionBytes = (this.doc['description'] || '').length;
     } else {
