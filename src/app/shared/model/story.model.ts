@@ -48,6 +48,7 @@ export class StoryModel extends BaseModel implements HasUpload {
   public cleanTitle: string;
   public shortDescription = '';
   public description = '';
+  public descriptionBytes = 0;
   public productionNotes: string;
   public tags = [];
   public status: string;
