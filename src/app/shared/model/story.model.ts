@@ -34,6 +34,16 @@ const MIN = (min: number): BaseInvalid => {
   };
 };
 
+const MAXBYTES = (maxBytes: number): BaseInvalid => {
+  return (key: string, value: any) => {
+    if (new TextEncoder().encode(value || '').length > maxBytes) {
+      return `${key} is too long`;
+    } else {
+      return null;
+    }
+  };
+};
+
 export class StoryModel extends BaseModel implements HasUpload {
   public id: number;
   public title: string; // show changes
@@ -71,7 +81,7 @@ export class StoryModel extends BaseModel implements HasUpload {
     title: [REQUIRED(true), LENGTH(1, 255)],
     cleanTitle: [LENGTH(0, 255)],
     shortDescription: [REQUIRED()],
-    description: [LENGTH(0, 4000)],
+    description: [LENGTH(0, 4000), MAXBYTES(4000)],
     productionNotes: [LENGTH(0, 255)],
     releasedAt: [NO_UNPUBLISHING_VIA_RELEASED],
     versions: [RELATIONS('You must include at least 1 version of your audio')],
