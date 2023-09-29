@@ -217,7 +217,8 @@ export class StoryModel extends BaseModel implements HasUpload {
     this.releasedAt = this.doc['releasedAt'] ? new Date(this.doc['releasedAt']) : null;
 
     // HACKY: validate description html bytes for apple delegated delivery (exclude some series ids)
-    if (![38213, 38490, 38563, 42493, 45123].includes(this.parent?.id)) {
+    const skip = [38213, 38490, 38563, 42493, 45123].indexOf(this.parent?.id) > -1;
+    if (!skip) {
       this.descriptionMarkdownBytes = countBytes(this.doc['descriptionMd']);
       this.descriptionHtmlBytes = countBytes(this.doc['description']);
     }
