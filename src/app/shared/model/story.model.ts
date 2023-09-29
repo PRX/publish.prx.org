@@ -34,9 +34,20 @@ const MIN = (min: number): BaseInvalid => {
   };
 };
 
+const countBytes = (value: string): number => {
+  if (typeof TextEncoder === 'undefined') {
+    return (value || '').length;
+  } else {
+    return new TextEncoder().encode(value || '').length;
+  }
+};
+
 const DESCRIPTION_BYTES: BaseInvalid = (_key: string, _value: any, strict, model) => {
-  if (strict && model.descriptionBytes > 4000) {
-    return 'description is too long';
+  if (strict && model.descriptionHtmlBytes > 4000) {
+    // only mark invalid if description hasn't changed
+    if (countBytes(model.description) === model.descriptionMarkdownBytes) {
+      return `description is ${model.descriptionHtmlBytes - 4000} characters too long`;
+    }
   } else {
     return null;
   }
@@ -48,7 +59,8 @@ export class StoryModel extends BaseModel implements HasUpload {
   public cleanTitle: string;
   public shortDescription = '';
   public description = '';
-  public descriptionBytes = 0;
+  public descriptionMarkdownBytes = 0;
+  public descriptionHtmlBytes = 0;
   public productionNotes: string;
   public tags = [];
   public status: string;
@@ -204,11 +216,11 @@ export class StoryModel extends BaseModel implements HasUpload {
     this.publishedAt = this.doc['publishedAt'] ? new Date(this.doc['publishedAt']) : null;
     this.releasedAt = this.doc['releasedAt'] ? new Date(this.doc['releasedAt']) : null;
 
-    // count bytes of the html description
-    if (typeof TextEncoder === 'undefined') {
-      this.descriptionBytes = (this.doc['description'] || '').length;
-    } else {
-      this.descriptionBytes = new TextEncoder().encode(this.doc['description'] || '').length;
+    // HACKY: validate description html bytes for apple delegated delivery (exclude some series ids)
+    const skip = [38213, 38490, 38563, 42493, 45123].indexOf(this.parent?.id) > -1;
+    if (!skip) {
+      this.descriptionMarkdownBytes = countBytes(this.doc['descriptionMd']);
+      this.descriptionHtmlBytes = countBytes(this.doc['description']);
     }
   }
 
