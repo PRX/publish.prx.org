@@ -49,7 +49,7 @@ export class DashboardComponent implements OnInit {
       body: `
         <p>It looks like all your podcasts have been migrated to our shiny new publishing application.</p>
         <hr/>
-        <p>Go to <strong><a href="${url}">${url}</a></strong> to access them!</p>
+        <p>Go to <strong><a href="${url}">Dovetail Podcasts</a></strong> to access them!</p>
         <br/>
       `,
       primaryButton: `Let's Goooooooooo!`,
